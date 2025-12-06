@@ -44,11 +44,11 @@
     <div class="px-4 py-4 border-b border-slate-200 dark:border-slate-700 text-sm bg-slate-50/60 dark:bg-slate-900/40">
         @if($previewTitle || $previewDesc)
             {{-- যখন data আছে → normal preview --}}
-            <div class="flex items-start gap-3">
+            <div class="flex items-start gap-3 min-w-0">
                 <div class="mt-0.5 text-sky-500">
                     <i class="fa-brands fa-google text-lg"></i>
                 </div>
-                <div class="flex-1 space-y-1">
+                <div class="flex-1 space-y-1 min-w-0">
                     <div class="text-sm font-medium text-blue-600 hover:underline truncate">
                         {{ $previewTitle ?: 'Preview title will appear here' }}
                     </div>
@@ -58,7 +58,7 @@
                         <span class="truncate">{{ $previewUrl }}</span>
                     </div>
 
-                    <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400">
+                    <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400 min-w-0">
                         <i class="fa-regular fa-clock"></i>
                         <span>{{ now()->format('M d, Y') }}</span>
                         @if($previewDesc)
