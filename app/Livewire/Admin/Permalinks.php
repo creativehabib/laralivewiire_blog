@@ -43,7 +43,7 @@ class Permalinks extends Component
             'permalink_structure' => ['required', Rule::in($availableStructures)],
             'custom_permalink_structure' => ['nullable', 'string'],
             'category_slug_prefix_enabled' => ['boolean'],
-            'tag_slug_prefix' => ['nullable', 'string'],
+            'tag_slug_prefix' => ['nullable', 'string', 'max:50', 'regex:/^[A-Za-z0-9\/_-]*$/'],
         ];
 
         if ($this->permalink_structure === PermalinkManager::STRUCTURE_CUSTOM) {
@@ -117,6 +117,27 @@ class Permalinks extends Component
         $custom = $structure === PermalinkManager::STRUCTURE_CUSTOM ? $this->custom_permalink_structure : null;
 
         return PermalinkManager::previewSample($structure, $custom);
+    }
+
+    public function getSanitizedTagPrefixProperty(): string
+    {
+        return trim((string) ($this->tag_slug_prefix ?? 'tag'), '/') ?: 'tag';
+    }
+
+    public function getTagPreviewProperty(): string
+    {
+        $prefix = $this->sanitizedTagPrefix;
+
+        return PermalinkManager::formatUrl($prefix . '/your-tag');
+    }
+
+    public function getCategoryPreviewProperty(): string
+    {
+        $path = $this->category_slug_prefix_enabled
+            ? 'category/your-category'
+            : 'your-category';
+
+        return PermalinkManager::formatUrl($path);
     }
     public function render()
     {

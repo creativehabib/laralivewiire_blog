@@ -121,65 +121,61 @@
         @endif
 
         {{-- Category prefix toggle --}}
-        <div class="space-y-1">
-            <label class="block text-sm font-semibold text-slate-800 dark:text-slate-100">
-                Category URL prefix
-            </label>
+        <div class="space-y-2">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Category URL prefix</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        ক্যাটাগরি URL-এ "category" প্রিফিক্স থাকবে নাকি সরাসরি স্লাগ দেখাবে তা নির্ধারণ করুন।
+                    </p>
+                </div>
 
-            <label class="inline-flex items-center gap-2 cursor-pointer">
-                <input
-                    type="checkbox"
-                    class="peer sr-only"
-                    id="category-prefix-toggle"
-                    wire:model.defer="category_slug_prefix_enabled"
-                >
-                <span
-                    class="h-5 w-9 rounded-full bg-slate-300 dark:bg-slate-700 peer-checked:bg-indigo-600 transition-colors relative"
-                >
-                    <span
-                        class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transform transition-transform peer-checked:translate-x-4"
-                    ></span>
-                </span>
-                <span class="text-xs text-slate-700 dark:text-slate-200">
-                    {{ $category_slug_prefix_enabled ? 'Category prefix enabled' : 'Category prefix disabled' }}
-                </span>
-            </label>
+                <label class="inline-flex items-center gap-2 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        class="peer sr-only"
+                        id="category-prefix-toggle"
+                        wire:model.defer="category_slug_prefix_enabled"
+                    >
+                    <span class="relative h-5 w-9 rounded-full bg-slate-300 dark:bg-slate-700 peer-checked:bg-indigo-600 transition-colors">
+                        <span class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transform transition-transform peer-checked:translate-x-4"></span>
+                    </span>
+                </label>
+            </div>
 
-            <small class="block text-xs text-slate-500 dark:text-slate-400">
-                এই অপশন চালু থাকলে ক্যাটাগরি স্লাগের আগে "category" যোগ হবে (যেমন: /category/news)। বন্ধ করলে স্লাগটি সরাসরি ব্যবহার হবে (যেমন: /news)।
-            </small>
+            <div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
+                {{ $categoryPreview }}
+            </div>
         </div>
 
         {{-- Tag URL base --}}
-        <div class="space-y-1 mt-4">
-            <label class="block text-sm font-semibold text-slate-800 dark:text-slate-100">
-                Tag URL base
-            </label>
+        <div class="space-y-2 mt-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Tag URL base</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        ট্যাগ URL এর প্রিফিক্স নির্ধারণ করুন (শুধু শব্দ বা ড্যাশ ব্যবহার করুন)।
+                    </p>
+                </div>
+
+                <span class="text-[11px] font-medium text-slate-600 dark:text-slate-300">
+                    Example: {{ $tagPreview }}
+                </span>
+            </div>
 
             <div class="flex rounded-lg shadow-sm">
-        <span
-            class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-300 dark:border-slate-700
-                   bg-slate-50 dark:bg-slate-800 px-3 text-xs text-slate-500 dark:text-slate-300"
-        >
-            {{ rtrim(url('/'), '/') }}/
-        </span>
+                <span
+                    class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-xs text-slate-500 dark:text-slate-300"
+                >
+                    {{ rtrim(url('/'), '/') }}/
+                </span>
                 <input
                     type="text"
-                    class="block w-full rounded-r-lg border border-slate-300 dark:border-slate-700
-                   bg-white dark:bg-slate-900 px-3 text-sm text-slate-900 dark:text-slate-100
-                   placeholder-slate-400 dark:placeholder-slate-500
-                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/70 focus:outline-none"
+                    class="block w-full rounded-r-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/70 focus:outline-none"
                     wire:model.lazy="tag_slug_prefix"
                     placeholder="tag"
                 >
             </div>
-
-            <small class="block text-xs text-slate-500 dark:text-slate-400">
-                Example:
-                <span class="font-mono">
-            {{ \App\Support\PermalinkManager::tagPreview('laravel') }}
-        </span>
-            </small>
 
             @error('tag_slug_prefix')
             <span class="mt-1 block text-xs text-red-500">{{ $message }}</span>
