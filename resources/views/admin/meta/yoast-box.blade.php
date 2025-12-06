@@ -75,6 +75,32 @@
                 </div>
             </div>
 
+            {{-- TITLE SENTIMENT --}}
+            <div class="flex items-start gap-2">
+                <span class="{{ $seo['title_sentiment_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
+                    {{ $seo['title_sentiment_ok'] ? '✔' : '✖' }}
+                </span>
+                <div>
+                    <div class="font-medium">Title sentiment</div>
+                    <div class="text-[11px] text-slate-500">
+                        Add a positive or negative sentiment word to inspire action.
+                    </div>
+                </div>
+            </div>
+
+            {{-- TITLE POWER WORD --}}
+            <div class="flex items-start gap-2">
+                <span class="{{ $seo['title_power_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
+                    {{ $seo['title_power_ok'] ? '✔' : '✖' }}
+                </span>
+                <div>
+                    <div class="font-medium">Title power word</div>
+                    <div class="text-[11px] text-slate-500">
+                        Use at least one power word (free, exclusive, secret, etc.).
+                    </div>
+                </div>
+            </div>
+
             {{-- DESC --}}
             <div class="flex items-start gap-2">
                 <span class="{{ $seo['desc_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
