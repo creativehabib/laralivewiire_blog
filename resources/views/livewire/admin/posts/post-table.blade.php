@@ -1,28 +1,4 @@
 <div class="space-y-4">
-
-    {{-- Page header --}}
-    <div class="rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-600 p-[1px] shadow-sm">
-        <div class="flex flex-col gap-2 rounded-[14px] bg-white/90 px-4 py-4 backdrop-blur md:flex-row md:items-center md:justify-between">
-            <div>
-                <h1 class="text-base font-semibold text-slate-900">Posts overview</h1>
-                <p class="text-xs text-slate-500">Manage, filter and publish your latest stories in one place.</p>
-            </div>
-            <div class="flex items-center gap-3 text-xs text-slate-600">
-                <div class="flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1">
-                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                    <span class="font-semibold text-slate-800">{{ $posts->total() }}</span>
-                    <span>posts</span>
-                </div>
-                <div class="hidden h-5 w-px bg-slate-200 md:block"></div>
-                <div class="flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1">
-                    <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">Published</span>
-                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700">Draft</span>
-                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">Needs review</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- Breadcrumb --}}
     <nav class="text-xs font-medium text-slate-500 mb-1">
         <span class="uppercase tracking-[0.16em] text-sky-600">Dashboard</span>
