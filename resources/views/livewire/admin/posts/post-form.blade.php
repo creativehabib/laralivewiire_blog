@@ -28,6 +28,21 @@
             <div
                 class="rounded-xl border border-slate-200 bg-white shadow-sm
                        dark:border-slate-700 dark:bg-slate-800">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-3 text-slate-800 dark:text-slate-100">
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-sky-100 text-sky-600 dark:bg-sky-900/40">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </span>
+                        <div>
+                            <h3 class="text-sm font-semibold">Post details</h3>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">Craft the headline, slug, and content visitors will see.</p>
+                        </div>
+                    </div>
+                    <span class="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600 dark:bg-slate-700/60 dark:text-slate-200">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        Rich text ready
+                    </span>
+                </div>
                 <form wire:submit.prevent="save" id="post-form">
                     <div class="px-6 py-5 space-y-5">
 
@@ -46,13 +61,18 @@
                                 </span>
                             </div>
 
-                            <input
-                                type="text"
-                                wire:model.live="name"
-                                maxlength="{{ $nameMax }}"
-                                class="block w-full rounded-lg border px-3 py-2 text-sm border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                                placeholder="Post title"
-                            >
+                            <div class="relative">
+                                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+                                    <i class="fa-regular fa-newspaper"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    wire:model.live="name"
+                                    maxlength="{{ $nameMax }}"
+                                    class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                                    placeholder="Post title"
+                                >
+                            </div>
 
                             @error('name') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
                         </div>
@@ -62,14 +82,19 @@
                             <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
                                 Permalink <span class="text-rose-500">*</span>
                             </label>
-                            <input
-                                type="text"
-                                wire:model.defer="slug"
-                                class="block w-full rounded-lg border px-3 py-2 text-sm
-                                       border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
-                                       focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-                                       dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
-                                placeholder="post-slug">
+                            <div class="relative">
+                                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-link"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    wire:model.defer="slug"
+                                    class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm
+                                           border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
+                                           focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+                                           dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
+                                    placeholder="post-slug">
+                            </div>
                             @error('slug')
                             <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                             @enderror
@@ -99,13 +124,18 @@
                                 </span>
                             </div>
 
-                            <textarea
-                                wire:model.live="description"
-                                rows="4"
-                                maxlength="{{ $descMax }}"
-                                class="block w-full rounded-lg border px-3 py-2 text-sm border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                                placeholder="Short description..."
-                            ></textarea>
+                            <div class="relative">
+                                <span class="pointer-events-none absolute left-3 top-3 text-slate-400">
+                                    <i class="fa-regular fa-rectangle-list"></i>
+                                </span>
+                                <textarea
+                                    wire:model.live="description"
+                                    rows="4"
+                                    maxlength="{{ $descMax }}"
+                                    class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                                    placeholder="Short description..."
+                                ></textarea>
+                            </div>
 
                             @error('description')
                                 <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
@@ -128,12 +158,14 @@
                             </label>
                             <div class="flex gap-2 text-[11px]">
                                 <button type="button"
-                                        class="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600">
+                                        class="inline-flex items-center gap-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600">
+                                    <i class="fa-regular fa-eye"></i>
                                     Show/Hide Editor
                                 </button>
                                 <button type="button"
                                         onclick="openCkeditorImagePicker('content')"
-                                        class="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600">
+                                        class="inline-flex items-center gap-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600">
+                                    <i class="fa-regular fa-images"></i>
                                     Add media
                                 </button>
                             </div>
