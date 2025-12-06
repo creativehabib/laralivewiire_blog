@@ -11,31 +11,36 @@
 
 <div
     x-data="{ open: true }"
-    class="mt-4 rounded-xl border border-slate-200 bg-white shadow-sm
-           dark:border-slate-700 dark:bg-slate-800">
+    class="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-white to-slate-50 shadow-sm
+           dark:border-slate-700 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+    <div class="flex items-center justify-between px-4 py-4 border-b border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/80">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 flex items-center justify-center rounded-full text-white text-sm font-bold {{ $color }}">
-                {{ $score }}
+            <div class="relative">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full text-white text-sm font-bold {{ $color }} shadow-sm">
+                    {{ $score }}
+                </div>
+                <span class="absolute -bottom-1 -right-1 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600 shadow dark:bg-slate-700 dark:text-slate-200">
+                    <i class="fa-solid fa-chart-simple text-[11px] text-slate-500 dark:text-slate-300"></i>
+                    {{ $label }}
+                </span>
             </div>
-            <div>
-                <div class="text-xs font-semibold text-slate-800 dark:text-slate-100">
+            <div class="space-y-0.5">
+                <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-700 dark:text-slate-100">
+                    <i class="fa-solid fa-magnifying-glass-chart text-slate-500 dark:text-slate-200"></i>
                     SEO analysis
-                    <span class="ml-1 text-[11px] font-normal text-slate-500 dark:text-slate-400">
-                        ({{ $label }})
-                    </span>
                 </div>
                 <div class="text-[11px] text-slate-500 dark:text-slate-400">
-                    Based on focus keyword & on-page SEO rules
+                    Based on focus keyword &amp; on-page SEO rules
                 </div>
             </div>
         </div>
 
         <button type="button"
                 @click="open = !open"
-                class="text-[11px] text-sky-600 dark:text-sky-400 hover:underline">
+                class="flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-[11px] font-semibold text-sky-600 transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-sky-50 dark:border-slate-600 dark:text-sky-400 dark:hover:border-slate-500 dark:hover:bg-slate-700">
+            <i class="fa-solid" :class="open ? 'fa-eye-slash' : 'fa-eye'"></i>
             <span x-show="open">Hide details</span>
             <span x-show="!open">Show details</span>
         </button>
@@ -61,193 +66,182 @@
         </div>
 
         {{-- Checklist --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
             {{-- TITLE --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['title_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['title_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['title_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['title_ok'] ? 'fa-circle-check' : 'fa-circle-xmark' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">SEO title length</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">SEO title length</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         30–65 characters is recommended.
                     </div>
                 </div>
             </div>
 
             {{-- TITLE SENTIMENT --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['title_sentiment_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['title_sentiment_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['title_sentiment_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['title_sentiment_ok'] ? 'fa-face-laugh-beam' : 'fa-face-frown-open' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Title sentiment</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Title sentiment</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         Add a positive or negative sentiment word to inspire action.
                     </div>
                 </div>
             </div>
 
             {{-- TITLE POWER WORD --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['title_power_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['title_power_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['title_power_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['title_power_ok'] ? 'fa-bolt-lightning' : 'fa-ban' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Title power word</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Title power word</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         Use at least one power word (free, exclusive, secret, etc.).
                     </div>
                 </div>
             </div>
 
             {{-- DESC --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['desc_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['desc_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['desc_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['desc_ok'] ? 'fa-align-left' : 'fa-triangle-exclamation' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Meta description length</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Meta description length</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         80–160 characters is recommended.
                     </div>
                 </div>
             </div>
 
             {{-- CONTENT LENGTH --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['content_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['content_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['content_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['content_ok'] ? 'fa-file-lines' : 'fa-pen-ruler' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Content length</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Content length</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         600+ words recommended.
                     </div>
                 </div>
             </div>
 
             {{-- IMAGES --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['image_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['image_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['image_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['image_ok'] ? 'fa-image' : 'fa-image-slash' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Images with alt text</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Images with alt text</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         At least one image with descriptive alt text.
                     </div>
                 </div>
             </div>
 
             {{-- HEADINGS --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['head_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['head_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['head_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['head_ok'] ? 'fa-bridge' : 'fa-circle-exclamation' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Headings</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Headings</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         Use H2/H3 headings to structure content.
                     </div>
                 </div>
             </div>
 
             {{-- SLUG --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['slug_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['slug_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['slug_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['slug_ok'] ? 'fa-link' : 'fa-link-slash' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Clean permalink</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Clean permalink</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         Use a human-readable, hyphenated slug.
                     </div>
                 </div>
             </div>
 
             {{-- LINKS --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['links_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['links_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['links_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['links_ok'] ? 'fa-earth-americas' : 'fa-link-slash' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">Links</div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">Links</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         Use internal/external links where relevant.
                     </div>
                 </div>
             </div>
 
             {{-- KEYWORD DENSITY --}}
-            <div class="flex items-start gap-2">
-                <span class="{{ $seo['kw_density_ok'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                    {{ $seo['kw_density_ok'] ? '✔' : '✖' }}
+            <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['kw_density_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
+                    <i class="fa-solid {{ $seo['kw_density_ok'] ? 'fa-percent' : 'fa-gauge' }}"></i>
                 </span>
                 <div>
-                    <div class="font-medium">
+                    <div class="font-medium text-slate-800 dark:text-slate-100">
                         Keyword density ({{ $seo['kw_density'] ?? 0 }}%)
                     </div>
-                    <div class="text-[11px] text-slate-500">
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">
                         Recommended: 0.5% – 3% for "{{ $seo['focus_keyword'] ?? 'no keyword' }}".
                     </div>
                 </div>
             </div>
 
             {{-- KEYWORD POSITION CHECKS --}}
-            <div class="flex flex-col gap-1 col-span-1 md:col-span-2">
-                <div class="flex items-center gap-2">
-                    <span class="{{ $seo['kw_in_title'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                        {{ $seo['kw_in_title'] ? '✔' : '✖' }}
-                    </span>
-                    <span class="text-[11px] text-slate-600">
-                        Focus keyword in SEO title
-                    </span>
+            <div class="col-span-1 flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/60 md:col-span-2">
+                <div class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">
+                    <i class="fa-solid fa-key text-slate-400 dark:text-slate-200"></i>
+                    Keyword placement
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <span class="{{ $seo['kw_in_slug'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                        {{ $seo['kw_in_slug'] ? '✔' : '✖' }}
-                    </span>
-                    <span class="text-[11px] text-slate-600">
-                        Focus keyword in URL slug
-                    </span>
-                </div>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="flex items-center gap-2 rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-slate-600 shadow-sm dark:bg-slate-900/60 dark:text-slate-200">
+                        <i class="fa-solid fa-heading {{ $seo['kw_in_title'] ? 'text-emerald-500' : 'text-rose-500' }}"></i>
+                        <span>Focus keyword in SEO title</span>
+                        <i class="fa-solid ml-auto {{ $seo['kw_in_title'] ? 'fa-circle-check text-emerald-500' : 'fa-circle-xmark text-rose-500' }}"></i>
+                    </div>
 
-                <div class="flex items-center gap-2">
-                    <span class="{{ $seo['kw_in_desc'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                        {{ $seo['kw_in_desc'] ? '✔' : '✖' }}
-                    </span>
-                    <span class="text-[11px] text-slate-600">
-                        Focus keyword in meta description
-                    </span>
-                </div>
+                    <div class="flex items-center gap-2 rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-slate-600 shadow-sm dark:bg-slate-900/60 dark:text-slate-200">
+                        <i class="fa-solid fa-link {{ $seo['kw_in_slug'] ? 'text-emerald-500' : 'text-rose-500' }}"></i>
+                        <span>Focus keyword in URL slug</span>
+                        <i class="fa-solid ml-auto {{ $seo['kw_in_slug'] ? 'fa-circle-check text-emerald-500' : 'fa-circle-xmark text-rose-500' }}"></i>
+                    </div>
 
-                <div class="flex items-center gap-2">
-                    <span class="{{ $seo['kw_in_intro'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                        {{ $seo['kw_in_intro'] ? '✔' : '✖' }}
-                    </span>
-                    <span class="text-[11px] text-slate-600">
-                        Focus keyword in first paragraph
-                    </span>
-                </div>
+                    <div class="flex items-center gap-2 rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-slate-600 shadow-sm dark:bg-slate-900/60 dark:text-slate-200">
+                        <i class="fa-solid fa-align-justify {{ $seo['kw_in_desc'] ? 'text-emerald-500' : 'text-rose-500' }}"></i>
+                        <span>Focus keyword in meta description</span>
+                        <i class="fa-solid ml-auto {{ $seo['kw_in_desc'] ? 'fa-circle-check text-emerald-500' : 'fa-circle-xmark text-rose-500' }}"></i>
+                    </div>
 
-                <div class="flex items-center gap-2">
-                    <span class="{{ $seo['kw_in_head'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                        {{ $seo['kw_in_head'] ? '✔' : '✖' }}
-                    </span>
-                    <span class="text-[11px] text-slate-600">
-                        Focus keyword in H2/H3 heading
-                    </span>
-                </div>
+                    <div class="flex items-center gap-2 rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-slate-600 shadow-sm dark:bg-slate-900/60 dark:text-slate-200">
+                        <i class="fa-solid fa-paragraph {{ $seo['kw_in_intro'] ? 'text-emerald-500' : 'text-rose-500' }}"></i>
+                        <span>Focus keyword in first paragraph</span>
+                        <i class="fa-solid ml-auto {{ $seo['kw_in_intro'] ? 'fa-circle-check text-emerald-500' : 'fa-circle-xmark text-rose-500' }}"></i>
+                    </div>
 
-                <div class="flex items-center gap-2">
-                    <span class="{{ $seo['kw_in_alt'] ? 'text-emerald-500' : 'text-rose-500' }}">
-                        {{ $seo['kw_in_alt'] ? '✔' : '✖' }}
-                    </span>
-                    <span class="text-[11px] text-slate-600">
-                        Focus keyword in image alt text
-                    </span>
+                    <div class="flex items-center gap-2 rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-slate-600 shadow-sm dark:bg-slate-900/60 dark:text-slate-200">
+                        <i class="fa-solid fa-list-ol {{ $seo['kw_in_head'] ? 'text-emerald-500' : 'text-rose-500' }}"></i>
+                        <span>Focus keyword in H2/H3 heading</span>
+                        <i class="fa-solid ml-auto {{ $seo['kw_in_head'] ? 'fa-circle-check text-emerald-500' : 'fa-circle-xmark text-rose-500' }}"></i>
+                    </div>
+
+                    <div class="flex items-center gap-2 rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-slate-600 shadow-sm dark:bg-slate-900/60 dark:text-slate-200">
+                        <i class="fa-solid fa-image {{ $seo['kw_in_alt'] ? 'text-emerald-500' : 'text-rose-500' }}"></i>
+                        <span>Focus keyword in image alt text</span>
+                        <i class="fa-solid ml-auto {{ $seo['kw_in_alt'] ? 'fa-circle-check text-emerald-500' : 'fa-circle-xmark text-rose-500' }}"></i>
+                    </div>
                 </div>
             </div>
         </div>
