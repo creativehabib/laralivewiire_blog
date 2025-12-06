@@ -102,7 +102,7 @@
                         type="text"
                         id="custom-permalink"
                         class="block w-full rounded-r-lg border border-slate-300 dark:border-slate-700
-                               bg-white dark:bg-slate-900 px-3 text-sm text-slate-900 dark:text-slate-100
+                               bg-white dark:bg-slate-900 px-2 py-1.5 text-sm text-slate-900 dark:text-slate-100
                                placeholder-slate-400 dark:placeholder-slate-500
                                focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/70 focus:outline-none"
                         wire:model.lazy="custom_permalink_structure"
@@ -129,18 +129,15 @@
                         ক্যাটাগরি URL-এ "category" প্রিফিক্স থাকবে নাকি সরাসরি স্লাগ দেখাবে তা নির্ধারণ করুন।
                     </p>
                 </div>
-
-                <label class="inline-flex items-center gap-2 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        class="peer sr-only"
-                        id="category-prefix-toggle"
-                        wire:model.defer="category_slug_prefix_enabled"
-                    >
-                    <span class="relative h-5 w-9 rounded-full bg-slate-300 dark:bg-slate-700 peer-checked:bg-indigo-600 transition-colors">
-                        <span class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transform transition-transform peer-checked:translate-x-4"></span>
-                    </span>
-                </label>
+                <div class="relative inline-block w-11 h-5">
+                    <input checked
+                           id="category-prefix-toggle"
+                           type="checkbox"
+                           wire:model.defer="category_slug_prefix_enabled"
+                           class="peer appearance-none w-11 h-5 bg-slate-300 rounded-full checked:bg-blue-600 cursor-pointer transition-colors duration-300" />
+                    <label for="category-prefix-toggle" class="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm transition-transform duration-300 peer-checked:translate-x-6 peer-checked:border-blue-600 cursor-pointer">
+                    </label>
+                </div>
             </div>
 
             <div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
@@ -165,13 +162,13 @@
 
             <div class="flex rounded-lg shadow-sm">
                 <span
-                    class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-xs text-slate-500 dark:text-slate-300"
+                    class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 text-xs text-slate-500 dark:text-slate-300"
                 >
                     {{ rtrim(url('/'), '/') }}/
                 </span>
                 <input
                     type="text"
-                    class="block w-full rounded-r-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/70 focus:outline-none"
+                    class="block w-full rounded-r-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 py-1.5 px-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/70 focus:outline-none"
                     wire:model.lazy="tag_slug_prefix"
                     placeholder="tag"
                 >

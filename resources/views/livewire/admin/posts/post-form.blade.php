@@ -69,7 +69,10 @@
                                     type="text"
                                     wire:model.live="name"
                                     maxlength="{{ $nameMax }}"
-                                    class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                                    class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm
+                                           border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
+                                           focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+                                           dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
                                     placeholder="Post title"
                                 >
                             </div>
@@ -132,7 +135,10 @@
                                     wire:model.live="description"
                                     rows="4"
                                     maxlength="{{ $descMax }}"
-                                    class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                                    class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm
+                                           border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
+                                           focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+                                           dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
                                     placeholder="Short description..."
                                 ></textarea>
                             </div>
