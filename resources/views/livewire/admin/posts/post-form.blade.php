@@ -268,33 +268,54 @@
             </div>
 
             {{-- Categories card --}}
-            <div class="rounded-lg border border-gray-200 bg-white">
+            <div
+                class="rounded-xl border border-slate-200 bg-white shadow-sm
+                       dark:border-slate-700 dark:bg-slate-800">
                 {{-- Header --}}
-                <div class="px-4 py-3 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-gray-800">
-                        Categories
-                    </h3>
+                <div class="flex items-start gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600
+                                   dark:bg-indigo-900/30 dark:text-indigo-300">
+                        <i class="fa-solid fa-layer-group text-sm"></i>
+                    </span>
+                    <div class="flex-1">
+                        <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Categories</h3>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                            Organize your post by selecting one or more related categories.
+                        </p>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600
+                                 dark:bg-slate-700/70 dark:text-slate-100">Multi-select</span>
                 </div>
 
                 {{-- Search --}}
-                <div class="px-4 pt-3 pb-2 border-b border-gray-100">
+                <div class="px-5 pt-3 pb-2 border-b border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40">
                     <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
+                        </span>
                         <input
                             type="text"
                             wire:model.live.debounce.300ms="categorySearch"
-                            placeholder="Search..."
-                            class="block w-full rounded-md border border-gray-200 bg-gray-50 py-2 pl-3 pr-8 text-xs
-                       text-gray-800 placeholder:text-gray-400
-                       focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                            placeholder="Search categories"
+                            class="block w-full rounded-lg border px-3 py-2 pl-9 text-xs
+                                   border-slate-200 bg-white text-slate-800 placeholder:text-slate-400
+                                   focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+                                   dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                         >
-                        <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
-                            <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
-                        </span>
+                        @if($categorySearch)
+                            <button
+                                type="button"
+                                wire:click="$set('categorySearch', '')"
+                                class="absolute inset-y-0 right-3 flex items-center text-[11px] text-slate-400 hover:text-rose-500"
+                                aria-label="Clear category search">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                            </button>
+                        @endif
                     </div>
                 </div>
 
                 {{-- List --}}
-                <div class="px-4 py-3 max-h-72 overflow-y-auto space-y-1">
+                <div class="px-3 py-3 max-h-80 overflow-y-auto space-y-1 bg-slate-50/60 dark:bg-slate-900/40">
                     @forelse($rootCategories as $cat)
                         @include('admin.posts.partials.category-checkbox-item', [
                             'category' => $cat,
@@ -302,19 +323,24 @@
                             'selected' => $category_ids,
                         ])
                     @empty
-                        <p class="text-xs text-gray-500">
-                            @if($categorySearch)
-                                No categories found for "<span class="font-semibold">{{ $categorySearch }}</span>".
-                            @else
-                                No categories found.
-                            @endif
-                        </p>
+                        <div class="flex items-center gap-3 rounded-lg border border-dashed border-slate-200 bg-white px-3 py-2 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
+                            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-700/60">
+                                <i class="fa-regular fa-circle-question text-[12px]"></i>
+                            </span>
+                            <div>
+                                @if($categorySearch)
+                                    <p>No categories found for "<span class="font-semibold">{{ $categorySearch }}</span>".</p>
+                                @else
+                                    <p>No categories found.</p>
+                                @endif
+                            </div>
+                        </div>
                     @endforelse
                 </div>
 
                 {{-- Error --}}
                 @error('category_ids')
-                <p class="px-4 pb-3 text-xs text-red-500">{{ $message }}</p>
+                <p class="px-5 pb-4 text-xs text-rose-500">{{ $message }}</p>
                 @enderror
             </div>
 
