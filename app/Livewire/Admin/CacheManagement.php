@@ -11,57 +11,52 @@ class CacheManagement extends Component
 {
     public string $cacheSize = '0 B';
 
+    public function mount(): void
+    {
+        $this->refreshCacheStatistics();
+    }
+
     public function clearAllCache(): void
     {
-        Artisan::call('optimize:clear');
-        Cache::flush();
-
-        $this->refreshCacheStatistics();
-
-        $this->dispatch('media-toast', type: 'success', message: 'All CMS caches cleared successfully');
+        $this->handleCacheAction(static function (): void {
+            Artisan::call('optimize:clear');
+            Cache::flush();
+        }, 'All CMS caches cleared successfully');
     }
 
     public function cacheViews(): void
     {
-        Artisan::call('view:cache');
-
-        $this->refreshCacheStatistics();
-
-        $this->dispatch('media-toast', type: 'success', message: 'View cache generated successfully');
+        $this->handleCacheAction(static function (): void {
+            Artisan::call('view:cache');
+        }, 'View cache generated successfully');
     }
 
     public function clearCompiledViews(): void
     {
-        Artisan::call('view:clear');
-
-        $this->refreshCacheStatistics();
-
-        $this->dispatch('media-toast', type: 'success', message: 'Compiled views refreshed successfully');
+        $this->handleCacheAction(static function (): void {
+            Artisan::call('view:clear');
+        }, 'Compiled views refreshed successfully');
     }
 
     public function clearOptimizationCaches(): void
     {
-        Artisan::call('optimize:clear');
-
-        $this->refreshCacheStatistics();
-
-        $this->dispatch('media-toast', type: 'success', message: 'Optimization caches cleared successfully');
+        $this->handleCacheAction(static function (): void {
+            Artisan::call('optimize:clear');
+        }, 'Optimization caches cleared successfully');
     }
 
     public function clearConfigCache(): void
     {
-        Artisan::call('config:clear');
-
-        $this->refreshCacheStatistics();
-        $this->dispatch('media-toast', type: 'success', message: 'Configuration cache refreshed successfully');
+        $this->handleCacheAction(static function (): void {
+            Artisan::call('config:clear');
+        }, 'Configuration cache refreshed successfully');
     }
 
     public function clearRouteCache(): void
     {
-        Artisan::call('route:clear');
-
-        $this->refreshCacheStatistics();
-        $this->dispatch('media-toast', type: 'success', message: 'Route cache cleared successfully');
+        $this->handleCacheAction(static function (): void {
+            Artisan::call('route:clear');
+        }, 'Route cache cleared successfully');
     }
 
     public function clearLogFiles(): void
@@ -83,6 +78,15 @@ class CacheManagement extends Component
     protected function refreshCacheStatistics(): void
     {
         $this->cacheSize = $this->calculateCacheSize();
+    }
+
+    protected function handleCacheAction(callable $callback, string $successMessage): void
+    {
+        $callback();
+
+        $this->refreshCacheStatistics();
+
+        $this->dispatch('media-toast', type: 'success', message: $successMessage);
     }
 
     protected function calculateCacheSize(): string
