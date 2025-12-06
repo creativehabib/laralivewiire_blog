@@ -144,7 +144,7 @@
             </div>
 
             <div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
-                {{ $categoryPreview }}
+                {{ $this->categoryPreview }}
             </div>
         </div>
 
@@ -159,7 +159,7 @@
                 </div>
 
                 <span class="text-[11px] font-medium text-slate-600 dark:text-slate-300">
-                    Example: {{ $tagPreview }}
+                    Example: {{ $this->tagPreview }}
                 </span>
             </div>
 
