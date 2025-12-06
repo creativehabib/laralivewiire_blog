@@ -29,9 +29,9 @@ trait HasSeoMeta
     }
 
     /**
-     * SeoAnalyzer দিয়ে analysis চালাও
+     * Yoast-style SEO analyzer (reusable for any model)
      */
-    public function seoAnalysis(?string $focusKeyword = null, ?array $overrideMeta = null): array
+    public function analyzeSeo(?string $focusKeyword = null, ?array $overrideMeta = null): array
     {
         // overrideMeta না দিলে default meta পাঠাচ্ছি
         if ($overrideMeta === null) {
@@ -41,6 +41,14 @@ trait HasSeoMeta
         $focusKeyword = $focusKeyword ?? ($overrideMeta['focus_keyword'] ?? null);
 
         return SeoAnalyzer::analyze($this, $focusKeyword, $overrideMeta);
+    }
+
+    /**
+     * Backward compatible alias so পুরনো কোড কাজ করে
+     */
+    public function seoAnalysis(?string $focusKeyword = null, ?array $overrideMeta = null): array
+    {
+        return $this->analyzeSeo($focusKeyword, $overrideMeta);
     }
 
     /**
