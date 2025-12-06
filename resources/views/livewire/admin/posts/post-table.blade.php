@@ -1,7 +1,30 @@
 <div class="space-y-4">
 
+    {{-- Page header --}}
+    <div class="rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-600 p-[1px] shadow-sm">
+        <div class="flex flex-col gap-2 rounded-[14px] bg-white/90 px-4 py-4 backdrop-blur md:flex-row md:items-center md:justify-between">
+            <div>
+                <h1 class="text-base font-semibold text-slate-900">Posts overview</h1>
+                <p class="text-xs text-slate-500">Manage, filter and publish your latest stories in one place.</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-slate-600">
+                <div class="flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                    <span class="font-semibold text-slate-800">{{ $posts->total() }}</span>
+                    <span>posts</span>
+                </div>
+                <div class="hidden h-5 w-px bg-slate-200 md:block"></div>
+                <div class="flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1">
+                    <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">Published</span>
+                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700">Draft</span>
+                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">Needs review</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Breadcrumb --}}
-    <nav class="text-xs font-medium text-slate-500 mb-2">
+    <nav class="text-xs font-medium text-slate-500 mb-1">
         <span class="uppercase tracking-[0.16em] text-sky-600">Dashboard</span>
         <span class="mx-1 text-slate-400">/</span>
         <span class="uppercase tracking-[0.16em] text-slate-600">Blog</span>
@@ -19,7 +42,7 @@
     {{-- Top toolbar --}}
     <div
         class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between
-               rounded-xl border border-slate-200 bg-white px-4 py-3">
+               rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
 
         <div class="flex items-center gap-2">
 
@@ -27,7 +50,7 @@
             <div x-data="{ open: false }" class="relative">
                 <button type="button"
                         @click="open = !open"
-                        class="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700">
+                        class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 shadow-sm hover:border-slate-300">
                     Bulk Actions
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
                 </button>
@@ -44,14 +67,14 @@
 
             {{-- Filters button (future advanced filters) --}}
             <button type="button"
-                    class="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700">
+                    class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm hover:border-slate-300">
+                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-sky-50 text-sky-600"><i class="fa-solid fa-sliders text-[10px]"></i></span>
                 Filters
-                <i class="fa-solid fa-sliders text-[10px]"></i>
             </button>
 
             {{-- Category filter --}}
             <select wire:model.live="category"
-                    class="rounded-lg border border-slate-300 bg-white px-2 py-2 text-xs text-slate-700 cursor-pointer">
+                    class="rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700 cursor-pointer shadow-sm focus:border-sky-300 focus:ring-sky-200">
                 <option value="">All categories</option>
                 @foreach($categories as $cat)
                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -60,7 +83,7 @@
 
             {{-- Status filter --}}
             <select wire:model.live="status"
-                    class="rounded-lg border border-slate-300 bg-white px-2 py-2 text-xs text-slate-700 cursor-pointer">
+                    class="rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700 cursor-pointer shadow-sm focus:border-sky-300 focus:ring-sky-200">
                 <option value="">All status</option>
                 <option value="published">Published</option>
                 <option value="draft">Draft</option>
@@ -79,7 +102,7 @@
                     </span>
                     <input
                         wire:model.live.debounce.400ms="search"
-                        class="block w-full rounded-lg border border-slate-300 bg-slate-50 py-2 pl-7 pr-3 text-xs text-slate-800 placeholder-slate-400"
+                        class="block w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-7 pr-3 text-xs text-slate-800 placeholder-slate-400 shadow-inner focus:border-sky-300 focus:ring-sky-200"
                         placeholder="Search posts..."
                         type="text">
                 </label>
@@ -87,7 +110,7 @@
 
             {{-- Per page --}}
             <select wire:model.live="perPage"
-                    class="rounded-lg border border-slate-300 bg-white px-2 py-2 text-xs text-slate-700 cursor-pointer">
+                    class="rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700 cursor-pointer shadow-sm focus:border-sky-300 focus:ring-sky-200">
                 <option value="10">10 / page</option>
                 <option value="25">25 / page</option>
                 <option value="50">50 / page</option>
@@ -97,7 +120,7 @@
             <button
                 onclick="window.location='{{ route('blogs.posts.create') }}'"
                 type="button"
-                class="inline-flex items-center gap-1 rounded-lg bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-sky-500 cursor-pointer">
+                class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-sky-500 cursor-pointer">
                 <i class="fa-solid fa-plus text-xs"></i>
                 Create
             </button>
@@ -183,9 +206,9 @@
         </div>
 
         {{-- ACTUAL TABLE --}}
-        <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <table class="min-w-full text-left text-sm">
-                <thead class="bg-slate-50 text-xs uppercase text-slate-500 border-b border-slate-200">
+                <thead class="sticky top-0 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 shadow-[0_2px_0_rgba(15,23,42,0.02)]">
                 <tr>
                     <th class="w-10 px-4 py-3">
                         <input type="checkbox"
@@ -244,7 +267,7 @@
 
                 <tbody class="divide-y divide-slate-100 text-sm">
                 @forelse($posts as $post)
-                    <tr class="hover:bg-slate-50">
+                    <tr class="transition-colors duration-100 hover:bg-slate-50">
                         {{-- checkbox --}}
                         <td class="px-4 py-3">
                             <input type="checkbox"
@@ -326,7 +349,7 @@
                                 }
                             @endphp
 
-                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold {{ $badgeBg }} {{ $badgeText }}">
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold shadow-sm {{ $badgeBg }} {{ $badgeText }}">
                                 <span class="mr-1 h-1.5 w-1.5 rounded-full {{ $dotBg }}"></span>
                                 SEO: {{ $label }}
                             </span>
@@ -338,15 +361,17 @@
                             @if ($post->status === 'published')
                                 <button type="button"
                                         wire:click="toggleStatus({{ $post->id }})"
-                                        class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 cursor-pointer">
+                                        class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 shadow-sm cursor-pointer">
                                     <span class="mr-1 h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    <i class="fa-solid fa-check text-[9px]"></i>
                                     Published
                                 </button>
                             @else
                                 <button type="button"
                                         wire:click="toggleStatus({{ $post->id }})"
-                                        class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700 cursor-pointer">
+                                        class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700 shadow-sm cursor-pointer">
                                     <span class="mr-1 h-1.5 w-1.5 rounded-full bg-slate-500"></span>
+                                    <i class="fa-solid fa-pencil text-[9px]"></i>
                                     Draft
                                 </button>
                             @endif
@@ -360,7 +385,7 @@
                                     <button
                                         type="button"
                                         wire:click="restore({{ $post->id }})"
-                                        class="inline-flex items-center rounded-md bg-emerald-600 px-2.5 py-1.5 text-xs text-white hover:bg-emerald-500">
+                                        class="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-emerald-500">
                                         <i class="fa-solid fa-rotate-left text-[11px] mr-1"></i>
                                         Restore
                                     </button>
@@ -369,14 +394,14 @@
                                         type="button"
                                         onclick="confirm('Delete permanently?') || event.stopImmediatePropagation()"
                                         wire:click="forceDelete({{ $post->id }})"
-                                        class="inline-flex items-center rounded-md bg-rose-700 px-2.5 py-1.5 text-xs text-white hover:bg-rose-600">
+                                        class="inline-flex items-center gap-1 rounded-md bg-rose-700 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-600">
                                         <i class="fa-solid fa-skull-crossbones text-[11px] mr-1"></i>
                                         Delete
                                     </button>
                                 @else
                                     {{-- normal: edit + soft delete --}}
                                     <a href="{{ route('blogs.posts.edit', $post->id) }}"
-                                       class="inline-flex items-center rounded-md bg-sky-600 px-2.5 py-1.5 text-xs text-white hover:bg-sky-500">
+                                       class="inline-flex items-center rounded-md bg-sky-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-sky-500">
                                         <i class="fa-solid fa-pen text-[11px]"></i>
                                     </a>
 
@@ -384,7 +409,7 @@
                                         type="button"
                                         onclick="confirm('Delete this post?') || event.stopImmediatePropagation()"
                                         wire:click="delete({{ $post->id }})"
-                                        class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white hover:bg-rose-500">
+                                        class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-500">
                                         <i class="fa-solid fa-trash text-[11px]"></i>
                                     </button>
                                 @endif
@@ -393,8 +418,14 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="10" class="px-4 py-6 text-center text-sm text-slate-500">
-                            No posts found.
+                        <td colspan="10" class="px-4 py-12 text-center text-sm text-slate-500">
+                            <div class="mx-auto flex max-w-sm flex-col items-center gap-3">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-sky-600">
+                                    <i class="fa-solid fa-newspaper"></i>
+                                </div>
+                                <div class="text-sm font-semibold text-slate-700">No posts found</div>
+                                <p class="text-xs text-slate-500">Try adjusting your filters or create a new story to populate the list.</p>
+                            </div>
                         </td>
                     </tr>
                 @endforelse
