@@ -21,7 +21,7 @@
                 <div class="w-12 h-12 flex items-center justify-center rounded-full text-white text-sm font-bold {{ $color }} shadow-sm">
                     {{ $score }}
                 </div>
-                <span class="absolute -bottom-1 -right-1 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600 shadow dark:bg-slate-700 dark:text-slate-200">
+                <span class="absolute -bottom-1 -right-1 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600 shadow dark:bg-slate-700 dark:text-slate-200 whitespace-nowrap">
                     <i class="fa-solid fa-chart-simple text-[11px] text-slate-500 dark:text-slate-300"></i>
                     {{ $label }}
                 </span>
