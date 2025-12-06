@@ -126,6 +126,12 @@
                 {{-- SEO META --}}
                 @include('admin.meta.seo-meta-box',['seoType' => 'category'])
 
+                @php
+                    $seo = $seo ?? $this->seoAnalysis;
+                @endphp
+
+                @include('admin.meta.yoast-box', ['seo' => $seo])
+
             </div>
         </div>
 

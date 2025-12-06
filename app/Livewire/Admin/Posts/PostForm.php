@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Posts;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Admin\Tag;
+use App\Support\SeoAnalyzer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -15,8 +16,6 @@ class PostForm extends Component
     public ?Post $post = null;
     public ?int  $postId = null;
     public ?string $focus_keyword = null;
-    public ?int $seo_score_live = null;
-    public array $seo_analysis = [];
     public int $nameMax = 250;
     public int $descMax = 400;
     // posts table fields
@@ -330,6 +329,15 @@ class PostForm extends Component
         $post->is_breaking    = $this->is_breaking ? 1 : 0;
         $post->format_type    = $this->format_type;
 
+        $analysis = SeoAnalyzer::analyzeContent(
+            title: $this->seo_title ?: ($this->name ?? ''),
+            description: $this->seo_description ?: ($this->description ?? ''),
+            slug: $this->slug,
+            contentHtml: (string) ($this->content ?? ''),
+            focusKeyword: $this->focus_keyword
+        );
+        $post->seo_score = $analysis['score'];
+
         $post->save();
 
         // categories sync
@@ -386,45 +394,6 @@ class PostForm extends Component
         ];
 
         return $dummy->analyzeSeo($this->focus_keyword, $meta);
-    }
-
-    public function calculateSeoScore()
-    {
-        $score = 0;
-        $max = 10; // total checklist count
-
-        $keyword = strtolower(trim($this->focus_keyword));
-        $content = strtolower($this->content ?? '');
-        $title = strtolower($this->seo_title ?? $this->name ?? '');
-        $description = strtolower($this->seo_description ?? '');
-        $slug = strtolower($this->slug ?? '');
-
-        if ($keyword && str_contains($title, $keyword)) $score++;
-        if ($keyword && str_contains($description, $keyword)) $score++;
-        if ($keyword && str_contains($slug, $keyword)) $score++;
-        if ($keyword && preg_match('/<h[2-3][^>]*>.*' . preg_quote($keyword, '/') . '.*<\/h[2-3]>/i', $this->content)) $score++;
-        if ($keyword && str_contains(substr(strip_tags($content), 0, 200), $keyword)) $score++;
-
-        if (strlen($this->seo_title) >= 30 && strlen($this->seo_title) <= 65) $score++;
-        if (strlen($this->seo_description) >= 80 && strlen($this->seo_description) <= 160) $score++;
-        if (str_word_count(strip_tags($content)) >= 600) $score++;
-        if (preg_match('/<img[^>]+alt="[^"]+"/i', $this->content)) $score++;
-        if (!str_contains($slug, '_')) $score++;
-
-        $this->seo_score = round(($score / $max) * 100);
-    }
-
-    public function updated($field)
-    {
-        if (in_array($field, [
-            'focus_keyword',
-            'seo_title',
-            'seo_description',
-            'slug',
-            'content',
-        ])) {
-            $this->calculateSeoScore();
-        }
     }
 
     public function render()

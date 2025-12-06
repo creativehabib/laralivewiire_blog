@@ -29,6 +29,7 @@ class CategoryForm extends Component
     public $seo_description;
     public $seo_index = 'index';
     public $seo_image;
+    public ?string $focus_keyword = null;
 
     protected function rules()
     {
@@ -52,6 +53,7 @@ class CategoryForm extends Component
             'seo_description' => 'nullable|string',
             'seo_image'       => 'nullable|string|max:255',
             'seo_index'       => 'nullable|string|max:50',
+            'focus_keyword'   => 'nullable|string|max:100',
         ];
     }
 
@@ -86,6 +88,7 @@ class CategoryForm extends Component
             $this->seo_description = $seo['seo_description'] ?? null;
             $this->seo_image       = $seo['seo_image']       ?? null;
             $this->seo_index       = $seo['index']           ?? 'index';
+            $this->focus_keyword   = $seo['focus_keyword']   ?? null;
         }
     }
 
@@ -143,6 +146,7 @@ class CategoryForm extends Component
             'seo_description' => $this->seo_description,
             'seo_image'       => $this->seo_image,
             'index'           => $this->seo_index ?: 'index',
+            'focus_keyword'   => $this->focus_keyword,
         ]]);
 
         $this->categoryId = $category->id;
@@ -160,12 +164,34 @@ class CategoryForm extends Component
 
     public function render()
     {
+        $seo = $this->seoAnalysis;
+
         return view('livewire.admin.categories.category-form', [
             'baseUrl'    => config('app.url'),
             'categories' => Category::orderBy('name')->get(),
+            'seo'        => $seo,
         ])->layout('components.layouts.app', [
             'title' => $this->categoryId ? 'Edit Category' : 'Create Category'
         ]);
+    }
+
+    public function getSeoAnalysisProperty(): array
+    {
+        $dummy = new Category();
+
+        $dummy->name        = $this->name ?? '';
+        $dummy->description = $this->description ?? '';
+        $dummy->slug        = $this->slug ?? '';
+
+        $meta = [
+            'seo_title'       => $this->seo_title ?? $this->name,
+            'seo_description' => $this->seo_description ?? $this->description,
+            'seo_image'       => $this->seo_image,
+            'index'           => $this->seo_index,
+            'focus_keyword'   => $this->focus_keyword,
+        ];
+
+        return $dummy->analyzeSeo($this->focus_keyword, $meta);
     }
 }
 
