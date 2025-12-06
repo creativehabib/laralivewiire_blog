@@ -10,9 +10,6 @@ class PostForm extends Form
     public ?Post $postModel;
     
     public $category_id = '';
-    public $sub_category_id = '';
-    public $user_id = '';
-    public $video_playlist_id = '';
     public $title = '';
     public $slug = '';
     public $content_type = '';
@@ -35,25 +32,25 @@ class PostForm extends Form
     public function rules(): array
     {
         return [
-			'category_id' => 'required',
-			'title' => 'required|string',
-			'slug' => 'required|string',
-			'content_type' => 'required|string',
-			'thumbnail_path' => 'string',
-			'video_url' => 'string',
-			'video_provider' => 'string',
-			'video_id' => 'string',
-			'video_source' => 'string',
-			'video_embed_code' => 'string',
-			'video_path' => 'string',
-			'video_duration' => 'string',
-			'description' => 'required',
-			'is_featured' => 'required',
-			'allow_comments' => 'required',
-			'is_indexable' => 'required',
-			'meta_title' => 'string',
-			'meta_description' => 'string',
-			'meta_keywords' => 'string',
+            'category_id'      => 'required',
+            'title'            => 'required|string',
+            'slug'             => 'required|string',
+            'content_type'     => 'required|string',
+            'thumbnail_path'   => 'string',
+            'video_url'        => 'string',
+            'video_provider'   => 'string',
+            'video_id'         => 'string',
+            'video_source'     => 'string',
+            'video_embed_code' => 'string',
+            'video_path'       => 'string',
+            'video_duration'   => 'string',
+            'description'      => 'required',
+            'is_featured'      => 'required',
+            'allow_comments'   => 'required',
+            'is_indexable'     => 'required',
+            'meta_title'       => 'string',
+            'meta_description' => 'string',
+            'meta_keywords'    => 'string',
         ];
     }
 
@@ -62,9 +59,6 @@ class PostForm extends Form
         $this->postModel = $postModel;
         
         $this->category_id = $this->postModel->category_id;
-        $this->sub_category_id = $this->postModel->sub_category_id;
-        $this->user_id = $this->postModel->user_id;
-        $this->video_playlist_id = $this->postModel->video_playlist_id;
         $this->title = $this->postModel->title;
         $this->slug = $this->postModel->slug;
         $this->content_type = $this->postModel->content_type;

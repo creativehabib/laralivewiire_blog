@@ -31,8 +31,11 @@ trait HasSeoMeta
     /**
      * Yoast-style SEO analyzer (reusable for any model)
      */
-    public function analyzeSeo(?string $focusKeyword = null, ?array $overrideMeta = null): array
-    {
+    public function analyzeSeo(
+        ?string $focusKeyword = null,
+        ?array $overrideMeta = null,
+        array $options = []
+    ): array {
         // overrideMeta না দিলে default meta পাঠাচ্ছি
         if ($overrideMeta === null) {
             $overrideMeta = $this->getSeoMeta();
@@ -40,23 +43,29 @@ trait HasSeoMeta
 
         $focusKeyword = $focusKeyword ?? ($overrideMeta['focus_keyword'] ?? null);
 
-        return SeoAnalyzer::analyze($this, $focusKeyword, $overrideMeta);
+        return SeoAnalyzer::analyze($this, $focusKeyword, $overrideMeta, $options);
     }
 
     /**
      * Backward compatible alias so পুরনো কোড কাজ করে
      */
-    public function seoAnalysis(?string $focusKeyword = null, ?array $overrideMeta = null): array
-    {
-        return $this->analyzeSeo($focusKeyword, $overrideMeta);
+    public function seoAnalysis(
+        ?string $focusKeyword = null,
+        ?array $overrideMeta = null,
+        array $options = []
+    ): array {
+        return $this->analyzeSeo($focusKeyword, $overrideMeta, $options);
     }
 
     /**
      * analysis চালিয়ে seo_score কলাম আপডেট করো
      */
-    public function refreshSeoScore(?string $focusKeyword = null, ?array $overrideMeta = null): void
-    {
-        $analysis = $this->seoAnalysis($focusKeyword, $overrideMeta);
+    public function refreshSeoScore(
+        ?string $focusKeyword = null,
+        ?array $overrideMeta = null,
+        array $options = []
+    ): void {
+        $analysis = $this->seoAnalysis($focusKeyword, $overrideMeta, $options);
         if (property_exists($this, 'seo_score') || $this->isFillable('seo_score')) {
             $this->seo_score = $analysis['score'];
             $this->saveQuietly();
