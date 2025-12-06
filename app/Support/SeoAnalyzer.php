@@ -56,6 +56,8 @@ class SeoAnalyzer
         $analysis = [
             'score'         => 0,
             'title_ok'      => false,
+            'title_sentiment_ok' => false,
+            'title_power_ok' => false,
             'desc_ok'       => false,
             'content_ok'    => false,
             'image_ok'      => false,
@@ -80,6 +82,7 @@ class SeoAnalyzer
         $contentText = trim(strip_tags($contentHtml));
         $focusKeyword = trim((string) $focusKeyword);
         $kwNorm       = mb_strtolower($focusKeyword);
+        $titleLower   = mb_strtolower($title);
 
         /*
          |---------------------------------
@@ -93,6 +96,28 @@ class SeoAnalyzer
         if ($len >= $titleRange['min'] && $len <= $titleRange['max']) {
             $analysis['score'] += $config['weights']['title'];
             $analysis['title_ok'] = true;
+        }
+
+        // sentiment word in title (positive or negative)
+        $sentimentWords = array_map('mb_strtolower', array_merge(
+            $config['sentiment_words']['positive'] ?? [],
+            $config['sentiment_words']['negative'] ?? []
+        ));
+        foreach ($sentimentWords as $word) {
+            if ($word !== '' && str_contains($titleLower, $word)) {
+                $analysis['score'] += $config['weights']['title_sentiment'];
+                $analysis['title_sentiment_ok'] = true;
+                break;
+            }
+        }
+
+        // power word in title
+        foreach ($config['power_words'] as $word) {
+            if ($word !== '' && str_contains($titleLower, mb_strtolower($word))) {
+                $analysis['score'] += $config['weights']['title_power'];
+                $analysis['title_power_ok'] = true;
+                break;
+            }
         }
 
         // description length
@@ -229,21 +254,35 @@ class SeoAnalyzer
                 'min' => 0.5,
                 'max' => 3.0,
             ],
+            'sentiment_words' => [
+                'positive' => [
+                    'best', 'ultimate', 'effective', 'proven', 'success', 'essential', 'powerful',
+                ],
+                'negative' => [
+                    'mistake', 'avoid', 'warning', 'problem', 'danger', 'fail',
+                ],
+            ],
+            'power_words' => [
+                'free', 'exclusive', 'secret', 'instant', 'simple', 'guaranteed', 'unbeatable',
+                'effortless', 'expert', 'premium', 'easy',
+            ],
             'weights' => [
-                'title'        => 10,
-                'description'  => 10,
-                'content'      => 15,
-                'image'        => 8,
-                'headings'     => 8,
-                'slug'         => 6,
-                'links'        => 8,
-                'kw_in_title'  => 8,
-                'kw_in_slug'   => 6,
-                'kw_in_desc'   => 6,
-                'kw_in_intro'  => 8,
-                'kw_in_head'   => 6,
-                'kw_in_alt'    => 4,
-                'kw_density'   => 15,
+                'title'            => 10,
+                'title_sentiment'  => 4,
+                'title_power'      => 4,
+                'description'      => 10,
+                'content'          => 15,
+                'image'            => 8,
+                'headings'         => 8,
+                'slug'             => 6,
+                'links'            => 8,
+                'kw_in_title'      => 8,
+                'kw_in_slug'       => 6,
+                'kw_in_desc'       => 6,
+                'kw_in_intro'      => 8,
+                'kw_in_head'       => 6,
+                'kw_in_alt'        => 4,
+                'kw_density'       => 15,
             ],
         ];
     }
