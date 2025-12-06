@@ -1,0 +1,29 @@
+/* Marquee animation */
+.animate-marquee {
+    display: inline-block;
+    animation: marquee 18s linear infinite;
+}
+
+@keyframes marquee {
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Scrollbar style for video carousel (optional) */
+#videoCarousel::-webkit-scrollbar {
+    height: 6px;
+}
+
+#videoCarousel::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.2); /* slate-400/20 */
+}
+
+#videoCarousel::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.8); /* slate-400 */
+    border-radius: 999px;
+}
+
+#videoCarousel {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148,163,184,0.8) transparent;
+}

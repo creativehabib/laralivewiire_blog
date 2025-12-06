@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Http\Controllers\Frontend;
+
+use App\Http\Controllers\Controller;
+use App\Models\GeneralSetting;
+use App\Models\Post;
+use Illuminate\Support\Facades\Cache;
+
+class PostController extends Controller
+{
+    public function show(...$parameters)
+    {
+        $post = $this->resolvePostParameter($parameters);
+
+        $post->loadMissing(['category', 'author', 'playlist']);
+
+        $settings = $this->settings();
+
+        $image = $post->thumbnail_url;
+
+        $seo = [
+            'title' => $post->meta_title ?: $post->title,
+            'description' => $post->meta_description ?: $post->excerpt,
+            'keywords' => $post->meta_keywords ?: $settings?->site_meta_keywords,
+            'type' => 'article',
+            'canonical' => post_permalink($post),
+            'indexable' => (bool) $post->is_indexable,
+            'image' => $image,
+            'published_time' => optional($post->created_at)->toIso8601String(),
+            'modified_time' => optional($post->updated_at ?? $post->created_at)->toIso8601String(),
+            'author' => $post->author?->name,
+        ];
+
+        if ($post->isVideo()) {
+            $seo['type'] = 'video.other';
+            $seo['video'] = $post->video_embed_url;
+            $seo['twitter_card'] = 'player';
+            if ($post->video_duration) {
+                $seo['video_duration'] = $post->video_duration;
+            }
+            if ($post->playlist) {
+                $seo['video_playlist'] = $post->playlist->name;
+            }
+        }
+
+        return view('front.post', compact('post', 'seo', 'settings'));
+    }
+
+    protected function settings(): ?GeneralSetting
+    {
+        return Cache::remember('general_settings', now()->addHour(), function () {
+            return GeneralSetting::query()->first();
+        });
+    }
+
+    protected function resolvePostParameter(array $parameters): Post
+    {
+        $parameter = array_values($parameters);
+
+        $postParameter = array_pop($parameter);
+
+        if (is_null($postParameter) || $postParameter === '') {
+            abort(404);
+        }
+
+        if ($postParameter instanceof Post) {
+            return $postParameter;
+        }
+
+        $postParameter = (string) $postParameter;
+
+        $post = Post::query()
+            ->where((new Post())->getRouteKeyName(), $postParameter)
+            ->first();
+
+        if (! $post && is_numeric($postParameter)) {
+            $post = Post::query()->whereKey($postParameter)->first();
+        }
+
+        return $post ?? abort(404);
+    }
+}
