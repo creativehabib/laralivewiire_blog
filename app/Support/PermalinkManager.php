@@ -98,15 +98,10 @@ class PermalinkManager
     {
         $settings = general_settings();
 
-        $structure = $settings?->permalink_structure ?: self::DEFAULT_STRUCTURE;
-        $custom = $settings?->custom_permalink_structure ?: null;
-
-        if ($structure === self::STRUCTURE_CUSTOM && blank($custom)) {
-            $structure = self::DEFAULT_STRUCTURE;
-            $custom = null;
-        }
-
-        return [$structure, $custom];
+        return self::validatedStructure(
+            $settings?->permalink_structure ?: null,
+            $settings?->custom_permalink_structure ?: null,
+        );
     }
 
     public static function sanitizeCustomStructure(?string $value): string
@@ -194,8 +189,7 @@ class PermalinkManager
 
     public static function templateFor(?string $structure = null, ?string $custom = null): string
     {
-        $structure = $structure ?: self::currentStructure()[0];
-        $custom = $custom ?? self::currentStructure()[1];
+        [$structure, $custom] = self::validatedStructure($structure, $custom);
 
         if ($structure === self::STRUCTURE_CUSTOM) {
             return $custom ?: self::STRUCTURE_TEMPLATES[self::DEFAULT_STRUCTURE];
@@ -289,6 +283,31 @@ class PermalinkManager
         }
 
         return $template;
+    }
+
+    public static function validatedStructure(?string $structure = null, ?string $custom = null): array
+    {
+        $structure = $structure ?: self::DEFAULT_STRUCTURE;
+        $custom = $custom !== null ? self::sanitizeCustomStructure($custom) : null;
+
+        if ($structure === self::STRUCTURE_CUSTOM) {
+            $tokens = self::extractTokens($custom ?? '');
+            $unknown = collect($tokens)->diff(self::allowedTokens());
+            $containsPostIdentifier = in_array('%postname%', $tokens, true) || in_array('%post_id%', $tokens, true);
+            $hasConflictingPostTokens = in_array('%postname%', $tokens, true) && in_array('%post_id%', $tokens, true);
+
+            if ($custom === '' || $unknown->isNotEmpty() || ! $containsPostIdentifier || $hasConflictingPostTokens) {
+                return [self::DEFAULT_STRUCTURE, null];
+            }
+
+            return [$structure, $custom];
+        }
+
+        if (! array_key_exists($structure, self::STRUCTURE_TEMPLATES)) {
+            return [self::DEFAULT_STRUCTURE, null];
+        }
+
+        return [$structure, null];
     }
 
     /**
