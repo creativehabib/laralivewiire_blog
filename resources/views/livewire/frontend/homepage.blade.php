@@ -52,7 +52,9 @@
         </section>
 
         @if($primaryCategory && $primaryCategory->posts->isNotEmpty())
-            @php($featuredCategoryPost = $primaryCategory->posts->first())
+            @php
+                $featuredCategoryPost = $primaryCategory->posts->first();
+            @endphp
             <section>
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-lg font-semibold border-b-2 border-primary-dark inline-block pb-1">{{ $primaryCategory->name }}</h2>
