@@ -15,39 +15,35 @@
            dark:border-slate-700 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between gap-4 border-b border-slate-200 bg-white/80 px-6 py-4 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/80">
-        <div class="relative">
-            <div class="flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 text-sm font-bold text-white shadow-sm dark:border-slate-600 {{ $color }}">
-                {{ $score }}
+    <div class="flex items-center justify-between px-4 py-4 border-b border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/80">
+        <div class="flex items-center gap-3">
+            <div class="relative">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full text-white text-sm font-bold {{ $color }} shadow-sm">
+                    {{ $score }}
+                </div>
+                <span class="absolute -bottom-1 -right-1 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600 shadow dark:bg-slate-700 dark:text-slate-200 whitespace-nowrap">
+                    <i class="fa-solid fa-chart-simple text-[11px] text-slate-500 dark:text-slate-300"></i>
+                    {{ $label }}
+                </span>
             </div>
-            <span class="absolute -bottom-1 -right-1 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600 shadow dark:bg-slate-700 dark:text-slate-200 whitespace-nowrap">
-                <i class="fa-solid fa-chart-simple text-[11px] text-slate-500 dark:text-slate-300"></i>
-                {{ $label }}
-            </span>
+            <div class="space-y-0.5">
+                <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-700 dark:text-slate-100">
+                    <i class="fa-solid fa-magnifying-glass-chart text-slate-500 dark:text-slate-200"></i>
+                    SEO analysis
+                </div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">
+                    Based on focus keyword &amp; on-page SEO rules
+                </div>
+            </div>
         </div>
 
-        <div class="flex flex-col items-end gap-2 text-right">
-            <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">SEO overview</h3>
-            <div class="flex flex-wrap items-center justify-end gap-2">
-                <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-700 dark:text-slate-100">
-                    <i class="fa-solid fa-circle-info text-slate-500 dark:text-slate-200"></i>
-                    SEO Analysis
-                </span>
-                <span class="inline-flex items-start gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-600 shadow-sm ring-1 ring-slate-200 dark:bg-slate-700/60 dark:text-slate-100 dark:ring-slate-600">
-                    <div class="flex flex-col leading-tight text-left">
-                        <span class="font-semibold">Focus keyword rules</span>
-                        <span class="text-slate-500 dark:text-slate-300">Based on keyword &amp; on-page SEO</span>
-                    </div>
-                </span>
-            </div>
-            <button type="button"
-                    @click="open = !open"
-                    class="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 transition hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">
-                <i class="fa-solid" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                <span x-show="open">Hide details</span>
-                <span x-show="!open">Show details</span>
-            </button>
-        </div>
+        <button type="button"
+                @click="open = !open"
+                class="flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-[11px] font-semibold text-sky-600 transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-sky-50 dark:border-slate-600 dark:text-sky-400 dark:hover:border-slate-500 dark:hover:bg-slate-700">
+            <i class="fa-solid" :class="open ? 'fa-eye-slash' : 'fa-eye'"></i>
+            <span x-show="open">Hide details</span>
+            <span x-show="!open">Show details</span>
+        </button>
     </div>
 
     <div x-show="open" x-cloak class="px-4 py-3 space-y-3 text-xs">
@@ -59,7 +55,8 @@
             </label>
             <input type="text"
                    wire:model.live="focus_keyword"
-                   class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800
+                   class="block w-full rounded-md border px-3 py-1.5 text-xs
+                          border-slate-300 bg-white text-slate-800
                           focus:border-sky-500 focus:ring-sky-500
                           dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                    placeholder="Ex: best laravel livewire blog">

@@ -284,3 +284,67 @@
         </div>
     </div>
 </div>
+@push('scripts')
+    {{--category sortable--}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        document.addEventListener('livewire:init', function () {
+
+            function buildTreeData() {
+                const data = [];
+
+                function walk(ul, parentId = null) {
+                    // শুধু এই UL-এর সরাসরি LI গুলো
+                    ul.querySelectorAll(':scope > li').forEach((li, index) => {
+                        if (!li.dataset.id) return;
+
+                        const id = parseInt(li.dataset.id);
+
+                        data.push({
+                            id: id,
+                            parent_id: parentId,
+                            order: index,
+                        });
+
+                        // এই LI এর নিজের child UL (আমরা Blade-এ সবসময় বানিয়ে দিচ্ছি)
+                        const childUl = li.querySelector(':scope > ul.js-category-list');
+                        if (childUl) {
+                            walk(childUl, id);
+                        }
+                    });
+                }
+
+                document.querySelectorAll('.js-category-root').forEach(root => walk(root, null));
+
+                return data;
+            }
+
+            function initSortableTree() {
+                document.querySelectorAll('.js-category-list').forEach(function (list) {
+                    if (list.dataset.sortableInit === '1') return;
+
+                    new Sortable(list, {
+                        group: 'categories-tree',
+                        handle: '.js-handle',
+                        animation: 150,
+                        fallbackOnBody: true,
+                        swapThreshold: 0.65,
+                        ghostClass: 'bg-blue-50',
+                        onEnd() {
+                            const items = buildTreeData();
+                            Livewire.dispatch('categories-tree-updated', { items: items });
+                        }
+                    });
+
+                    list.dataset.sortableInit = '1';
+                });
+            }
+
+            initSortableTree();
+
+            Livewire.hook('message.processed', () => {
+                initSortableTree();
+            });
+        });
+    </script>
+@endpush
