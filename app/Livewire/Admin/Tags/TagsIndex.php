@@ -12,7 +12,7 @@ class TagsIndex extends Component
 
     public $search = '';
     public $status = '';
-    public $perPage = 10;
+    public $perPage = 6;
 
     protected $updatesQueryString = ['search', 'status', 'page'];
 
@@ -45,7 +45,7 @@ class TagsIndex extends Component
         }
 
         $tags = $query->orderByDesc('id')->paginate($this->perPage);
-
+        $tags->withPath(route('blogs.tags.index'));
 
         return view('livewire.admin.tags.tags-index', compact('tags'))->layout('components.layouts.app', [
             'title' =>  'Tags List'
