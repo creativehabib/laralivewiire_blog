@@ -1,5 +1,5 @@
 <div class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 lg:items-start" wire:init="loadHomepage">
-    <div class="lg:col-span-12 space-y-8" wire:loading>
+    <div class="lg:col-span-8 space-y-8" wire:loading>
         <flux:skeleton.group animate="shimmer" class="grid md:grid-cols-3 gap-4">
             <div class="md:col-span-2 space-y-3">
                 <flux:skeleton class="h-72 w-full rounded-xl" />
@@ -284,6 +284,38 @@
             </div>
         @endif
     </div>
+
+    <aside class="lg:col-span-4 space-y-6" wire:loading>
+        <flux:skeleton.group animate="shimmer" class="space-y-4">
+            <flux:skeleton.line class="h-5 w-24" />
+            <div class="space-y-2">
+                @for($i = 0; $i < 5; $i++)
+                    <flux:skeleton.line />
+                @endfor
+            </div>
+        </flux:skeleton.group>
+
+        <flux:skeleton.group animate="shimmer" class="space-y-3">
+            <flux:skeleton.line class="h-5 w-32" />
+            <flux:skeleton class="h-20 w-full rounded-lg" />
+            <flux:skeleton.line class="w-1/2" />
+            <flux:skeleton.line class="w-3/4" />
+        </flux:skeleton.group>
+
+        <flux:skeleton.group animate="shimmer" class="space-y-3">
+            <flux:skeleton.line class="h-5 w-28" />
+            <div class="grid grid-cols-2 gap-2">
+                @for($i = 0; $i < 4; $i++)
+                    <flux:skeleton class="h-10 rounded-md" />
+                @endfor
+            </div>
+        </flux:skeleton.group>
+
+        <flux:skeleton.group animate="shimmer" class="space-y-3">
+            <flux:skeleton.line class="h-5 w-24" />
+            <flux:skeleton class="h-12 w-full rounded-xl" />
+        </flux:skeleton.group>
+    </aside>
 
     <aside class="lg:col-span-4 lg:sticky lg:top-24 self-start" wire:loading.remove>
         <div class="space-y-6">
