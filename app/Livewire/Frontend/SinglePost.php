@@ -16,6 +16,12 @@ class SinglePost extends Component
 
     public Collection $relatedPosts;
 
+    public Collection $trendingPosts;
+
+    public ?Post $previousPost = null;
+
+    public ?Post $nextPost = null;
+
     public function mount($post)
     {
         if ($post instanceof Post) {
@@ -25,6 +31,7 @@ class SinglePost extends Component
             $this->postParameter = (string) $post;
         }
         $this->relatedPosts = new Collection();
+        $this->trendingPosts = new Collection();
     }
 
     public function loadPost(): void
@@ -72,6 +79,29 @@ class SinglePost extends Component
             ->latest('created_at')
             ->take(6)
             ->get();
+
+        $this->trendingPosts = Post::query()
+            ->published()
+            ->with([
+                'categories:id,name,slug',
+            ])
+            ->whereKeyNot($post->id)
+            ->orderByDesc('views')
+            ->latest('created_at')
+            ->take(5)
+            ->get();
+
+        $this->previousPost = Post::query()
+            ->published()
+            ->where('created_at', '<', $post->created_at)
+            ->latest('created_at')
+            ->first();
+
+        $this->nextPost = Post::query()
+            ->published()
+            ->where('created_at', '>', $post->created_at)
+            ->oldest('created_at')
+            ->first();
 
         $this->ready = true;
     }
