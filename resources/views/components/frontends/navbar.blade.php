@@ -30,7 +30,7 @@
     <div class="container flex items-center justify-between px-4 py-3">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
             <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">NP</div>
-            <div>
+            <div class="hidden md:block">
                 <div class="text-xl font-bold text-primary-dark dark:text-primary-light">বাংলা নিউজ পোর্টাল</div>
                 <div class="text-xs text-slate-500 dark:text-slate-400">বিশ্বস্ত খবর আপনার হাতের মুঠোয়</div>
             </div>
