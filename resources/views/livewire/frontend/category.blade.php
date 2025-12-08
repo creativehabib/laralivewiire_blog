@@ -65,7 +65,7 @@
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/70 dark:border-slate-800/70 p-5">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-xl font-semibold text-slate-900 dark:text-white">সাম্প্রতিক পোস্ট</h3>
-                <span class="text-sm text-slate-500 dark:text-slate-400">{{ $latestPosts->count() }} টি পোস্ট</span>
+                <span class="text-sm text-slate-500 dark:text-slate-400">{{ $latestPosts->total() }} টি পোস্ট</span>
             </div>
             <div class="grid md:grid-cols-3 gap-4">
                 @foreach($latestPosts as $post)
@@ -83,6 +83,10 @@
                         </div>
                     </article>
                 @endforeach
+            </div>
+
+            <div class="mt-6">
+                {{ $latestPosts->onEachSide(1)->links() }}
             </div>
         </div>
     @endunless
