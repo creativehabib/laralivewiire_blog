@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\BlogController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Livewire\Admin\Categories\CategoryForm;
@@ -9,7 +7,6 @@ use App\Livewire\Admin\Categories\CategoryTable;
 use App\Livewire\Admin\Categories\Index as CategoryIndex;
 use App\Http\Controllers\Admin\PollController as AdminPollController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Frontend\SitemapController;
@@ -24,7 +21,7 @@ use App\Livewire\Frontend\CategoryPage;
 use App\Livewire\Frontend\SinglePost;
 use App\Livewire\Frontend\TagPage;
 use App\Support\PermalinkManager;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
@@ -50,7 +47,7 @@ Route::get('/sitemap-pages.xml', [SitemapController::class, 'pages'])->name('sit
 
 // ২. এখন "Greedy" (ওয়াইল্ডকার্ড) ক্যাটাগরি রুট ডিফাইন করুন।
 $categoryPrefixEnabled = general_settings('category_slug_prefix_enabled');
-$categoryPrefixEnabled = is_null($categoryPrefixEnabled) ? true : (bool) $categoryPrefixEnabled;
+$categoryPrefixEnabled = is_null($categoryPrefixEnabled) || (bool)$categoryPrefixEnabled;
 $categoryRouteUri = $categoryPrefixEnabled ? '/category/{category:slug}' : '/{category:slug}';
 
 $categoryRoute = Route::get($categoryRouteUri, CategoryPage::class)
@@ -63,7 +60,7 @@ $permalinkRoute = PermalinkManager::routeDefinition();
 
 
 if (! $categoryPrefixEnabled && $permalinkRoute['template'] === '%postname%') {
-    $categoryRoute->missing(function (Request $request) {
+    $categoryRoute->missing(function ( Request $request) {
         return redirect()->route('posts.show', ['post' => $request->route('category')]);
     });
 }

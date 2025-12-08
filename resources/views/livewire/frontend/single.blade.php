@@ -1,123 +1,238 @@
-<div class="container px-4 py-8" wire:init="loadPost">
-    <div class="grid lg:grid-cols-12 gap-8">
-        <div class="lg:col-span-8 space-y-6">
-            @unless($ready)
-                <flux:skeleton.group animate="shimmer" class="space-y-4">
-                    <flux:skeleton class="h-10 w-1/3 rounded" />
-                    <flux:skeleton class="h-64 w-full rounded-2xl" />
-                    <flux:skeleton.line />
-                    <flux:skeleton.line class="w-3/4" />
-                    <flux:skeleton.line class="w-2/3" />
-                </flux:skeleton.group>
-            @else
-                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/70 dark:border-slate-800/70 overflow-hidden">
-                    <div class="relative">
-                        <img src="{{ $post?->image_url }}" alt="{{ $post?->name }}" class="w-full h-80 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                        <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-wrap items-center gap-3 text-sm text-white">
-                            @if($post?->primaryCategory())
-                                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="bg-primary-dark text-white px-3 py-1 rounded-full font-semibold">
-                                    {{ $post->primaryCategory()->name }}
-                                </a>
-                            @endif
-                            <span class="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full">
-                                <i class="fa-regular fa-clock"></i>
-                                {{ $post?->created_at?->format('d F, Y') }}
-                            </span>
-                            @if($post?->author)
-                                <a href="{{ route('authors.show', $post->author) }}" class="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full hover:text-primary-light">
-                                    <span class="inline-flex h-8 w-8 rounded-full bg-white/20 items-center justify-center font-semibold">{{ strtoupper(mb_substr($post->author->name, 0, 1)) }}</span>
-                                    <span>{{ $post->author->name }}</span>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
 
-                    <div class="p-6 space-y-4">
-                        <h1 class="text-3xl md:text-4xl font-bold leading-tight text-slate-900 dark:text-white">{{ $post?->name }}</h1>
-                        @if($post?->excerpt)
-                            <p class="text-lg text-slate-700 dark:text-slate-200">{{ $post->excerpt }}</p>
-                        @endif
+<main class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8" wire:init="loadPost">
+    <article class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 md:p-6
+                         transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+        @unless($ready)
+            <flux:skeleton.group animate="shimmer" class="space-y-4">
+                <flux:skeleton class="h-10 w-1/3 rounded" />
+                <flux:skeleton class="h-64 w-full rounded-2xl" />
+                <flux:skeleton.line />
+                <flux:skeleton.line class="w-3/4" />
+                <flux:skeleton.line class="w-2/3" />
+            </flux:skeleton.group>
+        @else
+        <!-- Breadcrumb -->
+        <nav class="text-xs text-gray-500 dark:text-slate-400 mb-3">
+            <a href="../../../../../../Desktop/News/index.html" class="hover:text-primary-dark dark:hover:text-primary-light">হোম</a> /
+            <a href="category.html" class="hover:text-primary-dark dark:hover:text-primary-light">জাতীয়</a> /
+            <span class="text-primary-dark dark:text-primary-light">বিস্তারিত খবর</span>
+        </nav>
 
-                        <article class="prose max-w-none prose-slate dark:prose-invert prose-headings:mt-6 prose-img:rounded-xl">
-                            {!! $post?->content !!}
-                        </article>
+        <h1 class="text-2xl md:text-3xl font-semibold mb-3 leading-snug">
+            {{ $post?->name }}
+        </h1>
 
-                        @if($post && $post->tags->isNotEmpty())
-                            <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach($post->tags as $tag)
-                                        <a href="{{ route('tags.show', $tag->slug) }}" class="px-3 py-1 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100 text-sm font-semibold hover:bg-primary-light hover:text-primary-dark">
-                                            #{{ $tag->name }}
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-
-                        @if($post?->author)
-                            <div class="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 flex items-center gap-4">
-                                <div class="h-14 w-14 rounded-full bg-primary-light text-primary-dark flex items-center justify-center text-xl font-bold">
-                                    {{ strtoupper(mb_substr($post->author->name, 0, 1)) }}
-                                </div>
-                                <div class="space-y-1">
-                                    <p class="text-sm text-slate-500 dark:text-slate-300">লেখক</p>
-                                    <h3 class="text-lg font-semibold">{{ $post->author->name }}</h3>
-                                    @if($post->author->email)
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">{{ $post->author->email }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            @endunless
+        <!-- Meta -->
+        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-slate-400 mb-3">
+            <span>প্রকাশিত: {{ $post?->created_at?->format('d F, Y') }}</span>
+            <span>•</span>
+            @if($post?->author)<a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->author->name }}</a>@endif
+            <span>•</span>
+            @if($post?->primaryCategory())
+                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]">
+                    {{ $post->primaryCategory()->name }}
+                </a>
+            @endif
         </div>
 
-        <aside class="lg:col-span-4 space-y-4">
-            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/70 dark:border-slate-800/70 p-5">
-                <h2 class="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
-                    <span class="h-8 w-8 rounded-full bg-primary-light text-primary-dark flex items-center justify-center">☆</span>
-                    আরও পড়ুন
-                </h2>
+        <!-- Feature Image -->
+        <img src="{{ $post?->image_url }}" alt="{{ $post?->name }}" class="w-full rounded-lg mb-4 object-cover">
 
-                @unless($ready)
-                    <flux:skeleton.group animate="shimmer" class="space-y-3">
-                        @for($i = 0; $i < 4; $i++)
-                            <div class="flex gap-3">
-                                <flux:skeleton class="w-20 h-16 rounded-lg" />
-                                <div class="flex-1 space-y-2">
-                                    <flux:skeleton.line />
-                                    <flux:skeleton.line class="w-2/3" />
+        <!-- Social Share -->
+        <div class="flex flex-wrap items-center gap-2 mb-4 text-xs">
+            <span class="font-semibold text-gray-700 dark:text-slate-200">শেয়ার করুন:</span>
+            <button class="px-3 py-1 rounded-md bg-blue-600 text-white text-xs">Facebook</button>
+            <button class="px-3 py-1 rounded-md bg-sky-500 text-white text-xs">Twitter</button>
+            <button class="px-3 py-1 rounded-md bg-green-600 text-white text-xs">WhatsApp</button>
+        </div>
+
+        <!-- Post Body -->
+        <div class="prose prose-sm max-w-none prose-p:mb-3 prose-headings:mb-3 prose-ul:mb-3
+                        text-slate-800 dark:text-slate-100"
+             style="font-family: 'Hind Siliguri', system-ui, sans-serif;">
+            {!! $post?->content !!}
+        </div>
+
+        <!-- Tags -->
+        @if($post && $post->tags->isNotEmpty())
+
+            <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <div class="flex flex-wrap gap-2">
+                    @foreach($post->tags as $tag)
+                        <a href="{{ route('tags.show', $tag->slug) }}" class="px-2 py-1 rounded-full bg-primary-light text-primary-dark dark:bg-slate-800 dark:text-slate-100">
+                            #{{ $tag->name }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <!-- Author Box -->
+        @if($post?->author)
+        <section class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-4 flex gap-3 items-start">
+            <img src="https://placehold.co/80x80" alt="Author" class="w-14 h-14 rounded-full object-cover">
+            <div>
+                <h3 class="text-sm font-semibold">
+                    <a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->author->name }}</a>
+                </h3>
+                <p class="text-xs text-gray-600 dark:text-slate-400 mt-1">
+                    ঘটনার ভেতরের খবর তুলে ধরতে আমরা সবসময় মাঠে থাকি। নির্ভুল তথ্য দেওয়ার চেষ্টা আমাদের অব্যাহত…
+                </p>
+            </div>
+        </section>
+        @endif
+
+        <!-- Related Posts -->
+        <section class="mt-6">
+            <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+                আরও পড়ুন
+            </h2>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3">
+                    <a href="single.html" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light">
+                        উপকূলে ঘূর্ণিঝড় পরবর্তী পুনর্বাসন কার্যক্রম শুরু
+                    </a>
+                    <div class="text-xs text-gray-500 dark:text-slate-400 mt-1">১ ঘন্টা আগে</div>
+                </article>
+                <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3">
+                    <a href="single.html" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light">
+                        মাছ ধরার নৌকা হালনাগাদ নীতিমালা প্রকাশ
+                    </a>
+                    <div class="text-xs text-gray-500 dark:text-slate-400 mt-1">২ ঘন্টা আগে</div>
+                </article>
+            </div>
+            @endunless
+        </section>
+
+        <!-- Comment Placeholder -->
+        <section class="mt-6">
+            <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+                মন্তব্য করুন
+            </h2>
+            <form class="space-y-2 text-sm">
+                <input type="text" placeholder="নাম"
+                       class="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/60">
+                <textarea rows="4" placeholder="আপনার মন্তব্য লিখুন…"
+                          class="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/60"></textarea>
+                <button type="submit"
+                        class="px-4 py-2 bg-primary-dark text-white rounded-md text-sm font-semibold hover:bg-primary">
+                    মন্তব্য পাঠান
+                </button>
+            </form>
+        </section>
+
+    </article>
+
+    <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24 self-start">
+
+        <!-- Latest News -->
+        <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+                আরও পড়ুন
+            </h2>
+
+            @unless($ready)
+                <flux:skeleton.group animate="shimmer" class="space-y-3">
+                    @for($i = 0; $i < 4; $i++)
+                        <div class="flex gap-3">
+                            <flux:skeleton class="w-20 h-16 rounded-lg" />
+                            <div class="flex-1 space-y-2">
+                                <flux:skeleton.line />
+                                <flux:skeleton.line class="w-2/3" />
+                            </div>
+                        </div>
+                    @endfor
+                </flux:skeleton.group>
+            @else
+            <div class="space-y-3 text-sm">
+                @forelse($relatedPosts as $related)
+                    <article class="flex gap-3">
+                        <img src="{{ $related->image_url }}"
+                             class="w-20 h-14 object-cover rounded-md" alt="">
+                        <div class="truncate space-y-1">
+                            @if($related->primaryCategory())
+                                <a href="{{ route('categories.show', $related->primaryCategory()->slug) }}" class="text-primary-dark dark:text-primary-light font-semibold">
+                                    {{ $related->primaryCategory()->name }}
+                                </a>
+                            @endif
+                            <div>
+                                <a href="{{ post_permalink($related) }}" class="font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
+                                    {{ $related->name }}
+                                </a>
+                                <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                                    {{ $related->created_at?->diffForHumans() }}
                                 </div>
                             </div>
-                        @endfor
-                    </flux:skeleton.group>
-                @else
-                    <div class="space-y-4">
-                        @forelse($relatedPosts as $related)
-                            <article class="flex gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 last:border-none last:pb-0">
-                                <a href="{{ post_permalink($related) }}" class="shrink-0">
-                                    <img src="{{ $related->image_url }}" class="w-24 h-20 object-cover rounded-lg" alt="{{ $related->name }}">
-                                </a>
-                                <div class="text-sm space-y-1">
-                                    @if($related->primaryCategory())
-                                        <a href="{{ route('categories.show', $related->primaryCategory()->slug) }}" class="text-primary-dark dark:text-primary-light font-semibold">
-                                            {{ $related->primaryCategory()->name }}
-                                        </a>
-                                    @endif
-                                    <h3 class="font-semibold leading-snug">
-                                        <a href="{{ post_permalink($related) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $related->name }}</a>
-                                    </h3>
-                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $related->created_at?->diffForHumans() }}</div>
-                                </div>
-                            </article>
-                        @empty
-                            <p class="text-sm text-slate-600 dark:text-slate-300">আরো কোনো পোস্ট পাওয়া যায়নি।</p>
-                        @endforelse
-                    </div>
-                @endunless
+                        </div>
+                    </article>
+                    @empty
+                        <p class="text-sm text-slate-600 dark:text-slate-300">আরো কোনো পোস্ট পাওয়া যায়নি।</p>
+                @endforelse
             </div>
-        </aside>
-    </div>
-</div>
+
+        </section>
+
+        <!-- Trending -->
+        <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4
+                            transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+                ট্রেন্ডিং
+            </h2>
+            <ul class="space-y-2 text-sm">
+                <li>
+                    <a href="single.html" class="hover:text-primary-dark dark:hover:text-primary-light">
+                        ✔ উপকূলীয় জেলায় ঘূর্ণিঝড় পরবর্তী পরিস্থিতি
+                    </a>
+                </li>
+                <li>
+                    <a href="single.html" class="hover:text-primary-dark dark:hover:text-primary-light">
+                        ✔ শিক্ষাব্যবস্থায় নতুন কারিকুলামের প্রভাব
+                    </a>
+                </li>
+                <li>
+                    <a href="single.html" class="hover:text-primary-dark dark:hover:text-primary-light">
+                        ✔ বাংলাদেশের রেমিট্যান্স আয় ও অর্থনীতি
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="bg-primary-light/70 dark:bg-slate-800 rounded-xl p-4 border border-primary/20 dark:border-slate-700
+                            transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <h2 class="text-base font-semibold mb-1 text-primary-dark dark:text-primary-light">
+                নিউজলেটার সাবস্ক্রাইব করুন
+            </h2>
+            <p class="text-xs text-slate-700 dark:text-slate-300 mb-3">
+                দিনের গুরুত্বপূর্ণ খবর সরাসরি পেতে ইমেইল দিন।
+            </p>
+            <form class="space-y-2">
+                <input type="email" placeholder="আপনার ইমেইল"
+                       class="w-full px-3 py-2 text-sm rounded-md border border-primary/40 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary" />
+                <button type="submit" class="w-full bg-primary-dark text-white text-sm font-semibold py-2 rounded-md hover:bg-primary">
+                    সাবস্ক্রাইব
+                </button>
+            </form>
+        </section>
+
+        <!-- Social -->
+        <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4
+                            transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+                আমাদের সাথে থাকুন
+            </h2>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+                <a href="#" class="bg-blue-600 text-white py-2 rounded-md text-center font-semibold">Facebook</a>
+                <a href="#" class="bg-red-600 text-white py-2 rounded-md text-center font-semibold">YouTube</a>
+                <a href="#" class="bg-sky-500 text-white py-2 rounded-md text-center font-semibold">Twitter</a>
+                <a href="#" class="bg-green-600 text-white py-2 rounded-md text-center font-semibold">WhatsApp</a>
+            </div>
+        </section>
+
+        <!-- Ad Placeholder -->
+        <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+            বিজ্ঞাপনের স্থান
+        </section>
+        @endunless
+    </aside>
+</main>
