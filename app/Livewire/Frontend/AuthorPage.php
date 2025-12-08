@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -16,7 +17,10 @@ class AuthorPage extends Component
 
     public bool $ready = false;
 
-    public Collection $posts;
+    /**
+     * @var Collection|LengthAwarePaginator
+     */
+    public $posts;
 
     public Collection $trendingPosts;
 
@@ -58,7 +62,7 @@ class AuthorPage extends Component
 
     public function render()
     {
-        $posts = $this->ready
+        $this->posts = $this->ready
             ? $this->basePostQuery()
                 ->where('author_id', $this->author->id)
                 ->latest('created_at')
@@ -66,7 +70,7 @@ class AuthorPage extends Component
             : collect();
 
         return view('livewire.frontend.author')
-            ->with('posts', $posts)
+            ->with('posts', $this->posts)
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->author->name,
             ]);
