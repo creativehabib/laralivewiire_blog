@@ -17,7 +17,10 @@ class AuthorPage extends Component
 
     public bool $ready = false;
 
-    public Collection|LengthAwarePaginator $posts;
+    /**
+     * @var Collection|LengthAwarePaginator
+     */
+    public $posts;
 
     public Collection $trendingPosts;
 
