@@ -12,9 +12,15 @@
             </flux:skeleton.group>
         @else
         <!-- Breadcrumb -->
-        <nav class="text-xs text-gray-500 dark:text-slate-400 mb-3">
-            <a href="../../../../../../Desktop/News/index.html" class="hover:text-primary-dark dark:hover:text-primary-light">হোম</a> /
-            <a href="category.html" class="hover:text-primary-dark dark:hover:text-primary-light">জাতীয়</a> /
+        <nav class="text-xs text-gray-500 dark:text-slate-400 mb-3 flex items-center gap-1">
+            <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light">হোম</a>
+            <span>/</span>
+            @if($post?->primaryCategory())
+                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="hover:text-primary-dark dark:hover:text-primary-light">
+                    {{ $post->primaryCategory()->name }}
+                </a>
+                <span>/</span>
+            @endif
             <span class="text-primary-dark dark:text-primary-light">বিস্তারিত খবর</span>
         </nav>
 
