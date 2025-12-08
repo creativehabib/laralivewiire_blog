@@ -19,7 +19,7 @@ class SinglePost extends Component
     public function mount($post)
     {
         $this->postParameter = (string) $post;
-        $this->relatedPosts = collect();
+        $this->relatedPosts = new Collection();
     }
 
     public function loadPost(): void
