@@ -149,14 +149,14 @@
                     <article class="flex gap-3">
                         <img src="{{ $related->image_url }}"
                              class="w-20 h-14 object-cover rounded-md" alt="">
-                        <div class="truncate space-y-1">
+                        <div class="space-y-1 overflow-hidden">
                             @if($related->primaryCategory())
                                 <a href="{{ route('categories.show', $related->primaryCategory()->slug) }}" class="text-primary-dark dark:text-primary-light font-semibold">
                                     {{ $related->primaryCategory()->name }}
                                 </a>
                             @endif
                             <div>
-                                <a href="{{ post_permalink($related) }}" class="font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
+                                <a href="{{ post_permalink($related) }}" class="block truncate font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
                                     {{ $related->name }}
                                 </a>
                                 <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
