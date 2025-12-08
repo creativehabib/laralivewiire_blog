@@ -11,8 +11,6 @@ use App\Http\Controllers\Admin\PollController as AdminPollController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\UserManagementController;
-use App\Http\Controllers\Frontend\CategoryController as FrontCategoryController;
-use App\Http\Controllers\Frontend\PostController as FrontPostController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Frontend\SitemapController;
 use App\Livewire\Admin\Posts\PostForm;
@@ -21,6 +19,10 @@ use App\Livewire\Admin\Tags\TagCreate;
 use App\Livewire\Admin\Tags\TagEdit;
 use App\Livewire\Admin\Tags\TagsIndex;
 use App\Livewire\Frontend\Homepage;
+use App\Livewire\Frontend\AuthorPage;
+use App\Livewire\Frontend\CategoryPage;
+use App\Livewire\Frontend\SinglePost;
+use App\Livewire\Frontend\TagPage;
 use App\Support\PermalinkManager;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
@@ -51,18 +53,18 @@ $categoryPrefixEnabled = general_settings('category_slug_prefix_enabled');
 $categoryPrefixEnabled = is_null($categoryPrefixEnabled) ? true : (bool) $categoryPrefixEnabled;
 $categoryRouteUri = $categoryPrefixEnabled ? '/category/{category:slug}' : '/{category:slug}';
 
-$categoryRoute = Route::get($categoryRouteUri, [FrontCategoryController::class, 'show'])
+$categoryRoute = Route::get($categoryRouteUri, CategoryPage::class)
     ->name('categories.show');
+
+Route::get('/author/{author}', AuthorPage::class)->name('authors.show');
+Route::get('/tags/{slug}', TagPage::class)->name('tags.show');
 
 $permalinkRoute = PermalinkManager::routeDefinition();
 
 
 if (! $categoryPrefixEnabled && $permalinkRoute['template'] === '%postname%') {
     $categoryRoute->missing(function (Request $request) {
-        $view = app(FrontPostController::class)->show($request->route('category'));
-
-        // "setCookie() on null" এরর সমাধানের জন্য response() হেল্পার
-        return response($view);
+        return redirect()->route('posts.show', ['post' => $request->route('category')]);
     });
 }
 
@@ -135,7 +137,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
 // ৩. সবশেষে "Greedy" পোস্ট রুটটি ডিফাইন করুন।
-$postRoute = Route::get($permalinkRoute['uri'], [FrontPostController::class, 'show'])
+$postRoute = Route::get($permalinkRoute['uri'], SinglePost::class)
     ->name('posts.show');
 
 if (! empty($permalinkRoute['constraints'])) {
