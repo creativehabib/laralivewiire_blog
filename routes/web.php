@@ -24,7 +24,7 @@ use App\Livewire\Frontend\CategoryPage;
 use App\Livewire\Frontend\SinglePost;
 use App\Livewire\Frontend\TagPage;
 use App\Support\PermalinkManager;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
