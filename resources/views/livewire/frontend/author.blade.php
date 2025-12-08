@@ -37,7 +37,7 @@
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 md:p-6 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-lg font-semibold">এই লেখকের সাম্প্রতিক প্রকাশনা</h2>
-                    <span class="text-xs text-gray-500 dark:text-slate-400">{{ $ready ? 'পৃষ্ঠা ১' : 'লোড হচ্ছে…' }}</span>
+                    <span class="text-xs text-gray-500 dark:text-slate-400">{{ $ready ? 'পৃষ্ঠা ' . $posts->currentPage() : 'লোড হচ্ছে…' }}</span>
                 </div>
 
                 @unless($ready)
@@ -79,8 +79,20 @@
 
                     <div class="flex items-center justify-center gap-2 mt-4 text-xs text-slate-600 dark:text-slate-300">
                         <span class="px-3 py-1 border rounded-md bg-white dark:bg-slate-900">মোট পোস্ট: {{ $totalPostCount }}</span>
-                        <span class="px-3 py-1 border rounded-md bg-white dark:bg-slate-900">দেখানো হয়েছে: {{ $posts->count() }}</span>
+                        <span class="px-3 py-1 border rounded-md bg-white dark:bg-slate-900">
+                            @if($ready && $posts->count())
+                                দেখানো হয়েছে: {{ $posts->firstItem() }}-{{ $posts->lastItem() }}
+                            @else
+                                দেখানো হয়েছে: 0
+                            @endif
+                        </span>
                     </div>
+
+                    @if($ready && $posts->hasPages())
+                        <div class="mt-6">
+                            {{ $posts->onEachSide(1)->links() }}
+                        </div>
+                    @endif
                 @endunless
             </section>
         </div>
