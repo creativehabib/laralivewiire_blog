@@ -6,9 +6,12 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AuthorPage extends Component
 {
+    use WithPagination;
+
     public User $author;
 
     public bool $ready = false;
@@ -21,6 +24,8 @@ class AuthorPage extends Component
 
     public int $totalPostCount = 0;
 
+    public int $perPage = 10;
+
     public function mount(User $author)
     {
         $this->author = $author;
@@ -31,18 +36,7 @@ class AuthorPage extends Component
 
     public function loadAuthor(): void
     {
-        $basePostQuery = Post::query()
-            ->published()
-            ->with([
-                'categories:id,name,slug',
-                'author:id,name',
-            ]);
-
-        $this->posts = (clone $basePostQuery)
-            ->where('author_id', $this->author->id)
-            ->latest('created_at')
-            ->take(18)
-            ->get();
+        $basePostQuery = $this->basePostQuery();
 
         $this->totalPostCount = (clone $basePostQuery)
             ->where('author_id', $this->author->id)
@@ -64,9 +58,27 @@ class AuthorPage extends Component
 
     public function render()
     {
+        $posts = $this->ready
+            ? $this->basePostQuery()
+                ->where('author_id', $this->author->id)
+                ->latest('created_at')
+                ->paginate($this->perPage)
+            : collect();
+
         return view('livewire.frontend.author')
+            ->with('posts', $posts)
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->author->name,
+            ]);
+    }
+
+    private function basePostQuery()
+    {
+        return Post::query()
+            ->published()
+            ->with([
+                'categories:id,name,slug',
+                'author:id,name',
             ]);
     }
 }
