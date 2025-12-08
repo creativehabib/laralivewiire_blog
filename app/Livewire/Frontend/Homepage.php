@@ -8,7 +8,40 @@ use Livewire\Component;
 
 class Homepage extends Component
 {
-    public function render()
+    public $featuredPost;
+
+    public $headlinePosts;
+
+    public $primaryCategory;
+
+    public $secondaryCategory;
+
+    public $latestPosts;
+
+    public $videoPosts;
+
+    public $breakingNews;
+
+    public $popularPosts;
+
+    public $sidebarLatest;
+
+    public bool $isReady = false;
+
+    public function mount(): void
+    {
+        $this->featuredPost = null;
+        $this->headlinePosts = collect();
+        $this->primaryCategory = null;
+        $this->secondaryCategory = null;
+        $this->latestPosts = collect();
+        $this->videoPosts = collect();
+        $this->breakingNews = collect();
+        $this->popularPosts = collect();
+        $this->sidebarLatest = collect();
+    }
+
+    public function loadHomepage(): void
     {
         $basePostQuery = Post::query()
             ->published()
@@ -48,46 +81,54 @@ class Homepage extends Component
             ->take(2)
             ->get();
 
-        $primaryCategory = $categoryBlocks->first();
-        $secondaryCategory = $categoryBlocks->skip(1)->first();
+        $this->primaryCategory = $categoryBlocks->first();
+        $this->secondaryCategory = $categoryBlocks->skip(1)->first();
 
-        $latestPosts = (clone $basePostQuery)
+        $this->featuredPost = $featuredPost;
+        $this->headlinePosts = $headlinePosts;
+        $this->latestPosts = (clone $basePostQuery)
             ->latest('created_at')
             ->take(9)
             ->get();
 
-        $videoPosts = (clone $basePostQuery)
+        $this->videoPosts = (clone $basePostQuery)
             ->where('format_type', 'video')
             ->latest('created_at')
             ->take(6)
             ->get();
 
-        $breakingNews = (clone $basePostQuery)
+        $this->breakingNews = (clone $basePostQuery)
             ->where('is_breaking', true)
             ->latest('created_at')
             ->take(5)
             ->get();
 
-        $popularPosts = (clone $basePostQuery)
+        $this->popularPosts = (clone $basePostQuery)
             ->orderByDesc('views')
             ->take(5)
             ->get();
 
-        $sidebarLatest = (clone $basePostQuery)
+        $this->sidebarLatest = (clone $basePostQuery)
             ->latest('created_at')
             ->take(5)
             ->get();
 
+        $this->isReady = true;
+    }
+
+    public function render()
+    {
         return view('livewire.frontend.homepage', [
-            'featuredPost' => $featuredPost,
-            'headlinePosts' => $headlinePosts,
-            'primaryCategory' => $primaryCategory,
-            'secondaryCategory' => $secondaryCategory,
-            'latestPosts' => $latestPosts,
-            'videoPosts' => $videoPosts,
-            'breakingNews' => $breakingNews,
-            'popularPosts' => $popularPosts,
-            'sidebarLatest' => $sidebarLatest,
+            'featuredPost' => $this->featuredPost,
+            'headlinePosts' => $this->headlinePosts,
+            'primaryCategory' => $this->primaryCategory,
+            'secondaryCategory' => $this->secondaryCategory,
+            'latestPosts' => $this->latestPosts,
+            'videoPosts' => $this->videoPosts,
+            'breakingNews' => $this->breakingNews,
+            'popularPosts' => $this->popularPosts,
+            'sidebarLatest' => $this->sidebarLatest,
+            'isReady' => $this->isReady,
         ])->layout('components.layouts.frontend.app', ['title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম']);
     }
 }
