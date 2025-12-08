@@ -1,4 +1,3 @@
-
 <main class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8" wire:init="loadPost">
     <article class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 md:p-6
                          transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
@@ -73,6 +72,35 @@
             </div>
         @endif
 
+        @if($previousPost || $nextPost)
+            <section class="mt-6">
+                <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+                    আরও পড়ুন
+                </h2>
+                <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                    @if($previousPost)
+                        <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3 space-y-2">
+                            <div class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">পূর্ববর্তী পোষ্ট</div>
+                            <a href="{{ post_permalink($previousPost) }}" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light leading-snug block">
+                                {{ $previousPost->name }}
+                            </a>
+                            <div class="text-xs text-gray-500 dark:text-slate-400">{{ $previousPost->created_at?->diffForHumans() }}</div>
+                        </article>
+                    @endif
+
+                    @if($nextPost)
+                        <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3 space-y-2">
+                            <div class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400 text-right">পরবর্তী পোষ্ট</div>
+                            <a href="{{ post_permalink($nextPost) }}" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light leading-snug block">
+                                {{ $nextPost->name }}
+                            </a>
+                            <div class="text-xs text-gray-500 dark:text-slate-400">{{ $nextPost->created_at?->diffForHumans() }}</div>
+                        </article>
+                    @endif
+                </div>
+            </section>
+        @endif
+
         <!-- Author Box -->
         @if($post?->author)
         <section class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-4 flex gap-3 items-start">
@@ -87,28 +115,6 @@
             </div>
         </section>
         @endif
-
-        <!-- Related Posts -->
-        <section class="mt-6">
-            <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
-                আরও পড়ুন
-            </h2>
-            <div class="grid sm:grid-cols-2 gap-3 text-sm">
-                <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3">
-                    <a href="single.html" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light">
-                        উপকূলে ঘূর্ণিঝড় পরবর্তী পুনর্বাসন কার্যক্রম শুরু
-                    </a>
-                    <div class="text-xs text-gray-500 dark:text-slate-400 mt-1">১ ঘন্টা আগে</div>
-                </article>
-                <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3">
-                    <a href="single.html" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light">
-                        মাছ ধরার নৌকা হালনাগাদ নীতিমালা প্রকাশ
-                    </a>
-                    <div class="text-xs text-gray-500 dark:text-slate-400 mt-1">২ ঘন্টা আগে</div>
-                </article>
-            </div>
-            @endunless
-        </section>
 
         <!-- Comment Placeholder -->
         <section class="mt-6">
@@ -126,7 +132,7 @@
                 </button>
             </form>
         </section>
-
+        @endunless
     </article>
 
     <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24 self-start">
@@ -150,32 +156,32 @@
                     @endfor
                 </flux:skeleton.group>
             @else
-            <div class="space-y-3 text-sm">
-                @forelse($relatedPosts as $related)
-                    <article class="flex gap-3">
-                        <img src="{{ $related->image_url }}"
-                             class="w-20 h-14 object-cover rounded-md" alt="">
-                        <div class="space-y-1 overflow-hidden">
-                            @if($related->primaryCategory())
-                                <a href="{{ route('categories.show', $related->primaryCategory()->slug) }}" class="text-primary-dark dark:text-primary-light font-semibold">
-                                    {{ $related->primaryCategory()->name }}
-                                </a>
-                            @endif
-                            <div>
-                                <a href="{{ post_permalink($related) }}" class="block truncate font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
-                                    {{ $related->name }}
-                                </a>
-                                <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                                    {{ $related->created_at?->diffForHumans() }}
+                <div class="space-y-3 text-sm">
+                    @forelse($relatedPosts as $related)
+                        <article class="flex gap-3">
+                            <img src="{{ $related->image_url }}"
+                                 class="w-20 h-14 object-cover rounded-md" alt="">
+                            <div class="space-y-1 overflow-hidden">
+                                @if($related->primaryCategory())
+                                    <a href="{{ route('categories.show', $related->primaryCategory()->slug) }}" class="text-primary-dark dark:text-primary-light font-semibold">
+                                        {{ $related->primaryCategory()->name }}
+                                    </a>
+                                @endif
+                                <div>
+                                    <a href="{{ post_permalink($related) }}" class="block truncate font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
+                                        {{ $related->name }}
+                                    </a>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                                        {{ $related->created_at?->diffForHumans() }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
                     @empty
                         <p class="text-sm text-slate-600 dark:text-slate-300">আরো কোনো পোস্ট পাওয়া যায়নি।</p>
-                @endforelse
-            </div>
-
+                    @endforelse
+                </div>
+            @endunless
         </section>
 
         <!-- Trending -->
@@ -184,23 +190,28 @@
             <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
                 ট্রেন্ডিং
             </h2>
-            <ul class="space-y-2 text-sm">
-                <li>
-                    <a href="single.html" class="hover:text-primary-dark dark:hover:text-primary-light">
-                        ✔ উপকূলীয় জেলায় ঘূর্ণিঝড় পরবর্তী পরিস্থিতি
-                    </a>
-                </li>
-                <li>
-                    <a href="single.html" class="hover:text-primary-dark dark:hover:text-primary-light">
-                        ✔ শিক্ষাব্যবস্থায় নতুন কারিকুলামের প্রভাব
-                    </a>
-                </li>
-                <li>
-                    <a href="single.html" class="hover:text-primary-dark dark:hover:text-primary-light">
-                        ✔ বাংলাদেশের রেমিট্যান্স আয় ও অর্থনীতি
-                    </a>
-                </li>
-            </ul>
+            @unless($ready)
+                <flux:skeleton.group animate="shimmer" class="space-y-2">
+                    @for($i = 0; $i < 3; $i++)
+                        <flux:skeleton.line />
+                    @endfor
+                </flux:skeleton.group>
+            @else
+                <ul class="space-y-2 text-sm">
+                    @forelse($trendingPosts as $trending)
+                        <li>
+                            <a href="{{ post_permalink($trending) }}" class="hover:text-primary-dark dark:hover:text-primary-light">
+                                ✔ {{ $trending->name }}
+                            </a>
+                            <div class="text-[11px] text-slate-500 dark:text-slate-400">
+                                {{ $trending->created_at?->diffForHumans() }}
+                            </div>
+                        </li>
+                    @empty
+                        <li class="text-slate-500 dark:text-slate-300">কোনো ট্রেন্ডিং পোস্ট নেই</li>
+                    @endforelse
+                </ul>
+            @endunless
         </section>
 
         <!-- Newsletter -->
@@ -239,6 +250,5 @@
         <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs text-slate-500 dark:text-slate-400">
             বিজ্ঞাপনের স্থান
         </section>
-        @endunless
     </aside>
 </main>
