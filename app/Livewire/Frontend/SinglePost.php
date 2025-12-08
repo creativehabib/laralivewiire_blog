@@ -18,21 +18,30 @@ class SinglePost extends Component
 
     public function mount($post)
     {
-        $this->postParameter = (string) $post;
+        if ($post instanceof Post) {
+            $this->post = $post;
+            $this->postParameter = $post->slug ?: (string) $post->getKey();
+        } else {
+            $this->postParameter = (string) $post;
+        }
         $this->relatedPosts = new Collection();
     }
 
     public function loadPost(): void
     {
-        $post = Post::query()
-            ->published()
-            ->with([
-                'categories:id,name,slug',
-                'tags:id,name,slug',
-                'author:id,name',
-            ])
-            ->where('slug', $this->postParameter)
-            ->first();
+        $post = $this->post;
+
+        if (! $post) {
+            $post = Post::query()
+                ->published()
+                ->with([
+                    'categories:id,name,slug',
+                    'tags:id,name,slug',
+                    'author:id,name',
+                ])
+                ->where('slug', $this->postParameter)
+                ->first();
+        }
 
         if (! $post && is_numeric($this->postParameter)) {
             $post = Post::query()
