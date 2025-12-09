@@ -1,4 +1,4 @@
-<main class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8" wire:init="loadPost">
+<main class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 typography" wire:init="loadPost">
     <article class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 md:p-6
                          transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
         @unless($ready)
@@ -52,9 +52,7 @@
         </div>
 
         <!-- Post Body -->
-        <div class="prose prose-sm max-w-none prose-p:mb-3 prose-headings:mb-3 prose-ul:mb-3
-                        text-slate-800 dark:text-slate-100"
-             style="font-family: 'Hind Siliguri', system-ui, sans-serif;">
+        <div class="typography text-slate-800 dark:text-slate-100">
             {!! $post?->content !!}
         </div>
 

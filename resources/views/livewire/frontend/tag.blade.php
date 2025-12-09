@@ -1,4 +1,4 @@
-<div class="container px-4 py-8" wire:init="loadTag">
+<div class="container px-4 py-8 typography" wire:init="loadTag">
     <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/70 dark:border-slate-800/70 overflow-hidden mb-8">
         <div class="bg-gradient-to-r from-primary-dark to-secondary-dark text-white px-6 py-5 flex items-center justify-between">
             <div>

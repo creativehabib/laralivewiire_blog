@@ -99,6 +99,91 @@
    লেআউট / ইউটিলিটি (3য় পার্ট: চাইলে)
    =========================== */
 
+/* Typography helpers */
+@layer components {
+    .typography {
+        color: var(--color-secondary, #0f172a);
+        line-height: 1.75;
+        letter-spacing: 0.012em;
+    }
+
+    .dark .typography {
+        color: #e2e8f0;
+    }
+
+    .typography h1,
+    .typography h2,
+    .typography h3,
+    .typography h4,
+    .typography h5,
+    .typography h6 {
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+        margin-bottom: 0.6em;
+        color: inherit;
+    }
+
+    .typography h1 { font-size: clamp(1.75rem, 2vw + 1rem, 2.25rem); }
+    .typography h2 { font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem); }
+    .typography h3 { font-size: clamp(1.25rem, 1vw + 1rem, 1.5rem); }
+    .typography h4 { font-size: 1.125rem; }
+
+    .typography p {
+        margin-bottom: 0.9em;
+        color: inherit;
+    }
+
+    .typography a {
+        color: inherit;
+        text-decoration-color: color-mix(in srgb, currentColor 60%, transparent);
+        text-decoration-thickness: 0.08em;
+    }
+
+    .typography a:hover {
+        color: var(--color-primary-dark, #0b5ed7);
+        text-decoration-color: currentColor;
+    }
+
+    .typography ul,
+    .typography ol {
+        margin-bottom: 1em;
+        padding-left: 1.25rem;
+        color: inherit;
+    }
+
+    .typography ul { list-style: disc; }
+    .typography ol { list-style: decimal; }
+
+    .typography li { margin-bottom: 0.35em; }
+
+    .typography blockquote {
+        margin: 1.2em 0;
+        padding-left: 1rem;
+        border-left: 3px solid var(--color-primary, #0d6efd);
+        color: inherit;
+        font-weight: 500;
+    }
+
+    .typography figure {
+        margin: 1.25em 0;
+        text-align: center;
+    }
+
+    .typography figcaption {
+        margin-top: 0.35em;
+        font-size: 0.9rem;
+        color: var(--color-muted, #6b7280);
+    }
+
+    .typography img,
+    .typography video,
+    .typography iframe {
+        border-radius: 0.5rem;
+        margin: 0.75em 0;
+    }
+}
+
 /* Tailwind v4-এ container কনফিগ JS নয়, CSS-এ করব */
 @layer utilities {
     .container {

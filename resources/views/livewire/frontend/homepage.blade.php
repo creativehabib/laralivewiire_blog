@@ -1,4 +1,4 @@
-<div class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 lg:items-start" wire:init="loadHomepage">
+<div class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 lg:items-start typography" wire:init="loadHomepage">
     <div class="lg:col-span-8 space-y-8" wire:loading>
         <flux:skeleton.group animate="shimmer" class="grid md:grid-cols-3 gap-4">
             <div class="md:col-span-2 space-y-3">
