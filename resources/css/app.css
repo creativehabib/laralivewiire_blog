@@ -1,5 +1,6 @@
 /* Load Tailwind v4 */
 @import "tailwindcss";
+@plugin "./typography-plugin.js";
 
 /* External libraries */
 @import '@fortawesome/fontawesome-free/css/all.min.css';
