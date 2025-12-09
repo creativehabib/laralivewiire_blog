@@ -1,4 +1,4 @@
-<div class="container px-4 py-8 md:py-10" wire:init="loadAuthor">
+<div class="container px-4 py-8 md:py-10 typography" wire:init="loadAuthor">
     <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 lg:items-start">
 
         <div class="lg:col-span-8 space-y-6">
