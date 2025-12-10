@@ -106,14 +106,14 @@ function initThemeToggle() {
             html.classList.add('dark');
             localStorage.setItem('theme', 'dark');
 
-            moonIcon.style.display = 'none';
-            sunIcon.style.display = 'block';
+            moonIcon.classList.add('hidden');
+            sunIcon.classList.remove('hidden');
         } else {
             html.classList.remove('dark');
             localStorage.setItem('theme', 'light');
 
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
         }
     }
 
