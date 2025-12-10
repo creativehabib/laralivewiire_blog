@@ -21,17 +21,17 @@
         <div class="grid md:grid-cols-3 gap-4">
             @foreach($posts as $post)
                 <article class="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200/70 dark:border-slate-800/70 overflow-hidden flex flex-col">
-                    <a href="{{ post_permalink($post) }}">
+                    <a href="{{ post_permalink($post) }}" wire:navigate>
                         <img src="{{ $post->image_url }}" class="w-full h-40 object-cover" alt="{{ $post->name }}">
                     </a>
                     <div class="p-4 flex flex-col flex-1 space-y-2">
                         <div class="text-xs text-primary-dark dark:text-primary-light font-semibold mb-1">
                             @if($post->primaryCategory())
-                                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}">{{ $post->primaryCategory()->name }}</a>
+                                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" wire:navigate>{{ $post->primaryCategory()->name }}</a>
                             @endif
                         </div>
                         <h3 class="font-semibold text-lg leading-snug">
-                            <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</a>
+                            <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->name }}</a>
                         </h3>
                         <div class="mt-auto text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
                             <i class="fa-regular fa-clock"></i> {{ $post->created_at?->diffForHumans() }}
