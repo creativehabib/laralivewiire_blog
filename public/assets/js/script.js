@@ -2,10 +2,13 @@
 // This part ensures the <html> tag gets the 'dark' class immediately,
 // allowing Tailwind CSS to apply initial dark mode styles, thus avoiding flicker.
 
-const html = document.documentElement;
+function getHtmlElement() {
+    return document.documentElement;
+}
 
 // Function to set theme based on localStorage or system preference
 function setInitialTheme() {
+    const html = getHtmlElement();
     const storedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -95,6 +98,7 @@ function initThemeToggle() {
     const sunIcon = document.getElementById('sunIcon');
 
     function setTheme(theme) {
+        const html = getHtmlElement();
         if (!moonIcon || !sunIcon) return;
 
         if (theme === 'dark') {
@@ -208,6 +212,7 @@ function initSidebarCarousel() {
 }
 
 function initPageInteractions() {
+    setInitialTheme();
     initMobileMenu();
     initTabs();
     initThemeToggle();
