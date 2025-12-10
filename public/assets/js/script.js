@@ -226,14 +226,17 @@ function runInitPageInteractions() {
     requestAnimationFrame(initPageInteractions);
 }
 
+function runInitPageInteractions() {
+    // Ensure the DOM has settled before re-binding event listeners
+    requestAnimationFrame(initPageInteractions);
+}
 document.addEventListener('DOMContentLoaded', runInitPageInteractions);
 document.addEventListener('livewire:load', runInitPageInteractions);
 document.addEventListener('livewire:navigated', () => {
-    // Reset mobile menu visibility on navigation to avoid a stuck open state
     const mobileMenu = document.getElementById('mobileMenu');
     if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-        mobileMenu.classList.add('hidden');
+    mobileMenu.classList.add('hidden');
     }
-
     runInitPageInteractions();
+
 });
