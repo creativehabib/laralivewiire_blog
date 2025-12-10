@@ -508,7 +508,7 @@
             });
         }
 
-        // 🔸 কাস্টম প্লাগইন: ImageManager বাটন
+        // কাস্টম প্লাগইন: ImageManager বাটন
         CKEDITOR.plugins.add('ImageManager', {
             icons: 'image-plus',
             init: function(editor) {
@@ -531,7 +531,7 @@
          */
         function initCkeditor() {
             const textarea = document.getElementById('content');
-            if (! textarea) return;
+            if (!textarea) return;
 
             // আগের instance থাকলে destroy
             if (CKEDITOR.instances.content) {
@@ -544,15 +544,17 @@
                 uiColor: '',
                 removePlugins: 'cloudservices,uploadimage,uploadfile',
                 extraPlugins: 'imagemenu,mathjax,tableresize,wordcount,notification,ImageManager,codesnippet,embed',
+
                 wordcount: { showCharCount: true, showWordCount: true },
+
                 toolbar: [
                     {items: ['Undo', 'Redo']},
                     { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
                     { name: 'document', items: ['Source', '-', 'Preview'] },
                     { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'] },
-                    { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'RemoveFormat','CopyFormatting'] },
-                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript','ImageManager'] },
-                    { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock','BidiLtr', 'BidiRtl'] },
+                    { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'RemoveFormat', 'CopyFormatting'] },
+                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'ImageManager'] },
+                    { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'BidiLtr', 'BidiRtl'] },
                     { name: 'links', items: ['Link', 'Unlink'] },
                     {
                         name: 'insert',
@@ -565,18 +567,19 @@
                             '-',
                             'Iframe',
                             'Smiley',
-                            'ImageMenu','CodeSnippet','EasyImage','Embed',
-                            // custom image button চাইলে এখানে আর plugin যোগ করবে
+                            'ImageMenu', 'CodeSnippet', 'EasyImage', 'Embed'
                         ]
                     },
                     { name: 'colors', items: ['TextColor', 'BGColor', 'ShowBlocks'] },
                     { name: 'tools', items: ['Maximize'] }
                 ],
+
+                // সব কনটেন্ট allow করছি, তবে উপরের removeFormat কনফিগ ঠিকঠাক কাজ করবে
                 allowedContent: true,
                 extraAllowedContent: '*(*){*}',
             });
 
-            // 🔥 CKEditor → Livewire sync
+            // CKEditor → Livewire sync
             editor.on('change', function (e) {
             @this.set('content', e.editor.getData());
             });
