@@ -93,41 +93,46 @@ function initTabs() {
 }
 
 function initThemeToggle() {
-    const toggle = document.getElementById('themeToggle');
-    const moonIcon = document.getElementById('moonIcon');
-    const sunIcon = document.getElementById('sunIcon');
     const html = getHtmlElement();
+    if (!html) return;
+
+    const toggles = document.querySelectorAll('[data-theme-toggle], #themeToggle');
 
     function setTheme(theme) {
-        const html = getHtmlElement();
-        if (!moonIcon || !sunIcon) return;
-
         if (theme === 'dark') {
             html.classList.add('dark');
             localStorage.setItem('theme', 'dark');
-
-            moonIcon.classList.add('hidden');
-            sunIcon.classList.remove('hidden');
         } else {
             html.classList.remove('dark');
             localStorage.setItem('theme', 'light');
-
-            sunIcon.classList.add('hidden');
-            moonIcon.classList.remove('hidden');
         }
+
+        toggles.forEach(toggle => {
+            const moonIcon = toggle.querySelector('[data-moon-icon], #moonIcon');
+            const sunIcon = toggle.querySelector('[data-sun-icon], #sunIcon');
+
+            if (!(moonIcon && sunIcon)) return;
+
+            if (theme === 'dark') {
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        });
     }
 
-    const isDark = html && html.classList.contains('dark');
-    const currentTheme = isDark ? 'dark' : 'light';
+    const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
     setTheme(currentTheme);
 
-    if (toggle && html) {
+    toggles.forEach(toggle => {
         addUniqueListener(toggle, 'click', '__themeToggleHandler', () => {
             const isCurrentlyDark = html.classList.contains('dark');
             const nextTheme = isCurrentlyDark ? 'light' : 'dark';
             setTheme(nextTheme);
         });
-    }
+    });
 }
 
 function initVideoCarousel() {
