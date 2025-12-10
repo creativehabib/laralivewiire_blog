@@ -2,10 +2,13 @@
 // This part ensures the <html> tag gets the 'dark' class immediately,
 // allowing Tailwind CSS to apply initial dark mode styles, thus avoiding flicker.
 
-const html = document.documentElement;
+function getHtmlElement() {
+    return document.documentElement;
+}
 
 // Function to set theme based on localStorage or system preference
 function setInitialTheme() {
+    const html = getHtmlElement();
     const storedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -93,30 +96,32 @@ function initThemeToggle() {
     const toggle = document.getElementById('themeToggle');
     const moonIcon = document.getElementById('moonIcon');
     const sunIcon = document.getElementById('sunIcon');
+    const html = getHtmlElement();
 
     function setTheme(theme) {
+        const html = getHtmlElement();
         if (!moonIcon || !sunIcon) return;
 
         if (theme === 'dark') {
             html.classList.add('dark');
             localStorage.setItem('theme', 'dark');
 
-            moonIcon.style.display = 'none';
-            sunIcon.style.display = 'block';
+            moonIcon.classList.add('hidden');
+            sunIcon.classList.remove('hidden');
         } else {
             html.classList.remove('dark');
             localStorage.setItem('theme', 'light');
 
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
         }
     }
 
-    const isDark = html.classList.contains('dark');
+    const isDark = html && html.classList.contains('dark');
     const currentTheme = isDark ? 'dark' : 'light';
     setTheme(currentTheme);
 
-    if (toggle) {
+    if (toggle && html) {
         addUniqueListener(toggle, 'click', '__themeToggleHandler', () => {
             const isCurrentlyDark = html.classList.contains('dark');
             const nextTheme = isCurrentlyDark ? 'light' : 'dark';
@@ -208,6 +213,7 @@ function initSidebarCarousel() {
 }
 
 function initPageInteractions() {
+    setInitialTheme();
     initMobileMenu();
     initTabs();
     initThemeToggle();
