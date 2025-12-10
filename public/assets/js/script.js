@@ -96,6 +96,7 @@ function initThemeToggle() {
     const toggle = document.getElementById('themeToggle');
     const moonIcon = document.getElementById('moonIcon');
     const sunIcon = document.getElementById('sunIcon');
+    const html = getHtmlElement();
 
     function setTheme(theme) {
         const html = getHtmlElement();
@@ -116,11 +117,11 @@ function initThemeToggle() {
         }
     }
 
-    const isDark = html.classList.contains('dark');
+    const isDark = html && html.classList.contains('dark');
     const currentTheme = isDark ? 'dark' : 'light';
     setTheme(currentTheme);
 
-    if (toggle) {
+    if (toggle && html) {
         addUniqueListener(toggle, 'click', '__themeToggleHandler', () => {
             const isCurrentlyDark = html.classList.contains('dark');
             const nextTheme = isCurrentlyDark ? 'light' : 'dark';
