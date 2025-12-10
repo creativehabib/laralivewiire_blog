@@ -29,26 +29,32 @@ setInitialTheme();
 
 // --- END: Immediate Theme Logic ---
 
+function addUniqueListener(element, eventName, handlerKey, handler) {
+    if (!element) return;
 
-document.addEventListener('DOMContentLoaded', function () {
-    /* ---------------------------
-       Mobile Menu Toggle
-    ---------------------------- */
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
-    const mobileMenu        = document.getElementById('mobileMenu');
-
-    if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+    if (element[handlerKey]) {
+        element.removeEventListener(eventName, element[handlerKey]);
     }
 
-    /* ---------------------------
-       Tabs (Latest / Popular)
-    ---------------------------- */
-    const latestBtn  = document.getElementById('tab-latest-btn');
+    element[handlerKey] = handler;
+    element.addEventListener(eventName, handler);
+}
+
+function initMobileMenu() {
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (!mobileMenuButton || !mobileMenu) return;
+
+    addUniqueListener(mobileMenuButton, 'click', '__mobileMenuHandler', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+}
+
+function initTabs() {
+    const latestBtn = document.getElementById('tab-latest-btn');
     const popularBtn = document.getElementById('tab-popular-btn');
-    const latestTab  = document.getElementById('tab-latest');
+    const latestTab = document.getElementById('tab-latest');
     const popularTab = document.getElementById('tab-popular');
 
     function showLatest() {
@@ -78,143 +84,136 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (latestBtn && popularBtn) {
-        latestBtn.addEventListener('click', showLatest);
-        popularBtn.addEventListener('click', showPopular);
+        addUniqueListener(latestBtn, 'click', '__latestTabHandler', showLatest);
+        addUniqueListener(popularBtn, 'click', '__popularTabHandler', showPopular);
     }
+}
 
-    /* --------------------------------------
-       Dark / Light Theme Toggle (Icon Control)
-    --------------------------------------- */
-    const toggle   = document.getElementById('themeToggle');
+function initThemeToggle() {
+    const toggle = document.getElementById('themeToggle');
     const moonIcon = document.getElementById('moonIcon');
-    const sunIcon  = document.getElementById('sunIcon');
+    const sunIcon = document.getElementById('sunIcon');
 
-    // Icon setting function - Note: html class is already set by setInitialTheme() outside DOMContentLoaded
     function setTheme(theme) {
         if (!moonIcon || !sunIcon) return;
 
-        // **ফাইনাল ফিক্স:** Tailwind ক্লাসের পরিবর্তে সরাসরি ইনলাইন 'display' প্রোপার্টি ব্যবহার করা হয়েছে।
         if (theme === 'dark') {
             html.classList.add('dark');
             localStorage.setItem('theme', 'dark');
 
-            // সূর্য দেখান (block), চাঁদ লুকান (none)
             moonIcon.style.display = 'none';
             sunIcon.style.display = 'block';
         } else {
             html.classList.remove('dark');
             localStorage.setItem('theme', 'light');
 
-            // চাঁদ দেখান (block), সূর্য লুকান (none)
             sunIcon.style.display = 'none';
             moonIcon.style.display = 'block';
         }
     }
 
-    // Now that the DOM (and icons) are ready, set the icon visibility based on the already set <html> class
     const isDark = html.classList.contains('dark');
     const currentTheme = isDark ? 'dark' : 'light';
-
-    // Set the correct icon state using the robust setTheme function
     setTheme(currentTheme);
 
-
-    // Add click listener for toggling
     if (toggle) {
-        toggle.addEventListener('click', () => {
+        addUniqueListener(toggle, 'click', '__themeToggleHandler', () => {
             const isCurrentlyDark = html.classList.contains('dark');
-            const nextTheme   = isCurrentlyDark ? 'light' : 'dark';
+            const nextTheme = isCurrentlyDark ? 'light' : 'dark';
             setTheme(nextTheme);
         });
     }
+}
 
-    /* ---------------------------
-       Video Carousel (Horizontal scroll)
-    ---------------------------- */
+function initVideoCarousel() {
     const videoContainer = document.getElementById('videoCarousel');
-    const prevBtn        = document.getElementById('videoCarouselPrev');
-    const nextBtn        = document.getElementById('videoCarouselNext');
+    const prevBtn = document.getElementById('videoCarouselPrev');
+    const nextBtn = document.getElementById('videoCarouselNext');
 
-    if (videoContainer && prevBtn && nextBtn) {
+    if (!(videoContainer && prevBtn && nextBtn)) return;
 
-        function scrollAmount() {
-            // মোবাইল-ডেস্কটপ দুইতেই container width অনুযায়ী স্ক্রল
-            return videoContainer.clientWidth * 0.9;
-        }
-
-        function updateButtons() {
-            // Left side
-            prevBtn.disabled = videoContainer.scrollLeft <= 0;
-
-            // Right side
-            const maxScroll = videoContainer.scrollWidth - videoContainer.clientWidth - 5;
-            nextBtn.disabled = videoContainer.scrollLeft >= maxScroll;
-        }
-
-        // Initial
-        updateButtons();
-
-        prevBtn.addEventListener('click', () => {
-            videoContainer.scrollBy({
-                left: -scrollAmount(),
-                behavior: 'smooth'
-            });
-            setTimeout(updateButtons, 400);
-        });
-
-        nextBtn.addEventListener('click', () => {
-            videoContainer.scrollBy({
-                left: scrollAmount(),
-                behavior: 'smooth'
-            });
-            setTimeout(updateButtons, 400);
-        });
-
-        videoContainer.addEventListener('scroll', updateButtons);
-        window.addEventListener('resize', updateButtons);
+    function scrollAmount() {
+        return videoContainer.clientWidth * 0.9;
     }
 
-    /* ---------------------------
-       Sidebar Featured Carousel
-    ---------------------------- */
+    function updateButtons() {
+        prevBtn.disabled = videoContainer.scrollLeft <= 0;
+
+        const maxScroll = videoContainer.scrollWidth - videoContainer.clientWidth - 5;
+        nextBtn.disabled = videoContainer.scrollLeft >= maxScroll;
+    }
+
+    updateButtons();
+
+    addUniqueListener(prevBtn, 'click', '__videoPrevHandler', () => {
+        videoContainer.scrollBy({
+            left: -scrollAmount(),
+            behavior: 'smooth'
+        });
+        setTimeout(updateButtons, 400);
+    });
+
+    addUniqueListener(nextBtn, 'click', '__videoNextHandler', () => {
+        videoContainer.scrollBy({
+            left: scrollAmount(),
+            behavior: 'smooth'
+        });
+        setTimeout(updateButtons, 400);
+    });
+
+    addUniqueListener(videoContainer, 'scroll', '__videoScrollHandler', updateButtons);
+    addUniqueListener(window, 'resize', '__videoResizeHandler', updateButtons);
+}
+
+function initSidebarCarousel() {
     const sidebarSlider = document.getElementById('sidebarFeaturedCarousel');
     const sidebarSlides = sidebarSlider ? sidebarSlider.querySelectorAll('[data-slide]') : [];
-    const sidebarPrev   = document.getElementById('sidebarFeaturedPrev');
-    const sidebarNext   = document.getElementById('sidebarFeaturedNext');
+    const sidebarPrev = document.getElementById('sidebarFeaturedPrev');
+    const sidebarNext = document.getElementById('sidebarFeaturedNext');
 
-    if (sidebarSlider && sidebarSlides.length > 0 && sidebarPrev && sidebarNext) {
-        let currentIndex = 0;
+    if (!(sidebarSlider && sidebarSlides.length > 0 && sidebarPrev && sidebarNext)) return;
 
-        function updateSlides() {
-            sidebarSlides.forEach((slide, index) => {
-                if (index === currentIndex) {
-                    slide.classList.remove('hidden');
-                    slide.classList.add('block');
-                } else {
-                    slide.classList.add('hidden');
-                    slide.classList.remove('block');
-                }
-            });
+    let currentIndex = 0;
 
-            sidebarPrev.disabled = currentIndex === 0;
-            sidebarNext.disabled = currentIndex === sidebarSlides.length - 1;
-        }
-
-        sidebarPrev.addEventListener('click', function () {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateSlides();
+    function updateSlides() {
+        sidebarSlides.forEach((slide, index) => {
+            if (index === currentIndex) {
+                slide.classList.remove('hidden');
+                slide.classList.add('block');
+            } else {
+                slide.classList.add('hidden');
+                slide.classList.remove('block');
             }
         });
 
-        sidebarNext.addEventListener('click', function () {
-            if (currentIndex < sidebarSlides.length - 1) {
-                currentIndex++;
-                updateSlides();
-            }
-        });
-
-        // Initial state
-        updateSlides();
+        sidebarPrev.disabled = currentIndex === 0;
+        sidebarNext.disabled = currentIndex === sidebarSlides.length - 1;
     }
-});
+
+    updateSlides();
+
+    addUniqueListener(sidebarPrev, 'click', '__sidebarPrevHandler', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateSlides();
+        }
+    });
+
+    addUniqueListener(sidebarNext, 'click', '__sidebarNextHandler', () => {
+        if (currentIndex < sidebarSlides.length - 1) {
+            currentIndex++;
+            updateSlides();
+        }
+    });
+}
+
+function initPageInteractions() {
+    initMobileMenu();
+    initTabs();
+    initThemeToggle();
+    initVideoCarousel();
+    initSidebarCarousel();
+}
+
+document.addEventListener('DOMContentLoaded', initPageInteractions);
+document.addEventListener('livewire:navigated', initPageInteractions);
