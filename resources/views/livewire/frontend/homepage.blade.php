@@ -122,7 +122,7 @@
                 <div class="grid sm:grid-cols-2 gap-4">
                     @if($featuredCategoryPost)
                         <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
-                            <a href="{{ post_permalink($featuredCategoryPost) }}">
+                            <a href="{{ post_permalink($featuredCategoryPost) }}" class="flex-shrink-0">
                                 <img src="{{ $featuredCategoryPost->image_url }}" class="w-full h-40 object-cover" alt="{{ $featuredCategoryPost->name }}">
                             </a>
                             <div class="p-4">
@@ -138,11 +138,11 @@
                     <div class="space-y-3">
                         @foreach($primaryCategory->posts->skip(1) as $post)
                             <article class="flex gap-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
-                                <a href="{{ post_permalink($post) }}">
-                                    <img src="{{ $post->image_url }}" class="w-24 h-20 object-cover" alt="{{ $post->name }}">
+                                <a href="{{ post_permalink($post) }}" class="flex-shrink-0">
+                                    <img src="{{ $post->image_url }}" class="w-32 h-24 object-cover" alt="{{ $post->name }}">
                                 </a>
                                 <div class="p-2 text-sm">
-                                    <h4 class="font-semibold leading-snug">
+                                    <h4 class="font-semibold leading-snug line-clamp-2">
                                         <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</a>
                                     </h4>
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $post->created_at?->diffForHumans() }}</div>
