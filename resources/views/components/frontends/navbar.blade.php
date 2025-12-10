@@ -66,14 +66,9 @@
             @endauth
             <!-- /লগইন/ড্যাশবোর্ড বাটন -->
 
-            <!-- <button id="themeToggle" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <button id="themeToggle" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <i id="moonIcon" class="fa-solid fa-moon text-sm"></i>
                 <i id="sunIcon" class="fa-solid fa-sun text-sm hidden"></i>
-            </button> -->
-            <button data-theme-toggle
-                class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                <i data-moon-icon class="fa-solid fa-moon text-sm"></i>
-                <i data-sun-icon class="fa-solid fa-sun text-sm hidden"></i>
             </button>
         </div>
     </div>
