@@ -1,6 +1,5 @@
 /* Load Tailwind v4 */
 @import "tailwindcss";
-@plugin "./typography-plugin.js";
 
 /* External libraries */
 @import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -177,11 +176,10 @@
         color: var(--color-muted, #6b7280);
     }
 
-    .typography img,
     .typography video,
     .typography iframe {
         border-radius: 0.5rem;
-        margin: 0;
+        margin: 0.75em 0;
     }
 }
 

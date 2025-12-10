@@ -1,69 +1,69 @@
 <div class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 lg:items-start typography" wire:init="loadHomepage">
-    <div class="lg:col-span-8 space-y-8">
-        @unless($isReady)
-            <flux:skeleton.group animate="shimmer" class="grid md:grid-cols-3 gap-4">
-                <div class="md:col-span-2 space-y-3">
-                    <flux:skeleton class="h-72 w-full rounded-xl" />
-                    <flux:skeleton.line />
-                    <flux:skeleton.line class="w-1/2" />
-                    <flux:skeleton.line class="w-2/3" />
-                </div>
-                <div class="space-y-3">
-                    @for($i = 0; $i < 4; $i++)
-                        <div class="flex gap-3">
-                            <flux:skeleton class="w-28 h-24 rounded-lg" />
-                            <div class="flex-1 space-y-2">
-                                <flux:skeleton.line class="w-3/4" />
-                                <flux:skeleton.line />
-                            </div>
-                        </div>
-                    @endfor
-                </div>
-            </flux:skeleton.group>
-
-            <flux:skeleton.group animate="shimmer" class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <flux:skeleton.line class="w-32" />
-                    <flux:skeleton.line class="w-16" />
-                </div>
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <flux:skeleton class="h-52 w-full rounded-xl" />
-                    <div class="space-y-3">
-                        @for($i = 0; $i < 3; $i++)
-                            <div class="flex gap-3">
-                                <flux:skeleton class="w-24 h-20 rounded-lg" />
-                                <div class="flex-1 space-y-2">
-                                    <flux:skeleton.line />
-                                    <flux:skeleton.line class="w-2/3" />
-                                </div>
-                            </div>
-                        @endfor
-                    </div>
-                </div>
-            </flux:skeleton.group>
-
-            <flux:skeleton.group animate="shimmer" class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <flux:skeleton.line class="w-28" />
-                    <flux:skeleton.line class="w-20" />
-                </div>
-                <div class="grid md:grid-cols-3 gap-4">
-                    @for($i = 0; $i < 6; $i++)
-                        <div class="space-y-2">
-                            <flux:skeleton class="h-32 w-full rounded-xl" />
+    <div class="lg:col-span-8 space-y-8" wire:loading>
+        <flux:skeleton.group animate="shimmer" class="grid md:grid-cols-3 gap-4">
+            <div class="md:col-span-2 space-y-3">
+                <flux:skeleton class="h-72 w-full rounded-xl" />
+                <flux:skeleton.line />
+                <flux:skeleton.line class="w-1/2" />
+                <flux:skeleton.line class="w-2/3" />
+            </div>
+            <div class="space-y-3">
+                @for($i = 0; $i < 4; $i++)
+                    <div class="flex gap-3">
+                        <flux:skeleton class="w-28 h-24 rounded-lg" />
+                        <div class="flex-1 space-y-2">
+                            <flux:skeleton.line class="w-3/4" />
                             <flux:skeleton.line />
-                            <flux:skeleton.line class="w-1/2" />
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        </flux:skeleton.group>
+
+        <flux:skeleton.group animate="shimmer" class="space-y-6">
+            <div class="flex items-center justify-between">
+                <flux:skeleton.line class="w-32" />
+                <flux:skeleton.line class="w-16" />
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <flux:skeleton class="h-52 w-full rounded-xl" />
+                <div class="space-y-3">
+                    @for($i = 0; $i < 3; $i++)
+                        <div class="flex gap-3">
+                            <flux:skeleton class="w-24 h-20 rounded-lg" />
+                            <div class="flex-1 space-y-2">
+                                <flux:skeleton.line />
+                                <flux:skeleton.line class="w-2/3" />
+                            </div>
                         </div>
                     @endfor
                 </div>
-            </flux:skeleton.group>
-        @else
+            </div>
+        </flux:skeleton.group>
 
+        <flux:skeleton.group animate="shimmer" class="space-y-4">
+            <div class="flex items-center justify-between">
+                <flux:skeleton.line class="w-28" />
+                <flux:skeleton.line class="w-20" />
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+                @for($i = 0; $i < 6; $i++)
+                    <div class="space-y-2">
+                        <flux:skeleton class="h-32 w-full rounded-xl" />
+                        <flux:skeleton.line />
+                        <flux:skeleton.line class="w-1/2" />
+                    </div>
+                @endfor
+            </div>
+        </flux:skeleton.group>
+    </div>
+
+    <div class="lg:col-span-8 space-y-8" wire:loading.remove>
         <section>
             <div class="grid md:grid-cols-3 gap-4">
                 @if($featuredPost)
                     <article class="md:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
-                        <a href="{{ post_permalink($featuredPost) }}">
+                        <a href="{{ post_permalink($featuredPost) }}" class="flex-shrink-0">
                             <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="w-full h-56 md:h-72 object-cover">
                         </a>
                         <div class="p-4 space-y-2">
@@ -72,7 +72,7 @@
                                     {{ $featuredPost->primaryCategory()->name }}
                                 </a>
                             @endif
-                            <h2 class="text-xl md:text-2xl font-semibold leading-snug">
+                            <h2 class="text-xl md:text-2xl font-semibold leading-snug line-clamp-1">
                                 <a href="{{ post_permalink($featuredPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $featuredPost->name }}</a>
                             </h2>
                             @if($featuredPost->excerpt)
@@ -89,16 +89,17 @@
                 @endif
                 <div class="space-y-3">
                     @forelse($headlinePosts as $post)
-                        <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex gap-3">
-                            <a href="{{ post_permalink($post) }}">
-                                <img src="{{ $post->image_url }}" class="w-28 h-24 object-cover" alt="{{ $post->name }}">
+                        <article class="bg-white items-center dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex gap-3">
+                            <a href="{{ post_permalink($post) }}" class="flex-shrink-0">
+                                <img src="{{ $post->image_url }}"
+                                     class="w-28 h-24 object-cover group-hover:opacity-85 transition duration-300" alt="{{ $post->name }}">
                             </a>
                             <div class="p-2 pr-3">
                                 @if($post->primaryCategory())
                                     <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="text-xs text-primary-dark dark:text-primary-light font-semibold">{{ $post->primaryCategory()->name }}</a>
                                 @endif
-                                <h3 class="text-sm font-semibold leading-snug">
-                                    <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</a>
+                                <h3 class="text-sm font-semibold leading-snug line-clamp-1">
+                                    <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3">{{ $post->name }}</a>
                                 </h3>
                             </div>
                         </article>
@@ -282,41 +283,41 @@
                 @endforeach
             </div>
         @endif
-        @endunless
     </div>
 
-    <aside class="lg:col-span-4 lg:sticky lg:top-24 self-start">
-        @unless($isReady)
-            <flux:skeleton.group animate="shimmer" class="space-y-4">
-                <flux:skeleton.line class="h-5 w-24" />
-                <div class="space-y-2">
-                    @for($i = 0; $i < 5; $i++)
-                        <flux:skeleton.line />
-                    @endfor
-                </div>
-            </flux:skeleton.group>
+    <aside class="lg:col-span-4 space-y-6" wire:loading>
+        <flux:skeleton.group animate="shimmer" class="space-y-4">
+            <flux:skeleton.line class="h-5 w-24" />
+            <div class="space-y-2">
+                @for($i = 0; $i < 5; $i++)
+                    <flux:skeleton.line />
+                @endfor
+            </div>
+        </flux:skeleton.group>
 
-            <flux:skeleton.group animate="shimmer" class="space-y-3">
-                <flux:skeleton.line class="h-5 w-32" />
-                <flux:skeleton class="h-20 w-full rounded-lg" />
-                <flux:skeleton.line class="w-1/2" />
-                <flux:skeleton.line class="w-3/4" />
-            </flux:skeleton.group>
+        <flux:skeleton.group animate="shimmer" class="space-y-3">
+            <flux:skeleton.line class="h-5 w-32" />
+            <flux:skeleton class="h-20 w-full rounded-lg" />
+            <flux:skeleton.line class="w-1/2" />
+            <flux:skeleton.line class="w-3/4" />
+        </flux:skeleton.group>
 
-            <flux:skeleton.group animate="shimmer" class="space-y-3">
-                <flux:skeleton.line class="h-5 w-28" />
-                <div class="grid grid-cols-2 gap-2">
-                    @for($i = 0; $i < 4; $i++)
-                        <flux:skeleton class="h-10 rounded-md" />
-                    @endfor
-                </div>
-            </flux:skeleton.group>
+        <flux:skeleton.group animate="shimmer" class="space-y-3">
+            <flux:skeleton.line class="h-5 w-28" />
+            <div class="grid grid-cols-2 gap-2">
+                @for($i = 0; $i < 4; $i++)
+                    <flux:skeleton class="h-10 rounded-md" />
+                @endfor
+            </div>
+        </flux:skeleton.group>
 
-            <flux:skeleton.group animate="shimmer" class="space-y-3">
-                <flux:skeleton.line class="h-5 w-24" />
-                <flux:skeleton class="h-12 w-full rounded-xl" />
-            </flux:skeleton.group>
-        @else
+        <flux:skeleton.group animate="shimmer" class="space-y-3">
+            <flux:skeleton.line class="h-5 w-24" />
+            <flux:skeleton class="h-12 w-full rounded-xl" />
+        </flux:skeleton.group>
+    </aside>
+
+    <aside class="lg:col-span-4 lg:sticky lg:top-24 self-start" wire:loading.remove>
         <div class="space-y-6">
 
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
@@ -458,6 +459,5 @@
                 </div>
             </section>
         </div>
-        @endunless
     </aside>
 </div>
