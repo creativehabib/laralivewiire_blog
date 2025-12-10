@@ -57,11 +57,11 @@
                     <div class="space-y-4">
                         @forelse($posts as $post)
                             <article class="flex flex-col md:flex-row gap-3 border-b border-slate-200 dark:border-slate-700 pb-3 last:border-b-0 last:pb-0">
-                                <a href="{{ post_permalink($post) }}" class="shrink-0">
+                            <a href="{{ post_permalink($post) }}" class="shrink-0" wire:navigate>
                                     <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="w-full md:w-40 h-32 object-cover rounded-lg">
                                 </a>
                                 <div class="flex-1">
-                                    <a href="{{ post_permalink($post) }}" class="text-base font-semibold hover:text-primary-dark dark:hover:text-primary-light">
+                                    <a href="{{ post_permalink($post) }}" class="text-base font-semibold hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                         {{ $post->name }}
                                     </a>
                                     <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">
@@ -111,7 +111,7 @@
                         <ul class="space-y-2 text-sm">
                             @forelse($trendingPosts as $trending)
                                 <li>
-                                    <a href="{{ post_permalink($trending) }}" class="hover:text-primary-dark dark:hover:text-primary-light">
+                                    <a href="{{ post_permalink($trending) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                         ✔ {{ $trending->name }}
                                     </a>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ $trending->created_at?->diffForHumans() }}</div>
@@ -164,11 +164,11 @@
                         <div class="space-y-3 text-sm">
                             @forelse($moreNews as $news)
                                 <article class="flex gap-3">
-                                    <a href="{{ post_permalink($news) }}" class="shrink-0">
+                            <a href="{{ post_permalink($news) }}" class="shrink-0" wire:navigate>
                                         <img src="{{ $news->image_url }}" class="w-20 h-14 object-cover rounded-md" alt="{{ $news->name }}">
                                     </a>
                                     <div class="flex-1">
-                                        <a href="{{ post_permalink($news) }}" class="font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
+                                        <a href="{{ post_permalink($news) }}" class="font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                             {{ $news->name }}
                                         </a>
                                         <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{{ $news->created_at?->diffForHumans() }}</div>

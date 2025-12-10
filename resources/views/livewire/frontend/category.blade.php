@@ -14,7 +14,7 @@
         @else
             <div class="mb-3">
                 <nav class="text-xs text-gray-500 dark:text-slate-400 mb-1">
-                    <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light">হোম</a>
+                    <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>হোম</a>
                     <span class="mx-1">/</span>
                     <span>ক্যাটাগরি</span>
                     <span class="mx-1">/</span>
@@ -38,12 +38,12 @@
 
             @if($featuredPost)
                 <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden mb-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-                    <a href="{{ post_permalink($featuredPost) }}">
+                    <a href="{{ post_permalink($featuredPost) }}" wire:navigate>
                         <img src="{{ $featuredPost->image_url }}" class="w-full h-52 object-cover" alt="{{ $featuredPost->name }}">
                     </a>
                     <div class="p-4 space-y-2">
                         <h2 class="text-xl font-semibold">
-                            <a href="{{ post_permalink($featuredPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light leading-snug">
+                            <a href="{{ post_permalink($featuredPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light leading-snug" wire:navigate>
                                 {{ $featuredPost->name }}
                             </a>
                         </h2>
@@ -66,12 +66,12 @@
             <div class="grid md:grid-cols-2 gap-4">
                 @foreach($postCards as $post)
                     <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex flex-col transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-                        <a href="{{ post_permalink($post) }}">
+                        <a href="{{ post_permalink($post) }}" wire:navigate>
                             <img src="{{ $post->image_url }}" class="w-full h-40 object-cover" alt="{{ $post->name }}">
                         </a>
                         <div class="p-3 flex flex-col flex-1 space-y-2">
                             <h3 class="font-semibold text-base leading-snug">
-                                <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">
+                                <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                     {{ $post->name }}
                                 </a>
                             </h3>
@@ -117,7 +117,7 @@
                         <article class="flex gap-3">
                             <img src="{{ $latest->image_url }}" class="w-20 h-14 object-cover rounded-md" alt="{{ $latest->name }}">
                             <div class="flex-1">
-                                <a href="{{ post_permalink($latest) }}" class="font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
+                                <a href="{{ post_permalink($latest) }}" class="font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                     {{ $latest->name }}
                                 </a>
                                 <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -136,7 +136,7 @@
                 <ul class="space-y-2 text-sm">
                     @foreach($featurePosts->take(3) as $trending)
                         <li>
-                            <a href="{{ post_permalink($trending) }}" class="hover:text-primary-dark dark:hover:text-primary-light">
+                            <a href="{{ post_permalink($trending) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                 ✔ {{ $trending->name }}
                             </a>
                         </li>

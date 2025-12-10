@@ -63,17 +63,17 @@
             <div class="grid md:grid-cols-3 gap-4">
                 @if($featuredPost)
                     <article class="md:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
-                        <a href="{{ post_permalink($featuredPost) }}" class="flex-shrink-0">
+                        <a href="{{ post_permalink($featuredPost) }}" class="flex-shrink-0" wire:navigate>
                             <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="w-full h-56 md:h-72 object-cover">
                         </a>
                         <div class="p-4 space-y-2">
                             @if($featuredPost->primaryCategory())
-                                <a href="{{ route('categories.show', $featuredPost->primaryCategory()->slug) }}" class="inline-block text-xs font-semibold uppercase text-primary-dark dark:text-primary-light">
+                                <a href="{{ route('categories.show', $featuredPost->primaryCategory()->slug) }}" class="inline-block text-xs font-semibold uppercase text-primary-dark dark:text-primary-light" wire:navigate>
                                     {{ $featuredPost->primaryCategory()->name }}
                                 </a>
                             @endif
                             <h2 class="text-xl md:text-2xl font-semibold leading-snug line-clamp-1">
-                                <a href="{{ post_permalink($featuredPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $featuredPost->name }}</a>
+                                <a href="{{ post_permalink($featuredPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $featuredPost->name }}</a>
                             </h2>
                             @if($featuredPost->excerpt)
                                 <p class="text-sm text-slate-600 dark:text-slate-300">{{ $featuredPost->excerpt }}</p>
@@ -90,16 +90,16 @@
                 <div class="space-y-3">
                     @forelse($headlinePosts as $post)
                         <article class="bg-white items-center dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex gap-3">
-                            <a href="{{ post_permalink($post) }}" class="flex-shrink-0">
+                            <a href="{{ post_permalink($post) }}" class="flex-shrink-0" wire:navigate>
                                 <img src="{{ $post->image_url }}"
                                      class="w-28 h-24 object-cover group-hover:opacity-85 transition duration-300" alt="{{ $post->name }}">
                             </a>
                             <div class="p-2 pr-3">
                                 @if($post->primaryCategory())
-                                    <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="text-xs text-primary-dark dark:text-primary-light font-semibold">{{ $post->primaryCategory()->name }}</a>
+                                    <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="text-xs text-primary-dark dark:text-primary-light font-semibold" wire:navigate>{{ $post->primaryCategory()->name }}</a>
                                 @endif
                                 <h3 class="text-sm font-semibold leading-snug line-clamp-1">
-                                    <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3">{{ $post->name }}</a>
+                                    <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3" wire:navigate>{{ $post->name }}</a>
                                 </h3>
                             </div>
                         </article>
@@ -117,17 +117,17 @@
             <section>
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-lg font-semibold border-b-2 border-primary-dark inline-block pb-1">{{ $primaryCategory->name }}</h2>
-                    <a href="{{ route('categories.show', $primaryCategory->slug) }}" class="text-xs text-primary-dark dark:text-primary-light hover:underline">আরও দেখুন</a>
+                    <a href="{{ route('categories.show', $primaryCategory->slug) }}" class="text-xs text-primary-dark dark:text-primary-light hover:underline" wire:navigate>আরও দেখুন</a>
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4">
                     @if($featuredCategoryPost)
                         <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
-                            <a href="{{ post_permalink($featuredCategoryPost) }}" class="flex-shrink-0">
+                            <a href="{{ post_permalink($featuredCategoryPost) }}" class="flex-shrink-0" wire:navigate>
                                 <img src="{{ $featuredCategoryPost->image_url }}" class="w-full h-40 object-cover" alt="{{ $featuredCategoryPost->name }}">
                             </a>
                             <div class="p-4">
                                 <h3 class="text-base font-semibold mb-1">
-                                    <a href="{{ post_permalink($featuredCategoryPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $featuredCategoryPost->name }}</a>
+                                    <a href="{{ post_permalink($featuredCategoryPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $featuredCategoryPost->name }}</a>
                                 </h3>
                                 @if($featuredCategoryPost->excerpt)
                                     <p class="text-sm text-slate-600 dark:text-slate-300">{{ $featuredCategoryPost->excerpt }}</p>
@@ -138,12 +138,12 @@
                     <div class="space-y-3">
                         @foreach($primaryCategory->posts->skip(1) as $post)
                             <article class="flex gap-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
-                                <a href="{{ post_permalink($post) }}" class="flex-shrink-0">
+                                <a href="{{ post_permalink($post) }}" class="flex-shrink-0" wire:navigate>
                                     <img src="{{ $post->image_url }}" class="w-32 h-24 object-cover" alt="{{ $post->name }}">
                                 </a>
                                 <div class="p-2 text-sm">
                                     <h4 class="font-semibold leading-snug line-clamp-2">
-                                        <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</a>
+                                        <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->name }}</a>
                                     </h4>
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $post->created_at?->diffForHumans() }}</div>
                                 </div>
@@ -162,12 +162,12 @@
             <div class="grid md:grid-cols-3 gap-4">
                 @forelse($latestPosts->take(6) as $post)
                     <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex flex-col">
-                        <a href="{{ post_permalink($post) }}">
+                        <a href="{{ post_permalink($post) }}" wire:navigate>
                             <img src="{{ $post->image_url }}" class="w-full h-32 object-cover" alt="{{ $post->name }}">
                         </a>
                         <div class="p-3 flex flex-col flex-1">
                             <h3 class="font-semibold text-sm mb-1 leading-snug">
-                                <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</a>
+                                <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->name }}</a>
                             </h3>
                             <div class="mt-auto text-xs text-slate-500 dark:text-slate-400">{{ $post->created_at?->diffForHumans() }}</div>
                         </div>
@@ -229,7 +229,7 @@
                                         প্রকাশিত: {{ $video->created_at?->diffForHumans() }}
                                     </span>
                                     <h3 class="text-sm font-semibold leading-snug">
-                                        <a href="{{ post_permalink($video) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $video->name }}</a>
+                                        <a href="{{ post_permalink($video) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $video->name }}</a>
                                     </h3>
                                 </div>
                             </article>
@@ -250,7 +250,7 @@
                     <div class="space-y-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
                         <div class="flex items-center justify-between mb-3">
                             <h2 class="text-lg font-semibold border-b-2 border-primary-dark inline-block pb-1">{{ $category->name }}</h2>
-                            <a href="{{ route('categories.show', $category->slug) }}" class="text-xs text-primary-dark dark:text-primary-light hover:underline">সব দেখুন</a>
+                            <a href="{{ route('categories.show', $category->slug) }}" class="text-xs text-primary-dark dark:text-primary-light hover:underline" wire:navigate>সব দেখুন</a>
                         </div>
                         @if($columnFeatured)
                             <article class="relative">
@@ -259,7 +259,7 @@
 
                                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                                     <h2 class="text-white text-lg md:text-xl font-semibold leading-snug">
-                                        <a href="{{ post_permalink($columnFeatured) }}" class="hover:text-primary-light">{{ $columnFeatured->name }}</a>
+                                        <a href="{{ post_permalink($columnFeatured) }}" class="hover:text-primary-light" wire:navigate>{{ $columnFeatured->name }}</a>
                                     </h2>
                                 </div>
                             </article>
@@ -268,12 +268,12 @@
                         <div class="divide-y divide-slate-200 dark:divide-slate-700">
                             @foreach($category->posts->skip(1) as $post)
                                 <article class="flex gap-3 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/70">
-                                    <a href="{{ post_permalink($post) }}">
+                                    <a href="{{ post_permalink($post) }}" wire:navigate>
                                         <img src="{{ $post->image_url }}" class="w-24 h-16 object-cover rounded-md" alt="{{ $post->name }}">
                                     </a>
                                     <div class="flex-1">
                                         <h3 class="text-sm font-semibold leading-snug">
-                                            <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</a>
+                                            <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->name }}</a>
                                         </h3>
                                     </div>
                                 </article>
@@ -325,7 +325,7 @@
                 <ul class="space-y-2 text-sm">
                     @forelse($breakingNews as $post)
                         <li>
-                            <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light">✔ {{ $post->name }}</a>
+                            <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>✔ {{ $post->name }}</a>
                         </li>
                     @empty
                         <li class="text-slate-500">কোনো ব্রেকিং নিউজ নেই</li>
@@ -369,7 +369,7 @@
                                             <span class="inline-block text-xs font-semibold text-primary-light mb-1">{{ $featured->primaryCategory()->name }}</span>
                                         @endif
                                         <h2 class="text-base font-semibold leading-snug mb-2 text-white">
-                                            <a href="{{ post_permalink($featured) }}" class="hover:text-primary-light">{{ $featured->name }}</a>
+                                            <a href="{{ post_permalink($featured) }}" class="hover:text-primary-light" wire:navigate>{{ $featured->name }}</a>
                                         </h2>
                                         @if($featured->excerpt)
                                             <p class="text-[11px] text-slate-100/90">{{ $featured->excerpt }}</p>
@@ -428,7 +428,7 @@
                     <div id="tab-latest" class="space-y-3">
                         @forelse($sidebarLatest as $post)
                             <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
-                                <a href="{{ post_permalink($post) }}">
+                                <a href="{{ post_permalink($post) }}" wire:navigate>
                                     <img src="{{ $post->image_url }}" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
                                 </a>
                                 <div class="flex-1">
@@ -444,7 +444,7 @@
                     <div id="tab-popular" class="space-y-3 hidden">
                         @forelse($popularPosts as $post)
                             <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
-                                <a href="{{ post_permalink($post) }}">
+                                <a href="{{ post_permalink($post) }}" wire:navigate>
                                     <img src="{{ $post->image_url }}" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
                                 </a>
                                 <div class="flex-1">

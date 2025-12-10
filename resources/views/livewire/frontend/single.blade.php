@@ -12,10 +12,10 @@
         @else
         <!-- Breadcrumb -->
         <nav class="text-xs text-gray-500 dark:text-slate-400 mb-3 flex items-center gap-1">
-            <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light">হোম</a>
+            <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>হোম</a>
             <span>/</span>
             @if($post?->primaryCategory())
-                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="hover:text-primary-dark dark:hover:text-primary-light">
+                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                     {{ $post->primaryCategory()->name }}
                 </a>
                 <span>/</span>
@@ -31,10 +31,10 @@
         <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-slate-400 mb-3">
             <span>প্রকাশিত: {{ $post?->created_at?->format('d F, Y') }}</span>
             <span>•</span>
-            @if($post?->author)<a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->author->name }}</a>@endif
+            @if($post?->author)<a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->author->name }}</a>@endif
             <span>•</span>
             @if($post?->primaryCategory())
-                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]">
+                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]" wire:navigate>
                     {{ $post->primaryCategory()->name }}
                 </a>
             @endif
@@ -62,7 +62,7 @@
             <div class="mt-4 flex flex-wrap gap-2 text-xs">
                 <div class="flex flex-wrap gap-2">
                     @foreach($post->tags as $tag)
-                        <a href="{{ route('tags.show', $tag->slug) }}" class="px-2 py-1 rounded-full bg-primary-light text-primary-dark dark:bg-slate-800 dark:text-slate-100">
+                        <a href="{{ route('tags.show', $tag->slug) }}" class="px-2 py-1 rounded-full bg-primary-light text-primary-dark dark:bg-slate-800 dark:text-slate-100" wire:navigate>
                             #{{ $tag->name }}
                         </a>
                     @endforeach
@@ -79,7 +79,7 @@
                     @if($previousPost)
                         <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3 space-y-2">
                             <div class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">পূর্ববর্তী পোষ্ট</div>
-                            <a href="{{ post_permalink($previousPost) }}" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light leading-snug block">
+                            <a href="{{ post_permalink($previousPost) }}" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light leading-snug block" wire:navigate>
                                 {{ $previousPost->name }}
                             </a>
                             <div class="text-xs text-gray-500 dark:text-slate-400">{{ $previousPost->created_at?->diffForHumans() }}</div>
@@ -89,7 +89,7 @@
                     @if($nextPost)
                         <article class="bg-slate-50 dark:bg-slate-900/60 rounded-lg p-3 space-y-2">
                             <div class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400 text-right">পরবর্তী পোষ্ট</div>
-                            <a href="{{ post_permalink($nextPost) }}" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light leading-snug block">
+                            <a href="{{ post_permalink($nextPost) }}" class="font-semibold hover:text-primary-dark dark:hover:text-primary-light leading-snug block" wire:navigate>
                                 {{ $nextPost->name }}
                             </a>
                             <div class="text-xs text-gray-500 dark:text-slate-400">{{ $nextPost->created_at?->diffForHumans() }}</div>
@@ -105,7 +105,7 @@
             <img src="https://placehold.co/80x80" alt="Author" class="w-14 h-14 rounded-full object-cover">
             <div>
                 <h3 class="text-sm font-semibold">
-                    <a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light">{{ $post->author->name }}</a>
+                    <a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->author->name }}</a>
                 </h3>
                 <p class="text-xs text-gray-600 dark:text-slate-400 mt-1">
                     ঘটনার ভেতরের খবর তুলে ধরতে আমরা সবসময় মাঠে থাকি। নির্ভুল তথ্য দেওয়ার চেষ্টা আমাদের অব্যাহত…
@@ -161,12 +161,12 @@
                                  class="w-20 h-14 object-cover rounded-md" alt="">
                             <div class="space-y-1 overflow-hidden">
                                 @if($related->primaryCategory())
-                                    <a href="{{ route('categories.show', $related->primaryCategory()->slug) }}" class="text-primary-dark dark:text-primary-light font-semibold">
+                                    <a href="{{ route('categories.show', $related->primaryCategory()->slug) }}" class="text-primary-dark dark:text-primary-light font-semibold" wire:navigate>
                                         {{ $related->primaryCategory()->name }}
                                     </a>
                                 @endif
                                 <div>
-                                    <a href="{{ post_permalink($related) }}" class="block truncate font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">
+                                    <a href="{{ post_permalink($related) }}" class="block truncate font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                         {{ $related->name }}
                                     </a>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -198,7 +198,7 @@
                 <ul class="space-y-2 text-sm">
                     @forelse($trendingPosts as $trending)
                         <li>
-                            <a href="{{ post_permalink($trending) }}" class="hover:text-primary-dark dark:hover:text-primary-light">
+                            <a href="{{ post_permalink($trending) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                                 ✔ {{ $trending->name }}
                             </a>
                             <div class="text-[11px] text-slate-500 dark:text-slate-400">
