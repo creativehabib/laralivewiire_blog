@@ -5,6 +5,7 @@ export default plugin(function ({ addComponents, theme }) {
     const primary = theme('colors.primary.DEFAULT') || '#0d6efd';
 
     addComponents({
+        // ... আগের স্টাইলগুলো ...
         '.prose-article': {
             color: (slate && slate[800]) || '#1f2937',
             lineHeight: '1.75',
@@ -14,6 +15,7 @@ export default plugin(function ({ addComponents, theme }) {
         '.dark .prose-article': {
             color: (slate && slate[100]) || '#e2e8f0',
         },
+        // Headings
         '.prose-article h1, .prose-article h2, .prose-article h3, .prose-article h4, .prose-article h5, .prose-article h6': {
             fontWeight: theme('fontWeight.semibold'),
             lineHeight: '1.25',
@@ -25,9 +27,9 @@ export default plugin(function ({ addComponents, theme }) {
         '.prose-article h2': { fontSize: theme('fontSize.2xl')[0] },
         '.prose-article h3': { fontSize: theme('fontSize.xl')[0] },
         '.prose-article h4': { fontSize: theme('fontSize.lg')[0] },
-        '.prose-article p, .prose-article li': {
-            marginBottom: '1em',
-        },
+        '.prose-article p, .prose-article li': { marginBottom: '1em' },
+
+        // Links
         '.prose-article a': {
             color: primary,
             fontWeight: theme('fontWeight.medium'),
@@ -39,6 +41,8 @@ export default plugin(function ({ addComponents, theme }) {
             color: theme('colors.primary.dark') || primary,
             textDecorationColor: 'currentColor',
         },
+
+        // Lists & Blockquotes
         '.prose-article ul': { listStyleType: 'disc', paddingLeft: '1.25rem' },
         '.prose-article ol': { listStyleType: 'decimal', paddingLeft: '1.25rem' },
         '.prose-article blockquote': {
@@ -48,6 +52,8 @@ export default plugin(function ({ addComponents, theme }) {
             fontStyle: 'italic',
             color: 'inherit',
         },
+
+        // Inline Code
         '.prose-article code': {
             backgroundColor: (slate && slate[100]) || '#f1f5f9',
             color: (slate && slate[800]) || '#1f2937',
@@ -60,22 +66,39 @@ export default plugin(function ({ addComponents, theme }) {
             backgroundColor: (slate && slate[800]) || '#1e293b',
             color: (slate && slate[100]) || '#e2e8f0',
         },
+
+        // ==========================================
+        // Code Block (Pre) - ফিক্সড ভার্সন
+        // ==========================================
         '.prose-article pre': {
-            backgroundColor: (slate && slate[900]) || '#0f172a',
-            color: (slate && slate[100]) || '#e2e8f0',
+            position: 'relative', // <--- ১. বাটন পজিশনের জন্য এটি বাধ্যতামূলক
+            backgroundColor: (slate && slate[50]) || '#f8fafc',
+            color: (slate && slate[800]) || '#1f2937',
             padding: '1rem',
             borderRadius: theme('borderRadius.xl'),
             overflowX: 'auto',
             borderWidth: '1px',
-            borderColor: (slate && slate[800]) || '#1e293b',
+            borderColor: (slate && slate[200]) || '#e2e8f0',
             boxShadow: theme('boxShadow.sm'),
+            marginTop: '1.5em',
+            marginBottom: '1.5em',
         },
+        '.dark .prose-article pre': {
+            backgroundColor: (slate && slate[900]) || '#0f172a',
+            color: (slate && slate[100]) || '#e2e8f0',
+            borderColor: (slate && slate[800]) || '#1e293b',
+        },
+
+        // Code inside Pre
         '.prose-article pre code': {
             backgroundColor: 'transparent',
             color: 'inherit',
             padding: '0',
             borderRadius: '0',
+            fontFamily: 'inherit',
         },
+
+        // Tables & Media
         '.prose-article table': {
             width: '100%',
             borderCollapse: 'collapse',

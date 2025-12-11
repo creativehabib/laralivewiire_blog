@@ -87,26 +87,26 @@
                         </div>
                     </article>
                 @endif
-                <div class="space-y-3">
-                    @forelse($headlinePosts as $post)
-                        <article class="bg-white items-center dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex gap-3">
-                            <a href="{{ post_permalink($post) }}" class="flex-shrink-0" wire:navigate>
-                                <img src="{{ $post->image_url }}"
-                                     class="w-28 h-24 object-cover group-hover:opacity-85 transition duration-300" alt="{{ $post->name }}">
-                            </a>
-                            <div class="p-2 pr-3">
-                                @if($post->primaryCategory())
-                                    <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="text-xs text-primary-dark dark:text-primary-light font-semibold" wire:navigate>{{ $post->primaryCategory()->name }}</a>
-                                @endif
-                                <h3 class="text-sm font-semibold leading-snug line-clamp-1">
-                                    <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3" wire:navigate>{{ $post->name }}</a>
-                                </h3>
-                            </div>
-                        </article>
-                    @empty
-                        <p class="text-sm text-slate-600 dark:text-slate-300">এই মুহূর্তে কোনো শিরোনাম খুঁজে পাওয়া যায়নি।</p>
-                    @endforelse
-                </div>
+                    <div class="space-y-3">
+                        @forelse($headlinePosts as $post)
+                            <article class="bg-white items-center dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex gap-3">
+                                <a href="{{ post_permalink($post) }}" class="flex-shrink-0" wire:navigate>
+                                    <img src="{{ $post->image_url }}"
+                                         class="w-28 h-24 object-cover group-hover:opacity-85 transition duration-300" alt="{{ $post->name }}">
+                                </a>
+                                <div class="p-2 pr-3">
+                                    @if($post->primaryCategory())
+                                        <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="text-xs text-primary-dark dark:text-primary-light font-semibold block" wire:navigate>{{ $post->primaryCategory()->name }}</a>
+                                    @endif
+                                    <h3 class="text-sm font-semibold leading-snug line-clamp-1">
+                                        <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3" wire:navigate>{{ $post->name }}</a>
+                                    </h3>
+                                </div>
+                            </article>
+                        @empty
+                            <p class="text-sm text-slate-600 dark:text-slate-300">এই মুহূর্তে কোনো শিরোনাম খুঁজে পাওয়া যায়নি।</p>
+                        @endforelse
+                    </div>
             </div>
         </section>
 
@@ -127,11 +127,17 @@
                             </a>
                             <div class="p-4">
                                 <h3 class="text-base font-semibold mb-1">
-                                    <a href="{{ post_permalink($featuredCategoryPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $featuredCategoryPost->name }}</a>
+                                    <a href="{{ post_permalink($featuredCategoryPost) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-2" wire:navigate>{{ $featuredCategoryPost->name }}</a>
                                 </h3>
                                 @if($featuredCategoryPost->excerpt)
-                                    <p class="text-sm text-slate-600 dark:text-slate-300">{{ $featuredCategoryPost->excerpt }}</p>
+                                    <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-4">{{ $featuredCategoryPost->excerpt }}</p>
                                 @endif
+                                <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                    <span>{{ $featuredPost->created_at?->diffForHumans() }}</span>
+                                    @if($featuredPost->author?->name)
+                                        <span>•</span><span>{{ $featuredPost->author->name }}</span>
+                                    @endif
+                                </div>
                             </div>
                         </article>
                     @endif

@@ -52,7 +52,7 @@
         </div>
 
         <!-- Post Body -->
-        <div class="typography prose-article text-slate-800 dark:text-slate-100">
+        <div class="typography prose-article text-slate-800 dark:text-slate-100 ck-content">
             {!! $post?->content !!}
         </div>
 

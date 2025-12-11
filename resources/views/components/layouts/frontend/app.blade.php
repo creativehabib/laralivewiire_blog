@@ -10,6 +10,23 @@
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
         @livewireStyles
         @stack('styles')
+        <script>
+            function applyTheme() {
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+
+            // পেজ লোড হওয়ার সাথে সাথে রান হবে
+            applyTheme();
+
+            // Livewire নেভিগেশন (এক পেজ থেকে অন্য পেজে গেলে) রান হবে
+            document.addEventListener('livewire:navigated', () => {
+                applyTheme();
+            });
+        </script>
     </head>
 
     <body class="font-sans antialiased
@@ -30,5 +47,10 @@
 
         @livewireScripts
         <script src="{{ asset('assets/js/script.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+        @stack('scripts')
     </body>
 </html>
