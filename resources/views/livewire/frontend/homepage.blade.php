@@ -123,7 +123,7 @@
                     @if($featuredCategoryPost)
                         <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
                             <a href="{{ post_permalink($featuredCategoryPost) }}" class="flex-shrink-0" wire:navigate>
-                                <img src="{{ $featuredCategoryPost->image_url }}" class="w-full h-40 object-cover" alt="{{ $featuredCategoryPost->name }}">
+                                <img src="{{ $featuredCategoryPost->image_url }}" class="w-full h-56 object-cover" alt="{{ $featuredCategoryPost->name }}">
                             </a>
                             <div class="p-4">
                                 <h3 class="text-base font-semibold mb-1">
