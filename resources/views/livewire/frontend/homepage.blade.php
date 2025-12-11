@@ -255,7 +255,7 @@
                         @if($columnFeatured)
                             <article class="relative">
                                 <img src="{{ $columnFeatured->image_url }}"
-                                     class="w-full h-56 md:h-72 object-cover" alt="{{ $columnFeatured->name }}">
+                                     class="w-full h-56 md:h-56 object-cover" alt="{{ $columnFeatured->name }}">
 
                                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                                     <h2 class="text-white text-lg md:text-xl font-semibold leading-snug">

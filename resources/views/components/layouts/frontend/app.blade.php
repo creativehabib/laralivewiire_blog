@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {{-- Google Font --}}
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-        {{-- Vite assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
         @livewireStyles
+        @stack('styles')
     </head>
 
     <body class="font-sans antialiased
