@@ -1,0 +1,180 @@
+<?php
+
+namespace App\Livewire\Admin\Pages;
+
+use App\Models\Admin\Page;
+use App\Models\Post;
+use App\Support\SeoAnalyzer;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Livewire\Component;
+
+class PageForm extends Component
+{
+    public ?Page $page = null;
+    public ?int $pageId = null;
+
+    // Fields
+    public string $name = '';
+    public string $slug = '';
+    public string $description = '';
+    public string $content = '';
+    public string $status = 'published';
+    public ?string $template = null;
+    public ?string $image = null;
+
+    // SEO (meta_boxes)
+    public ?string $seo_title = null;
+    public ?string $seo_description = null;
+    public string  $seo_index = 'index';
+    public ?string $seo_image = null;
+    public string $focus_keyword = '';
+
+    // UI helpers
+    public int $nameMax = 250;
+    public int $descMax = 400;
+
+    public function mount(?Page $page = null): void
+    {
+        if ($page) {
+            $this->page   = $page;
+            $this->pageId = $page->id;
+
+            $this->name        = (string) $page->name;
+            $this->slug        = (string) $page->slug;
+            $this->description = (string) ($page->description ?? '');
+            $this->content     = (string) ($page->content ?? '');
+            $this->status      = (string) ($page->status ?? 'published');
+            $this->template    = $page->template ?? null;
+            $this->image       = $page->image ?? null;
+
+            // load seo_meta if exists (HasMetaBoxes style)
+            if (method_exists($page, 'getMeta')) {
+                $meta = $page->getMeta('seo_meta', []);
+                $meta = $meta[0] ?? $meta;
+
+                $this->seo_title       = (string) ($meta['seo_title'] ?? '');
+                $this->seo_description = (string) ($meta['seo_description'] ?? '');
+                $this->seo_index       = (string) ($meta['index'] ?? 'index');
+                $this->seo_image       = $meta['seo_image'] ?? null;
+                $this->focus_keyword   = (string) ($meta['focus_keyword'] ?? '');
+            }
+        }
+    }
+
+    public function updatedName(): void
+    {
+        // Auto slug (only when creating OR slug empty)
+        if (! $this->pageId && $this->slug === '') {
+            $this->slug = Str::slug($this->name);
+        }
+    }
+
+    protected function rules(): array
+    {
+        $id = $this->pageId ?? 'NULL';
+
+        return [
+            'name'        => ['required', 'string', 'max:250'],
+            'slug'        => ['required', 'string', 'max:255', "unique:pages,slug,{$id}"],
+            'description' => ['nullable', 'string', 'max:400'],
+            'content'     => ['nullable', 'string'],
+            'status'      => ['required', 'in:published,draft'],
+            'template'    => ['nullable', 'string', 'max:120'],
+            'image'       => ['nullable', 'string', 'max:2048'],
+
+            // SEO
+            'seo_title'       => ['nullable', 'string', 'max:255'],
+            'seo_description' => ['nullable', 'string', 'max:400'],
+            'seo_image'       => ['nullable', 'string', 'max:2048'],
+            'focus_keyword'   => ['nullable', 'string', 'max:120'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Page name is required.',
+            'slug.required' => 'Slug is required.',
+            'slug.unique'   => 'This slug already exists.',
+            'status.in'     => 'Status must be published or draft.',
+        ];
+    }
+
+
+    public function getSeoAnalysisProperty(): array
+    {
+        return SeoAnalyzer::analyzeContent(
+            title: $this->seo_title ?: ($this->name ?? ''),
+            description: $this->seo_description ?: ($this->description ?? ''),
+            slug: $this->slug ?? '',
+            contentHtml: (string) ($this->content ?? ''),
+            focusKeyword: $this->focus_keyword,
+            options: []
+        );
+    }
+
+
+    public function save(string $redirect = 'stay')
+    {
+        $this->validate();
+
+        $user = Auth::user();
+
+        if ($this->pageId) {
+            $page = Page::query()->withTrashed()->findOrFail($this->pageId);
+        } else {
+            $page = new Page();
+            $page->author_id   = $user?->id;
+            $page->author_type = $user ? get_class($user) : null;
+        }
+
+        $page->name        = $this->name;
+        $page->slug        = $this->slug;
+        $page->description = $this->description;
+        $page->content     = $this->content;
+        $page->status      = $this->status;
+        $page->template    = $this->template;
+        $page->image       = $this->image;
+
+        $page->save();
+
+        // Save SEO meta (HasMetaBoxes)
+
+        $overrideMeta = [
+            'seo_title'       => $this->seo_title ?: $this->name,
+            'seo_description' => $this->seo_description ?: $this->description,
+            'seo_image'       => $this->seo_image ?: $this->image,
+            'index'           => $this->seo_index ?: 'index',
+            'focus_keyword'   => $this->focus_keyword ?: null,
+        ];
+        if (method_exists($page, 'setMeta')) {
+            $page->setMeta('seo_meta', [$overrideMeta]);
+        }
+
+        // SEO SCORE
+        $analysis = SeoAnalyzer::analyze($page, $this->focus_keyword, $overrideMeta);
+        $page->seo_score = $analysis['score'];
+        $page->saveQuietly();
+
+        $this->pageId = $page->id;
+
+        $this->dispatch('media-toast', type: 'success', message: 'Page Saved successfully.');
+
+        // Redirect (flash থাকবে)
+        if ($redirect === 'exit') {
+            return redirect()->route('admins.pages.index');
+        }
+
+        return redirect()->route('admins.pages.edit', $page->id);
+    }
+
+
+    public function render()
+    {
+        return view('livewire.admin.pages.page-form')
+            ->layout('components.layouts.app', [
+                'title' => $this->pageId ? 'Edit Page' : 'Create Page',
+            ]);
+    }
+}

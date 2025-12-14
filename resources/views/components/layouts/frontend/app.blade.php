@@ -44,7 +44,6 @@
         </main>
 
         <x-frontends.footer />
-
         @livewireScripts
         <script src="{{ asset('assets/js/script.js') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

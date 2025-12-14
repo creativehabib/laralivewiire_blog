@@ -123,14 +123,15 @@
             >
                 {{ __('Dashboard') }}
             </flux:sidebar.item>
+
             <flux:sidebar.item
                 icon="book-open"
-                :href="route('media')"
-                :current="request()->routeIs('media')"
-                tooltip="{{ __('Media') }}"
+                :href="route('admins.pages.index')"
+                :current="request()->routeIs('admins.pages.*')"
+                tooltip="{{ __('Pages') }}"
                 wire:navigate
             >
-                {{ __('Media') }}
+                {{ __('Pages') }}
             </flux:sidebar.item>
 
             {{--Blog, Category, Tags--}}
@@ -228,6 +229,16 @@
                     {{ __('Menus') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
+
+            <flux:sidebar.item
+                icon="book-open"
+                :href="route('media')"
+                :current="request()->routeIs('media')"
+                tooltip="{{ __('Media') }}"
+                wire:navigate
+            >
+                {{ __('Media') }}
+            </flux:sidebar.item>
 
             <flux:sidebar.group
                 heading="{{ __('Settings') }}"

@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Frontend\SitemapController;
+use App\Livewire\Admin\Pages\PageForm;
+use App\Livewire\Admin\Pages\PageTable;
 use App\Livewire\Admin\Posts\PostForm;
 use App\Livewire\Admin\Posts\PostTable;
 use App\Livewire\Admin\Tags\TagCreate;
@@ -25,6 +27,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', HomePage::class)->name('home');
 
@@ -88,6 +91,14 @@ if (! $categoryPrefixEnabled && $permalinkRoute['template'] === '%postname%') {
                 Route::get('/posts/index', PostTable::class)->name('posts.index')->middleware('permission:post.view');
                 Route::get('/posts/create', PostForm::class)->name('posts.create')->middleware('permission:post.create');
                 Route::get('/posts/{post}/edit', PostForm::class)->name('posts.edit')->middleware('permission:post.edit');
+            });
+        });
+
+        Route::prefix('admin')->name('admins.')->group(function () {
+            Route::middleware(['auth', 'preventBackHistory']) ->group(function () {
+                Route::get('/pages/index', PageTable::class)->name('pages.index')->middleware('permission:page.view');
+                Route::get('/pages/create', PageForm::class)->name('pages.create')->middleware('permission:page.create');
+                Route::get('/pages/{page}/edit', PageForm::class)->name('pages.edit')->middleware('permission:page.edit');
             });
         });
     });

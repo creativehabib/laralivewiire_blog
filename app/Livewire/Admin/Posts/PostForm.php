@@ -368,10 +368,10 @@ class PostForm extends Component
         session()->flash('toast_success', 'Post saved successfully.');
 
         if ($redirect === 'exit') {
-            return redirect()->route('blogs.posts.index');
+            return redirect()->route('admins.posts.index');
         }
 
-        return redirect()->route('blogs.posts.edit', $post->id);
+        return redirect()->route('admins.posts.edit', $post->id);
     }
 
     public function getSeoAnalysisProperty(): array

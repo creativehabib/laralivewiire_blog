@@ -9,7 +9,7 @@ class SeoAnalyzer
     /**
      * Yoast-style SEO analysis
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param Model $model
      * @param  string|null  $focusKeyword
      * @param  array|null   $overrideMeta  // live preview এর জন্য
      * @param  array        $options       // rule config override (lengths, density, etc.)

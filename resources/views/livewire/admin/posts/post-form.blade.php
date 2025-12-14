@@ -581,7 +581,7 @@
 
             // CKEditor → Livewire sync
             editor.on('change', function (e) {
-            @this.set('content', e.editor.getData());
+                @this.set('content', e.editor.getData());
             });
         }
 
