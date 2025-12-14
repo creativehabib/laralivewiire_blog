@@ -1,5 +1,4 @@
 @php
-    use App\Support\PermalinkManager;
     $seo = $this->seoAnalysis;
 @endphp
 
@@ -88,7 +87,7 @@
                             <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
                                 Preview:
                                 <span class="text-sky-600 dark:text-sky-400">
-                                    {{ PermalinkManager::formatUrl($slug ?: 'your-slug') }}
+                                    {{ preview_url('page', $slug ?: 'your-slug') }}
                                 </span>
                             </p>
                         </div>

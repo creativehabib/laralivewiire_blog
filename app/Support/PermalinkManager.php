@@ -313,7 +313,7 @@ class PermalinkManager
     /**
      * Generic preview builder
      *
-     * @param string $type 'post' | 'category' | 'tag'
+     * @param string $type 'post' | 'category' | 'tag' | 'page'
      * @param string|null $slug
      * @return string
      */
@@ -327,6 +327,9 @@ class PermalinkManager
 
             case 'tag':
                 return self::tagPreview($slug);
+
+            case 'page':
+                return self::pagePreview($slug);
 
             case 'post':
                 return self::postPreview($slug);
@@ -385,5 +388,10 @@ class PermalinkManager
 
         $path = trim($prefix, '/') . '/' . ltrim($slug, '/');
         return self::formatUrl($path, $absolute);
+    }
+
+    public static function pagePreview(string $slug = 'your-slug', bool $absolute = true): string
+    {
+        return self::formatUrl('page/' . ltrim($slug, '/'), $absolute);
     }
 }
