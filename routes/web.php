@@ -20,6 +20,7 @@ use App\Livewire\Admin\Tags\TagsIndex;
 use App\Livewire\Frontend\Homepage;
 use App\Livewire\Frontend\AuthorPage;
 use App\Livewire\Frontend\CategoryPage;
+use App\Livewire\Frontend\PageShow;
 use App\Livewire\Frontend\SinglePost;
 use App\Livewire\Frontend\TagPage;
 use App\Support\PermalinkManager;
@@ -58,6 +59,7 @@ $categoryRoute = Route::get($categoryRouteUri, CategoryPage::class)
 
 Route::get('/author/{author}', AuthorPage::class)->name('authors.show');
 Route::get('/tags/{slug}', TagPage::class)->name('tags.show');
+Route::get('/page/{page:slug}', PageShow::class)->name('pages.show');
 
 $permalinkRoute = PermalinkManager::routeDefinition();
 

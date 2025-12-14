@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Admin\Page;
 use App\Models\GeneralSetting;
 use App\Models\Post;
 use App\Models\Setting;
@@ -20,6 +21,13 @@ if (! function_exists('post_permalink')) {
     function post_permalink(Post $post, bool $absolute = true): string
     {
         return PermalinkManager::urlFor($post, $absolute);
+    }
+}
+
+if (! function_exists('page_permalink')) {
+    function page_permalink(Page $page, bool $absolute = true): string
+    {
+        return route('pages.show', ['page' => $page->slug], $absolute);
     }
 }
 
