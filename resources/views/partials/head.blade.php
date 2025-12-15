@@ -1,5 +1,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="{{ $metaDescription ?? __('Streamlined Livewire starter dashboard for creating and managing content efficiently.') }}" />
+<meta name="theme-color" content="#0f172a" />
+<meta name="color-scheme" content="dark light" />
 
 <title>{{ $title ?? config('app.name') }}</title>
 

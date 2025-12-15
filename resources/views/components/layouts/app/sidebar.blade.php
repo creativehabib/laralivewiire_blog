@@ -2,8 +2,6 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     @include('partials.head')
-    <!-- jQuery (must load BEFORE nestable) -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <!-- Nestable CSS -->
     <link rel="stylesheet"
@@ -95,6 +93,13 @@
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-slate-800">
+
+<a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900 focus:shadow-lg dark:focus:bg-slate-800 dark:focus:text-white"
+>
+    {{ __('Skip to main content') }}
+</a>
 
 <div class="min-h-screen flex">
     {{-- ============= SIDEBAR ============= --}}
@@ -394,7 +399,7 @@
     {{-- ============= /SIDEBAR ============= --}}
 
     {{-- ============= MAIN CONTENT ============= --}}
-    <main class="flex-1 min-h-screen bg-white dark:bg-slate-800">
+    <main id="main-content" tabindex="-1" class="flex-1 min-h-screen bg-white dark:bg-slate-800 focus:outline-none">
         <div class="p-4 sm:p-6 lg:p-8">
             {{ $slot }}
         </div>
@@ -404,6 +409,8 @@
 @include('mediamanager::includes.media-modal')
 @fluxScripts
 @mediaScripts
+<!-- jQuery (must load BEFORE nestable) -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="{{ asset('ckeditor/ckeditor.js') }}" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.js" referrerpolicy="no-referrer"></script>
 <script>
