@@ -4,6 +4,12 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-slate-800">
+        <a
+            href="#main-content"
+            class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900 focus:shadow-lg dark:focus:bg-slate-800 dark:focus:text-white"
+        >
+            {{ __('Skip to main content') }}
+        </a>
         <flux:header container class="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
@@ -117,7 +123,9 @@
             </flux:navlist>
         </flux:sidebar>
 
-        {{ $slot }}
+        <main id="main-content" tabindex="-1" class="focus:outline-none">
+            {{ $slot }}
+        </main>
 
         @fluxScripts
     </body>
