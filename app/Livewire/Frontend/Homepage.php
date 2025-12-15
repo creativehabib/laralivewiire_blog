@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Support\Seo;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
@@ -124,6 +125,9 @@ class Homepage extends Component
             'popularPosts' => $this->popularPosts,
             'sidebarLatest' => $this->sidebarLatest,
             'isReady' => $this->isReady,
-        ])->layout('components.layouts.frontend.app', ['title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম']);
+        ])->layout('components.layouts.frontend.app', [
+            'title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম',
+            'seo' => Seo::forHomepage(['title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম']),
+        ]);
     }
 }

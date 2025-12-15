@@ -3,6 +3,7 @@
 namespace App\Livewire\Frontend;
 
 use App\Models\Post;
+use App\Support\Seo;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
@@ -139,6 +140,7 @@ class SinglePost extends Component
             'nextPost'      => $this->nextPost,
         ])->layout('components.layouts.frontend.app', [
             'title' => $this->post?->name ?? 'Post',
+            'seo' => Seo::forPost($this->post),
         ]);
     }
 }
