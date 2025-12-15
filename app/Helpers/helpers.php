@@ -5,6 +5,7 @@ use App\Models\GeneralSetting;
 use App\Models\Post;
 use App\Models\Setting;
 use App\Support\PermalinkManager;
+use App\Support\SettingManager;
 use Illuminate\Support\Facades\Cache;
 
 if (!function_exists('settings')) {
@@ -53,5 +54,22 @@ if (! function_exists('preview_url')) {
     function preview_url(string $type, ?string $slug = null): string
     {
         return PermalinkManager::preview($type, $slug);
+    }
+}
+
+if (! function_exists('setting')) {
+    function setting(?string $key = null, $default = null)
+    {
+        if($key === null) {
+            return SettingManager::class;
+        }
+        return SettingManager::get($key, $default);
+    }
+}
+
+if(! function_exists('set_setting')) {
+    function set_setting(string $key, $value, string $group = 'general'): void
+    {
+        SettingManager::set($key, $value, $group);
     }
 }

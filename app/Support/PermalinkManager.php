@@ -96,11 +96,10 @@ class PermalinkManager
 
     public static function currentStructure(): array
     {
-        $settings = general_settings();
 
         return self::validatedStructure(
-            $settings?->permalink_structure ?: null,
-            $settings?->custom_permalink_structure ?: null,
+            setting('permalink_structure') ?: null,
+            setting('custom_permalink_structure') ?: null,
         );
     }
 
@@ -157,7 +156,23 @@ class PermalinkManager
         }
 
         if (Str::contains($template, '%category%')) {
-            $params['category'] = optional($post->category)->slug ?: 'uncategorized';
+
+            // 1) যদি post->category (belongsTo) থাকে
+            if (method_exists($post, 'category') && $post->relationLoaded('category')) {
+                $params['category'] = optional($post->category)->slug ?: 'uncategorized';
+            }
+
+            // 2) যদি post->categories (belongsToMany) থাকে
+            if (!isset($params['category'])) {
+                // relation loaded থাকলে দ্রুত
+                if ($post->relationLoaded('categories')) {
+                    $cat = $post->categories->first();
+                } else {
+                    $cat = $post->categories()->select('slug')->first();
+                }
+
+                $params['category'] = $cat?->slug ?: 'uncategorized';
+            }
         }
 
         return $params;
@@ -366,7 +381,7 @@ class PermalinkManager
     public static function categoryPreview(string $slug = 'your-slug', bool $absolute = true): string
     {
         // settings থেকে category prefix নেওয়া
-        $categoryPrefixEnabled = general_settings('category_slug_prefix_enabled');
+        $categoryPrefixEnabled = setting('category_slug_prefix_enabled');
         $categoryPrefixEnabled = is_null($categoryPrefixEnabled) || (bool)$categoryPrefixEnabled;
 
         // prefix /category থাকবে নাকি সরাসরি /{slug}
@@ -383,8 +398,7 @@ class PermalinkManager
      */
     public static function tagPreview(string $slug = 'your-slug', bool $absolute = true): string
     {
-        $settings = general_settings();
-        $prefix   = $settings?->tag_slug_prefix ?? 'tag';
+        $prefix = setting('tag_slug_prefix', 'tag');
 
         $path = trim($prefix, '/') . '/' . ltrim($slug, '/');
         return self::formatUrl($path, $absolute);

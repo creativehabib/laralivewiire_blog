@@ -245,27 +245,37 @@
                 icon="square-3-stack-3d"
                 expandable
                 class="grid"
-                :expanded="request()->routeIs('settings.*')"
+                :expanded="request()->routeIs('settings.dynamic')"
             >
+{{--                <flux:sidebar.item--}}
+{{--                    icon="home"--}}
+{{--                    :href="route('settings.general')"--}}
+{{--                    :current="request()->routeIs('settings.general')"--}}
+{{--                    tooltip="{{ __('General Setting') }}"--}}
+{{--                    wire:navigate--}}
+{{--                >--}}
+{{--                    {{ __('General Setting') }}--}}
+{{--                </flux:sidebar.item>--}}
+
                 <flux:sidebar.item
                     icon="home"
-                    :href="route('settings.general')"
-                    :current="request()->routeIs('settings.general')"
+                    :href="route('settings.dynamic', 'general')"
+                    :current="request()->routeIs('settings.dynamic', 'general')"
                     tooltip="{{ __('General Setting') }}"
                     wire:navigate
                 >
                     {{ __('General Setting') }}
                 </flux:sidebar.item>
 
-                <flux:sidebar.item
-                    icon="home"
-                    :href="route('settings.permalinks')"
-                    :current="request()->routeIs('settings.permalinks')"
-                    tooltip="{{ __('Permalinks') }}"
-                    wire:navigate
-                >
-                    {{ __('Permalinks') }}
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item--}}
+{{--                    icon="home"--}}
+{{--                    :href="route('settings.permalinks')"--}}
+{{--                    :current="request()->routeIs('settings.permalinks')"--}}
+{{--                    tooltip="{{ __('Permalinks') }}"--}}
+{{--                    wire:navigate--}}
+{{--                >--}}
+{{--                    {{ __('Permalinks') }}--}}
+{{--                </flux:sidebar.item>--}}
 
                 <flux:sidebar.item
                     icon="home"

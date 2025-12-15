@@ -14,6 +14,7 @@ use App\Livewire\Admin\Pages\PageForm;
 use App\Livewire\Admin\Pages\PageTable;
 use App\Livewire\Admin\Posts\PostForm;
 use App\Livewire\Admin\Posts\PostTable;
+use App\Livewire\Admin\Settings\SettingsGenerator;
 use App\Livewire\Admin\Tags\TagCreate;
 use App\Livewire\Admin\Tags\TagEdit;
 use App\Livewire\Admin\Tags\TagsIndex;
@@ -50,7 +51,7 @@ Route::get('/sitemap-pages.xml', [SitemapController::class, 'pages'])->name('sit
 // --- সাইটম্যাপ রুট শেষ ---
 
 // ২. এখন "Greedy" (ওয়াইল্ডকার্ড) ক্যাটাগরি রুট ডিফাইন করুন।
-$categoryPrefixEnabled = general_settings('category_slug_prefix_enabled');
+$categoryPrefixEnabled = setting('category_slug_prefix_enabled');
 $categoryPrefixEnabled = is_null($categoryPrefixEnabled) || (bool)$categoryPrefixEnabled;
 $categoryRouteUri = $categoryPrefixEnabled ? '/category/{category:slug}' : '/{category:slug}';
 
@@ -74,8 +75,8 @@ if (! $categoryPrefixEnabled && $permalinkRoute['template'] === '%postname%') {
     Route::middleware(['auth', 'preventBackHistory']) ->group(function () {
         Route::prefix('setting')->name('settings.')->group(function () {
             Route::controller(SettingController::class)->group(function(){
-                Route::get('/permalinks', 'permalinksSetting')->name('permalinks')->middleware('permission:permalinks.view');
-                Route::get('/general', 'generalSettings')->name('general')->middleware('permission:setting.view');
+//                Route::get('/permalinks', 'permalinksSetting')->name('permalinks')->middleware('permission:permalinks.view');
+//                Route::get('/general', 'generalSettings')->name('general')->middleware('permission:setting.view');
                 Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
                 Route::get('/sitemap', 'sitemapSettings')->name('sitemap')->middleware('permission:setting.view');
             });
@@ -144,6 +145,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     });
 });
+
+Route::middleware(['auth','preventBackHistory'])
+    ->get('/setting/{group}', SettingsGenerator::class)
+    ->name('settings.dynamic')
+    ->middleware('permission:setting.view');
+
 
 
 // ৩. সবশেষে "Greedy" পোস্ট রুটটি ডিফাইন করুন।

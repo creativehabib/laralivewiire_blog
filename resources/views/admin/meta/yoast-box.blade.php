@@ -135,7 +135,7 @@
             {{-- IMAGES --}}
             <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:border-slate-700 dark:bg-slate-800/70">
                 <span class="flex h-7 w-7 items-center justify-center rounded-full border text-xs {{ $seo['image_ok'] ? 'border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : 'border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-800 dark:bg-rose-900/40 dark:text-rose-200' }}">
-                    <i class="fa-solid {{ $seo['image_ok'] ? 'fa-image' : 'fa-image-slash' }}"></i>
+                    <i class="fa-solid {{ $seo['image_ok'] ? 'fa-image' : 'fa-eye-slash' }}"></i>
                 </span>
                 <div>
                     <div class="font-medium text-slate-800 dark:text-slate-100">Images with alt text</div>
