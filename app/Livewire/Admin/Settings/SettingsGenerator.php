@@ -69,6 +69,10 @@ class SettingsGenerator extends Component
         $this->dispatch('media-toast', type: 'success', message: "{$config['title']} settings saved.");
     }
 
+    public function getPagePreviewProperty(): string
+    {
+        return \App\Support\PermalinkManager::pagePreview('sample-page');
+    }
     public function render()
     {
         return view('livewire.admin.settings.generator', [

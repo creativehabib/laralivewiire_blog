@@ -1,5 +1,6 @@
 <div class="space-y-4">
-    <div class="flex items-center justify-between">
+    {{-- Header --}}
+    <div class="flex items-center justify-between gap-3">
         <h1 class="text-sm font-semibold text-slate-800 dark:text-slate-100">
             {{ $config['title'] ?? 'Settings' }}
         </h1>
@@ -8,13 +9,16 @@
             @foreach($groups as $key => $g)
                 <a href="{{ route('settings.dynamic', ['group' => $key]) }}"
                    class="text-xs px-3 py-1.5 rounded-lg border
-                          {{ $group === $key ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700' }}">
+                        {{ $group === $key
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700' }}">
                     {{ $g['title'] }}
                 </a>
             @endforeach
         </div>
     </div>
 
+    {{-- Card --}}
     <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div class="p-5 space-y-5">
             @foreach(($config['fields'] ?? []) as $field)
@@ -22,16 +26,27 @@
                     $key = $field['key'];
                     $type = $field['type'] ?? 'text';
                     $visibleWhen = $field['visible_when'] ?? null;
+
+                    // ✅ visible_when expression build: (cond1 && cond2 && ...)
+                    $visibleExpr = null;
+                    if (is_array($visibleWhen) && count($visibleWhen)) {
+                        $visibleExpr = collect($visibleWhen)->map(function ($depVal, $depKey) {
+                            if (is_bool($depVal)) {
+                                return "(\$wire.data.$depKey === " . ($depVal ? 'true' : 'false') . ")";
+                            }
+                            if (is_numeric($depVal)) {
+                                return "(\$wire.data.$depKey == $depVal)";
+                            }
+                            $depVal = addslashes((string) $depVal);
+                            return "(\$wire.data.$depKey == '$depVal')";
+                        })->implode(' && ');
+                    }
                 @endphp
 
                 <div
-                    @if($visibleWhen)
+                    @if($visibleExpr)
                         x-data
-                    x-show="
-                            @foreach($visibleWhen as $depKey => $depVal)
-                                ($wire.data.{{ $depKey }} == '{{ $depVal }}')
-                            @endforeach
-                        "
+                    x-show="{!! $visibleExpr !!}"
                     x-cloak
                     @endif
                 >
@@ -39,11 +54,13 @@
                         {{ $field['label'] ?? $key }}
                     </label>
 
-                    {{-- ✅ PERMALINK STRUCTURE (radio cards) --}}
+                    {{-- ✅ PERMALINK STRUCTURE --}}
                     @if($type === 'permalink_structure')
                         @php
                             $options = \App\Support\PermalinkManager::availableStructures();
                             $tokens  = \App\Support\PermalinkManager::allowedTokens();
+
+                            $current = $data[$key] ?? \App\Support\PermalinkManager::DEFAULT_STRUCTURE;
                         @endphp
 
                         <div class="space-y-3">
@@ -55,12 +72,12 @@
 
                                 <label for="{{ $id }}"
                                        class="flex items-start gap-3 rounded-lg border px-3 py-2 cursor-pointer
-                                              border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900
-                                              hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800 transition-colors">
+                                            border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900
+                                            hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800 transition-colors">
                                     <input type="radio"
                                            id="{{ $id }}"
                                            class="mt-1 h-4 w-4 text-indigo-600"
-                                           wire:model.defer="data.permalink_structure"
+                                           wire:model.live="data.{{ $key }}"
                                            value="{{ $optKey }}">
                                     <span>
                                         <span class="block text-sm font-semibold text-slate-800 dark:text-slate-100">
@@ -76,12 +93,12 @@
                             {{-- custom --}}
                             <label for="permalink-custom"
                                    class="flex items-start gap-3 rounded-lg border px-3 py-2 cursor-pointer
-                                          border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900
-                                          hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800 transition-colors">
+                                        border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900
+                                        hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800 transition-colors">
                                 <input type="radio"
                                        id="permalink-custom"
                                        class="mt-1 h-4 w-4 text-indigo-600"
-                                       wire:model.defer="data.permalink_structure"
+                                       wire:model.live="data.{{ $key }}"
                                        value="custom">
                                 <span>
                                     <span class="block text-sm font-semibold text-slate-800 dark:text-slate-100">
@@ -95,23 +112,53 @@
                                     </span>
                                 </span>
                             </label>
+
+                            {{-- custom input only when custom selected --}}
+                            @if(($data[$key] ?? null) === 'custom')
+                                <div class="space-y-1">
+                                    <div class="flex rounded-lg shadow-sm">
+                                        <span class="inline-flex items-center rounded-l-lg border border-r-0 border-slate-300 dark:border-slate-700
+                                                bg-slate-50 dark:bg-slate-900 px-3 text-xs text-slate-500 dark:text-slate-300">
+                                            {{ rtrim(url('/'), '/') }}/
+                                        </span>
+                                        <input type="text"
+                                               class="block w-full rounded-r-lg border border-slate-300 dark:border-slate-700
+                                                    bg-white dark:bg-slate-900 px-2 py-1.5 text-sm text-slate-900 dark:text-slate-100
+                                                    placeholder-slate-400 dark:placeholder-slate-500
+                                                    focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/70 focus:outline-none"
+                                               wire:model.live.debounce.300ms="data.custom_permalink_structure"
+                                               placeholder="%category%/%postname%">
+                                    </div>
+
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                                        Allowed tokens: {{ implode(', ', $tokens) }}
+                                    </p>
+
+                                    @error("data.custom_permalink_structure")
+                                    <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
                         </div>
 
-                        {{-- ✅ PREVIEW BLOCK --}}
+                        {{-- ✅ PERMALINK PREVIEW --}}
                     @elseif($type === 'permalink_preview')
                         @php
-                            $structure = $data['permalink_structure'] ?? \App\Support\PermalinkManager::DEFAULT_STRUCTURE;
+                            $structureKey = 'permalink_structure';
+                            $structure = $data[$structureKey] ?? \App\Support\PermalinkManager::DEFAULT_STRUCTURE;
                             $custom    = $data['custom_permalink_structure'] ?? null;
 
                             $sample = \App\Support\PermalinkManager::previewSample($structure, $custom);
 
-                            $catPrefix = (bool) ($data['category_slug_prefix_enabled'] ?? true);
+                            $catPrefix = $data['category_slug_prefix_enabled'] ?? true;
+                            $catPrefix = is_null($catPrefix) ? true : (bool) $catPrefix;
+
                             $categoryPreview = $catPrefix
                                 ? url('category/sample-category')
                                 : url('sample-category');
 
-                            $tagBase = trim((string)($data['tag_slug_prefix'] ?? 'tags'), '/');
-                            $tagPreview = url($tagBase.'/sample-tag');
+                            $tagBase = trim((string)($data['tag_slug_prefix'] ?? 'tag'), '/');
+                            $tagPreview = url($tagBase . '/sample-tag');
                         @endphp
 
                         <div class="space-y-3">
@@ -145,15 +192,11 @@
                             @endforeach
                         </select>
 
-                        {{-- ✅ switch --}}
+                        {{-- ✅ switch (boolean stable) --}}
                     @elseif($type === 'switch')
-                        {{-- unchecked হলে null আসার সমস্যা avoid করতে hidden --}}
-                        <input type="hidden" wire:model.defer="data.{{ $key }}" value="0">
-
                         <label class="inline-flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200">
                             <input type="checkbox"
-                                   wire:model.defer="data.{{ $key }}"
-                                   value="1"
+                                   wire:model.live="data.{{ $key }}"
                                    class="h-4 w-4 rounded border-slate-300 text-indigo-600">
                             <span>{{ $field['hint'] ?? '' }}</span>
                         </label>
@@ -173,10 +216,12 @@
                                class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm">
                     @endif
 
-                    @if(!empty($field['hint']) && $type !== 'switch' && $type !== 'permalink_structure')
+                    {{-- hint --}}
+                    @if(!empty($field['hint']) && !in_array($type, ['switch','permalink_structure'], true))
                         <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">{{ $field['hint'] }}</p>
                     @endif
 
+                    {{-- error --}}
                     @error("data.$key")
                     <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                     @enderror
@@ -184,6 +229,7 @@
             @endforeach
         </div>
 
+        {{-- Footer --}}
         <div class="border-t border-slate-200 dark:border-slate-700 p-4 flex justify-end">
             <button wire:click="save"
                     wire:loading.attr="disabled"

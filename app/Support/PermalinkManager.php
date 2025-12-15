@@ -96,12 +96,12 @@ class PermalinkManager
 
     public static function currentStructure(): array
     {
-
         return self::validatedStructure(
-            setting('permalink_structure') ?: null,
-            setting('custom_permalink_structure') ?: null,
+            structure: setting('permalink_structure') ?: self::DEFAULT_STRUCTURE,
+            custom: setting('custom_permalink_structure') ?: null
         );
     }
+
 
     public static function sanitizeCustomStructure(?string $value): string
     {
@@ -202,15 +202,16 @@ class PermalinkManager
         return self::normalize($template);
     }
 
-    public static function templateFor(?string $structure = null, ?string $custom = null): string
+    /* -------------------------------- */
+    /* Template helpers */
+    /* -------------------------------- */
+    protected static function templateFor(string $structure, ?string $custom): string
     {
-        [$structure, $custom] = self::validatedStructure($structure, $custom);
-
-        if ($structure === self::STRUCTURE_CUSTOM) {
-            return $custom ?: self::STRUCTURE_TEMPLATES[self::DEFAULT_STRUCTURE];
+        if ($structure === self::STRUCTURE_CUSTOM && $custom) {
+            return trim($custom, '/');
         }
 
-        return self::STRUCTURE_TEMPLATES[$structure] ?? self::STRUCTURE_TEMPLATES[self::DEFAULT_STRUCTURE];
+        return self::STRUCTURE_TEMPLATES[self::DEFAULT_STRUCTURE];
     }
 
     public static function replaceTokens(string $template, array $replacements): string
@@ -403,9 +404,24 @@ class PermalinkManager
         $path = trim($prefix, '/') . '/' . ltrim($slug, '/');
         return self::formatUrl($path, $absolute);
     }
-
-    public static function pagePreview(string $slug = 'your-slug', bool $absolute = true): string
+    public static function pagePrefixEnabled(): bool
     {
-        return self::formatUrl('page/' . ltrim($slug, '/'), $absolute);
+        $enabled = setting('page_slug_prefix_enabled');
+        return is_null($enabled) || (bool) $enabled;
     }
+
+    public static function pagePrefix(): string
+    {
+        return trim((string) setting('page_slug_prefix', 'page'), '/');
+    }
+
+    public static function pagePreview(string $slug = 'your-page', bool $absolute = true): string
+    {
+        $path = self::pagePrefixEnabled()
+            ? self::pagePrefix() . '/' . ltrim($slug, '/')
+            : ltrim($slug, '/');
+
+        return self::formatUrl($path, $absolute);
+    }
+
 }

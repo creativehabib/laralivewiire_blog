@@ -100,6 +100,27 @@ return [
                     'type' => 'permalink_preview', // ✅ computed preview
                     'label' => 'Sample URL',
                 ],
+
+                // ---------- PAGE ----------
+                [
+                    'key'     => 'page_slug_prefix_enabled',
+                    'label'   => 'Page URL prefix',
+                    'type'    => 'switch',
+                    'default' => true,
+                    'hint'    => 'Enable / disable "page" prefix for page URLs',
+                ],
+
+                [
+                    'key'     => 'page_slug_prefix',
+                    'label'   => 'Page URL base',
+                    'type'    => 'text',
+                    'default' => 'page',
+                    'rules'   => ['nullable', 'regex:/^[a-z0-9\-]+$/'],
+                    'visible_when' => [
+                        'page_slug_prefix_enabled' => true,
+                    ],
+                    'hint' => 'Example: page, info, docs',
+                ],
             ],
         ],
         'seo' => [

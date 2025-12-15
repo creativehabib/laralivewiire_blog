@@ -3,10 +3,13 @@
 namespace App\Livewire\Admin\Pages;
 
 use App\Models\Admin\Page;
+use App\Models\Category;
 use App\Models\Post;
+use App\Rules\UniqueSlugAcrossContent;
 use App\Support\SeoAnalyzer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class PageForm extends Component
@@ -74,9 +77,24 @@ class PageForm extends Component
     {
         $id = $this->pageId ?? 'NULL';
 
+        $pagePrefixEnabled = setting('page_slug_prefix_enabled');
+        $pagePrefixEnabled = is_null($pagePrefixEnabled) || (bool) $pagePrefixEnabled;
+
+        $crossRule = $pagePrefixEnabled ? [] : [
+            new UniqueSlugAcrossContent(
+                models: [Post::class, Category::class],
+                ignore: $this->page
+            ),
+        ];
+
         return [
             'name'        => ['required', 'string', 'max:250'],
-            'slug'        => ['required', 'string', 'max:255', "unique:pages,slug,{$id}"],
+            'slug' => array_merge([
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('pages', 'slug')->ignore($this->pageId),
+            ], $crossRule),
             'description' => ['nullable', 'string', 'max:400'],
             'content'     => ['nullable', 'string'],
             'status'      => ['required', 'in:published,draft'],
