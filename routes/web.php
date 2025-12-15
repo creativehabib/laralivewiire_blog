@@ -52,7 +52,26 @@ Route::get('/sitemap-pages.xml', [SitemapController::class, 'pages'])->name('sit
  * STATIC FRONT ROUTES
  */
 Route::get('/author/{author}', AuthorPage::class)->name('authors.show');
-Route::get('/tags/{slug}', TagPage::class)->name('tags.show');
+/**
+ * TAG ROUTE (prefix depends on setting)
+ */
+$tagPrefixEnabled = PermalinkManager::tagPrefixEnabled();
+$tagPrefix        = PermalinkManager::tagPrefix();
+
+$tagUri = $tagPrefixEnabled ? "/{$tagPrefix}/{slug}" : "/{slug}";
+
+$tagRoute = Route::get($tagUri, TagPage::class)->name('tags.show');
+
+/**
+ * Fallback: prefix OFF হলে /slug conflict হতে পারে (page/category/post)
+ * তাই Tag fallback রাখা ভালো (optional)
+ */
+if (! $tagPrefixEnabled) {
+    $tagRoute->missing(function (Request $request) {
+        abort(404);
+    });
+}
+
 
 /**
  * DYNAMIC FRONT ROUTES (Category + Page + Post)
@@ -78,6 +97,11 @@ $pagePrefix        = PermalinkManager::pagePrefix();
 $pageUri = $pagePrefixEnabled ? "/{$pagePrefix}/{page:slug}" : "/{page:slug}";
 $pageRoute = Route::get($pageUri, PageShow::class)->name('pages.show');
 
+if (! $pagePrefixEnabled && $permalinkRoute['template'] === '%postname%') {
+    $pageRoute->missing(function (Request $request) {
+        return redirect()->route('posts.show', ['post' => $request->route('page')]);
+    });
+}
 /**
  * IMPORTANT:
  * Post greedy route MUST be last

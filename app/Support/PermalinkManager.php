@@ -96,12 +96,12 @@ class PermalinkManager
 
     public static function currentStructure(): array
     {
+
         return self::validatedStructure(
-            structure: setting('permalink_structure') ?: self::DEFAULT_STRUCTURE,
-            custom: setting('custom_permalink_structure') ?: null
+            setting('permalink_structure') ?: null,
+            setting('custom_permalink_structure') ?: null,
         );
     }
-
 
     public static function sanitizeCustomStructure(?string $value): string
     {
@@ -202,16 +202,15 @@ class PermalinkManager
         return self::normalize($template);
     }
 
-    /* -------------------------------- */
-    /* Template helpers */
-    /* -------------------------------- */
-    protected static function templateFor(string $structure, ?string $custom): string
+    public static function templateFor(?string $structure = null, ?string $custom = null): string
     {
-        if ($structure === self::STRUCTURE_CUSTOM && $custom) {
-            return trim($custom, '/');
+        [$structure, $custom] = self::validatedStructure($structure, $custom);
+
+        if ($structure === self::STRUCTURE_CUSTOM) {
+            return $custom ?: self::STRUCTURE_TEMPLATES[self::DEFAULT_STRUCTURE];
         }
 
-        return self::STRUCTURE_TEMPLATES[self::DEFAULT_STRUCTURE];
+        return self::STRUCTURE_TEMPLATES[$structure] ?? self::STRUCTURE_TEMPLATES[self::DEFAULT_STRUCTURE];
     }
 
     public static function replaceTokens(string $template, array $replacements): string
@@ -397,11 +396,12 @@ class PermalinkManager
     /**
      * tag preview URL builder
      */
-    public static function tagPreview(string $slug = 'your-slug', bool $absolute = true): string
+    public static function tagPreview(string $slug = 'your-tag', bool $absolute = true): string
     {
-        $prefix = setting('tag_slug_prefix', 'tag');
+        $path = self::tagPrefixEnabled()
+            ? self::tagPrefix() . '/' . ltrim($slug, '/')
+            : ltrim($slug, '/');
 
-        $path = trim($prefix, '/') . '/' . ltrim($slug, '/');
         return self::formatUrl($path, $absolute);
     }
     public static function pagePrefixEnabled(): bool
@@ -423,5 +423,17 @@ class PermalinkManager
 
         return self::formatUrl($path, $absolute);
     }
+
+    public static function tagPrefixEnabled(): bool
+    {
+        $enabled = setting('tag_slug_prefix_enabled', true);
+        return is_null($enabled) || (bool) $enabled;
+    }
+
+    public static function tagPrefix(): string
+    {
+        return trim((string) setting('tag_slug_prefix', 'tags'), '/');
+    }
+
 
 }
