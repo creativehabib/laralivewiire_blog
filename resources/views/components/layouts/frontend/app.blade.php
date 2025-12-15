@@ -2,8 +2,11 @@
 <html lang="bn">
     <head>
         <meta charset="UTF-8" />
-        <title>{{ $title ?? 'বাংলাদেশী নিউজ পোর্টাল' }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        @php
+            $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'বাংলাদেশী নিউজ পোর্টাল']);
+        @endphp
+        <x-seo.meta :seo="$seoData" />
         {{-- Google Font --}}
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])

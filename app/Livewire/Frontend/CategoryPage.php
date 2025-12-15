@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Support\Seo;
 use Livewire\WithPagination;
 use Livewire\Component;
 
@@ -53,6 +54,7 @@ class CategoryPage extends Component
         return view('livewire.frontend.category', compact('featurePosts', 'latestPosts'))
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->category->name,
+                'seo' => Seo::forCategory($this->category),
             ]);
     }
 }

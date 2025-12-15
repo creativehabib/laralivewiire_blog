@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Support\Seo;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -66,6 +67,7 @@ class AuthorPage extends Component
             ->with('posts', $posts)
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->author->name,
+                'seo' => Seo::forAuthor($this->author),
             ]);
     }
 

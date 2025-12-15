@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Admin\Tag;
 use App\Models\Post;
+use App\Support\Seo;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
@@ -48,6 +49,7 @@ class TagPage extends Component
         return view('livewire.frontend.tag')
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->tag?->name ?? 'ট্যাগ',
+                'seo' => Seo::forTag($this->tag),
             ]);
     }
 }
