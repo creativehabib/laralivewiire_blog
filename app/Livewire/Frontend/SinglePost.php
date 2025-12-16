@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Post;
 use App\Support\Seo;
+use App\Support\PostViewCounter;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
@@ -85,6 +86,10 @@ class SinglePost extends Component
         $post = $this->post;
 
         abort_if(! $post, 404);
+
+        if (PostViewCounter::record($post)) {
+            $post->views = ($post->views ?? 0) + 1;
+        }
 
         $post->loadMissing([
             'categories:id,name,slug',
