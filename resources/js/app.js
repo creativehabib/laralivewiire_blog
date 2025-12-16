@@ -39,4 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initCodeCopy();
     document.addEventListener('livewire:navigated', initCodeCopy);
+
+    document.addEventListener('livewire:init', () => {
+        if (window.Livewire && typeof window.Livewire.hook === 'function') {
+            window.Livewire.hook('message.processed', initCodeCopy);
+        }
+    });
 });
