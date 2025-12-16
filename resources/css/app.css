@@ -72,10 +72,36 @@
 
 /* Dark mode হলে কিছু কালার swap করতে চাইলে */
 @layer theme {
+    :root {
+        /* Prism code highlighting (light) */
+        --prism-surface: #f8fafc;
+        --prism-border: #e2e8f0;
+        --prism-plain: #0f172a;
+        --prism-muted: #475569;
+        --prism-comment: #94a3b8;
+        --prism-string: #0f766e;
+        --prism-keyword: #0f3cc9;
+        --prism-function: #c026d3;
+        --prism-variable: #b91c1c;
+        --prism-number: #0ea5e9;
+    }
+
     .dark {
         /* উদাহরণ: accent–কে হালকা করে দিচ্ছি */
         --color-accent: #f97373;
         --color-accent-foreground: var(--color-darkbg);
+
+        /* Prism code highlighting (dark) */
+        --prism-surface: #0f172a;
+        --prism-border: #1f2937;
+        --prism-plain: #e2e8f0;
+        --prism-muted: #cbd5e1;
+        --prism-comment: #94a3b8;
+        --prism-string: #38bdf8;
+        --prism-keyword: #93c5fd;
+        --prism-function: #f472b6;
+        --prism-variable: #fbbf24;
+        --prism-number: #67e8f9;
     }
 }
 
@@ -171,25 +197,25 @@
         display: inline-block;
         padding: 0.15rem 0.35rem;
         border-radius: 0.4rem;
-        background: #0f172a;
-        color: #e2e8f0;
+        background: var(--prism-surface);
+        color: var(--prism-plain);
+        border: 1px solid var(--prism-border);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
             "Liberation Mono", "Courier New", monospace;
         font-size: 0.92em;
-    }
-
-    .dark .typography code {
-        background: #1f2937;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
     .typography pre {
         margin: 1.1em 0;
         padding: 1.1rem 1.25rem;
         border-radius: 0.9rem;
-        background: #0f172a;
-        color: #e2e8f0;
+        background: var(--prism-surface);
+        color: var(--prism-plain);
         overflow: auto;
+        border: 1px solid var(--prism-border);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
     .typography pre code {
@@ -222,9 +248,11 @@
         display: block;
         padding: 1rem;
         border-radius: 0.75rem;
-        background: #0f172a;
-        color: #e2e8f0;
+        background: var(--prism-surface);
+        color: var(--prism-plain);
+        border: 1px solid var(--prism-border);
         overflow: auto;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
     .code-block-container code {
@@ -242,9 +270,9 @@
         gap: 0.35rem;
         padding: 0.35rem 0.6rem;
         border-radius: 0.5rem;
-        background: rgba(255, 255, 255, 0.12);
-        color: #e2e8f0;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: color-mix(in srgb, var(--prism-plain) 8%, transparent);
+        color: var(--prism-plain);
+        border: 1px solid color-mix(in srgb, var(--prism-plain) 15%, transparent);
         opacity: 0;
         transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
     }
@@ -256,14 +284,95 @@
 
     .code-copy-btn:hover,
     .code-copy-btn:focus {
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
+        background: color-mix(in srgb, var(--prism-plain) 14%, transparent);
+        color: var(--prism-plain);
     }
 
     .code-copy-btn.copied {
         background: #22c55e;
         border-color: #16a34a;
         color: #0f172a;
+    }
+
+    /* Prism.js – theme aware highlighting */
+    .ck-content pre[class*="language-"],
+    pre[class*="language-"],
+    .ck-content code[class*="language-"],
+    code[class*="language-"] {
+        background: var(--prism-surface);
+        color: var(--prism-plain);
+        border: 1px solid var(--prism-border);
+    }
+
+    pre[class*="language-"],
+    .ck-content pre[class*="language-"] {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    pre[class*="language-"] .token.comment,
+    pre[class*="language-"] .token.prolog,
+    pre[class*="language-"] .token.doctype,
+    pre[class*="language-"] .token.cdata {
+        color: var(--prism-comment);
+    }
+
+    pre[class*="language-"] .token.punctuation {
+        color: var(--prism-muted);
+    }
+
+    pre[class*="language-"] .token.property,
+    pre[class*="language-"] .token.tag,
+    pre[class*="language-"] .token.constant,
+    pre[class*="language-"] .token.symbol,
+    pre[class*="language-"] .token.deleted {
+        color: var(--prism-variable);
+    }
+
+    pre[class*="language-"] .token.boolean,
+    pre[class*="language-"] .token.number,
+    pre[class*="language-"] .token.function {
+        color: var(--prism-number);
+    }
+
+    pre[class*="language-"] .token.selector,
+    pre[class*="language-"] .token.attr-name,
+    pre[class*="language-"] .token.string,
+    pre[class*="language-"] .token.char,
+    pre[class*="language-"] .token.builtin,
+    pre[class*="language-"] .token.inserted {
+        color: var(--prism-string);
+    }
+
+    pre[class*="language-"] .token.operator,
+    pre[class*="language-"] .token.entity,
+    pre[class*="language-"] .token.url,
+    pre[class*="language-"] .token.variable {
+        color: var(--prism-muted);
+    }
+
+    pre[class*="language-"] .token.atrule,
+    pre[class*="language-"] .token.attr-value,
+    pre[class*="language-"] .token.keyword {
+        color: var(--prism-keyword);
+    }
+
+    pre[class*="language-"] .token.regex,
+    pre[class*="language-"] .token.important {
+        color: var(--prism-function);
+    }
+
+    pre[class*="language-"] .token.bold,
+    pre[class*="language-"] .token.important {
+        font-weight: 600;
+    }
+
+    pre[class*="language-"] .token.italic {
+        font-style: italic;
+    }
+
+    pre[class*="language-"] ::selection,
+    pre[class*="language-"] ::-moz-selection {
+        background: color-mix(in srgb, var(--prism-keyword) 16%, transparent);
     }
 
     .sr-only {
@@ -308,7 +417,7 @@
             padding-right: 2rem;
         }
     }
-    @media (min-width: 1150px) {া
+    @media (min-width: 1150px) {
         .container {
             max-width: 1150px;
             padding-left: 3rem;
