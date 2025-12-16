@@ -186,6 +186,7 @@
 
     .code-block-container {
         position: relative;
+        display: block;
         padding: 1rem;
         border-radius: 0.75rem;
         background: #0f172a;
