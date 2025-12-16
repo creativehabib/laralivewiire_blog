@@ -1,3 +1,4 @@
+@php use App\Support\PermalinkManager; @endphp
 <div class="space-y-4">
     {{-- Header --}}
     <div class="flex items-center justify-between gap-3">
@@ -8,6 +9,7 @@
         <div class="flex flex-wrap gap-2">
             @foreach($groups as $key => $g)
                 <a href="{{ route('settings.dynamic', ['group' => $key]) }}"
+                   wire:navigate
                    class="text-xs px-3 py-1.5 rounded-lg border
                         {{ $group === $key
                             ? 'bg-indigo-600 text-white border-indigo-600'
@@ -27,7 +29,7 @@
                     $type = $field['type'] ?? 'text';
                     $visibleWhen = $field['visible_when'] ?? null;
 
-                    // ✅ visible_when expression build: (cond1 && cond2 && ...)
+                    // visible_when expression build: (cond1 && cond2 && ...)
                     $visibleExpr = null;
                     if (is_array($visibleWhen) && count($visibleWhen)) {
                         $visibleExpr = collect($visibleWhen)->map(function ($depVal, $depKey) {
@@ -50,24 +52,24 @@
                     x-cloak
                     @endif
                 >
-                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                    <label class="block text-xs font-semibold uppercase text-slate-700 dark:text-slate-200 mb-1">
                         {{ $field['label'] ?? $key }}
                     </label>
 
                     {{-- ✅ PERMALINK STRUCTURE --}}
                     @if($type === 'permalink_structure')
                         @php
-                            $options = \App\Support\PermalinkManager::availableStructures();
-                            $tokens  = \App\Support\PermalinkManager::allowedTokens();
+                            $options = PermalinkManager::availableStructures();
+                            $tokens  = PermalinkManager::allowedTokens();
 
-                            $current = $data[$key] ?? \App\Support\PermalinkManager::DEFAULT_STRUCTURE;
+                            $current = $data[$key] ?? PermalinkManager::DEFAULT_STRUCTURE;
                         @endphp
 
                         <div class="space-y-3">
                             @foreach($options as $optKey => $opt)
                                 @php
                                     $id = 'permalink-'.$optKey;
-                                    $sampleUrl = \App\Support\PermalinkManager::previewSample($optKey);
+                                    $sampleUrl = PermalinkManager::previewSample($optKey);
                                 @endphp
 
                                 <label for="{{ $id }}"
@@ -145,13 +147,13 @@
                     @elseif($type === 'permalink_preview')
                         @php
                             $structureKey = 'permalink_structure';
-                            $structure = $data[$structureKey] ?? \App\Support\PermalinkManager::DEFAULT_STRUCTURE;
+                            $structure = $data[$structureKey] ?? PermalinkManager::DEFAULT_STRUCTURE;
                             $custom    = $data['custom_permalink_structure'] ?? null;
 
-                            $sample = \App\Support\PermalinkManager::previewSample($structure, $custom);
+                            $sample = PermalinkManager::previewSample($structure, $custom);
 
                             $catPrefix = $data['category_slug_prefix_enabled'] ?? true;
-                            $catPrefix = is_null($catPrefix) ? true : (bool) $catPrefix;
+                            $catPrefix = is_null($catPrefix) || (bool)$catPrefix;
 
                             $categoryPreview = $catPrefix
                                 ? url('category/sample-category')
@@ -162,17 +164,20 @@
                         @endphp
 
                         <div class="space-y-3">
-                            <div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
+                            <div
+                                class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
                                 <div class="text-[11px] text-slate-500 dark:text-slate-400 mb-1">Sample URL</div>
                                 <div class="font-semibold">{{ $sample }}</div>
                             </div>
 
-                            <div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
+                            <div
+                                class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
                                 <div class="text-[11px] text-slate-500 dark:text-slate-400 mb-1">Category preview</div>
                                 <div class="font-semibold">{{ $categoryPreview }}</div>
                             </div>
 
-                            <div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
+                            <div
+                                class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-200">
                                 <div class="text-[11px] text-slate-500 dark:text-slate-400 mb-1">Tag preview</div>
                                 <div class="font-semibold">{{ $tagPreview }}</div>
                             </div>
@@ -192,7 +197,7 @@
                             @endforeach
                         </select>
 
-                        {{-- ✅ switch (boolean stable) --}}
+                        {{-- switch (boolean stable) --}}
                     @elseif($type === 'switch')
                         <label class="inline-flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200">
                             <input type="checkbox"

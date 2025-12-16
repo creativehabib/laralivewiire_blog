@@ -164,17 +164,29 @@ Route::middleware(['auth', 'preventBackHistory'])
     ->name('settings.dynamic')
     ->middleware('permission:setting.view');
 
+Route::middleware(['auth','preventBackHistory'])
+    ->prefix('setting')
+    ->group(function () {
+        Route::get('/export', [AdminController::class, 'export'])
+            ->name('settings.export')
+            ->middleware('permission:setting.view');
+
+        Route::post('/import', [AdminController::class, 'import'])
+            ->name('settings.import')
+            ->middleware('permission:setting.edit');
+    });
+
 /**
  * Admin panel
  */
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'preventBackHistory'])->group(function () {
+        Route::get('/setting/{group}', SettingsGenerator::class)->name('settings.dynamic')->middleware('permission:setting.view');
         Route::controller(AdminController::class)->group(function () {
             Route::get('/settings', 'generalSettings')->name('settings')->middleware('permission:setting.view');
             Route::get('/settings/sitemap', 'sitemapSettings')->name('settings.sitemap');
         });
 
-        Route::resource('polls', AdminPollController::class)->only(['index', 'create', 'edit']);
         Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);
         Route::resource('users', UserManagementController::class);

@@ -25,7 +25,7 @@ class SitemapController extends Controller
         $itemsPerPage = max(1, (int) ($settings?->sitemap_items_per_page ?? 1000));
 
         $postGroups = Post::query()
-            ->where('is_indexable', true)
+            ->where('status', 'published')
             ->select(
                 DB::raw('YEAR(created_at) as year'),
                 DB::raw('MONTH(created_at) as month'),
@@ -46,7 +46,7 @@ class SitemapController extends Controller
             ->value('updated_at');
 
         return response()
-            ->view('front.sitemap-index', [
+            ->view('frontend.sitemap-index', [
                 'postGroups' => $postGroups,
                 'categoryLastUpdated' => $categoryLastUpdated,
                 'itemsPerPage' => $itemsPerPage,
@@ -70,7 +70,7 @@ class SitemapController extends Controller
         $offset = ($page - 1) * $itemsPerPage;
 
         $query = Post::query()
-            ->where('is_indexable', true)
+            ->where('status', 'published')
             ->with('category')
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
@@ -88,7 +88,7 @@ class SitemapController extends Controller
         }
 
         return response()
-            ->view('front.sitemap-posts', [
+            ->view('frontend.sitemap-posts', [
                 'posts' => $posts,
                 'currentPage' => $page,
                 'totalPages' => max(1, (int) ceil($totalPosts / $itemsPerPage)),
@@ -115,7 +115,7 @@ class SitemapController extends Controller
             ->get();
 
         return response()
-            ->view('front.sitemap-categories', [
+            ->view('frontend.sitemap-categories', [
                 'categories' => $categories,
             ])
             ->header('Content-Type', 'application/xml');
@@ -138,7 +138,7 @@ class SitemapController extends Controller
         ];
 
         return response()
-            ->view('front.sitemap-pages', [
+            ->view('frontendend.sitemap-pages', [
                 'pages' => $pages,
             ])
             ->header('Content-Type', 'application/xml');

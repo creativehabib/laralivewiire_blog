@@ -245,22 +245,15 @@
                 {{ __('Media') }}
             </flux:sidebar.item>
 
+
+
             <flux:sidebar.group
                 heading="{{ __('Settings') }}"
                 icon="square-3-stack-3d"
                 expandable
                 class="grid"
-                :expanded="request()->routeIs('settings.dynamic')"
+                :expanded="request()->routeIs('settings.*')"
             >
-{{--                <flux:sidebar.item--}}
-{{--                    icon="home"--}}
-{{--                    :href="route('settings.general')"--}}
-{{--                    :current="request()->routeIs('settings.general')"--}}
-{{--                    tooltip="{{ __('General Setting') }}"--}}
-{{--                    wire:navigate--}}
-{{--                >--}}
-{{--                    {{ __('General Setting') }}--}}
-{{--                </flux:sidebar.item>--}}
 
                 <flux:sidebar.item
                     icon="home"
@@ -271,16 +264,6 @@
                 >
                     {{ __('General Setting') }}
                 </flux:sidebar.item>
-
-{{--                <flux:sidebar.item--}}
-{{--                    icon="home"--}}
-{{--                    :href="route('settings.permalinks')"--}}
-{{--                    :current="request()->routeIs('settings.permalinks')"--}}
-{{--                    tooltip="{{ __('Permalinks') }}"--}}
-{{--                    wire:navigate--}}
-{{--                >--}}
-{{--                    {{ __('Permalinks') }}--}}
-{{--                </flux:sidebar.item>--}}
 
                 <flux:sidebar.item
                     icon="home"
@@ -312,14 +295,6 @@
 
         {{-- SECONDARY LINKS --}}
         <flux:sidebar.nav>
-            <flux:sidebar.item
-                icon="folder-git-2"
-                href="https://github.com/laravel/livewire-starter-kit"
-                target="_blank"
-                tooltip="{{ __('Repository') }}"
-            >
-                {{ __('Repository') }}
-            </flux:sidebar.item>
 
             <flux:sidebar.item
                 icon="book-open-text"

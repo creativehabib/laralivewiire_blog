@@ -31,6 +31,13 @@ return [
                     'rules' => ['nullable','string','max:255'],
                 ],
                 [
+                    'key' => 'site_favicon',
+                    'label' => 'Favicon',
+                    'type' => 'image', // তোমার mediamanager picker দিয়ে হবে
+                    'default' => null,
+                    'rules' => ['nullable','string','max:255'],
+                ],
+                [
                     'key' => 'timezone',
                     'label' => 'Timezone',
                     'type' => 'select',

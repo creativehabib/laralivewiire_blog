@@ -9,6 +9,182 @@
         </p>
     </header>
 
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden" x-data="{ open: true }">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-600 p-2 rounded-md">
+                    <i class="fas fa-sitemap text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">Sitemap Settings</h3>
+                    <p class="text-xs text-gray-500">Generate XML sitemaps for your content.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-gray-700">Enable Sitemap</span>
+                <button
+                    @click="open = !open"
+                    :class="open ? 'bg-indigo-600' : 'bg-gray-300'"
+                    class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
+                        <span
+                            :class="open ? 'translate-x-5' : 'translate-x-0'"
+                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out">
+                        </span>
+                </button>
+            </div>
+        </div>
+
+        <div x-show="open" x-collapse x-cloak>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Post Types to Include</label>
+                    <div class="bg-gray-50 border border-gray-200 rounded-md p-3 max-h-48 overflow-y-auto">
+                        <label class="flex items-center space-x-3 mb-2 p-2 rounded hover:bg-white transition cursor-pointer">
+                            <input type="checkbox" checked class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                            <span class="text-sm text-gray-700">Posts</span>
+                        </label>
+                        <label class="flex items-center space-x-3 mb-2 p-2 rounded hover:bg-white transition cursor-pointer">
+                            <input type="checkbox" checked class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                            <span class="text-sm text-gray-700">Pages</span>
+                        </label>
+                        <label class="flex items-center space-x-3 mb-2 p-2 rounded hover:bg-white transition cursor-pointer">
+                            <input type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                            <span class="text-sm text-gray-700">Products</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-2 rounded hover:bg-white transition cursor-pointer">
+                            <input type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                            <span class="text-sm text-gray-700">Media Attachments</span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Select which content types should be included in the sitemap.</p>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Update Frequency</label>
+                        <select class="form-select block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border bg-white">
+                            <option>Always</option>
+                            <option>Hourly</option>
+                            <option selected>Daily</option>
+                            <option>Weekly</option>
+                            <option>Monthly</option>
+                            <option>Yearly</option>
+                            <option>Never</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Priority (0.0 - 1.0)</label>
+                        <select class="form-select block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border bg-white">
+                            <option>1.0</option>
+                            <option>0.9</option>
+                            <option selected>0.8</option>
+                            <option>0.7</option>
+                            <option>0.5</option>
+                            <option>0.3</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center justify-between border-t pt-4 border-gray-100">
+                        <div>
+                            <span class="text-sm font-medium text-gray-700 block">Include Images</span>
+                            <span class="text-xs text-gray-500">Add image references to sitemap</span>
+                        </div>
+                        <button x-data="{ on: false }" @click="on = !on" :class="on ? 'bg-indigo-600' : 'bg-gray-200'" class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none">
+                            <span :class="on ? 'translate-x-4' : 'translate-x-0'" class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 text-right">
+                <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden" x-data="{ open: false }">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-orange-100 text-orange-600 p-2 rounded-md">
+                    <i class="fas fa-bolt text-lg px-1"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">IndexNow Settings</h3>
+                    <p class="text-xs text-gray-500">Instant indexing for Bing, Yandex & others.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-gray-700">Enable IndexNow</span>
+                <button
+                    @click="open = !open"
+                    :class="open ? 'bg-indigo-600' : 'bg-gray-300'"
+                    class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
+                        <span
+                            :class="open ? 'translate-x-5' : 'translate-x-0'"
+                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out">
+                        </span>
+                </button>
+            </div>
+        </div>
+
+        <div x-show="open" x-collapse x-cloak>
+            <div class="p-6 space-y-6">
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">API Key <span class="text-red-500">*</span></label>
+                    <div class="flex rounded-md shadow-sm">
+                        <div class="relative flex-grow focus-within:z-10">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <i class="fas fa-key text-gray-400"></i>
+                            </div>
+                            <input type="text" class="form-input block w-full rounded-none rounded-l-md border-gray-300 pl-10 py-2 border focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ex: 48db33..." value="abc-123-xyz-secure-key">
+                        </div>
+                        <button type="button" class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 bg-gray-50">
+                            <i class="fas fa-sync text-gray-500"></i>
+                            Generate
+                        </button>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">This key is used to authenticate your ownership of the domain.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Key Location</label>
+                    <div class="flex rounded-md shadow-sm">
+                        <input type="text" class="form-input block w-full rounded-none rounded-l-md border-gray-300 bg-gray-100 py-2 px-3 border text-gray-500 sm:text-sm" value="https://yourwebsite.com/abc-123-xyz-secure-key.txt" readonly>
+                        <button type="button" class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-4 py-2 text-sm font-semibold text-indigo-600 ring-1 ring-inset ring-gray-300 hover:bg-indigo-50 bg-white">
+                            <i class="fas fa-check-circle"></i>
+                            Verify
+                        </button>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Ensure this file is accessible publicly at the root of your domain.</p>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 rounded-md p-4">
+                    <h4 class="text-sm font-bold text-blue-800 mb-2">Supported Search Engines</h4>
+                    <div class="flex gap-4">
+                        <span class="inline-flex items-center rounded-md bg-white px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-200">Bing</span>
+                        <span class="inline-flex items-center rounded-md bg-white px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-200">Yandex</span>
+                        <span class="inline-flex items-center rounded-md bg-white px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-200">Seznam.cz</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 text-right">
+                <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Card -->
     <div class="bg-white dark:bg-slate-900 rounded-xl shadow border border-slate-200 dark:border-slate-700">
         <form wire:submit.prevent="save">
