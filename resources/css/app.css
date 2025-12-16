@@ -267,7 +267,10 @@
         background: var(--prism-surface);
         color: var(--prism-plain);
         border: 1px solid var(--prism-border);
-        overflow: initial;
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
         transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
