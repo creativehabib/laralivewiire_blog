@@ -84,6 +84,13 @@
         --prism-function: #c026d3;
         --prism-variable: #b91c1c;
         --prism-number: #0ea5e9;
+        --prism-html-tag: #1d4ed8;
+        --prism-html-attr: #be185d;
+        --prism-php-variable: #b45309;
+        --prism-php-keyword: #7c3aed;
+        --prism-php-function: #0d9488;
+        --prism-js-keyword: #0f3cc9;
+        --prism-js-operator: #ea580c;
     }
 
     .dark {
@@ -102,6 +109,13 @@
         --prism-function: #f472b6;
         --prism-variable: #fbbf24;
         --prism-number: #67e8f9;
+        --prism-html-tag: #c7d2fe;
+        --prism-html-attr: #f9a8d4;
+        --prism-php-variable: #fbbf24;
+        --prism-php-keyword: #c084fc;
+        --prism-php-function: #5eead4;
+        --prism-js-keyword: #bfdbfe;
+        --prism-js-operator: #fdba74;
     }
 }
 
@@ -199,6 +213,7 @@
         border-radius: 0.4rem;
         background: var(--prism-surface);
         color: var(--prism-plain);
+        border: 1px solid var(--prism-border);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
             "Liberation Mono", "Courier New", monospace;
         font-size: 0.92em;
@@ -250,6 +265,7 @@
         background: var(--prism-surface);
         color: var(--prism-plain);
         border: 1px solid var(--prism-border);
+        overflow: auto;
         transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
@@ -299,6 +315,7 @@
     code[class*="language-"] {
         background: var(--prism-surface);
         color: var(--prism-plain);
+        border: 1px solid var(--prism-border);
     }
 
     pre[class*="language-"],
@@ -356,6 +373,48 @@
     pre[class*="language-"] .token.regex,
     pre[class*="language-"] .token.important {
         color: var(--prism-function);
+    }
+
+    /* Language specific tweaks so PHP/HTML/JS differ visually */
+    pre[class~="language-markup"] .token.tag,
+    pre[class~="language-html"] .token.tag,
+    pre[class~="language-xml"] .token.tag {
+        color: var(--prism-html-tag);
+    }
+
+    pre[class~="language-markup"] .token.attr-name,
+    pre[class~="language-html"] .token.attr-name,
+    pre[class~="language-xml"] .token.attr-name,
+    pre[class~="language-markup"] .token.attr-value,
+    pre[class~="language-html"] .token.attr-value,
+    pre[class~="language-xml"] .token.attr-value {
+        color: var(--prism-html-attr);
+    }
+
+    pre[class~="language-php"] .token.variable {
+        color: var(--prism-php-variable);
+    }
+
+    pre[class~="language-php"] .token.keyword {
+        color: var(--prism-php-keyword);
+    }
+
+    pre[class~="language-php"] .token.function,
+    pre[class~="language-php"] .token.class-name,
+    pre[class~="language-php"] .token.method {
+        color: var(--prism-php-function);
+    }
+
+    pre[class~="language-javascript"] .token.keyword,
+    pre[class~="language-js"] .token.keyword {
+        color: var(--prism-js-keyword);
+    }
+
+    pre[class~="language-javascript"] .token.operator,
+    pre[class~="language-js"] .token.operator,
+    pre[class~="language-javascript"] .token.arrow,
+    pre[class~="language-js"] .token.arrow {
+        color: var(--prism-js-operator);
     }
 
     pre[class*="language-"] .token.bold,
