@@ -83,6 +83,8 @@
                                 @if($featuredPost->author?->name)
                                     <span>•</span><span>{{ $featuredPost->author->name }}</span>
                                 @endif
+                                <span>•</span>
+                                <span><i class="fa-regular fa-eye"></i> {{ number_format($featuredPost->views ?? 0) }} ভিউ</span>
                             </div>
                         </div>
                     </article>
@@ -101,6 +103,11 @@
                                     <h3 class="text-sm font-semibold leading-snug line-clamp-1">
                                         <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3" wire:navigate>{{ $post->name }}</a>
                                     </h3>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
+                                        <span>{{ $post->created_at?->diffForHumans() }}</span>
+                                        <span>•</span>
+                                        <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                                    </div>
                                 </div>
                             </article>
                         @empty
@@ -133,10 +140,12 @@
                                     <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-4">{{ $featuredCategoryPost->excerpt }}</p>
                                 @endif
                                 <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                                    <span>{{ $featuredPost->created_at?->diffForHumans() }}</span>
-                                    @if($featuredPost->author?->name)
-                                        <span>•</span><span>{{ $featuredPost->author->name }}</span>
+                                    <span>{{ $featuredCategoryPost->created_at?->diffForHumans() }}</span>
+                                    @if($featuredCategoryPost->author?->name)
+                                        <span>•</span><span>{{ $featuredCategoryPost->author->name }}</span>
                                     @endif
+                                    <span>•</span>
+                                    <span><i class="fa-regular fa-eye"></i> {{ number_format($featuredCategoryPost->views ?? 0) }} ভিউ</span>
                                 </div>
                             </div>
                         </article>
@@ -151,7 +160,11 @@
                                     <h4 class="font-semibold leading-snug line-clamp-2">
                                         <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->name }}</a>
                                     </h4>
-                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $post->created_at?->diffForHumans() }}</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                        <span>{{ $post->created_at?->diffForHumans() }}</span>
+                                        <span>•</span>
+                                        <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                                    </div>
                                 </div>
                             </article>
                         @endforeach
@@ -175,7 +188,11 @@
                             <h3 class="font-semibold text-sm mb-1 leading-snug">
                                 <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->name }}</a>
                             </h3>
-                            <div class="mt-auto text-xs text-slate-500 dark:text-slate-400">{{ $post->created_at?->diffForHumans() }}</div>
+                            <div class="mt-auto text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                <span>{{ $post->created_at?->diffForHumans() }}</span>
+                                <span>•</span>
+                                <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                            </div>
                         </div>
                     </article>
                 @empty
@@ -231,9 +248,11 @@
                                     </div>
                                 </div>
                                 <div class="p-3">
-                                    <span class="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                                        প্রকাশিত: {{ $video->created_at?->diffForHumans() }}
-                                    </span>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mb-1">
+                                        <span>প্রকাশিত: {{ $video->created_at?->diffForHumans() }}</span>
+                                        <span>•</span>
+                                        <span><i class="fa-regular fa-eye"></i> {{ number_format($video->views ?? 0) }} ভিউ</span>
+                                    </div>
                                     <h3 class="text-sm font-semibold leading-snug">
                                         <a href="{{ post_permalink($video) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $video->name }}</a>
                                     </h3>
@@ -267,6 +286,11 @@
                                     <h2 class="text-white text-lg md:text-xl font-semibold leading-snug">
                                         <a href="{{ post_permalink($columnFeatured) }}" class="hover:text-primary-light" wire:navigate>{{ $columnFeatured->name }}</a>
                                     </h2>
+                                    <div class="text-[11px] text-slate-100/90 flex items-center gap-2 mt-1">
+                                        <span>{{ $columnFeatured->created_at?->diffForHumans() }}</span>
+                                        <span>•</span>
+                                        <span><i class="fa-regular fa-eye"></i> {{ number_format($columnFeatured->views ?? 0) }} ভিউ</span>
+                                    </div>
                                 </div>
                             </article>
                         @endif
@@ -281,6 +305,11 @@
                                         <h3 class="text-sm font-semibold leading-snug">
                                             <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->name }}</a>
                                         </h3>
+                                        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
+                                            <span>{{ $post->created_at?->diffForHumans() }}</span>
+                                            <span>•</span>
+                                            <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                                        </div>
                                     </div>
                                 </article>
                             @endforeach
@@ -439,7 +468,11 @@
                                 </a>
                                 <div class="flex-1">
                                     <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">{{ $post->created_at?->diffForHumans() }}</span>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                        <span>{{ $post->created_at?->diffForHumans() }}</span>
+                                        <span>•</span>
+                                        <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                                    </div>
                                 </div>
                             </article>
                         @empty
