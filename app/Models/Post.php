@@ -61,7 +61,7 @@ class Post extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('status', 'published');
+        return $query->whereIn('status', ['published', 'publish']);
     }
 
     public function getImageUrlAttribute(): string
