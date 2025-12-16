@@ -7,10 +7,42 @@
             $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'বাংলাদেশী নিউজ পোর্টাল']);
         @endphp
         <x-seo.meta :seo="$seoData" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         {{-- Google Font --}}
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            /* Marquee animation */
+            .animate-marquee {
+                display: inline-block;
+                animation: marquee 18s linear infinite;
+            }
+
+            @keyframes marquee {
+                0%   { transform: translateX(0%); }
+                100% { transform: translateX(-50%); }
+            }
+
+            /* Scrollbar style for video carousel (optional) */
+            #videoCarousel::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            #videoCarousel::-webkit-scrollbar-track {
+                background: rgba(148, 163, 184, 0.2); /* slate-400/20 */
+            }
+
+            #videoCarousel::-webkit-scrollbar-thumb {
+                background: rgba(148, 163, 184, 0.8); /* slate-400 */
+                border-radius: 999px;
+            }
+
+            #videoCarousel {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(148,163,184,0.8) transparent;
+            }
+        </style>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
         @livewireStyles
         @stack('styles')
         <script>
@@ -21,11 +53,7 @@
                     document.documentElement.classList.remove('dark');
                 }
             }
-
-            // পেজ লোড হওয়ার সাথে সাথে রান হবে
             applyTheme();
-
-            // Livewire নেভিগেশন (এক পেজ থেকে অন্য পেজে গেলে) রান হবে
             document.addEventListener('livewire:navigated', () => {
                 applyTheme();
             });
@@ -47,14 +75,14 @@
         </main>
 
         <x-frontends.footer />
-        @livewireScripts
-        <script src="{{ asset('assets/js/script.js') }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+        <script src="{{ asset('assets/js/script.js') }}" defer></script>
+        @livewireScripts
         @stack('scripts')
     </body>
 </html>
