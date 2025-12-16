@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCodeCopy();
     observeCodeBlocks();
     document.addEventListener('livewire:navigated', initCodeCopy);
+    window.addEventListener('post-content-loaded', initCodeCopy);
 
     document.addEventListener('livewire:init', () => {
         if (window.Livewire && typeof window.Livewire.hook === 'function') {

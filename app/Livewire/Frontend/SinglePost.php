@@ -133,6 +133,8 @@ class SinglePost extends Component
             ->first();
 
         $this->ready = true;
+
+        $this->dispatch('post-content-loaded');
     }
 
     public function render()
