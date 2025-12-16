@@ -1,7 +1,41 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+    const isInlineCode = (element) => {
+        if (!(element instanceof HTMLElement)) {
+            return true;
+        }
+
+        const isCodeTag = element.tagName === 'CODE';
+        const isInsidePre = !!element.closest('pre');
+        const hasMultilineContent = element.innerText.includes('\n');
+
+        if (!isCodeTag) {
+            return false;
+        }
+
+        if (isInsidePre) {
+            return false;
+        }
+
+        const displayStyle = window.getComputedStyle(element).display;
+
+        return displayStyle === 'inline' && !hasMultilineContent;
+    };
+
+    const getCopyTargets = () => {
+        const blocks = document.querySelectorAll('.ck-content pre, .ck-content code');
+        const uniqueBlocks = new Set();
+
+        blocks.forEach((block) => {
+            const container = block.closest('pre') ?? block;
+            uniqueBlocks.add(container);
+        });
+
+        return Array.from(uniqueBlocks).filter((block) => !isInlineCode(block));
+    };
+
     const initCodeCopy = () => {
-        const codeBlocks = document.querySelectorAll('.ck-content pre');
+        const codeBlocks = getCopyTargets();
 
         codeBlocks.forEach((block) => {
             if (block.querySelector('.code-copy-btn')) {
@@ -16,7 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
             copyButton.innerHTML = '<i class="fa-regular fa-copy"></i><span class="sr-only">কপি করুন</span>';
 
             copyButton.addEventListener('click', async () => {
-                const code = block.querySelector('code')?.innerText ?? block.innerText;
+                const codeElement = block.querySelector('code');
+                const code = codeElement?.innerText ?? block.innerText;
 
                 try {
                     await navigator.clipboard.writeText(code.trim());
@@ -47,7 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    if (node.matches?.('.ck-content pre') || node.querySelector?.('.ck-content pre')) {
+                    if (
+                        node.matches?.('.ck-content pre, .ck-content code') ||
+                        node.querySelector?.('.ck-content pre, .ck-content code')
+                    ) {
                         shouldInit = true;
                     }
                 });
