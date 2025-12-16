@@ -37,7 +37,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const observeCodeBlocks = () => {
+        const observer = new MutationObserver((mutations) => {
+            let shouldInit = false;
+
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (!(node instanceof HTMLElement)) {
+                        return;
+                    }
+
+                    if (node.matches?.('.ck-content pre') || node.querySelector?.('.ck-content pre')) {
+                        shouldInit = true;
+                    }
+                });
+            });
+
+            if (shouldInit) {
+                initCodeCopy();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+    };
+
     initCodeCopy();
+    observeCodeBlocks();
     document.addEventListener('livewire:navigated', initCodeCopy);
 
     document.addEventListener('livewire:init', () => {
