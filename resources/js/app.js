@@ -34,6 +34,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return Array.from(uniqueBlocks).filter((block) => !isInlineCode(block));
     };
 
+    const copyTextToClipboard = async (text) => {
+        if (!text) return false;
+
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (error) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            const success = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            return success;
+        }
+    };
+
     const initCodeCopy = () => {
         const codeBlocks = getCopyTargets();
 
@@ -53,12 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const codeElement = block.querySelector('code');
                 const code = codeElement?.innerText ?? block.innerText;
 
-                try {
-                    await navigator.clipboard.writeText(code.trim());
+                const copied = await copyTextToClipboard(code.trim());
+
+                if (copied) {
                     copyButton.classList.add('copied');
                     copyButton.innerHTML = '<i class="fa-solid fa-check"></i><span class="sr-only">কপি সম্পন্ন</span>';
-                } catch (error) {
-                    console.error('কপি করতে সমস্যা হয়েছে', error);
+                } else {
                     copyButton.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i><span class="sr-only">কপি ব্যর্থ</span>';
                 }
 
