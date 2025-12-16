@@ -238,6 +238,8 @@
         background: transparent;
         color: inherit;
         font-size: 0.95em;
+        border: none;
+        box-shadow: none;
     }
 
     .typography figure {
@@ -316,6 +318,12 @@
         background: var(--prism-surface);
         color: var(--prism-plain);
         border: 1px solid var(--prism-border);
+    }
+
+    .ck-content pre code[class*="language-"],
+    pre code[class*="language-"] {
+        background: transparent;
+        border: none;
     }
 
     pre[class*="language-"],
