@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Support\PermalinkManager;
 use App\Support\SettingManager;
 use App\Support\BanglaCalendar;
+use App\Support\BanglaFormatter;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
@@ -26,10 +27,12 @@ if (! function_exists('frontend_bangla_date')) {
     {
         $date = $dateTime ? Carbon::parse($dateTime) : Carbon::now();
 
-        $gregorianDate = $date
-            ->copy()
-            ->locale('bn')
-            ->translatedFormat('l, d F Y');
+        $gregorianDate = BanglaFormatter::digits(
+            $date
+                ->copy()
+                ->locale('bn')
+                ->translatedFormat('l, d F Y')
+        );
 
         $format = setting('date_display_format', 'gregorian_and_bangla');
 
