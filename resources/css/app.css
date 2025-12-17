@@ -147,6 +147,7 @@
         color: var(--color-secondary, #0f172a);
         line-height: 1.75;
         letter-spacing: 0.012em;
+        overflow-wrap: break-word;
     }
 
     .dark .typography {
@@ -251,6 +252,27 @@
         margin-top: 0.35em;
         font-size: 0.9rem;
         color: var(--color-muted, #6b7280);
+    }
+
+    .typography img,
+    .typography video,
+    .typography iframe,
+    .typography table {
+        max-width: 100%;
+    }
+
+    .typography img,
+    .typography video,
+    .typography iframe {
+        height: auto;
+        display: block;
+    }
+
+    .typography table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+        border-collapse: collapse;
     }
 
     .typography video,
