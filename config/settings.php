@@ -1,6 +1,7 @@
 <?php
 
 use App\Support\PermalinkManager;
+use DateTimeZone;
 
 return [
     'groups' => [
@@ -42,11 +43,7 @@ return [
                     'label' => 'Timezone',
                     'type' => 'select',
                     'default' => env('APP_TIMEZONE', 'Asia/Dhaka'),
-                    'options' => [
-                        'Asia/Dhaka' => 'Asia/Dhaka',
-                        'UTC' => 'UTC',
-                        'Asia/Kolkata' => 'Asia/Kolkata',
-                    ],
+                    'options' => array_combine(DateTimeZone::listIdentifiers(), DateTimeZone::listIdentifiers()),
                     'rules' => ['required','string'],
                 ],
                 [
