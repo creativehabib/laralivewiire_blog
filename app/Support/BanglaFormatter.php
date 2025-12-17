@@ -74,7 +74,7 @@ class BanglaFormatter
             return '';
         }
 
-        $date = (clone $date)->setTimezone($timezone ?? config('app.timezone', 'Asia/Dhaka'));
+        $date = (clone $date)->setTimezone($timezone ?? setting('timezone', config('app.timezone', 'Asia/Dhaka')));
 
         $dayName = self::DAY_MAP[$date->format('l')] ?? $date->format('l');
         $day = self::digits($date->format('d'));
@@ -93,7 +93,7 @@ class BanglaFormatter
             return '';
         }
 
-        $date = (clone $date)->setTimezone($timezone ?? config('app.timezone', 'Asia/Dhaka'));
+        $date = (clone $date)->setTimezone($timezone ?? setting('timezone', config('app.timezone', 'Asia/Dhaka')));
 
         $day = self::digits($date->format('d'));
         $month = self::MONTH_MAP[(int) $date->format('n')] ?? $date->format('F');
@@ -111,7 +111,7 @@ class BanglaFormatter
             return '';
         }
 
-        $date = (clone $date)->setTimezone($timezone ?? config('app.timezone', 'Asia/Dhaka'));
+        $date = (clone $date)->setTimezone($timezone ?? setting('timezone', config('app.timezone', 'Asia/Dhaka')));
 
         $time = self::digits($date->format('h:i'));
         $period = $date->format('a') === 'am' ? 'পূর্বাহ্ণ' : 'অপরাহ্ণ';
