@@ -187,10 +187,16 @@
                                                                     @php
                                                                         $inputId = 'widget-' . $widgetKey . '-' . \Illuminate\Support\Str::slug($roleName);
                                                                     @endphp
-                                                                    <div class="custom-control custom-checkbox mr-3 mb-2">
-                                                                        <input type="checkbox" class="custom-control-input" id="{{ $inputId }}" wire:model.defer="dashboardVisibility.{{ $widgetKey }}" value="{{ $roleName }}">
-                                                                        <label class="custom-control-label" for="{{ $inputId }}">{{ $roleName }}</label>
-                                                                    </div>
+                                                                    <label for="{{ $inputId }}" class="mr-3 mb-2 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:border-primary/60 dark:border-slate-700 dark:text-slate-100">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="{{ $inputId }}"
+                                                                            wire:model.defer="dashboardVisibility.{{ $widgetKey }}"
+                                                                            value="{{ $roleName }}"
+                                                                            class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-900"
+                                                                        >
+                                                                        <span>{{ $roleName }}</span>
+                                                                    </label>
                                                                 @endforeach
                                                             </div>
                                                         </td>
@@ -210,27 +216,39 @@
                             <form wire:submit.prevent="updatePermalinks">
                                 <p class="text-muted small">আপনার পোস্টের URL কোন ফরম্যাটে থাকবে তা নির্বাচন করুন। এসইও বান্ধব URL-এর জন্য "Post name" বা কাস্টম স্ট্রাকচার ব্যবহার করুন।</p>
 
-                                <div class="mb-4">
+                                <div class="mb-4 space-y-3">
                                     @foreach ($permalinkOptions as $key => $option)
                                         @php
                                             $inputId = 'permalink-' . $key;
                                             $sampleUrl = \App\Support\PermalinkManager::previewSample($key);
                                         @endphp
-                                        <div class="custom-control custom-radio mb-3">
-                                            <input type="radio" id="{{ $inputId }}" class="custom-control-input" wire:model="permalink_structure" value="{{ $key }}">
-                                            <label class="custom-control-label" for="{{ $inputId }}">
+                                        <label for="{{ $inputId }}" class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:border-primary/60 dark:border-slate-700 dark:bg-slate-900">
+                                            <input
+                                                type="radio"
+                                                id="{{ $inputId }}"
+                                                wire:model="permalink_structure"
+                                                value="{{ $key }}"
+                                                class="mt-0.5 h-4 w-4 border-slate-300 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-900"
+                                            >
+                                            <span class="text-sm text-slate-800 dark:text-slate-100">
                                                 <span class="font-weight-semibold d-block">{{ $option['label'] }}</span>
                                                 <span class="text-muted small">{{ $sampleUrl }}</span>
-                                            </label>
-                                        </div>
+                                            </span>
+                                        </label>
                                     @endforeach
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" id="permalink-custom" class="custom-control-input" wire:model="permalink_structure" value="custom">
-                                        <label class="custom-control-label" for="permalink-custom">
+                                    <label for="permalink-custom" class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:border-primary/60 dark:border-slate-700 dark:bg-slate-900">
+                                        <input
+                                            type="radio"
+                                            id="permalink-custom"
+                                            wire:model="permalink_structure"
+                                            value="custom"
+                                            class="mt-0.5 h-4 w-4 border-slate-300 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-900"
+                                        >
+                                        <span class="text-sm text-slate-800 dark:text-slate-100">
                                             <span class="font-weight-semibold d-block">Custom Structure</span>
                                             <span class="text-muted small">নিজের ইচ্ছামতো URL প্যাটার্ন ব্যবহার করুন (যেমন: /news/%year%/%postname%).</span>
-                                        </label>
-                                    </div>
+                                        </span>
+                                    </label>
                                     @error('permalink_structure')<span class="text-danger d-block mt-2">{{ $message }}</span>@enderror
                                 </div>
 
@@ -250,10 +268,15 @@
 
                                 <div class="form-group">
                                     <label for="category-prefix-toggle"><b>Category URL prefix</b></label>
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="category-prefix-toggle" wire:model.defer="category_slug_prefix_enabled">
-                                        <label class="custom-control-label" for="category-prefix-toggle">{{ $category_slug_prefix_enabled ? 'Category prefix enabled' : 'Category prefix disabled' }}</label>
-                                    </div>
+                                    <label for="category-prefix-toggle" class="mt-2 inline-flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:border-primary/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                                        <input
+                                            type="checkbox"
+                                            id="category-prefix-toggle"
+                                            wire:model.defer="category_slug_prefix_enabled"
+                                            class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-900"
+                                        >
+                                        <span>{{ $category_slug_prefix_enabled ? 'Category prefix enabled' : 'Category prefix disabled' }}</span>
+                                    </label>
                                     <small class="form-text text-muted">এই অপশন চালু থাকলে ক্যাটাগরি স্লাগের আগে "category" যোগ হবে (যেমন: /category/news)। বন্ধ করলে স্লাগটি সরাসরি ব্যবহার হবে (যেমন: /news)।</small>
                                 </div>
 
