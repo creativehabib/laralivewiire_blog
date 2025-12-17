@@ -89,25 +89,25 @@
                         <span class="mt-1 block text-xs text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
+                </div>
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">
-                            Site Meta keywords <span class="text-xs text-gray-400 dark:text-gray-500">(Optional)</span>
-                        </label>
-                        <input
-                            type="text"
-                            wire:model.defer="site_meta_keywords"
-                            placeholder="Eg: ecommerce, free api, laravel"
-                            class="block w-full h-10 rounded-lg border border-slate-200 dark:border-slate-700
-                                   bg-white dark:bg-slate-900
-                                   px-3 text-sm text-gray-900 dark:text-gray-100
-                                   placeholder-gray-400 dark:placeholder-gray-500
-                                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 focus:outline-none"
-                        >
-                        @error('site_meta_keywords')
-                        <span class="mt-1 block text-xs text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">
+                        Site Meta keywords <span class="text-xs text-gray-400 dark:text-gray-500">(Optional)</span>
+                    </label>
+                    <input
+                        type="text"
+                        wire:model.defer="site_meta_keywords"
+                        placeholder="Eg: ecommerce, free api, laravel"
+                        class="block w-full h-10 rounded-lg border border-slate-200 dark:border-slate-700
+                               bg-white dark:bg-slate-900
+                               px-3 text-sm text-gray-900 dark:text-gray-100
+                               placeholder-gray-400 dark:placeholder-gray-500
+                               focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 focus:outline-none"
+                    >
+                    @error('site_meta_keywords')
+                    <span class="mt-1 block text-xs text-red-500">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 {{-- meta description --}}

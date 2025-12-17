@@ -50,6 +50,18 @@ return [
                     'rules' => ['required','string'],
                 ],
                 [
+                    'key' => 'date_display_format',
+                    'label' => 'Top bar date format',
+                    'type' => 'select',
+                    'default' => 'gregorian_and_bangla',
+                    'options' => [
+                        'gregorian_and_bangla' => 'বাংলা ও গ্রেগরিয়ান',
+                        'gregorian_only' => 'শুধু গ্রেগরিয়ান',
+                    ],
+                    'rules' => ['required','in:gregorian_only,gregorian_and_bangla'],
+                    'hint' => 'টপ বারে তারিখ কোন ফরমেট এ দেখাবে তা নির্ধারণ করুন।',
+                ],
+                [
                     'key' => 'maintenance_mode',
                     'label' => 'Maintenance mode',
                     'type' => 'switch',
