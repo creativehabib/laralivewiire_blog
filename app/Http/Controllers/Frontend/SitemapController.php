@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\Page;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -162,7 +163,21 @@ class SitemapController extends Controller
                 ['url' => route('home'), 'lastmod' => now()->subDay()],
             ];
 
-            // আপনার দেওয়া Route চেক লজিক
+            $pages = Page::query()
+                ->published()
+                ->orderByDesc('updated_at')
+                ->get()
+                ->map(function (Page $page) {
+                    return [
+                        'url' => route('pages.show', $page),
+                        'lastmod' => $page->updated_at ?? now(),
+                    ];
+                })
+                ->values()
+                ->all();
+
+            array_unshift($pages, ['url' => route('home'), 'lastmod' => now()->subDay()]);
+
             if (Route::has('polls.index')) {
                 $pages[] = ['url' => route('polls.index'), 'lastmod' => now()->subWeek()];
             }
