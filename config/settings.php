@@ -41,7 +41,7 @@ return [
                     'key' => 'timezone',
                     'label' => 'Timezone',
                     'type' => 'select',
-                    'default' => 'Asia/Dhaka',
+                    'default' => env('APP_TIMEZONE', 'Asia/Dhaka'),
                     'options' => [
                         'Asia/Dhaka' => 'Asia/Dhaka',
                         'UTC' => 'UTC',

@@ -33,7 +33,7 @@ class BanglaCalendar
 
     protected static function convertToBanglaDate(CarbonInterface $dateTime): array
     {
-        $date = Carbon::parse($dateTime)->setTimezone(config('app.timezone'));
+        $date = Carbon::parse($dateTime)->setTimezone(setting('timezone', config('app.timezone')));
 
         $banglaYearStart = Carbon::create($date->year, 4, 14, 0, 0, 0, $date->timezone);
         if ($date->lt($banglaYearStart)) {
