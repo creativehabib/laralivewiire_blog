@@ -105,8 +105,6 @@
                                     </h3>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
                                         <span>{{ $post->created_at?->diffForHumans() }}</span>
-                                        <span>•</span>
-                                        <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
                                     </div>
                                 </div>
                             </article>
