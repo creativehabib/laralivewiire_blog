@@ -25,7 +25,8 @@ if (!function_exists('settings')) {
 if (! function_exists('frontend_bangla_date')) {
     function frontend_bangla_date(?CarbonInterface $dateTime = null): string
     {
-        $date = $dateTime ? Carbon::parse($dateTime) : Carbon::now();
+        $date = ($dateTime ? Carbon::parse($dateTime) : Carbon::now())
+            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
 
         $gregorianDate = BanglaFormatter::digits(
             $date
