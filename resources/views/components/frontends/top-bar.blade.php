@@ -2,12 +2,15 @@
     $settings = general_settings();
     $siteEmail = $settings?->site_email;
     $sitePhone = $settings?->site_phone;
-    $today = now()->locale('bn')->translatedFormat('l, d F Y');
+    $today = frontend_bangla_date();
 @endphp
 
 <div class="bg-secondary-light text-white text-sm">
     <div class="container flex items-center justify-between px-4 py-2">
-        <div>{{ $today }}</div>
+        <div class="flex items-center gap-2">
+            <span aria-hidden="true">📅</span>
+            <span>{{ $today }}</span>
+        </div>
         <div class="flex items-center gap-4">
             @if($siteEmail || $sitePhone)
                 <span class="hidden sm:inline text-slate-100/90">
