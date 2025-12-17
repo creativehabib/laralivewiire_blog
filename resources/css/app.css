@@ -518,7 +518,7 @@
     }
 
     :is(input[type="checkbox"], input[type="radio"]):not(.hidden):not(.sr-only):not(.custom-control-input):checked {
-        background: var(--color-primary, #0d6efd);
+        /*background: var(--color-primary, #0d6efd);*/
         border-color: color-mix(in srgb, var(--color-primary, #0d6efd) 75%, #0b5ed7 25%);
         color: #ffffff;
         box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
