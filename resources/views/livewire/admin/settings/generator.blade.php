@@ -188,6 +188,12 @@
                         <textarea wire:model.defer="data.{{ $key }}" rows="3"
                                   class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm"></textarea>
 
+                    @elseif($type === 'number')
+                        <input type="number" wire:model.defer="data.{{ $key }}"
+                               class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm">
+                    @elseif($type === 'email')
+                        <input type="email" wire:model.defer="data.{{ $key }}"
+                               class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm">
                         {{-- select --}}
                     @elseif($type === 'select')
                         <select wire:model.defer="data.{{ $key }}"

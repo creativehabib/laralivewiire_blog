@@ -1,23 +1,15 @@
-@php
-    $settings = general_settings();
-    $siteEmail = $settings?->site_email;
-    $sitePhone = $settings?->site_phone;
-    $today = frontend_bangla_date();
-    $calendarDay = frontend_bangla_day();
-@endphp
-
 <div class="bg-secondary-light text-white text-sm">
     <div class="container flex items-center justify-between px-4 py-2">
         <div class="flex items-center gap-2">
             <span aria-hidden="true" class="inline-flex h-8 w-8 items-center justify-center rounded bg-white/10 text-sm font-semibold text-white">
-                {{ $calendarDay }}
+                {{ frontend_bangla_day() }}
             </span>
-            <span>{{ $today }}</span>
+            <span>{{ frontend_bangla_date() }}</span>
         </div>
         <div class="flex items-center gap-4">
-            @if($siteEmail || $sitePhone)
+            @if(setting('site_email') || setting('site_phone'))
                 <span class="hidden sm:inline text-slate-100/90">
-                    যোগাযোগ: {{ $siteEmail ?? $sitePhone }}
+                    যোগাযোগ: {{ setting('site_email') ?? setting('site_phone') }}
                 </span>
             @endif
             <div class="flex items-center gap-2 text-xs sm:text-sm">

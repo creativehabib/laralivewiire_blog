@@ -1,7 +1,6 @@
 <?php
 
 use App\Support\PermalinkManager;
-use DateTimeZone;
 
 return [
     'groups' => [
@@ -23,18 +22,41 @@ return [
                     'type' => 'textarea',
                     'default' => '',
                     'rules' => ['nullable','string','max:255'],
+                    'hint' => 'Site description shown in meta description.',
+                ],
+                [
+                    'key' => 'site_keywords',
+                    'label' => 'Site keywords',
+                    'type' => 'textarea',
+                    'default' => '',
+                    'rules' => ['nullable','string','max:255'],
+                    'hint' => 'Site keywords shown in keywords and description. example: keyword1, keyword2, keyword3, keyword4, keyword5, keyword6',
+                ],
+                [
+                    'key' => 'site_email',
+                    'label' => 'Site email',
+                    'type' => 'email',
+                    'default' => 'admin@example.com',
+                    'rules' => ['nullable','email','max:120'],
+                ],
+                [
+                    'key' => 'site_phone',
+                    'label' => 'Site phone number',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable','numeric','digits_between:10,15'],
                 ],
                 [
                     'key' => 'logo',
                     'label' => 'Logo',
-                    'type' => 'image', // তোমার mediamanager picker দিয়ে হবে
+                    'type' => 'image',
                     'default' => null,
                     'rules' => ['nullable','string','max:255'],
                 ],
                 [
                     'key' => 'site_favicon',
                     'label' => 'Favicon',
-                    'type' => 'image', // তোমার mediamanager picker দিয়ে হবে
+                    'type' => 'image',
                     'default' => null,
                     'rules' => ['nullable','string','max:255'],
                 ],
@@ -59,11 +81,19 @@ return [
                     'hint' => 'টপ বারে তারিখ কোন ফরমেট এ দেখাবে তা নির্ধারণ করুন।',
                 ],
                 [
+                    'key' => 'site_copyright',
+                    'label' => 'Site copyright',
+                    'type' => 'textarea',
+                    'default' => '',
+                    'rules' => ['nullable','string','max:120'],
+                ],
+                [
                     'key' => 'maintenance_mode',
                     'label' => 'Maintenance mode',
                     'type' => 'switch',
                     'default' => false,
                     'rules' => ['boolean'],
+                    'hint' => 'This site is currently in maintenance mode.',
                 ],
             ],
         ],
