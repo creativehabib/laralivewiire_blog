@@ -47,6 +47,16 @@ if (! function_exists('frontend_bangla_date')) {
     }
 }
 
+if (! function_exists('frontend_bangla_day')) {
+    function frontend_bangla_day(?CarbonInterface $dateTime = null): string
+    {
+        $date = ($dateTime ? Carbon::parse($dateTime) : Carbon::now())
+            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
+
+        return BanglaFormatter::digits($date->format('d'));
+    }
+}
+
 if (! function_exists('post_permalink')) {
     function post_permalink(Post $post, bool $absolute = true): string
     {
