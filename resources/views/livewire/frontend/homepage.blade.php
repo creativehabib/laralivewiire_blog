@@ -104,7 +104,7 @@
                                         <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3" wire:navigate>{{ $post->name }}</a>
                                     </h3>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
-                                        <span>{{ $post->created_at?->diffForHumans() }}</span>
+                                        <span>{{ $post->created_at?->diffForHumans() }}</span>া
                                     </div>
                                 </div>
                             </article>
@@ -380,13 +380,14 @@
                 <div class="grid grid-cols-2 gap-2 text-sm">
                     <a href="#" class="bg-blue-600 text-white py-2 rounded-md text-center font-semibold">Facebook</a>
                     <a href="#" class="bg-red-600 text-white py-2 rounded-md text-center font-semibold">YouTube</a>
-                    <a href="#" class="bg-sky-500 text-white py-2 rounded-md text-center font-semibold">Twitter</a>
-                    <a href="#" class="bg-green-600 text-white py-2 rounded-md text-center font-semibold">WhatsApp</a>
+                    <a href="#" class="bg-sky-700 text-white py-2 rounded-md text-center font-semibold">Twitter</a>
+                    <a href="#" class="bg-green-800 text-white py-2 rounded-md text-center font-semibold">WhatsApp</a>
                 </div>
             </section>
 
-            <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs text-slate-500 dark:text-slate-400">বিজ্ঞাপনের স্থান</section>
-
+            <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                বিজ্ঞাপনের স্থান
+            </section>
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
                 <div class="relative">
                     <div id="sidebarFeaturedCarousel" class="relative">
