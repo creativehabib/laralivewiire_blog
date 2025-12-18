@@ -275,11 +275,21 @@
             const textarea = document.getElementById(id);
             if (!textarea || typeof CKEDITOR === 'undefined') return;
 
+            // মোড ডিটেক্ট করা
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
+            const textColor = isDarkMode ? '#f1f5f9' : '#1e293b';
+
             if (CKEDITOR.instances[id]) {
                 CKEDITOR.instances[id].destroy(true);
             }
 
+
             const editor = CKEDITOR.replace(id, {
+                contentsCss: [
+                    `body { background-color: ${bgColor}; color: ${textColor}; font-family: sans-serif; padding: 20px; line-height: 1.6; }`,
+                    'a { color: #38bdf8; }'
+                ],
                 height: 360,
                 removePlugins: 'cloudservices,uploadimage,uploadfile',
                 extraPlugins: 'wordcount,notification',
