@@ -27,27 +27,39 @@ class SitemapController extends Controller
         }
 
         $itemsPerPage = $this->itemsPerPage();
-        $cacheKey = "sitemap_index_{$itemsPerPage}";
+        $postTypes = $this->postTypes();
+        $cacheKey = 'sitemap_index_'
+            .$itemsPerPage.'_'
+            .md5(json_encode([
+                'postTypes' => $postTypes,
+                'frequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
+            ]));
 
         // Caching শুরু
-        $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($itemsPerPage) {
+        $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($itemsPerPage, $postTypes) {
 
-            $postGroups = Post::query()
-                ->published() // আপনার কোড অনুযায়ী published() স্কোপ
-                ->select(
-                    DB::raw('YEAR(created_at) as year'),
-                    DB::raw('MONTH(created_at) as month'),
-                    DB::raw('MAX(updated_at) as lastmod'),
-                    DB::raw('COUNT(id) as total_posts')
-                )
-                ->groupBy('year', 'month')
-                ->orderBy('year', 'desc')
-                ->orderBy('month', 'desc')
-                ->get()
-                ->map(function ($group) use ($itemsPerPage) {
-                    $group->pages = max(1, (int) ceil(($group->total_posts ?? 0) / $itemsPerPage));
-                    return $group;
-                });
+            $includePosts = in_array('post', $postTypes, true);
+            $postGroups = collect();
+
+            if ($includePosts) {
+                $postGroups = Post::query()
+                    ->published() // আপনার কোড অনুযায়ী published() স্কোপ
+                    ->select(
+                        DB::raw('YEAR(created_at) as year'),
+                        DB::raw('MONTH(created_at) as month'),
+                        DB::raw('MAX(updated_at) as lastmod'),
+                        DB::raw('COUNT(id) as total_posts')
+                    )
+                    ->groupBy('year', 'month')
+                    ->orderBy('year', 'desc')
+                    ->orderBy('month', 'desc')
+                    ->get()
+                    ->map(function ($group) use ($itemsPerPage) {
+                        $group->pages = max(1, (int) ceil(($group->total_posts ?? 0) / $itemsPerPage));
+                        return $group;
+                    });
+            }
 
             // ক্যাটাগরি লাস্ট আপডেট চেক
             $categoryLastUpdated = Category::max('updated_at');
@@ -57,6 +69,10 @@ class SitemapController extends Controller
                 'postGroups' => $postGroups,
                 'categoryLastUpdated' => $categoryLastUpdated,
                 'itemsPerPage' => $itemsPerPage,
+                'includePosts' => $includePosts,
+                'includePages' => in_array('page', $postTypes, true),
+                'changeFrequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
             ])->render();
         });
 
@@ -69,7 +85,7 @@ class SitemapController extends Controller
      */
     public function posts(string $year, string $month, Request $request): Response
     {
-        if (! $this->isSitemapEnabled()) {
+        if (! $this->isSitemapEnabled() || ! $this->shouldIncludePosts()) {
             abort(404);
         }
 
@@ -77,7 +93,15 @@ class SitemapController extends Controller
         $page = max(1, (int) $request->integer('page', 1));
 
         // ইউনিক ক্যাশ কি
-        $cacheKey = "sitemap_posts_{$year}_{$month}_page_{$page}_per_{$itemsPerPage}";
+        $cacheKey = 'sitemap_posts_'
+            .$year.'_'.$month.'_page_'
+            .$page.'_per_'
+            .$itemsPerPage.'_'
+            .md5(json_encode([
+                'frequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
+                'includeImages' => $this->includeImages(),
+            ]));
 
         $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($year, $month, $itemsPerPage, $page) {
             $offset = ($page - 1) * $itemsPerPage;
@@ -108,6 +132,9 @@ class SitemapController extends Controller
                 'itemsPerPage' => $itemsPerPage,
                 'year' => $year,
                 'month' => $month,
+                'changeFrequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
+                'includeImages' => $this->includeImages(),
             ])->render();
         });
 
@@ -124,11 +151,17 @@ class SitemapController extends Controller
      */
     public function categories(): Response
     {
-        if (! $this->isSitemapEnabled()) {
+        if (! $this->isSitemapEnabled() || ! $this->shouldIncludePosts()) {
             abort(404);
         }
 
-        $content = Cache::remember('sitemap_categories', $this->cacheTime, function () {
+        $cacheKey = 'sitemap_categories_'
+            .md5(json_encode([
+                'frequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
+            ]));
+
+        $content = Cache::remember($cacheKey, $this->cacheTime, function () {
             $categories = Category::query()
                 ->select('id', 'slug', 'updated_at')
                 ->orderByDesc('updated_at')
@@ -136,6 +169,8 @@ class SitemapController extends Controller
 
             return view('frontend.sitemap-categories', [
                 'categories' => $categories,
+                'changeFrequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
             ])->render();
         });
 
@@ -148,11 +183,17 @@ class SitemapController extends Controller
      */
     public function pages(): Response
     {
-        if (! $this->isSitemapEnabled()) {
+        if (! $this->isSitemapEnabled() || ! $this->shouldIncludePages()) {
             abort(404);
         }
 
-        $content = Cache::remember('sitemap_pages', $this->cacheTime, function () {
+        $cacheKey = 'sitemap_pages_'
+            .md5(json_encode([
+                'frequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
+            ]));
+
+        $content = Cache::remember($cacheKey, $this->cacheTime, function () {
             $pages = [
                 ['url' => route('home'), 'lastmod' => now()->subDay()],
             ];
@@ -178,6 +219,8 @@ class SitemapController extends Controller
 
             return view('frontend.sitemap-pages', [
                 'pages' => $pages,
+                'changeFrequency' => $this->changeFrequency(),
+                'priority' => $this->priority(),
             ])->render();
         });
 
@@ -193,5 +236,44 @@ class SitemapController extends Controller
     protected function itemsPerPage(): int
     {
         return max(1, (int) setting('sitemap_items_per_page', 1000));
+    }
+
+    protected function postTypes(): array
+    {
+        $types = setting('sitemap_post_types', ['post', 'page']);
+
+        if (is_string($types)) {
+            $decoded = json_decode($types, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        return is_array($types) ? $types : [];
+    }
+
+    protected function changeFrequency(): string
+    {
+        return (string) setting('sitemap_frequency', 'daily');
+    }
+
+    protected function priority(): string
+    {
+        return (string) setting('sitemap_priority', '0.8');
+    }
+
+    protected function includeImages(): bool
+    {
+        return (bool) setting('sitemap_include_images', true);
+    }
+
+    protected function shouldIncludePosts(): bool
+    {
+        return in_array('post', $this->postTypes(), true);
+    }
+
+    protected function shouldIncludePages(): bool
+    {
+        return in_array('page', $this->postTypes(), true);
     }
 }

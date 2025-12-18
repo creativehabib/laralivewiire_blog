@@ -5,8 +5,8 @@
         <url>
             <loc>{{ $page['url'] }}</loc>
             <lastmod>{{ $page['lastmod']->tz('UTC')->toAtomString() }}</lastmod>
-            <changefreq>monthly</changefreq>
-            <priority>0.5</priority>
+            <changefreq>{{ $changeFrequency }}</changefreq>
+            <priority>{{ $priority }}</priority>
         </url>
     @endforeach
 </urlset>

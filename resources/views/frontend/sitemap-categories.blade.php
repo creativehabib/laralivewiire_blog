@@ -5,8 +5,8 @@
         <url>
             <loc>{{ route('categories.show', $category) }}</loc>
             <lastmod>{{ optional($category->updated_at ?? $category->created_at)->tz('UTC')->toAtomString() }}</lastmod>
-            <changefreq>weekly</changefreq>
-            <priority>0.7</priority>
+            <changefreq>{{ $changeFrequency }}</changefreq>
+            <priority>{{ $priority }}</priority>
         </url>
     @endforeach
 </urlset>
