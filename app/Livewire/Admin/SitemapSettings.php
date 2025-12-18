@@ -20,9 +20,9 @@ class SitemapSettings extends Component
     {
         $settings = GeneralSetting::first();
 
-        $this->sitemap_enabled = $settings?->sitemap_enabled ?? true;
-        $this->sitemap_items_per_page = $settings?->sitemap_items_per_page ?? 1000;
-        $this->sitemap_enable_index_now = $settings?->sitemap_enable_index_now ?? false;
+        $this->sitemap_enabled = setting('sitemap_enabled') ?? true;
+        $this->sitemap_items_per_page = setting('sitemap_items_per_page') ?? 1000;
+        $this->sitemap_enable_index_now = setting('sitemap_enable_index_now') ?? false;
         $this->sitemapUrl = route('sitemap.index');
     }
 

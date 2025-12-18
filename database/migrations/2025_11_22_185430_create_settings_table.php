@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('key')->unique();
             $table->longText('value')->nullable();
-            $table->string('group')->default('general'); // seo, permalink, reading
-            $table->boolean('autoload')->default(true);
+            $table->string('group')->default('general')->index();
+            $table->boolean('autoload')->default(true)->index();
             $table->timestamps();
         });
     }
