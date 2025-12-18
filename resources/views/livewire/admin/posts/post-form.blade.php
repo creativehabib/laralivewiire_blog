@@ -529,22 +529,29 @@
         /**
          * CKEditor init ফাংশন
          */
+
         function initCkeditor() {
             const textarea = document.getElementById('content');
             if (!textarea) return;
 
-            // আগের instance থাকলে destroy
+            // মোড ডিটেক্ট করা
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
+            const textColor = isDarkMode ? '#f1f5f9' : '#1e293b';
+
             if (CKEDITOR.instances.content) {
                 CKEDITOR.instances.content.destroy(true);
             }
 
             const editor = CKEDITOR.replace('content', {
-                mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
-                height: 300,
-                uiColor: '',
-                removePlugins: 'cloudservices,uploadimage,uploadfile',
+                // ডাইনামিক CSS ইনজেক্ট করা
+                contentsCss: [
+                    `body { background-color: ${bgColor}; color: ${textColor}; font-family: sans-serif; padding: 20px; line-height: 1.6; }`,
+                    'a { color: #38bdf8; }'
+                ],
+                // আপনার বাকি সব কনফিগ এখানে থাকবে...
+                height: 400,
                 extraPlugins: 'imagemenu,mathjax,tableresize,wordcount,notification,ImageManager,codesnippet,embed',
-
                 wordcount: { showCharCount: true, showWordCount: true },
 
                 toolbar: [
@@ -573,7 +580,6 @@
                     { name: 'colors', items: ['TextColor', 'BGColor', 'ShowBlocks'] },
                     { name: 'tools', items: ['Maximize'] }
                 ],
-
                 // সব কনটেন্ট allow করছি, তবে উপরের removeFormat কনফিগ ঠিকঠাক কাজ করবে
                 allowedContent: true,
                 extraAllowedContent: '*(*){*}',
@@ -581,9 +587,10 @@
 
             // CKEditor → Livewire sync
             editor.on('change', function (e) {
-                @this.set('content', e.editor.getData());
+            @this.set('content', e.editor.getData());
             });
         }
+
 
         // Livewire v3 → সাধারণত 'livewire:init' ইভেন্ট ফায়ার হয়
         document.addEventListener('livewire:init', function () {

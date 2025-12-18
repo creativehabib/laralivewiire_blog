@@ -85,7 +85,7 @@ return [
                     'label' => 'Site copyright',
                     'type' => 'textarea',
                     'default' => '',
-                    'rules' => ['nullable','string','max:120'],
+                    'rules' => ['nullable','string'],
                 ],
                 [
                     'key' => 'maintenance_mode',

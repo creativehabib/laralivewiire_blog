@@ -211,7 +211,15 @@
                                    class="h-4 w-4 rounded border-slate-300 text-indigo-600">
                             <span>{{ $field['hint'] ?? '' }}</span>
                         </label>
-
+                        {{-- ✅ CKEDITOR FOR DYNAMIC SETTINGS --}}
+                    @elseif($type === 'richtext')
+                        <div wire:ignore class="ck-editor-container">
+        <textarea
+            id="editor-{{ $key }}"
+            class="ck-editor-instance"
+            data-key="{{ $key }}"
+        >{{ $data[$key] ?? '' }}</textarea>
+                        </div>
                         {{-- image --}}
                     @elseif($type === 'image')
                         @include('mediamanager::includes.media-input', [
@@ -257,3 +265,98 @@
         </div>
     </div>
 </div>
+@push('scripts')
+
+    <script>
+        /**
+         * মিডিয়া ম্যানেজার থেকে ইমেজ সিলেক্ট করে নির্দিষ্ট CKEditor-এ ইনসার্ট করার হেল্পার
+         */
+        function openCkeditorImagePicker(editorId) {
+            if (typeof openMediaManagerForEditor !== 'function') {
+                console.error('Media Manager function (openMediaManagerForEditor) not found!');
+                return;
+            }
+
+            // আপনার মিডিয়া ম্যানেজার ওপেন করার ফাংশন
+            openMediaManagerForEditor(function (url, data) {
+                const editor = CKEDITOR.instances[editorId];
+                if (!editor) return;
+
+                const selection = editor.getSelection();
+                const element = selection && selection.getStartElement ? selection.getStartElement() : null;
+
+                // যদি অলরেডি কোনো ইমেজ সিলেক্ট করা থাকে তবে সেটি রিপ্লেস করবে, নয়তো নতুন ইনসার্ট করবে
+                if (element && element.getName && element.getName() === 'img') {
+                    element.setAttribute('src', url);
+                    if (data?.name) element.setAttribute('alt', data.name);
+                } else {
+                    editor.insertHtml(`<img src="${url}" alt="${data?.name || ''}" style="max-width:100%; height:auto;"/>`);
+                }
+            });
+        }
+
+        /**
+         * ImageManager কাস্টম প্লাগইন রেজিস্ট্রেশন
+         */
+        if (!CKEDITOR.plugins.get('ImageManager')) {
+            CKEDITOR.plugins.add('ImageManager', {
+                init: function(editor) {
+                    editor.addCommand('openImageManager', {
+                        exec: function(ed) {
+                            openCkeditorImagePicker(ed.name); // ed.name হলো textarea এর id
+                        }
+                    });
+
+                    editor.ui.addButton('ImageManager', {
+                        label: 'Media Manager',
+                        command: 'openImageManager',
+                        toolbar: 'insert',
+                        icon: 'https://cdn-icons-png.flaticon.com/512/3342/3342137.png' // আপনার আইকন পাথ
+                    });
+                }
+            });
+        }
+
+        function initDynamicSettingsEditors() {
+            const textareas = document.querySelectorAll('.ck-editor-instance');
+            const isDarkMode = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
+            const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
+            const textColor = isDarkMode ? '#f1f5f9' : '#1e293b';
+
+            textareas.forEach(textarea => {
+                const id = textarea.id;
+                const dataKey = textarea.getAttribute('data-key');
+
+                if (CKEDITOR.instances[id]) {
+                    CKEDITOR.instances[id].destroy(true);
+                }
+
+                const editor = CKEDITOR.replace(id, {
+                    height: 250,
+                    // কাস্টম প্লাগইন যুক্ত করা
+                    extraPlugins: 'ImageManager,notification',
+                    contentsCss: [
+                        `body { background-color: ${bgColor}; color: ${textColor}; font-family: ui-sans-serif, system-ui, sans-serif; padding: 20px; line-height: 1.6; }`,
+                        'a { color: #38bdf8; }'
+                    ],
+                    removeButtons: 'Save,NewPage,Preview,Print,Templates,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image', // ডিফল্ট Image বাটন সরিয়ে কাস্টমটি ব্যবহার করছি
+                    toolbarGroups: [
+                        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                        { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] },
+                        { name: 'links' },
+                        { name: 'insert', groups: [ 'insert' ] },
+                        { name: 'colors' },
+                        { name: 'tools' },
+                    ]
+                });
+
+                editor.on('change', function() {
+                @this.set('data.' + dataKey, editor.getData());
+                });
+            });
+        }
+
+        document.addEventListener('livewire:init', () => initDynamicSettingsEditors());
+        document.addEventListener('livewire:navigated', () => initDynamicSettingsEditors());
+    </script>
+@endpush
