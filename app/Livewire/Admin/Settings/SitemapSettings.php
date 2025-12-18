@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Settings;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Livewire\Component;
 // use App\Models\GeneralSetting; // এটি আর প্রয়োজন নেই
@@ -50,6 +51,8 @@ class SitemapSettings extends Component
 
     public function save()
     {
+        $previousIndexNowKey = setting('indexnow_key');
+
         $settings = [
             'sitemap_enabled' => $this->sitemap_enabled,
             'sitemap_post_types' => json_encode($this->sitemap_post_types),
@@ -65,6 +68,8 @@ class SitemapSettings extends Component
             set_setting($key, $value, $this->group);
         }
 
+        $this->writeIndexNowKeyFile($previousIndexNowKey);
+
         // যদি আপনার set_setting() ফাংশন অটোমেটিক ক্যাশ ক্লিয়ার না করে, তবে এটি রাখুন
         Cache::forget('general_settings');
 
@@ -79,5 +84,18 @@ class SitemapSettings extends Component
         ])->layout('components.layouts.app', [
             'title' => 'Sitemap Settings - ' . (config("settings.groups.{$this->group}.title") ?? 'Settings'),
         ]);
+    }
+
+    protected function writeIndexNowKeyFile(?string $previousIndexNowKey): void
+    {
+        if (! $this->indexnow_key) {
+            return;
+        }
+
+        if ($previousIndexNowKey && $previousIndexNowKey !== $this->indexnow_key) {
+            File::delete(public_path($previousIndexNowKey . '.txt'));
+        }
+
+        File::put(public_path($this->indexnow_key . '.txt'), $this->indexnow_key);
     }
 }
