@@ -1,12 +1,14 @@
 {!! '<'.'?xml version="1.0" encoding="UTF-8"?>' !!}
 {!! '<'.'?xml-stylesheet type="text/xsl" href="'.asset('xsl/sitemap-index.xsl').'"?>' !!}
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <sitemap>
-        <loc>{{ route('sitemap.pages') }}</loc>
-        <lastmod>{{ now()->tz('UTC')->toAtomString() }}</lastmod>
-    </sitemap>
+    @if(!empty($includePages))
+        <sitemap>
+            <loc>{{ route('sitemap.pages') }}</loc>
+            <lastmod>{{ now()->tz('UTC')->toAtomString() }}</lastmod>
+        </sitemap>
+    @endif
 
-    @if(isset($postGroups) && count($postGroups) > 0)
+    @if(!empty($includePosts) && isset($postGroups) && count($postGroups) > 0)
         @foreach($postGroups as $group)
             @php
                 $totalPages = $group->pages ?? 1;
@@ -39,12 +41,14 @@
         @endforeach
     @endif
 
-    <sitemap>
-        <loc>{{ route('sitemap.categories') }}</loc>
-        @if($categoryLastUpdated)
-            <lastmod>
-                {{ \Carbon\Carbon::parse($categoryLastUpdated)->tz('UTC')->toAtomString() }}
-            </lastmod>
-        @endif
-    </sitemap>
+    @if(!empty($includePosts))
+        <sitemap>
+            <loc>{{ route('sitemap.categories') }}</loc>
+            @if($categoryLastUpdated)
+                <lastmod>
+                    {{ \Carbon\Carbon::parse($categoryLastUpdated)->tz('UTC')->toAtomString() }}
+                </lastmod>
+            @endif
+        </sitemap>
+    @endif
 </sitemapindex>
