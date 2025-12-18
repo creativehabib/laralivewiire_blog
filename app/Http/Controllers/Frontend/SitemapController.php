@@ -22,15 +22,15 @@ class SitemapController extends Controller
      */
     public function index(): Response
     {
-        $settings = general_settings();
-
-        if (! ($settings?->sitemap_enabled ?? true)) {
+        if (! $this->isSitemapEnabled()) {
             abort(404);
         }
 
+        $itemsPerPage = $this->itemsPerPage();
+        $cacheKey = "sitemap_index_{$itemsPerPage}";
+
         // Caching শুরু
-        $content = Cache::remember('sitemap_index', $this->cacheTime, function () use ($settings) {
-            $itemsPerPage = max(1, (int) ($settings?->sitemap_items_per_page ?? 1000));
+        $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($itemsPerPage) {
 
             $postGroups = Post::query()
                 ->published() // আপনার কোড অনুযায়ী published() স্কোপ
@@ -69,17 +69,15 @@ class SitemapController extends Controller
      */
     public function posts(string $year, string $month, Request $request): Response
     {
-        $settings = general_settings();
-
-        if (! ($settings?->sitemap_enabled ?? true)) {
+        if (! $this->isSitemapEnabled()) {
             abort(404);
         }
 
-        $itemsPerPage = max(1, (int) ($settings?->sitemap_items_per_page ?? 1000));
+        $itemsPerPage = $this->itemsPerPage();
         $page = max(1, (int) $request->integer('page', 1));
 
         // ইউনিক ক্যাশ কি
-        $cacheKey = "sitemap_posts_{$year}_{$month}_page_{$page}";
+        $cacheKey = "sitemap_posts_{$year}_{$month}_page_{$page}_per_{$itemsPerPage}";
 
         $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($year, $month, $itemsPerPage, $page) {
             $offset = ($page - 1) * $itemsPerPage;
@@ -126,9 +124,7 @@ class SitemapController extends Controller
      */
     public function categories(): Response
     {
-        $settings = general_settings();
-
-        if (! ($settings?->sitemap_enabled ?? true)) {
+        if (! $this->isSitemapEnabled()) {
             abort(404);
         }
 
@@ -152,9 +148,7 @@ class SitemapController extends Controller
      */
     public function pages(): Response
     {
-        $settings = general_settings();
-
-        if (! ($settings?->sitemap_enabled ?? true)) {
+        if (! $this->isSitemapEnabled()) {
             abort(404);
         }
 
@@ -189,5 +183,15 @@ class SitemapController extends Controller
 
         return response($content)
             ->header('Content-Type', 'application/xml');
+    }
+
+    protected function isSitemapEnabled(): bool
+    {
+        return (bool) setting('sitemap_enabled', true);
+    }
+
+    protected function itemsPerPage(): int
+    {
+        return max(1, (int) setting('sitemap_items_per_page', 1000));
     }
 }
