@@ -23,6 +23,6 @@ class SettingController extends Controller
 
     public function sitemapSettings()
     {
-        return view('backend.pages.settings.sitemap');
+
     }
 }

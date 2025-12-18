@@ -16,6 +16,7 @@ use App\Livewire\Admin\Pages\PageTable;
 use App\Livewire\Admin\Posts\PostForm;
 use App\Livewire\Admin\Posts\PostTable;
 use App\Livewire\Admin\Settings\SettingsGenerator;
+use App\Livewire\Admin\Settings\SitemapSettings;
 use App\Livewire\Admin\Tags\TagCreate;
 use App\Livewire\Admin\Tags\TagEdit;
 use App\Livewire\Admin\Tags\TagsIndex;
@@ -122,6 +123,13 @@ if (! $categoryPrefixEnabled && $permalinkRoute['template'] === '%postname%') {
     });
 }
 
+Route::get('/{key}.txt', function ($key) {
+    $savedKey = setting('indexnow_key');
+    if ($key === $savedKey) {
+        return response($savedKey, 200)->header('Content-Type', 'text/plain');
+    }
+    abort(404);
+})->where('key', '[a-zA-Z0-9]+');
 /**
  * ADMIN / SETTINGS
  */
@@ -130,8 +138,9 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
     Route::prefix('setting')->name('settings.')->group(function () {
         Route::controller(SettingController::class)->group(function () {
             Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
-            Route::get('/sitemap', 'sitemapSettings')->name('sitemap')->middleware('permission:setting.view');
+
         });
+        Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
     });
 
     Route::prefix('blog')->name('blogs.')->group(function () {
@@ -184,7 +193,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/setting/{group}', SettingsGenerator::class)->name('settings.dynamic')->middleware('permission:setting.view');
         Route::controller(AdminController::class)->group(function () {
             Route::get('/settings', 'generalSettings')->name('settings')->middleware('permission:setting.view');
-            Route::get('/settings/sitemap', 'sitemapSettings')->name('settings.sitemap');
         });
 
         Route::resource('roles', RoleController::class);
