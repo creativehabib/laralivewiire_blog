@@ -10,27 +10,17 @@ use Livewire\Component;
 
 class Homepage extends Component
 {
-    public $featuredPost;
-
-    public $headlinePosts;
-
-    public $primaryCategory;
-
-    public $secondaryCategory;
-
-    public $latestPosts;
-
-    public $videoPosts;
-
-    public $breakingNews;
-
-    public $popularPosts;
-
-    public $sidebarLatest;
-
+    // মাউন্ট করা এবং রেন্ডার করার জন্য প্রপার্টিগুলো
+    public $featuredPost, $headlinePosts, $primaryCategory, $secondaryCategory;
+    public $latestPosts, $videoPosts, $breakingNews, $popularPosts, $sidebarLatest;
     public bool $isReady = false;
 
     public function mount(): void
+    {
+        $this->resetData();
+    }
+
+    private function resetData()
     {
         $this->featuredPost = null;
         $this->headlinePosts = collect();
@@ -45,9 +35,12 @@ class Homepage extends Component
 
     public function loadHomepage(): void
     {
-        $cacheTtl = now()->addMinutes(5);
+        // TTL (টাইম টু লিভ) ৫ মিনিট
+        $cacheTtl = 300;
 
-        $data = Cache::remember('homepage:blocks', $cacheTtl, function () {
+        $data = Cache::remember('homepage:v2:data', $cacheTtl, function () {
+            // বেস কুয়েরি: 'title' এরর এড়াতে শুধু প্রয়োজনীয় রিলেশন লোড করা হচ্ছে।
+            // যদি আপনার title কলামটি translation হয়ে থাকে তবে select ব্যবহার করবেন না।
             $basePostQuery = Post::query()
                 ->published()
                 ->with([
@@ -55,50 +48,51 @@ class Homepage extends Component
                     'author:id,name',
                 ]);
 
+            // ১. ফিচারড পোস্ট (সব কলাম সহ যাতে এরর না দেয়)
             $featuredPost = (clone $basePostQuery)
                 ->where('is_featured', true)
-                ->latest('created_at')
+                ->latest()
                 ->first();
 
             if (! $featuredPost) {
-                $featuredPost = (clone $basePostQuery)->latest('created_at')->first();
+                $featuredPost = (clone $basePostQuery)->latest()->first();
             }
 
+            // ২. হেডলাইন পোস্ট
             $headlinePosts = (clone $basePostQuery)
                 ->when($featuredPost, fn ($query) => $query->whereKeyNot($featuredPost->id))
-                ->latest('created_at')
+                ->latest()
                 ->take(4)
                 ->get();
 
+            // ৩. ক্যাটাগরি এবং ক্যাটাগরি ভিত্তিক পোস্ট
             $categoryBlocks = Category::query()
                 ->where('status', 'published')
                 ->with(['posts' => function ($query) {
                     $query->published()
-                        ->with([
-                            'categories:id,name,slug',
-                            'author:id,name',
-                        ])
-                        ->latest('created_at')
+                        ->with(['categories:id,name,slug', 'author:id,name'])
+                        ->latest()
                         ->take(6);
                 }])
                 ->orderBy('order')
-                ->orderBy('created_at')
                 ->take(2)
                 ->get();
 
+            // ৪. অন্যান্য সেকশনগুলো
             return [
-                'featuredPost' => $featuredPost,
-                'headlinePosts' => $headlinePosts,
+                'featuredPost'    => $featuredPost,
+                'headlinePosts'   => $headlinePosts,
                 'primaryCategory' => $categoryBlocks->first(),
                 'secondaryCategory' => $categoryBlocks->skip(1)->first(),
-                'latestPosts' => (clone $basePostQuery)->latest('created_at')->take(9)->get(),
-                'videoPosts' => (clone $basePostQuery)->where('format_type', 'video')->latest('created_at')->take(6)->get(),
-                'breakingNews' => (clone $basePostQuery)->where('is_breaking', true)->latest('created_at')->take(5)->get(),
-                'popularPosts' => (clone $basePostQuery)->orderByDesc('views')->take(5)->get(),
-                'sidebarLatest' => (clone $basePostQuery)->latest('created_at')->take(5)->get(),
+                'latestPosts'     => (clone $basePostQuery)->latest()->take(9)->get(),
+                'videoPosts'      => (clone $basePostQuery)->where('format_type', 'video')->latest()->take(6)->get(),
+                'breakingNews'    => (clone $basePostQuery)->where('is_breaking', true)->latest()->take(5)->get(),
+                'popularPosts'    => (clone $basePostQuery)->orderByDesc('views')->take(5)->get(),
+                'sidebarLatest'   => (clone $basePostQuery)->latest()->take(5)->get(),
             ];
         });
 
+        // ক্যাশ থেকে ডাটা রেন্ডার প্রপার্টিতে সেট করা
         $this->featuredPost = $data['featuredPost'];
         $this->headlinePosts = $data['headlinePosts'];
         $this->primaryCategory = $data['primaryCategory'];
@@ -114,20 +108,10 @@ class Homepage extends Component
 
     public function render()
     {
-        return view('livewire.frontend.homepage', [
-            'featuredPost' => $this->featuredPost,
-            'headlinePosts' => $this->headlinePosts,
-            'primaryCategory' => $this->primaryCategory,
-            'secondaryCategory' => $this->secondaryCategory,
-            'latestPosts' => $this->latestPosts,
-            'videoPosts' => $this->videoPosts,
-            'breakingNews' => $this->breakingNews,
-            'popularPosts' => $this->popularPosts,
-            'sidebarLatest' => $this->sidebarLatest,
-            'isReady' => $this->isReady,
-        ])->layout('components.layouts.frontend.app', [
-            'title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম',
-            'seo' => Seo::forHomepage(['title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম']),
-        ]);
+        return view('livewire.frontend.homepage')
+            ->layout('components.layouts.frontend.app', [
+                'title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম',
+                'seo' => Seo::forHomepage(['title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম']),
+            ]);
     }
 }
