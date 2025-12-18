@@ -14,7 +14,7 @@ class SitemapSettings extends Component
 
     // Sitemap Properties
     public $sitemap_enabled = true;
-    public $sitemap_post_types = ['post', 'page'];
+    public $sitemap_post_types = ['post', 'page', 'category'];
     public $sitemap_frequency = 'daily';
     public $sitemap_priority = '0.8';
     public $sitemap_include_images = true;
@@ -30,7 +30,9 @@ class SitemapSettings extends Component
 
         // JSON ডিকোড করার সময় সতর্কতা অবলম্বন করা ভালো
         $types = setting('sitemap_post_types');
-        $this->sitemap_post_types = is_string($types) ? json_decode($types, true) : ($types ?? ['post', 'page']);
+        $this->sitemap_post_types = is_string($types)
+            ? json_decode($types, true)
+            : ($types ?? ['post', 'page', 'category']);
 
         $this->sitemap_frequency = setting('sitemap_frequency', 'daily');
         $this->sitemap_priority = setting('sitemap_priority', '0.8');

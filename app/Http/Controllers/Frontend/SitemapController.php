@@ -40,6 +40,7 @@ class SitemapController extends Controller
         $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($itemsPerPage, $postTypes) {
 
             $includePosts = in_array('post', $postTypes, true);
+            $includeCategories = in_array('category', $postTypes, true);
             $postGroups = collect();
 
             if ($includePosts) {
@@ -62,7 +63,7 @@ class SitemapController extends Controller
             }
 
             // ক্যাটাগরি লাস্ট আপডেট চেক
-            $categoryLastUpdated = Category::max('updated_at');
+            $categoryLastUpdated = $includeCategories ? Category::max('updated_at') : null;
 
             // view render করে স্ট্রিং রিটার্ন করা হচ্ছে
             return view('frontend.sitemap-index', [
@@ -70,6 +71,7 @@ class SitemapController extends Controller
                 'categoryLastUpdated' => $categoryLastUpdated,
                 'itemsPerPage' => $itemsPerPage,
                 'includePosts' => $includePosts,
+                'includeCategories' => $includeCategories,
                 'includePages' => in_array('page', $postTypes, true),
                 'changeFrequency' => $this->changeFrequency(),
                 'priority' => $this->priority(),
@@ -151,7 +153,7 @@ class SitemapController extends Controller
      */
     public function categories(): Response
     {
-        if (! $this->isSitemapEnabled() || ! $this->shouldIncludePosts()) {
+        if (! $this->isSitemapEnabled() || ! $this->shouldIncludeCategories()) {
             abort(404);
         }
 
@@ -240,7 +242,7 @@ class SitemapController extends Controller
 
     protected function postTypes(): array
     {
-        $types = setting('sitemap_post_types', ['post', 'page']);
+        $types = setting('sitemap_post_types', ['post', 'page', 'category']);
 
         if (is_string($types)) {
             $decoded = json_decode($types, true);
@@ -270,6 +272,11 @@ class SitemapController extends Controller
     protected function shouldIncludePosts(): bool
     {
         return in_array('post', $this->postTypes(), true);
+    }
+
+    protected function shouldIncludeCategories(): bool
+    {
+        return in_array('category', $this->postTypes(), true);
     }
 
     protected function shouldIncludePages(): bool

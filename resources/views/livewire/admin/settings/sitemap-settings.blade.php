@@ -49,6 +49,10 @@
                             <input type="checkbox" wire:model="sitemap_post_types" value="page" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
                             <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Pages</span>
                         </label>
+                        <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer group">
+                            <input type="checkbox" wire:model="sitemap_post_types" value="category" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
+                            <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Categories</span>
+                        </label>
                         {{-- অন্যান্য পোস্ট টাইপ থাকলে এখানে যোগ করতে পারেন --}}
                     </div>
                 </div>
