@@ -41,10 +41,10 @@
         @endforeach
     @endif
 
-    @if(!empty($includePosts))
+    @if(!empty($includeCategories))
         <sitemap>
             <loc>{{ route('sitemap.categories') }}</loc>
-            @if($categoryLastUpdated)
+            @if(!empty($categoryLastUpdated))
                 <lastmod>
                     {{ \Carbon\Carbon::parse($categoryLastUpdated)->tz('UTC')->toAtomString() }}
                 </lastmod>
