@@ -76,6 +76,8 @@ class SitemapSettings extends Component
         return view('livewire.admin.settings.sitemap-settings', [
             'sitemapUrl' => url('sitemap.xml'),
             'keyLocation' => url(($this->indexnow_key ?? 'key') . '.txt')
+        ])->layout('components.layouts.app', [
+            'title' => 'Sitemap Settings - ' . (config("settings.groups.{$this->group}.title") ?? 'Settings'),
         ]);
     }
 }
