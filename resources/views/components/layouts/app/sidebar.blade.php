@@ -277,6 +277,16 @@
 
                 <flux:sidebar.item
                     icon="home"
+                    :href="route('settings.robots')"
+                    :current="request()->routeIs('settings.robots')"
+                    tooltip="{{ __('Robots.txt') }}"
+                    wire:navigate
+                >
+                    {{ __('Robots.txt') }}
+                </flux:sidebar.item>
+
+                <flux:sidebar.item
+                    icon="home"
                     :href="route('settings.sitemap')"
                     :current="request()->routeIs('settings.sitemap')"
                     tooltip="{{ __('Sitemap Setting') }}"
