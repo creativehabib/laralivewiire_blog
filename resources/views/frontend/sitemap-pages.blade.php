@@ -6,7 +6,8 @@
             <loc>{{ $page['url'] }}</loc>
             <lastmod>{{ $page['lastmod']->tz('UTC')->toAtomString() }}</lastmod>
             <changefreq>{{ $changeFrequency }}</changefreq>
-            <priority>{{ $priority }}</priority>
+            {{-- Priority পেজ অ্যারে থেকে নেওয়া হচ্ছে --}}
+            <priority>{{ $page['priority'] }}</priority>
         </url>
     @endforeach
 </urlset>

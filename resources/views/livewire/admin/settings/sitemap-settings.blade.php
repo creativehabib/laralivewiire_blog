@@ -22,140 +22,156 @@
                         </span>
                     </div>
                 </div>
-
-                <a href="{{ $sitemapUrl }}" target="_blank" rel="noopener" class="text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1">
-                    <i class="fas fa-external-link-alt"></i>
-                    {{ $sitemapUrl }}
+                <a href="{{ $sitemapUrl }}" target="_blank" class="text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1">
+                    <i class="fas fa-external-link-alt"></i> {{ $sitemapUrl }}
                 </a>
             </div>
-            <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 max-w-2xl">
-                Automatically generate a sitemap.xml to help search engines index your content more efficiently.
-            </p>
         </div>
 
         <div x-show="open" x-collapse x-cloak>
-            <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="p-6 space-y-6">
 
-                <div class="space-y-3">
-                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-200">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">
                         <i class="fas fa-layer-group mr-1 text-slate-400"></i> Post Types to Include
                     </label>
-                    <div class="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg p-2 max-h-56 overflow-y-auto">
-                        <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer group">
-                            <input type="checkbox" wire:model="sitemap_post_types" value="post" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
-                            <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Posts</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer group">
-                            <input type="checkbox" wire:model="sitemap_post_types" value="page" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
-                            <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Pages</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer group">
-                            <input type="checkbox" wire:model="sitemap_post_types" value="category" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
-                            <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Categories</span>
-                        </label>
-                        {{-- অন্যান্য পোস্ট টাইপ থাকলে এখানে যোগ করতে পারেন --}}
+                    <div class="flex flex-wrap gap-4 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                        @foreach(['post', 'page', 'category'] as $type)
+                            <label class="flex items-center space-x-3 cursor-pointer group select-none">
+                                <input type="checkbox" wire:model.live="sitemap_post_types" value="{{ $type }}" class="h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 uppercase">{{ $type }}</span>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
+                @if(count($sitemap_post_types) > 0)
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Update Frequency</label>
-                        <select wire:model="sitemap_frequency" class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
-                            <option value="always">Always</option>
-                            <option value="hourly">Hourly</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                        </select>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">
+                            <i class="fas fa-sliders-h mr-1 text-slate-400"></i> Configuration per Type
+                        </label>
+                        <div class="overflow-hidden border border-slate-200 dark:border-slate-700 rounded-lg">
+                            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                                <thead class="bg-slate-50 dark:bg-slate-900/50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Type</th>
+                                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Frequency</th>
+                                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Priority</th>
+                                </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                                @foreach($sitemap_post_types as $type)
+                                    <tr>
+                                        <td class="px-4 py-3 whitespace-nowrap">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 capitalize">
+                                                {{ $type }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <select wire:model="type_settings.{{ $type }}.frequency" class="block w-full px-2 py-1.5 text-sm rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                                <option value="always">Always</option>
+                                                <option value="hourly">Hourly</option>
+                                                <option value="daily">Daily</option>
+                                                <option value="weekly">Weekly</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="yearly">Yearly</option>
+                                            </select>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <select wire:model="type_settings.{{ $type }}.priority" class="block w-full px-2 py-1.5 text-sm rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                                <option value="1.0">1.0 (Highest)</option>
+                                                <option value="0.9">0.9</option>
+                                                <option value="0.8">0.8</option>
+                                                <option value="0.6">0.6</option>
+                                                <option value="0.5">0.5 (Normal)</option>
+                                                <option value="0.4">0.4</option>
+                                                <option value="0.2">0.2</option>
+                                                <option value="0.1">0.1 (Lowest)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-700 pt-6">
+                        <div class="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-700">
+                        <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300">
+                            <i class="fas fa-link text-sm"></i>
+                        </span>
+                            <div>
+                                <span class="block text-[10px] uppercase font-bold text-slate-400">Sitemap URL</span>
+                                <a href="{{ $sitemapUrl }}" target="_blank" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 underline">View XML</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-700">
+                        <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300">
+                            <i class="fas fa-bolt text-sm"></i>
+                        </span>
+                            <div>
+                                <span class="block text-[10px] uppercase font-bold text-slate-400">Status</span>
+                                <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Live & Syncing</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-700">
+                        <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300">
+                            <i class="fas fa-file-invoice text-sm"></i>
+                        </span>
+                            <div>
+                                <span class="block text-[10px] uppercase font-bold text-slate-400">Capacity</span>
+                                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">{{ number_format($sitemap_items_per_page) }} / page</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Priority (0.0 - 1.0)</label>
-                        <select wire:model="sitemap_priority" class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
-                            <option value="1.0">1.0</option>
-                            <option value="0.9">0.9</option>
-                            <option value="0.8">0.8</option>
-                            <option value="0.5">0.5</option>
-                        </select>
+                    <div class="mt-6 flex items-start gap-3 rounded-xl border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20 px-4 py-3 text-blue-800 dark:text-blue-200">
+                        <i class="fas fa-info-circle mt-0.5 text-blue-500"></i>
+                        <p class="text-xs leading-relaxed">
+                            <strong>Pro Tip:</strong> After enabling your sitemap, submit the URL to <a href="https://search.google.com/search-console" target="_blank" class="underline font-bold">Google Search Console</a> to accelerate indexing.
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-2 lg:col-span-1 flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-100 dark:border-slate-700/50 mt-1">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-700">
                         <div>
-                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-200 block">Include Images</span>
-                            <span class="text-[10px] uppercase tracking-wider text-slate-400">Media indexing</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200 block">Include Images</span>
+                            <span class="text-xs text-slate-500">Include featured images in sitemap</span>
                         </div>
                         <button
                             wire:click="$toggle('sitemap_include_images')"
                             type="button"
                             class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200"
                             :class="$wire.sitemap_include_images ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'">
-                            <span
-                                class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200"
-                                :class="$wire.sitemap_include_images ? 'translate-x-4' : 'translate-x-0'"></span>
+                            <span class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200" :class="$wire.sitemap_include_images ? 'translate-x-4' : 'translate-x-0'"></span>
                         </button>
                     </div>
-                </div>
-            </div>
 
-            <div class="px-6 pb-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-700 pt-6">
-                    <div class="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-700">
-                        <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300">
-                            <i class="fas fa-link text-sm"></i>
-                        </span>
-                        <div>
-                            <span class="block text-[10px] uppercase font-bold text-slate-400">Sitemap URL</span>
-                            <a href="{{ $sitemapUrl }}" target="_blank" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 underline">View XML</a>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-700">
-                        <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300">
-                            <i class="fas fa-bolt text-sm"></i>
-                        </span>
-                        <div>
-                            <span class="block text-[10px] uppercase font-bold text-slate-400">Status</span>
-                            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Live & Syncing</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-700">
-                        <span class="mr-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300">
-                            <i class="fas fa-file-invoice text-sm"></i>
-                        </span>
-                        <div>
-                            <span class="block text-[10px] uppercase font-bold text-slate-400">Capacity</span>
-                            <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">{{ number_format($sitemap_items_per_page) }} / page</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex items-start gap-3 rounded-xl border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20 px-4 py-3 text-blue-800 dark:text-blue-200">
-                    <i class="fas fa-info-circle mt-0.5 text-blue-500"></i>
-                    <p class="text-xs leading-relaxed">
-                        <strong>Pro Tip:</strong> After enabling your sitemap, submit the URL to <a href="https://search.google.com/search-console" target="_blank" class="underline font-bold">Google Search Console</a> to accelerate indexing.
-                    </p>
-                </div>
-
-                <div class="mt-6">
-                    <label for="sitemapItems" class="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
-                        <i class="fas fa-list-numeric text-slate-400"></i>
-                        Items per page
-                    </label>
-                    <div class="mt-2 flex items-center gap-4">
-                        <input
-                            type="number"
-                            id="sitemapItems"
-                            wire:model="sitemap_items_per_page"
-                            class="block w-32 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500"
-                        >
+                    <div>
+                        <label for="sitemapItems" class="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
+                            <i class="fas fa-list-numeric text-slate-400"></i>
+                            Items per page
+                        </label>
                         <span class="text-xs text-slate-500 dark:text-slate-400">Maximum recommended: 50,000</span>
+                        <div class="mt-2 flex items-center gap-4">
+                            <input
+                                type="number"
+                                id="sitemapItems"
+                                wire:model="sitemap_items_per_page"
+                                class="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500"
+                            >
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div class="border-t border-slate-100 dark:border-slate-700" x-data="{ openInow: false }">
-                <button @click="openInow = !openInow" class="w-full px-6 py-4 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                <button @click="openInow = !openInow" class="w-full px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <div class="flex items-center gap-3">
                         <i :class="openInow ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-slate-400 text-xs transition-transform"></i>
                         <span class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
@@ -179,7 +195,7 @@
                                     </div>
                                     <input type="text" readonly wire:model="indexnow_key" class="block w-full rounded-l-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 pl-9 text-sm py-2 border focus:ring-indigo-500">
                                 </div>
-                                <button wire:click="generateIndexNowKey" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-l-0 border-slate-300 dark:border-slate-600 rounded-r-lg text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition" title="Generate New Key">
+                                <button wire:click="generateIndexNowKey" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 cursor-pointer border border-l-0 border-slate-300 dark:border-slate-600 rounded-r-lg text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition" title="Generate New Key">
                                     <i class="fas fa-redo-alt mr-1"></i>
                                 </button>
                             </div>
@@ -208,13 +224,16 @@
             </div>
         </div>
 
-        <div class="bg-slate-50 dark:bg-slate-900/80 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                <i class="fas fa-clock"></i>
-                Settings require saving to take effect.
-            </span>
-            <button wire:click="save" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-indigo-200 dark:shadow-none transition-all active:scale-95 flex items-center justify-center">
-                <i class="fas fa-save mr-2"></i> Save Settings
+        <div class="bg-slate-50 dark:bg-slate-900/80 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+            <button
+                wire:click="save"
+                wire:loading.attr="disabled"
+                wire:target="save"
+                class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed cursor-pointer text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md transition-all active:scale-95 flex items-center">
+
+                <span wire:loading.remove wire:target="save" class="flex items-center"><i class="fas fa-save mr-2"></i> Save Changes</span>
+
+                <span wire:loading wire:target="save" class="flex items-center"><i class="fas fa-circle-notch fa-spin mr-2"></i> Saving...</span>
             </button>
         </div>
     </div>
