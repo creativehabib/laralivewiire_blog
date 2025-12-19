@@ -1,6 +1,6 @@
 <div class="antialiased text-slate-900 dark:text-slate-100">
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
-         x-data="{ open: @entangle('sitemap_enabled'), selectedTypes: @entangle('sitemap_post_types') }">
+         x-data="{ open: @entangle('sitemap_enabled') }">
 
         <div class="px-6 py-5 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -42,15 +42,15 @@
                     </label>
                     <div class="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg p-2 max-h-56 overflow-y-auto">
                         <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer group">
-                            <input type="checkbox" wire:model="sitemap_post_types" x-model="selectedTypes" value="post" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
+                            <input type="checkbox" wire:model="sitemap_post_types" value="post" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
                             <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Posts</span>
                         </label>
                         <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer group">
-                            <input type="checkbox" wire:model="sitemap_post_types" x-model="selectedTypes" value="page" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
+                            <input type="checkbox" wire:model="sitemap_post_types" value="page" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
                             <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Pages</span>
                         </label>
                         <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer group">
-                            <input type="checkbox" wire:model="sitemap_post_types" x-model="selectedTypes" value="category" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
+                            <input type="checkbox" wire:model="sitemap_post_types" value="category" class="h-4 w-4 text-indigo-600 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500">
                             <span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Categories</span>
                         </label>
                         {{-- অন্যান্য পোস্ট টাইপ থাকলে এখানে যোগ করতে পারেন --}}
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
-                    <div x-show="selectedTypes.includes('post')" x-collapse x-cloak>
+                    <div>
                         <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Update Frequency</label>
                         <select wire:model="sitemap_frequency" class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
                             <option value="always">Always</option>
@@ -69,29 +69,9 @@
                         </select>
                     </div>
 
-                    <div x-show="selectedTypes.includes('post')" x-collapse x-cloak>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Post Priority (0.0 - 1.0)</label>
-                        <select wire:model="sitemap_priority_posts" class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
-                            <option value="1.0">1.0</option>
-                            <option value="0.9">0.9</option>
-                            <option value="0.8">0.8</option>
-                            <option value="0.5">0.5</option>
-                        </select>
-                    </div>
-
-                    <div x-show="selectedTypes.includes('page')" x-collapse x-cloak>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Page Priority (0.0 - 1.0)</label>
-                        <select wire:model="sitemap_priority_pages" class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
-                            <option value="1.0">1.0</option>
-                            <option value="0.9">0.9</option>
-                            <option value="0.8">0.8</option>
-                            <option value="0.5">0.5</option>
-                        </select>
-                    </div>
-
-                    <div x-show="selectedTypes.includes('category')" x-collapse x-cloak>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Category Priority (0.0 - 1.0)</label>
-                        <select wire:model="sitemap_priority_categories" class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Priority (0.0 - 1.0)</label>
+                        <select wire:model="sitemap_priority" class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border">
                             <option value="1.0">1.0</option>
                             <option value="0.9">0.9</option>
                             <option value="0.8">0.8</option>

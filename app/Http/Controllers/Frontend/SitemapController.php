@@ -101,7 +101,7 @@ class SitemapController extends Controller
             .$itemsPerPage.'_'
             .md5(json_encode([
                 'frequency' => $this->changeFrequency(),
-                'priority' => $this->priority('post'),
+                'priority' => $this->priority(),
                 'includeImages' => $this->includeImages(),
             ]));
 
@@ -135,7 +135,7 @@ class SitemapController extends Controller
                 'year' => $year,
                 'month' => $month,
                 'changeFrequency' => $this->changeFrequency(),
-                'priority' => $this->priority('post'),
+                'priority' => $this->priority(),
                 'includeImages' => $this->includeImages(),
             ])->render();
         });
@@ -160,7 +160,7 @@ class SitemapController extends Controller
         $cacheKey = 'sitemap_categories_'
             .md5(json_encode([
                 'frequency' => $this->changeFrequency(),
-                'priority' => $this->priority('category'),
+                'priority' => $this->priority(),
             ]));
 
         $content = Cache::remember($cacheKey, $this->cacheTime, function () {
@@ -172,7 +172,7 @@ class SitemapController extends Controller
             return view('frontend.sitemap-categories', [
                 'categories' => $categories,
                 'changeFrequency' => $this->changeFrequency(),
-                'priority' => $this->priority('category'),
+                'priority' => $this->priority(),
             ])->render();
         });
 
@@ -192,7 +192,7 @@ class SitemapController extends Controller
         $cacheKey = 'sitemap_pages_'
             .md5(json_encode([
                 'frequency' => $this->changeFrequency(),
-                'priority' => $this->priority('page'),
+                'priority' => $this->priority(),
             ]));
 
         $content = Cache::remember($cacheKey, $this->cacheTime, function () {
@@ -222,7 +222,7 @@ class SitemapController extends Controller
             return view('frontend.sitemap-pages', [
                 'pages' => $pages,
                 'changeFrequency' => $this->changeFrequency(),
-                'priority' => $this->priority('page'),
+                'priority' => $this->priority(),
             ])->render();
         });
 
@@ -259,15 +259,9 @@ class SitemapController extends Controller
         return (string) setting('sitemap_frequency', 'daily');
     }
 
-    protected function priority(string $type = 'post'): string
+    protected function priority(): string
     {
-        $default = (string) setting('sitemap_priority', '0.8');
-
-        return match ($type) {
-            'page' => (string) setting('sitemap_priority_pages', $default),
-            'category' => (string) setting('sitemap_priority_categories', $default),
-            default => (string) setting('sitemap_priority_posts', $default),
-        };
+        return (string) setting('sitemap_priority', '0.8');
     }
 
     protected function includeImages(): bool

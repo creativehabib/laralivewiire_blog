@@ -17,9 +17,7 @@ class SitemapSettings extends Component
     public $sitemap_enabled = true;
     public $sitemap_post_types = ['post', 'page', 'category'];
     public $sitemap_frequency = 'daily';
-    public $sitemap_priority_posts = '0.8';
-    public $sitemap_priority_pages = '0.8';
-    public $sitemap_priority_categories = '0.8';
+    public $sitemap_priority = '0.8';
     public $sitemap_include_images = true;
     public $sitemap_items_per_page = 1000;
 
@@ -38,9 +36,7 @@ class SitemapSettings extends Component
             : ($types ?? ['post', 'page', 'category']);
 
         $this->sitemap_frequency = setting('sitemap_frequency', 'daily');
-        $this->sitemap_priority_posts = setting('sitemap_priority_posts', setting('sitemap_priority', '0.8'));
-        $this->sitemap_priority_pages = setting('sitemap_priority_pages', setting('sitemap_priority', '0.8'));
-        $this->sitemap_priority_categories = setting('sitemap_priority_categories', setting('sitemap_priority', '0.8'));
+        $this->sitemap_priority = setting('sitemap_priority', '0.8');
         $this->sitemap_include_images = (bool) setting('sitemap_include_images', true);
         $this->sitemap_items_per_page = (int) setting('sitemap_items_per_page', 1000);
 
@@ -61,10 +57,7 @@ class SitemapSettings extends Component
             'sitemap_enabled' => $this->sitemap_enabled,
             'sitemap_post_types' => json_encode($this->sitemap_post_types),
             'sitemap_frequency' => $this->sitemap_frequency,
-            'sitemap_priority_posts' => $this->sitemap_priority_posts,
-            'sitemap_priority_pages' => $this->sitemap_priority_pages,
-            'sitemap_priority_categories' => $this->sitemap_priority_categories,
-            'sitemap_priority' => $this->sitemap_priority_posts,
+            'sitemap_priority' => $this->sitemap_priority,
             'sitemap_include_images' => $this->sitemap_include_images,
             'sitemap_items_per_page' => $this->sitemap_items_per_page,
             'indexnow_key' => $this->indexnow_key,
