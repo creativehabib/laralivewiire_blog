@@ -15,6 +15,7 @@ use App\Livewire\Admin\Pages\PageForm;
 use App\Livewire\Admin\Pages\PageTable;
 use App\Livewire\Admin\Posts\PostForm;
 use App\Livewire\Admin\Posts\PostTable;
+use App\Livewire\Admin\Settings\RobotsTxt;
 use App\Livewire\Admin\Settings\SettingsGenerator;
 use App\Livewire\Admin\Settings\SitemapSettings;
 use App\Livewire\Admin\Tags\TagCreate;
@@ -136,12 +137,13 @@ Route::get('/{key}.txt', function ($key) {
 Route::middleware(['auth', 'preventBackHistory'])->group(function () {
 
     Route::prefix('setting')->name('settings.')->group(function () {
-        Route::controller(SettingController::class)->group(function () {
-            Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
+            Route::controller(SettingController::class)->group(function () {
+                Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
 
+            });
+            Route::get('/robots', RobotsTxt::class)->name('robots')->middleware('permission:setting.view');
+            Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
         });
-        Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
-    });
 
     Route::prefix('blog')->name('blogs.')->group(function () {
         Route::get('/categories', CategoryIndex::class)->name('categories.index')->middleware('permission:category.view');
