@@ -139,7 +139,6 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
     Route::prefix('setting')->name('settings.')->group(function () {
             Route::controller(SettingController::class)->group(function () {
                 Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
-
             });
             Route::get('/robots', RobotsTxt::class)->name('robots')->middleware('permission:setting.view');
             Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');

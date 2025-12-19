@@ -20,7 +20,7 @@
                     <textarea
                         wire:model="robotsContent"
                         rows="10"
-                        class="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        class="w-full rounded-lg border border-slate-300 p-2 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         placeholder="User-agent: *&#10;Allow: /&#10;Sitemap: {{ $robotsUrl }}"
                     ></textarea>
                     @error('robotsContent')
