@@ -30,7 +30,6 @@
 
         <div x-show="open" x-collapse x-cloak>
             <div class="p-6 space-y-6">
-
                 <div>
                     <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">
                         <i class="fas fa-layer-group mr-1 text-slate-400"></i> Post Types to Include
