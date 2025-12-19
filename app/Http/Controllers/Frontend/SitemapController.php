@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Page;
 use App\Models\Category;
 use App\Models\Post;
+use App\Support\CacheSettings;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -14,8 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 class SitemapController extends Controller
 {
-    private int $cacheTime = 3600; // 1 Hour
-
     public function index(): Response
     {
         if (! $this->isSitemapEnabled()) abort(404);
@@ -26,7 +25,7 @@ class SitemapController extends Controller
         // Cache key generation
         $cacheKey = 'sitemap_index_'.$itemsPerPage.'_'.md5(json_encode($postTypes));
 
-        $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($itemsPerPage, $postTypes) {
+        $content = $this->remember($cacheKey, function () use ($itemsPerPage, $postTypes) {
             $includePosts = in_array('post', $postTypes);
             $includeCategories = in_array('category', $postTypes);
             $includePages = in_array('page', $postTypes);
@@ -70,7 +69,7 @@ class SitemapController extends Controller
 
         $cacheKey = "sitemap_posts_{$year}_{$month}_{$page}_".md5(json_encode($config));
 
-        $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($year, $month, $itemsPerPage, $page, $config) {
+        $content = $this->remember($cacheKey, function () use ($year, $month, $itemsPerPage, $page, $config) {
             $query = Post::query()->published()
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $month)
@@ -100,7 +99,7 @@ class SitemapController extends Controller
         $config = $this->getConfigFor('category');
         $cacheKey = 'sitemap_categories_'.md5(json_encode($config));
 
-        $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($config) {
+        $content = $this->remember($cacheKey, function () use ($config) {
             $categories = Category::query()->select('id', 'slug', 'updated_at')->orderByDesc('updated_at')->get();
             return view('frontend.sitemap-categories', [
                 'categories' => $categories,
@@ -119,7 +118,7 @@ class SitemapController extends Controller
         $config = $this->getConfigFor('page');
         $cacheKey = 'sitemap_pages_'.md5(json_encode($config));
 
-        $content = Cache::remember($cacheKey, $this->cacheTime, function () use ($config) {
+        $content = $this->remember($cacheKey, function () use ($config) {
 
             // ১. স্ট্যাটিক পেজ (যেমন হোমপেজ) - কালেকশন হিসেবে তৈরি করুন
             $pages = collect([
@@ -180,5 +179,19 @@ class SitemapController extends Controller
         }
 
         return $allSettings[$type] ?? ['frequency' => 'daily', 'priority' => '0.5'];
+    }
+
+    private function remember(string $cacheKey, callable $callback)
+    {
+        $duration = $this->cacheDuration();
+        if(! $duration) return $callback();
+        return Cache::remember($cacheKey, $duration, $callback);
+    }
+
+    private function cacheDuration(): ?\DateTimeInterface
+    {
+        $minutes = CacheSettings::sitemapLifetimeMinutes();
+        if( $minutes <= 0 ) return null;
+        return now()->addMinutes($minutes);
     }
 }

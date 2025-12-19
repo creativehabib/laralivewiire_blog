@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Support\CacheSettings;
 use App\Support\Seo;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
@@ -20,7 +21,7 @@ class Homepage extends Component
         $this->resetData();
     }
 
-    private function resetData()
+    private function resetData(): void
     {
         $this->featuredPost = null;
         $this->headlinePosts = collect();
@@ -35,64 +36,79 @@ class Homepage extends Component
 
     public function loadHomepage(): void
     {
-        // TTL (টাইম টু লিভ) ৫ মিনিট
-        $cacheTtl = 300;
+        $cacheMinutes = CacheSettings::cacheLifetimeMinutes();
 
-        $data = Cache::remember('homepage:v2:data', $cacheTtl, function () {
-            // বেস কুয়েরি: 'title' এরর এড়াতে শুধু প্রয়োজনীয় রিলেশন লোড করা হচ্ছে।
-            // যদি আপনার title কলামটি translation হয়ে থাকে তবে select ব্যবহার করবেন না।
-            $basePostQuery = Post::query()
-                ->published()
-                ->with([
-                    'categories:id,name,slug',
-                    'author:id,name',
-                ]);
+        // ক্যাশ সেটিংস চেক করা হচ্ছে
+        if (CacheSettings::cacheWidgetsEnabled() && $cacheMinutes > 0) {
+            $data = Cache::remember('homepage:v2:data', now()->addMinutes($cacheMinutes), function () {
+                return $this->generateHomepageData();
+            });
+        } else {
+            // ক্যাশ ডিজেবল থাকলে সরাসরি ডাটা জেনারেট করবে
+            $data = $this->generateHomepageData();
+        }
 
-            // ১. ফিচারড পোস্ট (সব কলাম সহ যাতে এরর না দেয়)
-            $featuredPost = (clone $basePostQuery)
-                ->where('is_featured', true)
-                ->latest()
-                ->first();
+        $this->applyHomepageData($data);
 
-            if (! $featuredPost) {
-                $featuredPost = (clone $basePostQuery)->latest()->first();
-            }
+        $this->isReady = true;
+    }
 
-            // ২. হেডলাইন পোস্ট
-            $headlinePosts = (clone $basePostQuery)
-                ->when($featuredPost, fn ($query) => $query->whereKeyNot($featuredPost->id))
-                ->latest()
-                ->take(4)
-                ->get();
+    protected function generateHomepageData(): array
+    {
+        $basePostQuery = Post::query()
+            ->published()
+            ->with([
+                'categories:id,name,slug',
+                'author:id,name',
+            ]);
 
-            // ৩. ক্যাটাগরি এবং ক্যাটাগরি ভিত্তিক পোস্ট
-            $categoryBlocks = Category::query()
-                ->where('status', 'published')
-                ->with(['posts' => function ($query) {
-                    $query->published()
-                        ->with(['categories:id,name,slug', 'author:id,name'])
-                        ->latest()
-                        ->take(6);
-                }])
-                ->orderBy('order')
-                ->take(2)
-                ->get();
+        // ১. ফিচারড পোস্ট (সব কলাম সহ যাতে এরর না দেয়)
+        $featuredPost = (clone $basePostQuery)
+            ->where('is_featured', true)
+            ->latest()
+            ->first();
 
-            // ৪. অন্যান্য সেকশনগুলো
-            return [
-                'featuredPost'    => $featuredPost,
-                'headlinePosts'   => $headlinePosts,
-                'primaryCategory' => $categoryBlocks->first(),
-                'secondaryCategory' => $categoryBlocks->skip(1)->first(),
-                'latestPosts'     => (clone $basePostQuery)->latest()->take(9)->get(),
-                'videoPosts'      => (clone $basePostQuery)->where('format_type', 'video')->latest()->take(6)->get(),
-                'breakingNews'    => (clone $basePostQuery)->where('is_breaking', true)->latest()->take(5)->get(),
-                'popularPosts'    => (clone $basePostQuery)->orderByDesc('views')->take(5)->get(),
-                'sidebarLatest'   => (clone $basePostQuery)->latest()->take(5)->get(),
-            ];
-        });
+        if (! $featuredPost) {
+            $featuredPost = (clone $basePostQuery)->latest()->first();
+        }
 
-        // ক্যাশ থেকে ডাটা রেন্ডার প্রপার্টিতে সেট করা
+        // ২. হেডলাইন পোস্ট
+        $headlinePosts = (clone $basePostQuery)
+            ->when($featuredPost, fn ($query) => $query->whereKeyNot($featuredPost->id))
+            ->latest()
+            ->take(4)
+            ->get();
+
+        // ৩. ক্যাটাগরি এবং ক্যাটাগরি ভিত্তিক পোস্ট
+        $categoryBlocks = Category::query()
+            ->where('status', 'published')
+            ->with(['posts' => function ($query) {
+                $query->published()
+                    ->with(['categories:id,name,slug', 'author:id,name'])
+                    ->latest()
+                    ->take(6);
+            }])
+            ->orderBy('order')
+            ->take(2)
+            ->get();
+
+        // ৪. অন্যান্য সেকশনগুলো
+        return [
+            'featuredPost'    => $featuredPost,
+            'headlinePosts'   => $headlinePosts,
+            'primaryCategory' => $categoryBlocks->first(),
+            'secondaryCategory' => $categoryBlocks->skip(1)->first(),
+            'latestPosts'     => (clone $basePostQuery)->latest()->take(9)->get(),
+            'videoPosts'      => (clone $basePostQuery)->where('format_type', 'video')->latest()->take(6)->get(),
+            'breakingNews'    => (clone $basePostQuery)->where('is_breaking', true)->latest()->take(5)->get(),
+            'popularPosts'    => (clone $basePostQuery)->orderByDesc('views')->take(5)->get(),
+            'sidebarLatest'   => (clone $basePostQuery)->latest()->take(5)->get(),
+        ];
+    }
+
+    protected function applyHomepageData(array $data): void
+    {
+        // ক্যাশ থেকে ডাটা রেন্ডার প্রপারটিতে সেট করা
         $this->featuredPost = $data['featuredPost'];
         $this->headlinePosts = $data['headlinePosts'];
         $this->primaryCategory = $data['primaryCategory'];
@@ -102,8 +118,6 @@ class Homepage extends Component
         $this->breakingNews = $data['breakingNews'];
         $this->popularPosts = $data['popularPosts'];
         $this->sidebarLatest = $data['sidebarLatest'];
-
-        $this->isReady = true;
     }
 
     public function render()
