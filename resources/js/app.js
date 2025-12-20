@@ -7,6 +7,7 @@ import 'codemirror/mode/javascript/javascript.js';
 // নতুন: HTML মোড (অবশ্যই এই দুটি লাইন যোগ করবেন)
 import 'codemirror/mode/xml/xml.js';
 import 'codemirror/mode/htmlmixed/htmlmixed.js';
+import 'codemirror/mode/shell/shell.js';
 
 // Styles (Base)
 import 'codemirror/lib/codemirror.css';

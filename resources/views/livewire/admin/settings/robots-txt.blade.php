@@ -12,8 +12,67 @@
     </style>
 
     <div class="max-w-5xl mx-auto">
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        {{-- ১. x-data কে মেইন কার্ডে নিয়ে আসা হয়েছে (Scope Fix) --}}
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
+             x-data="{
+                isDirty: false, // বাটন স্ট্যাটাস ট্র্যাক করার জন্য
+                init() {
+                    // চেক করা CodeMirror লোড হয়েছে কিনা
+                    if (typeof CodeMirror === 'undefined') {
+                        console.error('CodeMirror not loaded via app.js');
+                        return;
+                    }
+                    this.initEditor();
 
+                    // সেভ হওয়ার পর বাটন রিসেট (Saved) করার লিসেনার
+                    Livewire.on('media-toast', () => {
+                        this.isDirty = false;
+                    });
+                },
+                initEditor() {
+                    // Ref চেক করা
+                    if (!this.$refs.robotsEditor) return;
+
+                    const editor = CodeMirror.fromTextArea(this.$refs.robotsEditor, {
+                        mode: 'javascript', // Robots.txt এর জন্য প্লেইন টেক্সট বা JS মোড চলে
+                        theme: 'default',
+                        lineNumbers: true,
+                        matchBrackets: true,
+                        indentUnit: 4,
+                        indentWithTabs: true
+                    });
+
+                    // Theme Handling (Dark/Light)
+                    const updateTheme = () => {
+                        const isDark = document.documentElement.classList.contains('dark');
+                        editor.setOption('theme', isDark ? 'monokai' : 'default');
+                    }
+                    updateTheme();
+
+                    // Observer for Theme Change
+                    const observer = new MutationObserver(() => updateTheme());
+                    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+                    // ২. Livewire Update (Editor -> PHP)
+                    editor.on('change', () => {
+                        // 'false' প্যারামিটার দেওয়া হয়েছে যাতে টাইপ করার সময় রিকোয়েস্ট না যায়
+                        @this.set('robotsContent', editor.getValue(), false);
+                        this.isDirty = true; // বাটন একটিভ হবে
+                    });
+
+                    // ৩. File Upload Update (PHP -> Editor)
+                    window.addEventListener('robots-content-updated', event => {
+                        editor.setValue(event.detail.content);
+                        this.isDirty = true; // ফাইল আপলোড করলে বাটন একটিভ হবে যাতে ইউজার সেভ করতে পারে
+                    });
+
+                    // Fix generic display issues
+                    setTimeout(() => editor.refresh(), 200);
+                }
+            }"
+        >
+
+            {{-- Header --}}
             <div class="px-6 py-5 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
@@ -31,51 +90,8 @@
 
             <div class="p-6 space-y-6">
 
-                <div x-data="{
-                    init() {
-                        // চেক করা CodeMirror লোড হয়েছে কিনা
-                        if (typeof CodeMirror === 'undefined') {
-                            console.error('CodeMirror not loaded via app.js');
-                            return;
-                        }
-                        this.initEditor();
-                    },
-                    initEditor() {
-                        const editor = CodeMirror.fromTextArea(this.$refs.robotsEditor, {
-                            mode: 'javascript', // Comments highlight করার জন্য JS মোড ভালো কাজ করে
-                            theme: 'default',
-                            lineNumbers: true,
-                            matchBrackets: true,
-                            indentUnit: 4,
-                            indentWithTabs: true
-                        });
-
-                        // 1. Theme Handling (Dark/Light)
-                        const updateTheme = () => {
-                            const isDark = document.documentElement.classList.contains('dark');
-                            editor.setOption('theme', isDark ? 'monokai' : 'default');
-                        }
-                        updateTheme();
-
-                        // Observer for Theme Change
-                        const observer = new MutationObserver(() => updateTheme());
-                        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-                        // 2. Livewire Update (Editor -> PHP)
-                        editor.on('change', () => {
-                            @this.set('robotsContent', editor.getValue());
-                        });
-
-                        // 3. File Upload Update (PHP -> Editor)
-                        // ফাইল আপলোড হলে এই ইভেন্টটি ফায়ার হবে এবং এডিটর আপডেট হবে
-                        window.addEventListener('robots-content-updated', event => {
-                            editor.setValue(event.detail.content);
-                        });
-
-                        // Fix generic display issues
-                        setTimeout(() => editor.refresh(), 200);
-                    }
-                }">
+                {{-- Editor Container --}}
+                <div>
                     <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Robots.txt Content</label>
 
                     <div wire:ignore>
@@ -92,6 +108,7 @@
                     </p>
                 </div>
 
+                {{-- File Upload Section --}}
                 <div class="border border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-900/30">
                     <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Upload robots.txt file</label>
                     <div class="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -122,15 +139,23 @@
                 </div>
             </div>
 
-            <div class="bg-slate-50 dark:bg-slate-900/80 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+            {{-- Footer Action --}}
+            <div class="bg-slate-50 dark:bg-slate-900/80 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end sticky bottom-0 z-10">
                 <button
                     wire:click="save"
                     wire:loading.attr="disabled"
-                    wire:target="save"
-                    class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed cursor-pointer text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md transition-all active:scale-95 flex items-center"
+                    :disabled="!isDirty"
+                    :class="isDirty
+                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md cursor-pointer'
+                        : 'bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'"
+                    class="px-6 py-2.5 rounded-lg text-sm font-bold transition-all active:scale-95 flex items-center gap-2 disabled:opacity-70"
                 >
-                    <span wire:loading.remove wire:target="save" class="flex items-center"><i class="fas fa-save mr-2"></i> Save Changes</span>
-                    <span wire:loading wire:target="save" class="flex items-center"><i class="fas fa-circle-notch fa-spin mr-2"></i> Saving...</span>
+                    <span wire:loading><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
+
+                    <span wire:loading.remove>
+                        <i class="fas" :class="isDirty ? 'fa-save' : 'fa-check'"></i>
+                        <span x-text="isDirty ? 'Save Changes' : 'Saved'"></span>
+                    </span>
                 </button>
             </div>
         </div>

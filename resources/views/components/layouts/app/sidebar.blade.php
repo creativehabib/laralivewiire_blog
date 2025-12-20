@@ -260,6 +260,16 @@
                     {{ __('Customs HTML') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="command-line"
+                    :href="route('settings.htaccess')"
+                    :current="request()->routeIs('settings.htaccess')"
+                    tooltip="{{ __('Htaccess') }}"
+                    wire:navigate
+                >
+                    {{ __('Htaccess') }}
+                </flux:sidebar.item>
+
             </flux:sidebar.group>
 
         </flux:sidebar.nav>

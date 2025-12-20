@@ -11,7 +11,6 @@ class RobotsTxt extends Component
     use WithFileUploads;
 
     public string $robotsContent = '';
-
     public $uploadedFile;
 
     public function mount(): void
@@ -19,31 +18,39 @@ class RobotsTxt extends Component
         $this->robotsContent = $this->loadRobotsContent();
     }
 
+    /**
+     * ফাইল আপলোড হওয়ার সাথে সাথে এই ফাংশনটি কল হবে।
+     * এটি ফাইলের কন্টেন্ট পড়ে এডিটরে পাঠিয়ে দিবে।
+     */
     public function updatedUploadedFile(): void
     {
         $this->validate([
-            'uploadedFile' => ['file', 'mimes:txt', 'max:1024'],
+            'uploadedFile' => ['required', 'file', 'mimes:txt', 'max:100'], // max 100KB
         ]);
 
-        $this->robotsContent = File::get($this->uploadedFile->getRealPath());
+        // ১. আপলোড করা ফাইলের কন্টেন্ট পড়া
+        $content = File::get($this->uploadedFile->getRealPath());
+
+        // ২. PHP ভেরিয়েবল আপডেট করা
+        $this->robotsContent = $content;
+
+        // ৩. [গুরুত্বপূর্ণ] CodeMirror এডিটর আপডেট করার জন্য ইভেন্ট পাঠানো
+        $this->dispatch('robots-content-updated', content: $this->robotsContent);
+
+        // ৪. ইউজারকে জানানো
+        $this->dispatch('media-toast', type: 'info', message: 'File content loaded into editor.');
     }
 
     public function save(): void
     {
         $this->validate([
             'robotsContent' => ['required', 'string'],
-            'uploadedFile' => ['nullable', 'file', 'mimes:txt', 'max:1024'],
         ]);
 
-        $content = $this->robotsContent;
+        // public/robots.txt ফাইলে কন্টেন্ট রাইট করা
+        File::put($this->robotsFilePath(), $this->robotsContent);
 
-        if ($this->uploadedFile) {
-            $content = File::get($this->uploadedFile->getRealPath());
-            $this->robotsContent = $content;
-        }
-
-        File::put($this->robotsFilePath(), $content);
-
+        // আপলোড ফাইল ভেরিয়েবল রিসেট করা
         $this->uploadedFile = null;
 
         $this->dispatch('media-toast', type: 'success', message: 'robots.txt updated successfully!');
@@ -54,7 +61,7 @@ class RobotsTxt extends Component
         return view('livewire.admin.settings.robots-txt', [
             'robotsUrl' => url('robots.txt'),
         ])->layout('components.layouts.app', [
-            'title' => 'robots.txt - Settings',
+            'title' => 'Robots.txt Settings',
         ]);
     }
 
@@ -64,6 +71,7 @@ class RobotsTxt extends Component
             return File::get($this->robotsFilePath());
         }
 
+        // ডিফল্ট কন্টেন্ট যদি ফাইল না থাকে
         return "User-agent: *\nAllow: /\nSitemap: " . url('sitemap.xml');
     }
 

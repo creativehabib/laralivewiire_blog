@@ -18,6 +18,7 @@ use App\Livewire\Admin\Posts\PostTable;
 use App\Livewire\Admin\Settings\CustomCssSettings;
 use App\Livewire\Admin\Settings\CustomHtmlSettings;
 use App\Livewire\Admin\Settings\CustomJsSettings;
+use App\Livewire\Admin\Settings\HtaccessSettings;
 use App\Livewire\Admin\Settings\RobotsTxt;
 use App\Livewire\Admin\Settings\SettingsGenerator;
 use App\Livewire\Admin\Settings\SitemapSettings;
@@ -148,6 +149,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
             Route::get('/customs-css', CustomCssSettings::class)->name('custom-css')->middleware('permission:setting.view');
             Route::get('/custom-js', CustomJsSettings::class)->name('custom-js')->middleware('permission:setting.view');
             Route::get('/custom-html', CustomHtmlSettings::class)->name('custom-html')->middleware('permission:setting.view');
+            Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
         });
 
     Route::prefix('blog')->name('blogs.')->group(function () {
