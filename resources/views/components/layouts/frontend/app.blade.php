@@ -32,6 +32,18 @@
     @if($headerJs = setting('custom_header_js'))
         {!! $headerJs !!}
     @endif
+
+    {{-- ================= ADSENSE LOGIC START ================= --}}
+    {{-- 1. Auto Ads Logic --}}
+    @if(setting('adsense_mode') === 'auto' && !empty(setting('adsense_auto_code')))
+        {!! setting('adsense_auto_code') !!}
+
+        {{-- 2. Unit Ads Base Script (যদি ইউনিট অ্যাড সিলেক্ট থাকে) --}}
+    @elseif(setting('adsense_mode') === 'unit' && !empty(setting('adsense_unit_client_id')))
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ setting('adsense_unit_client_id') }}" crossorigin="anonymous"></script>
+    @endif
+    {{-- ================= ADSENSE LOGIC END ================= --}}
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('styles')

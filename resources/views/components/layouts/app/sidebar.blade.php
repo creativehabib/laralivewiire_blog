@@ -270,6 +270,17 @@
                     {{ __('Htaccess') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="command-line"
+                    :href="route('settings.ads-settings')"
+                    :current="request()->routeIs('settings.ads-settings')"
+                    tooltip="{{ __('Ads Settings') }}"
+                    wire:navigate
+                >
+                    {{ __('Ads Settings') }}
+                </flux:sidebar.item>
+
+
             </flux:sidebar.group>
 
         </flux:sidebar.nav>
