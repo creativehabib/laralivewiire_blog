@@ -1,4 +1,4 @@
 User-agent: *
 Allow:/
 Disallow: /dashboard
-sitemap:https://bn.ebdresults.com/sitemap.xml
+sitemap:http://laralivewire_blog.test/sitemap.xml
