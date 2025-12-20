@@ -1,4 +1,4 @@
-<div class="antialiased text-slate-900 dark:text-slate-100">
+<div class="max-w-5xl mx-auto antialiased text-slate-900 dark:text-slate-100">
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
          x-data="{ open: @entangle('sitemap_enabled') }">
 
@@ -30,6 +30,7 @@
 
         <div x-show="open" x-collapse x-cloak>
             <div class="p-6 space-y-6">
+
                 <div>
                     <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">
                         <i class="fas fa-layer-group mr-1 text-slate-400"></i> Post Types to Include
@@ -169,6 +170,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="border-t border-slate-100 dark:border-slate-700" x-data="{ openInow: false }">
                 <button @click="openInow = !openInow" class="w-full px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <div class="flex items-center gap-3">
@@ -202,8 +204,20 @@
 
                         <div>
                             <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Key Location</label>
-                            <div class="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
-                                <span class="text-xs font-mono text-slate-600 dark:text-slate-400 truncate">{{ $keyLocation }}</span>
+                            <div class="flex rounded-lg shadow-sm">
+                                <div class="relative flex-grow flex items-center bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-l-lg px-3 py-2 overflow-hidden">
+                                    <i class="fas fa-file-alt text-slate-400 text-xs mr-2 flex-shrink-0"></i>
+                                    <span class="text-sm font-mono text-slate-600 dark:text-slate-300 truncate select-all" title="{{ $keyLocation }}">
+                                        {{ $keyLocation }}
+                                    </span>
+                                </div>
+                                <a href="{{ url($indexnow_key . '.txt') }}"
+                                   target="_blank"
+                                   class="px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-l-0 border-slate-300 dark:border-slate-600 rounded-r-lg text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-indigo-700 transition flex items-center gap-2 cursor-pointer group"
+                                   title="View File in Browser">
+                                    <span>View</span>
+                                    <i class="fas fa-external-link-alt group-hover:scale-110 transition-transform"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -211,12 +225,25 @@
                     <div class="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
                         <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Instant Indexing Support</h4>
                         <div class="flex flex-wrap gap-3">
-                            <span class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-full text-xs font-medium">
-                                <i class="fab fa-microsoft text-blue-500"></i> Bing
-                            </span>
-                            <span class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-full text-xs font-medium">
-                                <i class="fab fa-yandex text-red-500"></i> Yandex
-                            </span>
+                            <a href="https://www.bing.com/webmasters" target="_blank" rel="noopener noreferrer"
+                               class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-full text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm hover:shadow-md cursor-pointer group">
+                                <i class="fab fa-microsoft text-blue-500 group-hover:scale-110 transition-transform"></i> Bing
+                            </a>
+
+                            <a href="https://webmaster.yandex.com/" target="_blank" rel="noopener noreferrer"
+                               class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-full text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-red-400 hover:text-red-600 dark:hover:text-red-400 transition-all shadow-sm hover:shadow-md cursor-pointer group">
+                                <i class="fab fa-yandex text-red-500 group-hover:scale-110 transition-transform"></i> Yandex
+                            </a>
+
+                            <a href="https://reporter.seznam.cz/" target="_blank" rel="noopener noreferrer"
+                               class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-full text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-red-400 hover:text-red-600 dark:hover:text-red-400 transition-all shadow-sm hover:shadow-md cursor-pointer group">
+                                <i class="fas fa-s text-red-600 font-bold group-hover:scale-110 transition-transform"></i> Seznam.cz
+                            </a>
+
+                            <a href="https://searchadvisor.naver.com/" target="_blank" rel="noopener noreferrer"
+                               class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-full text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-green-400 hover:text-green-600 dark:hover:text-green-400 transition-all shadow-sm hover:shadow-md cursor-pointer group">
+                                <i class="fas fa-n text-green-500 font-bold group-hover:scale-110 transition-transform"></i> Naver
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,24 @@
+import CodeMirror from 'codemirror';
 
+// Modes
+import 'codemirror/mode/css/css.js';
+import 'codemirror/mode/javascript/javascript.js';
+
+// নতুন: HTML মোড (অবশ্যই এই দুটি লাইন যোগ করবেন)
+import 'codemirror/mode/xml/xml.js';
+import 'codemirror/mode/htmlmixed/htmlmixed.js';
+
+// Styles (Base)
+import 'codemirror/lib/codemirror.css';
+
+// Themes (আপনার পছন্দমত থিম ইম্পোর্ট করুন)
+// import 'codemirror/theme/dracula.css';  // Dark Theme
+// import 'codemirror/theme/eclipse.css';  // Light Theme
+import 'codemirror/theme/monokai.css';
+// import 'codemirror/theme/material.css'; // চাইলে এটাও রাখতে পারেন
+
+// Global window object
+window.CodeMirror = CodeMirror;
 document.addEventListener('DOMContentLoaded', () => {
     const isInlineCode = (element) => {
         if (!(element instanceof HTMLElement)) {

@@ -3,108 +3,51 @@
 <head>
     @include('partials.head')
 
-    <!-- Nestable CSS -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.css"/>
     <style>
-        .dd {
-            max-width: 100%;
-        }
-
-        .dd3-handle {
-            height: 40px;
-            width: 40px;
-            background: #4f46e5; /* Tailwind indigo-600 */
-            border-radius: 0.5rem; /* rounded-lg */
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: move;
-        }
-
-        .dd3-handle:before {
-            content: '\2630';
-            font-size: 18px;
-        }
-
-        .dd3-content {
-            margin: 0.375rem 0;
-            padding: 0.75rem 1rem;
-            border: 1px solid #e5e7eb; /* gray-200 */
-            border-radius: 0.5rem; /* rounded-lg */
-            background: #ffffff;
-            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); /* subtle slate shadow */
-        }
-
-        .menu-picker {
-            max-height: 240px;
-            overflow-y: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            background: #f9fafb; /* gray-50 */
-        }
-
-        .menu-picker .form-check {
-            margin-bottom: 0.5rem;
-        }
-
-        .menu-picker .form-check:last-child {
-            margin-bottom: 0;
-        }
-        .dd-handle {
-            display: block;
-            padding: 5px 10px;
-            color: #333;
-            cursor: move !important;
-            text-decoration: none;
-            font-weight: 700;
-            border: none !important;
-            background: none !important;
-            border-radius: 3px;
-            box-sizing: border-box;
-        }
         .dd { max-width: 100%; }
+        .dd3-handle {
+            height: 40px; width: 40px; background: #4f46e5; border-radius: 0.5rem; color: #fff;
+            display: flex; align-items: center; justify-content: center; cursor: move;
+        }
+        .dd3-handle:before { content: '\2630'; font-size: 18px; }
         .dd3-content {
-            height: auto;
-            padding: 0;
-            display: block;
+            margin: 0.375rem 0; padding: 0.75rem 1rem; border: 1px solid #e5e7eb;
+            border-radius: 0.5rem; background: #ffffff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
         }
-        .dd3-content .menu-item-header {
-            flex-wrap: wrap;
+        .menu-picker {
+            max-height: 240px; overflow-y: auto; border: 1px solid #e5e7eb;
+            border-radius: 0.5rem; padding: 0.75rem; background: #f9fafb;
         }
-        .dd3-content .drag-handle {
-            cursor: move;
-            flex: 1;
-            user-select: none;
+        .menu-picker .form-check { margin-bottom: 0.5rem; }
+        .menu-picker .form-check:last-child { margin-bottom: 0; }
+        .dd-handle {
+            display: block; padding: 5px 10px; color: #333; cursor: move !important;
+            text-decoration: none; font-weight: 700; border: none !important;
+            background: none !important; border-radius: 3px; box-sizing: border-box;
         }
-        .dd3-content .drag-handle:active {
-            cursor: grabbing;
-        }
+        .dd3-content { height: auto; padding: 0; display: block; }
+        .dd3-content .menu-item-header { flex-wrap: wrap; }
+        .dd3-content .drag-handle { cursor: move; flex: 1; user-select: none; }
+        .dd3-content .drag-handle:active { cursor: grabbing; }
         .dd-placeholder {
-            background: #f2f2f2;
-            border: 1px dashed #b6bcbf;
-            box-sizing: border-box;
-            min-height: 50px;
-            margin: 5px 0;
+            background: #f2f2f2; border: 1px dashed #b6bcbf; box-sizing: border-box;
+            min-height: 50px; margin: 5px 0;
         }
         .dd-list { list-style: none; padding-left: 0; }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-slate-800">
 
-<a
-    href="#main-content"
-    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900 focus:shadow-lg dark:focus:bg-slate-800 dark:focus:text-white"
->
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900 focus:shadow-lg dark:focus:bg-slate-800 dark:focus:text-white">
     {{ __('Skip to main content') }}
 </a>
 
 <div class="min-h-screen flex">
     {{-- ============= SIDEBAR ============= --}}
     <flux:sidebar sticky collapsible breakpoint="0" class="bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700">
-        {{-- HEADER: Logo + collapse --}}
+
+        {{-- HEADER --}}
         <flux:sidebar.header>
             <flux:sidebar.brand
                 href="{{ route('dashboard') }}"
@@ -112,13 +55,13 @@
                 logo:dark="https://fluxui.dev/img/demo/dark-mode-logo.png"
                 name="Laravel Livewire"
             />
-
             <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
         </flux:sidebar.header>
 
-        {{-- QUICK LINK --}}
+        {{-- NAVIGATION --}}
         <flux:sidebar.nav>
-            {{-- ড্যাশবোর্ড এবং মিডিয়া আইটেম --}}
+
+            {{-- Dashboard --}}
             <flux:sidebar.item
                 icon="home"
                 :href="route('dashboard')"
@@ -129,8 +72,9 @@
                 {{ __('Dashboard') }}
             </flux:sidebar.item>
 
+            {{-- Pages --}}
             <flux:sidebar.item
-                icon="book-open"
+                icon="document-text"
                 :href="route('admins.pages.index')"
                 :current="request()->routeIs('admins.pages.*')"
                 tooltip="{{ __('Pages') }}"
@@ -139,18 +83,16 @@
                 {{ __('Pages') }}
             </flux:sidebar.item>
 
-            {{--Blog, Category, Tags--}}
-            {{-- রুট admin.* সক্রিয় থাকলেই গ্রুপটি Expanded থাকবে (parent active) --}}
+            {{-- Blog Group --}}
             <flux:sidebar.group
                 heading="{{ __('Blog') }}"
-                icon="book-open"
+                icon="newspaper"
                 expandable
                 class="grid"
                 :expanded="request()->routeIs('blogs.*')"
             >
-                {{-- সাবমেনু আইটেম: Roles --}}
                 <flux:sidebar.item
-                    icon="users"
+                    icon="pencil-square"
                     :href="route('blogs.posts.index')"
                     :current="request()->routeIs('blogs.posts*')"
                     tooltip="{{ __('Posts') }}"
@@ -160,7 +102,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="home"
+                    icon="folder"
                     :href="route('blogs.categories.index')"
                     :current="request()->routeIs('blogs.categories.*')"
                     tooltip="{{ __('Categories') }}"
@@ -170,7 +112,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="home"
+                    icon="hashtag"
                     :href="route('blogs.tags.index')"
                     :current="request()->routeIs('blogs.tags.*')"
                     tooltip="{{ __('Tags') }}"
@@ -178,21 +120,18 @@
                 >
                     {{ __('Tags') }}
                 </flux:sidebar.item>
-
-
             </flux:sidebar.group>
 
-            {{-- রুট admin.* সক্রিয় থাকলেই গ্রুপটি Expanded থাকবে (parent active) --}}
+            {{-- Administration Group --}}
             <flux:sidebar.group
                 heading="{{ __('Administration') }}"
-                icon="book-open"
+                icon="shield-check"
                 expandable
                 class="grid"
                 :expanded="request()->routeIs('admin.*')"
             >
-                {{-- সাবমেনু আইটেম: Roles --}}
                 <flux:sidebar.item
-                    icon="users"
+                    icon="lock-closed"
                     :href="route('admin.roles.index')"
                     :current="request()->routeIs('admin.roles.*')"
                     tooltip="{{ __('Role & Permissions') }}"
@@ -201,9 +140,8 @@
                     {{ __('Role & Permissions') }}
                 </flux:sidebar.item>
 
-                {{-- সাবমেনু আইটেম: Permissions --}}
                 <flux:sidebar.item
-                    icon="book-open"
+                    icon="key"
                     :href="route('admin.permissions.index')"
                     :current="request()->routeIs('admin.permissions.*')"
                     tooltip="{{ __('Permissions') }}"
@@ -212,7 +150,6 @@
                     {{ __('Permissions') }}
                 </flux:sidebar.item>
 
-                {{-- সাবমেনু আইটেম: Users --}}
                 <flux:sidebar.item
                     icon="users"
                     :href="route('admin.users.index')"
@@ -223,9 +160,8 @@
                     {{ __('Users') }}
                 </flux:sidebar.item>
 
-                {{-- সাবমেনু আইটেম: Menus --}}
                 <flux:sidebar.item
-                    icon="book-open"
+                    icon="bars-3"
                     :href="route('admin.menus.index')"
                     :current="request()->routeIs('admin.menus.*')"
                     tooltip="{{ __('Menus') }}"
@@ -235,8 +171,9 @@
                 </flux:sidebar.item>
             </flux:sidebar.group>
 
+            {{-- Media --}}
             <flux:sidebar.item
-                icon="book-open"
+                icon="photo"
                 :href="route('media')"
                 :current="request()->routeIs('media')"
                 tooltip="{{ __('Media') }}"
@@ -245,18 +182,16 @@
                 {{ __('Media') }}
             </flux:sidebar.item>
 
-
-
+            {{-- Settings Group --}}
             <flux:sidebar.group
                 heading="{{ __('Settings') }}"
-                icon="square-3-stack-3d"
+                icon="cog-6-tooth"
                 expandable
                 class="grid"
                 :expanded="request()->routeIs('settings.*')"
             >
-
                 <flux:sidebar.item
-                    icon="home"
+                    icon="adjustments-horizontal"
                     :href="route('settings.dynamic', 'general')"
                     :current="request()->routeIs('settings.dynamic', 'general')"
                     tooltip="{{ __('General Setting') }}"
@@ -266,7 +201,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="home"
+                    icon="circle-stack"
                     :href="route('settings.cacheManagement')"
                     :current="request()->routeIs('settings.cacheManagement')"
                     tooltip="{{ __('Cache Management') }}"
@@ -276,7 +211,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="home"
+                    icon="document-magnifying-glass"
                     :href="route('settings.robots')"
                     :current="request()->routeIs('settings.robots')"
                     tooltip="{{ __('Robots.txt') }}"
@@ -286,7 +221,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="home"
+                    icon="map"
                     :href="route('settings.sitemap')"
                     :current="request()->routeIs('settings.sitemap')"
                     tooltip="{{ __('Sitemap Setting') }}"
@@ -295,19 +230,46 @@
                     {{ __('Sitemap Setting') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="paint-brush"
+                    :href="route('settings.custom-css')"
+                    :current="request()->routeIs('settings.custom-css')"
+                    tooltip="{{ __('Customs CSS') }}"
+                    wire:navigate
+                >
+                    {{ __('Customs CSS') }}
+                </flux:sidebar.item>
+
+                <flux:sidebar.item
+                    icon="code-bracket"
+                    :href="route('settings.custom-js')"
+                    :current="request()->routeIs('settings.custom-js')"
+                    tooltip="{{ __('Customs JS') }}"
+                    wire:navigate
+                >
+                    {{ __('Customs JS') }}
+                </flux:sidebar.item>
+
+                <flux:sidebar.item
+                    icon="command-line"
+                    :href="route('settings.custom-html')"
+                    :current="request()->routeIs('settings.custom-html')"
+                    tooltip="{{ __('Customs HTML') }}"
+                    wire:navigate
+                >
+                    {{ __('Customs HTML') }}
+                </flux:sidebar.item>
+
             </flux:sidebar.group>
 
         </flux:sidebar.nav>
-
-        {{-- MAIN NAVIGATION --}}
 
         <flux:spacer />
 
         {{-- SECONDARY LINKS --}}
         <flux:sidebar.nav>
-
             <flux:sidebar.item
-                icon="book-open-text"
+                icon="globe-alt"
                 :href="route('home')"
                 :current="request()->routeIs('home')"
                 target="_blank"
@@ -317,7 +279,7 @@
             </flux:sidebar.item>
         </flux:sidebar.nav>
 
-        {{-- DESKTOP + MOBILE – দুই জায়গাতেই user menu দেখাতে চাই --}}
+        {{-- USER MENU --}}
         <div class="mt-4">
             <flux:dropdown position="bottom" align="start">
                 <flux:profile
@@ -331,21 +293,14 @@
                     <flux:menu.radio.group>
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                        <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                            <span
-                                class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
-                            >
-                                {{ auth()->user()->initials() }}
-                            </span>
-                        </span>
-
+                                <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+                                    <span class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                        {{ auth()->user()->initials() }}
+                                    </span>
+                                </span>
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                            <span class="truncate font-semibold">
-                                {{ auth()->user()->name }}
-                            </span>
-                                    <span class="truncate text-xs">
-                                {{ auth()->user()->email }}
-                            </span>
+                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                                 </div>
                             </div>
                         </div>
@@ -354,11 +309,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item
-                            :href="route('profile.edit')"
-                            icon="cog"
-                            wire:navigate
-                        >
+                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                             {{ __('Settings') }}
                         </flux:menu.item>
                     </flux:menu.radio.group>
@@ -367,13 +318,7 @@
 
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
-                        <flux:menu.item
-                            as="button"
-                            type="submit"
-                            icon="arrow-right-start-on-rectangle"
-                            class="w-full"
-                            data-test="logout-button"
-                        >
+                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
                             {{ __('Log Out') }}
                         </flux:menu.item>
                     </form>
@@ -389,164 +334,83 @@
             {{ $slot }}
         </div>
     </main>
-    {{-- ============= /MAIN CONTENT ============= --}}
 </div>
+
 @include('mediamanager::includes.media-modal')
 @fluxScripts
 @mediaScripts
-<!-- jQuery (must load BEFORE nestable) -->
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="{{ asset('ckeditor/ckeditor.js') }}" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.js" referrerpolicy="no-referrer"></script>
+
 <script>
+    // Nestable Logic
     const initMenuNestable = () => {
         const $el = $('#menuNestable');
+        if (!$el.length || typeof $el.nestable !== 'function') return;
 
-        if (!$el.length || typeof $el.nestable !== 'function') {
-            return;
-        }
-
-        if ($el.data('nestable')) {
-            $el.nestable('destroy');
-        }
+        if ($el.data('nestable')) $el.nestable('destroy');
 
         const serializeItems = (items) => {
             return items.map(item => {
                 const children = Array.isArray(item.children) ? serializeItems(item.children) : [];
-
-                return {
-                    id: item.id,
-                    ...(children.length ? { children } : {})
-                };
+                return { id: item.id, ...(children.length ? { children } : {}) };
             });
         };
 
-        $el.nestable({
-            maxDepth: 3,
-            expandBtnHTML: '',
-            collapseBtnHTML: ''
-        }).on('change', function (e) {
-            const list = e.length ? e : $(e.target);
-            const structure = list.nestable('serialize');
-            const serialized = Array.isArray(structure) ? serializeItems(structure) : [];
-            Livewire.dispatch('menuOrderUpdated', { items: serialized });
-        });
+        $el.nestable({ maxDepth: 3, expandBtnHTML: '', collapseBtnHTML: '' })
+            .on('change', function (e) {
+                const list = e.length ? e : $(e.target);
+                const structure = list.nestable('serialize');
+                const serialized = Array.isArray(structure) ? serializeItems(structure) : [];
+                Livewire.dispatch('menuOrderUpdated', { items: serialized });
+            });
     };
 
     document.addEventListener('livewire:init', () => {
         initMenuNestable();
-
-        Livewire.on('refreshNestable', () => {
-            setTimeout(initMenuNestable, 100);
-        });
+        Livewire.on('refreshNestable', () => setTimeout(initMenuNestable, 100));
     });
 
-    document.addEventListener('livewire:init', () => {
-        let nestableInstance = null;
-
-        function initializeNestable() {
-            if ($('#menuNestable').length === 0 || typeof $('#menuNestable').nestable !== 'function') {
-                return;
-            }
-
-            if (nestableInstance) {
-                nestableInstance.nestable('destroy');
-            }
-
-            nestableInstance = $('#menuNestable').nestable({
-                maxDepth: 3
-            });
-
-            const serializeItems = (items) => {
-                return items.map(item => {
-                    const children = Array.isArray(item.children) ? serializeItems(item.children) : [];
-
-                    return {
-                        id: item.id,
-                        ...(children.length ? { children } : {})
-                    };
-                });
-            };
-
-            nestableInstance.on('change', function (e) {
-                const list = e.length ? e : $(e.target);
-                const output = list.nestable('serialize');
-                const serialized = Array.isArray(output) ? serializeItems(output) : [];
-
-                Livewire.dispatch('menuOrderUpdated', { items: serialized });
-            });
-        }
-
-        initializeNestable();
-
-        Livewire.on('refreshNestable', () => {
-            initializeNestable();
-        });
-    });
-</script>
-<script>
-
-    // role & permission
+    // Permission Checkboxes Logic
     document.addEventListener('DOMContentLoaded', function () {
         const checkAll = document.getElementById('checkPermissionAll');
+        if(!checkAll) return; // Prevent errors on pages without this element
+
         const groupCheckboxes = document.querySelectorAll('.group-checkbox');
         const permissionCheckboxes = document.querySelectorAll('.permission-checkbox');
 
-        // "All Permissions" checkbox functionality
         checkAll.addEventListener('change', function () {
-            permissionCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            groupCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
+            permissionCheckboxes.forEach(cb => cb.checked = this.checked);
+            groupCheckboxes.forEach(cb => cb.checked = this.checked);
         });
 
-        // "Group" checkbox functionality
         groupCheckboxes.forEach(groupCheckbox => {
             groupCheckbox.addEventListener('change', function () {
                 const group = this.getAttribute('data-group');
-                const permissionsInGroup = document.querySelectorAll(
-                    `[data-group-container="${group}"] .permission-checkbox`
-                );
-                permissionsInGroup.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
+                document.querySelectorAll(`[data-group-container="${group}"] .permission-checkbox`)
+                    .forEach(cb => cb.checked = this.checked);
                 updateCheckAllState();
             });
         });
 
-        // Individual permission checkbox functionality
         permissionCheckboxes.forEach(permissionCheckbox => {
             permissionCheckbox.addEventListener('change', function () {
-                updateGroupCheckboxState(this);
+                const container = this.closest('.group-permissions-container');
+                const group = container.getAttribute('data-group-container');
+                const groupCheckbox = document.querySelector(`.group-checkbox[data-group="${group}"]`);
+                const allInGroup = container.querySelectorAll('.permission-checkbox');
+                const allChecked = container.querySelectorAll('.permission-checkbox:checked');
+
+                groupCheckbox.checked = allInGroup.length === allChecked.length;
                 updateCheckAllState();
             });
         });
 
-        function updateGroupCheckboxState(permissionCheckbox) {
-            const container = permissionCheckbox.closest('.group-permissions-container');
-            const group = container.getAttribute('data-group-container');
-            const groupCheckbox = document.querySelector(`.group-checkbox[data-group="${group}"]`);
-            const allInGroup = container.querySelectorAll('.permission-checkbox');
-            const allCheckedInGroup = container.querySelectorAll('.permission-checkbox:checked');
-            groupCheckbox.checked = allInGroup.length === allCheckedInGroup.length;
-        }
-
         function updateCheckAllState() {
-            checkAll.checked =
-                permissionCheckboxes.length === document.querySelectorAll('.permission-checkbox:checked').length;
+            checkAll.checked = permissionCheckboxes.length === document.querySelectorAll('.permission-checkbox:checked').length;
         }
-
-        // Initial state on page load
-        groupCheckboxes.forEach(groupCheckbox => {
-            const group = groupCheckbox.getAttribute('data-group');
-            const container = document.querySelector(`[data-group-container="${group}"]`);
-            const allInGroup = container.querySelectorAll('.permission-checkbox');
-            const allCheckedInGroup = container.querySelectorAll('.permission-checkbox:checked');
-            groupCheckbox.checked = allInGroup.length > 0 && allInGroup.length === allCheckedInGroup.length;
-        });
-        updateCheckAllState();
     });
 </script>
 @stack('scripts')

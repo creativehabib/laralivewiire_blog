@@ -75,7 +75,7 @@
                                 <label for="{{ $id }}"
                                        class="flex items-start gap-3 rounded-lg border px-3 py-2 cursor-pointer
                                             border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900
-                                            hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800 transition-colors">
+                                            hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800">
                                     <input type="radio"
                                            id="{{ $id }}"
                                            class="mt-1 h-4 w-4 text-indigo-600"
@@ -96,7 +96,7 @@
                             <label for="permalink-custom"
                                    class="flex items-start gap-3 rounded-lg border px-3 py-2 cursor-pointer
                                         border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900
-                                        hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800 transition-colors">
+                                        hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800">
                                 <input type="radio"
                                        id="permalink-custom"
                                        class="mt-1 h-4 w-4 text-indigo-600"

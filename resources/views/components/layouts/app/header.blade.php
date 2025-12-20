@@ -128,5 +128,6 @@
         </main>
 
         @fluxScripts
+        @stack('scripts')
     </body>
 </html>

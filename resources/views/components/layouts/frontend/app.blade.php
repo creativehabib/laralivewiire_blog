@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,11 +21,20 @@
         #videoCarousel::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.8); border-radius: 999px; }
         #videoCarousel { scrollbar-width: thin; scrollbar-color: rgba(148,163,184,0.8) transparent; }
     </style>
-
+    @if($headerHtml = setting('custom_header_html'))
+        {!! $headerHtml !!}
+    @endif
+    @if($customCss = setting('custom_css'))
+        <style>
+            {!! $customCss !!}
+        </style>
+    @endif
+    @if($headerJs = setting('custom_header_js'))
+        {!! $headerJs !!}
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('styles')
-
     <script>
         function applyTheme() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -42,14 +51,21 @@
 </head>
 
 <body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out">
-
+    @if($bodyJs = setting('custom_body_js'))
+        {!! $bodyJs !!}
+    @endif
+    @if($bodyHtml = setting('custom_body_html'))
+        {!! $bodyHtml !!}
+    @endif
     <x-frontends.top-bar/>
     <x-frontends.navbar />
 
     <main class="min-h-screen">
         {{ $slot }}
     </main>
-
+    @if($footerHtml = setting('custom_footer_html'))
+        {!! $footerHtml !!}
+    @endif
     <x-frontends.footer />
 
     {{-- ৩. অপ্টিমাইজড স্ক্রিপ্টসমূহ (defer ব্যবহার করা হয়েছে) --}}
@@ -59,5 +75,8 @@
 
     @livewireScripts
     @stack('scripts')
+    @if($footerJs = setting('custom_footer_js'))
+        {!! $footerJs !!}
+    @endif
 </body>
 </html>
