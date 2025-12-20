@@ -1,5 +1,6 @@
 <div class="antialiased text-slate-900 dark:text-slate-100">
     <style>
+        /* CodeMirror Styling */
         .CodeMirror { height: 300px; border-radius: 0.5rem; border: 1px solid #cbd5e1; font-size: 14px; }
         .dark .CodeMirror { border-color: #334155; }
     </style>
@@ -8,22 +9,47 @@
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
              x-data="{
                 mode: @entangle('mode'),
+                isDirty: false, // Save button state track করার জন্য
+                editorInstance: null,
+
                 init() {
-                    // CodeMirror লোড করা যদি Auto Ads সিলেক্টেড থাকে
+                    // পেজ লোড হলে যদি Auto mode থাকে তবে এডিটর লোড করো
+                    if (this.mode === 'auto') {
+                        this.$nextTick(() => this.initOrRefreshEditor());
+                    }
+
+                    // Mode পরিবর্তন হলে
                     this.$watch('mode', value => {
+                        this.isDirty = true; // Mode চেঞ্জ হলে Save বাটন একটিভ হবে
                         if (value === 'auto') {
-                            setTimeout(() => this.initEditor(), 100);
+                            this.$nextTick(() => { this.initOrRefreshEditor(); });
                         }
                     });
-                    if(this.mode === 'auto') this.initEditor();
+
+                    // সার্ভার থেকে সেভ হওয়ার পর বাটন রিসেট
+                    Livewire.on('media-toast', () => {
+                        this.isDirty = false;
+                    });
                 },
-                initEditor() {
-                    if (typeof CodeMirror === 'undefined' || this.$refs.snippetEditor.nextSibling?.classList?.contains('CodeMirror')) return;
+
+                initOrRefreshEditor() {
+                    if (typeof CodeMirror === 'undefined') return;
+
+                    // যদি এডিটর আগে থেকেই থাকে, তবে রিফ্রেশ করো
+                    if (this.editorInstance) {
+                        this.editorInstance.refresh();
+                        return;
+                    }
+
+                    if (!this.$refs.snippetEditor) return;
 
                     const editor = CodeMirror.fromTextArea(this.$refs.snippetEditor, {
                         mode: 'htmlmixed', theme: 'default', lineNumbers: true, matchBrackets: true, indentUnit: 4
                     });
 
+                    this.editorInstance = editor;
+
+                    // Theme update logic
                     const updateTheme = () => {
                         const isDark = document.documentElement.classList.contains('dark');
                         editor.setOption('theme', isDark ? 'monokai' : 'default');
@@ -31,9 +57,14 @@
                     updateTheme();
                     new MutationObserver(updateTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
+                    // Editor change event
                     editor.on('change', () => {
-                        @this.set('auto_ads_code', editor.getValue());
+                        // ডাটা আপডেট করো কিন্তু রি-রেন্ডার করো না (false)
+                        @this.set('auto_ads_code', editor.getValue(), false);
+                        this.isDirty = true; // বাটন একটিভ করো
                     });
+
+                    setTimeout(() => editor.refresh(), 50);
                 }
              }"
         >
@@ -50,17 +81,17 @@
                 {{-- Mode Selection Radio Buttons --}}
                 <div class="mt-4 flex flex-wrap gap-6">
                     <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" value="disabled" x-model="mode" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <input type="radio" value="disabled" x-model="mode" @change="isDirty = true" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-blue-600 transition-colors">Disabled</span>
                     </label>
 
                     <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" value="auto" x-model="mode" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <input type="radio" value="auto" x-model="mode" @change="isDirty = true" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-blue-600 transition-colors">Auto Ads</span>
                     </label>
 
                     <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="radio" value="unit" x-model="mode" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <input type="radio" value="unit" x-model="mode" @change="isDirty = true" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-blue-600 transition-colors">Unit Ads</span>
                     </label>
                 </div>
@@ -75,9 +106,9 @@
                         <div class="text-sm text-blue-800 dark:text-blue-200">
                             <strong class="block mb-1">Mode Options:</strong>
                             <ul class="list-disc ml-4 space-y-1 text-xs sm:text-sm text-blue-700 dark:text-blue-300">
-                                <li><strong>Disabled:</strong> No Google AdSense ads will be displayed on your site.</li>
-                                <li><strong>Auto Ads:</strong> Google will automatically place and optimize ads throughout your site. You only need to add the snippet once.</li>
-                                <li><strong>Unit Ads:</strong> You have full control over where ads appear. Create ad units in AdSense and place them manually using slot IDs.</li>
+                                <li><strong>Disabled:</strong> Ads are turned off.</li>
+                                <li><strong>Auto Ads:</strong> Google automatically places ads. Paste the snippet below.</li>
+                                <li><strong>Unit Ads:</strong> Manual placement using Client ID & Slot IDs.</li>
                             </ul>
                         </div>
                     </div>
@@ -88,12 +119,14 @@
                     <label class="block text-sm font-bold text-slate-700 dark:text-slate-200">
                         Google AdSense Auto Ads Snippet
                     </label>
+
+                    {{-- wire:ignore prevents Livewire from re-rendering this block --}}
                     <div wire:ignore class="rounded-lg overflow-hidden shadow-sm">
                         <textarea x-ref="snippetEditor">{{ $auto_ads_code }}</textarea>
                     </div>
 
                     <p class="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-3 rounded border border-slate-200 dark:border-slate-700">
-                        Copy the complete Auto Ads code from <a href="https://www.google.com/adsense" target="_blank" class="text-blue-600 hover:underline">Google AdSense</a>. Example format: <code>&lt;script async src="..." crossorigin="anonymous"&gt;&lt;/script&gt;</code>
+                        Example: <code>&lt;script async src="..." crossorigin="anonymous"&gt;&lt;/script&gt;</code>
                     </p>
                     @error('auto_ads_code') <span class="text-xs text-rose-500">{{ $message }}</span> @enderror
                 </div>
@@ -104,11 +137,15 @@
                         <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">
                             Google AdSense Unit Ads Client ID
                         </label>
-                        <input type="text" wire:model="unit_ads_client_id" placeholder="ca-pub-1234567890123456"
+                        {{-- @input event added to trigger dirty state --}}
+                        <input type="text"
+                               wire:model="unit_ads_client_id"
+                               @input="isDirty = true"
+                               placeholder="ca-pub-1234567890123456"
                                class="block w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 pl-3 text-sm py-2 border focus:ring-indigo-500">
 
                         <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                            You can get this snippet from Google AdSense, go to Ads → Unit Ads → Get code → Copy the client id (<code>data-ad-client</code>).
+                            Find this in AdSense: Ads → Unit Ads → Get code → <code>data-ad-client</code>.
                         </p>
                         @error('unit_ads_client_id') <span class="text-xs text-rose-500">{{ $message }}</span> @enderror
                     </div>
@@ -134,7 +171,7 @@
 
                 <hr class="border-slate-200 dark:border-slate-700">
 
-                {{-- 3. ads.txt Section (Always Visible) --}}
+                {{-- 3. ads.txt Section --}}
                 <div class="space-y-4">
                     <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                         <div class="flex items-start gap-3">
@@ -180,14 +217,31 @@
             </div>
 
             {{-- Footer Action --}}
-            <div class="bg-slate-50 dark:bg-slate-900/80 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+            <div class="bg-slate-50 dark:bg-slate-900/80 px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center sticky bottom-0 z-10">
+                <div class="text-xs text-slate-500">
+                    <span x-show="isDirty" class="text-blue-600 dark:text-blue-400 font-bold animate-pulse">
+                        <i class="fas fa-circle text-[8px] mr-1"></i> Unsaved changes
+                    </span>
+                    <span x-show="!isDirty" class="text-emerald-500 font-bold">
+                        <i class="fas fa-check-circle mr-1"></i> Settings saved
+                    </span>
+                </div>
+
                 <button
                     wire:click="save"
                     wire:loading.attr="disabled"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md transition-all active:scale-95 flex items-center gap-2 disabled:opacity-70"
+                    :disabled="!isDirty"
+                    :class="isDirty
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md cursor-pointer'
+                        : 'bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'"
+                    class="px-6 py-2.5 rounded-lg text-sm font-bold transition-all active:scale-95 flex items-center gap-2 disabled:opacity-70"
                 >
-                    <span wire:loading.remove><i class="fas fa-save"></i> Save Settings</span>
                     <span wire:loading><i class="fas fa-circle-notch fa-spin"></i> Saving...</span>
+
+                    <span wire:loading.remove>
+                        <i class="fas" :class="isDirty ? 'fa-save' : 'fa-check'"></i>
+                        <span x-text="isDirty ? 'Save Settings' : 'Saved'"></span>
+                    </span>
                 </button>
             </div>
         </div>
