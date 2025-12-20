@@ -261,7 +261,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="command-line"
+                    icon="server"
                     :href="route('settings.htaccess')"
                     :current="request()->routeIs('settings.htaccess')"
                     tooltip="{{ __('Htaccess') }}"
@@ -271,7 +271,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="command-line"
+                    icon="presentation-chart-line"
                     :href="route('settings.ads-settings')"
                     :current="request()->routeIs('settings.ads-settings')"
                     tooltip="{{ __('Ads Settings') }}"
