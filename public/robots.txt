@@ -1,3 +1,4 @@
 User-agent: *
-Allow:
-sitemap:https://blog.ebdresults.com/sitemap.xml
+Allow:/
+Disallow: /dashboard
+sitemap:https://bn.ebdresults.com/sitemap.xml
