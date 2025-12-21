@@ -94,7 +94,7 @@
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 dark:bg-gray-800/70 border-b border-gray-100 dark:border-gray-800">
                 <tr>
-                    <th class="px-4 py-2">
+                    <th class="w-12 px-4 py-2 text-center">
                         <input type="checkbox"
                                wire:click="toggleSelectAll"
                                {{ $selectAll ? 'checked' : '' }}
@@ -150,7 +150,7 @@
                 </tr>
                 @forelse($categories as $category)
                     <tr class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/60 dark:hover:bg-gray-800/60" wire:loading.remove>
-                        <td class="px-4 py-2">
+                        <td class="w-12 px-4 py-2 text-center">
                             <input type="checkbox"
                                    wire:model="selected"
                                    value="{{ $category->id }}"
