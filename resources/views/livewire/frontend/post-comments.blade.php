@@ -80,37 +80,7 @@
         </h3>
 
         @forelse($comments as $comment)
-            <article class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60">
-                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                    <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $comment->name }}</span>
-                    <div class="flex items-center gap-3">
-                        <button type="button" wire:click="setReply({{ $comment->id }})" class="text-blue-600 hover:underline">উত্তর দিন</button>
-                        <span>{{ $comment->created_at?->diffForHumans() }}</span>
-                    </div>
-                </div>
-                <div class="text-sm text-slate-700 dark:text-slate-100 whitespace-pre-line">
-                    {{ $comment->content }}
-                </div>
-            </article>
-
-            @if($comment->replies->isNotEmpty())
-                <div class="pl-6 mt-2 space-y-2 border-l border-slate-200 dark:border-slate-700">
-                    @foreach($comment->replies as $reply)
-                        <article class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50">
-                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                                <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $reply->name }}</span>
-                                <span>{{ $reply->created_at?->diffForHumans() }}</span>
-                            </div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">
-                                <span class="italic">{{ $comment->name }}</span> -কে উত্তর
-                            </div>
-                            <div class="text-sm text-slate-700 dark:text-slate-100 whitespace-pre-line">
-                                {{ $reply->content }}
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-            @endif
+            @include('livewire.frontend.partials.comment', ['comment' => $comment])
         @empty
             <p class="text-sm text-slate-600 dark:text-slate-300">এখনো কোনো মন্তব্য নেই। প্রথম মন্তব্যটি করুন!</p>
         @endforelse
