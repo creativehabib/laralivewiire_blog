@@ -86,7 +86,7 @@ class PostForm extends Component
         } else {
             // নতুন পোস্ট
             $this->status         = 'published';
-            $this->allow_comments = true;
+            $this->allow_comments = (bool) setting('comment_allow_new_posts', true);
             $this->is_breaking    = false;
         }
 

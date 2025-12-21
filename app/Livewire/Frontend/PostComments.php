@@ -28,9 +28,17 @@ class PostComments extends Component
 
     public ?string $replyingTo = null;
 
+    public array $commentSettings = [];
+
+    public bool $allowComments = true;
+
+    public ?string $blockedReason = null;
+
     public function mount(Post $post): void
     {
         $this->post = $post;
+        $this->commentSettings = $this->loadCommentSettings();
+        $this->applyCommentVisibilityRules();
         $this->prefillUserDetails();
         $this->loadComments();
     }
@@ -38,8 +46,8 @@ class PostComments extends Component
     protected function rules(): array
     {
         return [
-            'name'    => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'email', 'max:255'],
+            'name'    => [$this->commentSettings['require_name_email'] ? 'required' : 'nullable', 'string', 'max:255'],
+            'email'   => [$this->commentSettings['require_name_email'] ? 'required' : 'nullable', 'email', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
             'content' => ['required', 'string', 'min:5'],
             'parentId' => ['nullable', 'integer', 'exists:comments,id'],
@@ -48,7 +56,11 @@ class PostComments extends Component
 
     public function submit(): void
     {
-        abort_unless($this->post->allow_comments, 403);
+        abort_unless($this->allowComments, 403);
+
+        if ($this->commentSettings['require_login'] && ! Auth::check()) {
+            abort(403, 'শুধুমাত্র লগইন করা ব্যবহারকারীরা মন্তব্য করতে পারবেন।');
+        }
 
         $validated = $this->validate();
 
@@ -62,12 +74,14 @@ class PostComments extends Component
                 ->id;
         }
 
+        $status = $this->determineInitialStatus($validated['email'] ?? null);
+
         $this->post->comments()->create([
             'name'           => $validated['name'],
             'email'          => $validated['email'],
             'website'        => $validated['website'] ?? null,
             'content'        => $validated['content'],
-            'status'         => 'pending',
+            'status'         => $status,
             'user_id'        => Auth::id(),
             'ip_address'     => Request::ip(),
             'user_agent'     => Request::userAgent(),
@@ -75,7 +89,9 @@ class PostComments extends Component
         ]);
 
         $this->content = '';
-        $this->successMessage = 'আপনার মন্তব্যটি রিভিউর জন্য পাঠানো হয়েছে।';
+        $this->successMessage = $status === 'approved'
+            ? 'আপনার মন্তব্যটি প্রকাশিত হয়েছে।'
+            : 'আপনার মন্তব্যটি রিভিউর জন্য পাঠানো হয়েছে।';
         $this->parentId = null;
         $this->replyingTo = null;
         $this->loadComments();
@@ -101,17 +117,22 @@ class PostComments extends Component
     public function render()
     {
         return view('livewire.frontend.post-comments', [
-            'allowComments' => (bool) $this->post->allow_comments,
+            'allowComments' => $this->allowComments,
+            'blockedReason' => $this->blockedReason,
+            'threadDepth'   => $this->commentSettings['thread_depth'] ?? 0,
+            'threaded'      => $this->commentSettings['threaded_comments'] ?? false,
         ]);
     }
 
     protected function loadComments(): void
     {
+        $order = ($this->commentSettings['comments_order'] ?? 'older') === 'newer' ? 'desc' : 'asc';
+
         $this->comments = $this->post
             ->comments()
             ->whereNull('parent_id')
             ->approved()
-            ->latest()
+            ->orderBy('created_at', $order)
             ->with(['parent', 'repliesRecursive', 'user'])
             ->get();
     }
@@ -125,5 +146,65 @@ class PostComments extends Component
         $user = Auth::user();
         $this->name = $user?->name ?? '';
         $this->email = $user?->email ?? '';
+    }
+
+    protected function loadCommentSettings(): array
+    {
+        return [
+            'allow_new_posts'        => (bool) setting('comment_allow_new_posts', true),
+            'require_name_email'     => (bool) setting('comment_require_name_email', true),
+            'require_login'          => (bool) setting('comment_require_login', false),
+            'auto_close'             => (bool) setting('comment_auto_close', false),
+            'auto_close_days'        => (int) setting('comment_auto_close_days', 14),
+            'threaded_comments'      => (bool) setting('comment_threaded', true),
+            'thread_depth'           => (int) setting('comment_thread_depth', 5),
+            'manual_approval'        => (bool) setting('comment_manual_approval', true),
+            'require_prior_approval' => (bool) setting('comment_require_prior_approval', false),
+            'comments_order'         => (string) setting('comment_order', 'older'),
+        ];
+    }
+
+    protected function applyCommentVisibilityRules(): void
+    {
+        $this->allowComments = (bool) $this->post->allow_comments;
+
+        if ($this->commentSettings['require_login'] && ! Auth::check()) {
+            $this->allowComments = false;
+            $this->blockedReason = 'শুধুমাত্র লগইন করা ব্যবহারকারীরা মন্তব্য করতে পারবেন।';
+        }
+
+        if (! $this->allowComments) {
+            return;
+        }
+
+        if ($this->commentSettings['auto_close'] && $this->post->created_at) {
+            $ageInDays = $this->post->created_at->diffInDays(now());
+
+            if ($ageInDays >= $this->commentSettings['auto_close_days']) {
+                $this->allowComments = false;
+                $this->blockedReason = 'এই পোস্টে মন্তব্য করার সময়সীমা শেষ হয়েছে।';
+            }
+        }
+    }
+
+    protected function determineInitialStatus(?string $email): string
+    {
+        if ($this->commentSettings['manual_approval']) {
+            return 'pending';
+        }
+
+        if ($this->commentSettings['require_prior_approval'] && $email) {
+            $hasApproved = $this->post
+                ->comments()
+                ->approved()
+                ->where('email', $email)
+                ->exists();
+
+            if (! $hasApproved) {
+                return 'pending';
+            }
+        }
+
+        return 'approved';
     }
 }

@@ -156,7 +156,8 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
             Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
             Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
             Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs')->middleware('permission:setting.view');
-            Route::get('/comments', CommentsManager::class)->name('comments')->middleware('permission:setting.view');
+            Route::get('/comments', CommentsSettings::class)->name('comments')->middleware('permission:setting.view');
+            Route::get('/comments/moderation', CommentsManager::class)->name('comments.moderation')->middleware('permission:setting.view');
         });
 
     Route::prefix('blog')->name('blogs.')->group(function () {
@@ -237,3 +238,4 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
+use App\Livewire\Admin\Settings\CommentsSettings;
