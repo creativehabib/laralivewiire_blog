@@ -18,14 +18,14 @@
                 <div class="relative group">
                     <a href="{{ $url }}"
                        target="{{ $target }}"
-                       class="p-2 flex items-center gap-1 text-slate-700 dark:text-slate-200 hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-150">
+                       class="py-3 flex items-center gap-1 text-slate-700 dark:text-slate-200 hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-150">
                         {{ $title }}
                         @if($hasChildren)
                             <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-150 group-hover:rotate-180"></i>
                         @endif
                     </a>
                     @if($hasChildren)
-                        <div class="absolute left-0 mt-2 hidden group-hover:block z-30">
+                        <div class="absolute left-0 hidden group-hover:block z-30">
                             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow-md py-2 min-w-[180px]">
                                 <x-frontends.menu-list :items="$children" variant="dropdown" />
                             </div>
