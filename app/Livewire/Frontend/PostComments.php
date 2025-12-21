@@ -88,6 +88,8 @@ class PostComments extends Component
         $this->parentId = $comment->id;
         $this->replyingTo = $comment->name;
         $this->successMessage = null;
+
+        $this->dispatch('scrollToCommentForm');
     }
 
     public function cancelReply(): void

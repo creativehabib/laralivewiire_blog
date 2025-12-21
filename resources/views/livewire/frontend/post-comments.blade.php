@@ -10,7 +10,7 @@
             এই পোস্টের মন্তব্য বন্ধ রয়েছে।
         </p>
     @else
-        <form wire:submit.prevent="submit" class="space-y-3 text-sm">
+        <form wire:submit.prevent="submit" class="space-y-3 text-sm" id="comment-form">
             @if($replyingTo)
                 <div class="flex items-center justify-between px-3 py-2 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 rounded-md">
                     <div class="text-blue-700 dark:text-blue-100 text-xs">
@@ -85,4 +85,26 @@
             <p class="text-sm text-slate-600 dark:text-slate-300">এখনো কোনো মন্তব্য নেই। প্রথম মন্তব্যটি করুন!</p>
         @endforelse
     </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('livewire:load', () => {
+                Livewire.on('scrollToCommentForm', () => {
+                    const form = document.getElementById('comment-form');
+
+                    if (! form) {
+                        return;
+                    }
+
+                    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    const commentField = form.querySelector('textarea, input, select');
+
+                    if (commentField) {
+                        commentField.focus({ preventScroll: true });
+                    }
+                });
+            });
+        </script>
+    @endpush
 </div>
