@@ -16,6 +16,7 @@ class Comment extends Model
         'user_id',
         'ip_address',
         'user_agent',
+        'parent_id',
         'commentable_id',
         'commentable_type',
     ];
@@ -33,5 +34,15 @@ class Comment extends Model
     public function scopeApproved($query)
     {
         return $query->where('status', 'approved');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 }
