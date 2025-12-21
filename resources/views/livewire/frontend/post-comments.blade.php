@@ -11,6 +11,15 @@
         </p>
     @else
         <form wire:submit.prevent="submit" class="space-y-3 text-sm">
+            @if($replyingTo)
+                <div class="flex items-center justify-between px-3 py-2 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 rounded-md">
+                    <div class="text-blue-700 dark:text-blue-100 text-xs">
+                        <span class="font-semibold">{{ $replyingTo }}</span> - এর উত্তরে লিখছেন
+                    </div>
+                    <button type="button" wire:click="cancelReply" class="text-xs text-blue-600 hover:underline">বাতিল</button>
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                     <input type="text"
@@ -74,12 +83,34 @@
             <article class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60">
                 <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                     <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $comment->name }}</span>
-                    <span>{{ $comment->created_at?->diffForHumans() }}</span>
+                    <div class="flex items-center gap-3">
+                        <button type="button" wire:click="setReply({{ $comment->id }})" class="text-blue-600 hover:underline">উত্তর দিন</button>
+                        <span>{{ $comment->created_at?->diffForHumans() }}</span>
+                    </div>
                 </div>
                 <div class="text-sm text-slate-700 dark:text-slate-100 whitespace-pre-line">
                     {{ $comment->content }}
                 </div>
             </article>
+
+            @if($comment->replies->isNotEmpty())
+                <div class="pl-6 mt-2 space-y-2 border-l border-slate-200 dark:border-slate-700">
+                    @foreach($comment->replies as $reply)
+                        <article class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/50">
+                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                                <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $reply->name }}</span>
+                                <span>{{ $reply->created_at?->diffForHumans() }}</span>
+                            </div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">
+                                <span class="italic">{{ $comment->name }}</span> -কে উত্তর
+                            </div>
+                            <div class="text-sm text-slate-700 dark:text-slate-100 whitespace-pre-line">
+                                {{ $reply->content }}
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @endif
         @empty
             <p class="text-sm text-slate-600 dark:text-slate-300">এখনো কোনো মন্তব্য নেই। প্রথম মন্তব্যটি করুন!</p>
         @endforelse
