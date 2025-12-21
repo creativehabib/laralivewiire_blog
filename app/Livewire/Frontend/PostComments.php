@@ -6,6 +6,7 @@ use App\Models\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class PostComments extends Component
@@ -75,6 +76,7 @@ class PostComments extends Component
         }
 
         $status = $this->determineInitialStatus($validated['email'] ?? null);
+        $status = $this->applyModerationRules($status, $validated);
 
         $this->post->comments()->create([
             'name'           => $validated['name'],
@@ -161,6 +163,9 @@ class PostComments extends Component
             'manual_approval'        => (bool) setting('comment_manual_approval', true),
             'require_prior_approval' => (bool) setting('comment_require_prior_approval', false),
             'comments_order'         => (string) setting('comment_order', 'older'),
+            'moderation_links'       => (int) setting('comment_moderation_links', 2),
+            'moderation_keys'        => (string) setting('comment_moderation_keys', ''),
+            'disallowed_keys'        => (string) setting('comment_disallowed_keys', ''),
         ];
     }
 
@@ -206,5 +211,55 @@ class PostComments extends Component
         }
 
         return 'approved';
+    }
+
+    protected function applyModerationRules(string $currentStatus, array $commentData): string
+    {
+        $contentToScan = Str::of(
+            implode("\n", array_filter([
+                $commentData['content'] ?? '',
+                $commentData['name'] ?? '',
+                $commentData['email'] ?? '',
+                $commentData['website'] ?? '',
+                Request::ip(),
+            ]))
+        )->lower();
+
+        $disallowedKeys = $this->prepareKeywords($this->commentSettings['disallowed_keys'] ?? '');
+
+        foreach ($disallowedKeys as $keyword) {
+            if ($keyword !== '' && Str::of($keyword)->isNotEmpty() && $contentToScan->contains(Str::lower($keyword))) {
+                return 'trash';
+            }
+        }
+
+        $moderationLinks = $this->commentSettings['moderation_links'] ?? 0;
+
+        if ($moderationLinks > 0) {
+            preg_match_all('/https?:\/\/[^\s]+/i', $commentData['content'] ?? '', $matches);
+
+            if (count($matches[0]) >= $moderationLinks) {
+                return 'pending';
+            }
+        }
+
+        $moderationKeys = $this->prepareKeywords($this->commentSettings['moderation_keys'] ?? '');
+
+        foreach ($moderationKeys as $keyword) {
+            if ($keyword !== '' && Str::of($keyword)->isNotEmpty() && $contentToScan->contains(Str::lower($keyword))) {
+                return 'pending';
+            }
+        }
+
+        return $currentStatus;
+    }
+
+    protected function prepareKeywords(string $keywords): array
+    {
+        return collect(preg_split('/\r\n|\n|\r/', trim($keywords)))
+            ->map(fn ($keyword) => trim($keyword))
+            ->filter()
+            ->values()
+            ->all();
     }
 }
