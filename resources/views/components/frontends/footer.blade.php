@@ -1,4 +1,8 @@
 <footer class="bg-secondary text-white mt-8">
+    @php
+        $footerMenu = get_menu_by_location('footer');
+        $footerMenuItems = $footerMenu?->items ?? collect();
+    @endphp
     <div class="container px-4 py-8 grid md:grid-cols-4 gap-6 text-sm">
         <div>
             <h3 class="font-semibold mb-2">বাংলা নিউজ পোর্টাল</h3>
@@ -8,11 +12,15 @@
         </div>
         <div>
             <h3 class="font-semibold mb-2">দ্রুত লিংক</h3>
-            <ul class="space-y-1 text-xs text-slate-100/85">
-                <li><a href="#" class="hover:underline">আমাদের সম্পর্কে</a></li>
-                <li><a href="#" class="hover:underline">যোগাযোগ</a></li>
-                <li><a href="#" class="hover:underline">এডভার্টাইজমেন্ট</a></li>
-            </ul>
+            @if($footerMenuItems->isNotEmpty())
+                <x-frontends.menu-list :items="$footerMenuItems" variant="footer" />
+            @else
+                <ul class="space-y-1 text-xs text-slate-100/85">
+                    <li><a href="#" class="hover:underline">আমাদের সম্পর্কে</a></li>
+                    <li><a href="#" class="hover:underline">যোগাযোগ</a></li>
+                    <li><a href="#" class="hover:underline">এডভার্টাইজমেন্ট</a></li>
+                </ul>
+            @endif
         </div>
         <div>
             <h3 class="font-semibold mb-2">ক্যাটাগরি</h3>
