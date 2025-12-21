@@ -180,6 +180,16 @@
                                 >
                                     Posts
                                 </button>
+                                <button
+                                    type="button"
+                                    class="whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium
+                                        {{ $activeTab === 'tags'
+                                            ? 'border-indigo-600 text-indigo-600'
+                                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:hover:text-slate-300' }}"
+                                    wire:click.prevent="$set('activeTab', 'tags')"
+                                >
+                                    Tags
+                                </button>
                             </nav>
                         </div>
 
@@ -337,6 +347,56 @@
                                         class="mt-1 inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
                                         wire:loading.attr="disabled"
                                         @disabled(empty($selectedPosts))
+                                    >
+                                        Add to menu
+                                    </button>
+                                </form>
+                            </div>
+
+                            {{-- Tags tab --}}
+                            <div class="{{ $activeTab === 'tags' ? 'block' : 'hidden' }}">
+                                <form wire:submit.prevent="addTagsToMenu" class="space-y-3">
+                                    <div>
+                                        <label class="block mb-1 text-sm font-medium text-slate-700 dark:text-slate-200">
+                                            Search tags
+                                        </label>
+                                        <input
+                                            type="text"
+                                            class="block w-full h-10 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                                            placeholder="Type to filter..."
+                                            wire:model.live.debounce.500ms="tagSearch"
+                                        >
+                                    </div>
+
+                                    <div class="menu-picker max-h-52 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-3">
+                                        @forelse($this->tagOptions as $tag)
+                                            <label
+                                                class="mb-2 flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200"
+                                                wire:key="tag-option-{{ $tag->id }}"
+                                            >
+                                                <input
+                                                    class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-indigo-600 focus:ring-indigo-500"
+                                                    type="checkbox"
+                                                    value="{{ $tag->id }}"
+                                                    id="tag-{{ $tag->id }}"
+                                                    wire:model.live="selectedTags"
+                                                >
+                                                <span>{{ $tag->name }}</span>
+                                            </label>
+                                        @empty
+                                            <p class="mb-0 text-xs text-slate-500 dark:text-slate-400">No tags found.</p>
+                                        @endforelse
+                                    </div>
+
+                                    @error('selectedTags')
+                                    <span class="mt-1 block text-xs text-red-500">{{ $message }}</span>
+                                    @enderror
+
+                                    <button
+                                        type="submit"
+                                        class="mt-1 inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                                        wire:loading.attr="disabled"
+                                        @disabled(empty($selectedTags))
                                     >
                                         Add to menu
                                     </button>
