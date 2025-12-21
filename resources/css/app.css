@@ -278,7 +278,7 @@
 
     .typography table,
     .ck-content table {
-        display: block;
+        display: inline-table;
         overflow-x: auto;
         width: 100% !important;
         border-collapse: collapse;
