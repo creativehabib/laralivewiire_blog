@@ -54,7 +54,7 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
                     <input type="text"
-                           wire:model.debounce.400ms="search"
+                           wire:model.live.debounce.300ms="search"
                            placeholder="Search..."
                            class="text-sm border rounded pl-7 pr-3 py-1.5 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                 </div>
@@ -74,10 +74,17 @@
                     <span>Create</span>
                 </a>
                 <button
-                    wire:click="$refresh"
-                    class="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs px-3 py-1.5 rounded flex items-center space-x-1 text-gray-800 dark:text-gray-100">
-                    <i class="fa-solid fa-rotate-right"></i>
-                    <span>Reload</span>
+                    wire:click="refreshTable"
+                    wire:loading.attr="disabled"
+                    class="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs px-3 py-1.5 rounded flex items-center space-x-1 text-gray-800 dark:text-gray-100 disabled:opacity-60">
+                    <span class="inline-flex items-center space-x-1" wire:loading.remove>
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Reload</span>
+                    </span>
+                    <span class="inline-flex items-center space-x-1" wire:loading>
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <span>Refreshing</span>
+                    </span>
                 </button>
             </div>
         </div>
@@ -123,8 +130,26 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr wire:loading.delay>
+                    <td colspan="10" class="px-4 py-6">
+                        <div class="space-y-3 animate-pulse">
+                            @for($i = 0; $i < 5; $i++)
+                                <div class="grid grid-cols-10 gap-4 items-center">
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-1"></div>
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-1"></div>
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-2"></div>
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-2"></div>
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-1"></div>
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-1"></div>
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-1"></div>
+                                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded col-span-1"></div>
+                                </div>
+                            @endfor
+                        </div>
+                    </td>
+                </tr>
                 @forelse($categories as $category)
-                    <tr class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/60 dark:hover:bg-gray-800/60">
+                    <tr class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/60 dark:hover:bg-gray-800/60" wire:loading.remove>
                         <td class="px-4 py-2">
                             <input type="checkbox"
                                    wire:model="selected"

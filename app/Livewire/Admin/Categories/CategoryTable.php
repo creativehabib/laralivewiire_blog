@@ -38,6 +38,11 @@ class CategoryTable extends Component
         $this->resetPage();
     }
 
+    public function refreshTable(): void
+    {
+        $this->resetPage();
+    }
+
     protected function baseQuery()
     {
         return Category::with('parent')
