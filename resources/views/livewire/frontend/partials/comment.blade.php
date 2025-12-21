@@ -6,22 +6,28 @@
 
 <div class="{{ $isNested ? 'pl-6 mt-2 space-y-2 border-l border-slate-200 dark:border-slate-700' : '' }}">
     <article class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 {{ $isNested ? 'bg-white dark:bg-slate-900/50' : 'bg-slate-50 dark:bg-slate-900/60' }}">
-        <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $comment->name }}</span>
-            <div class="flex items-center gap-3">
-                <button type="button" wire:click="setReply({{ $comment->id }})" class="text-blue-600 hover:underline">উত্তর দিন</button>
-                <span>{{ $comment->created_at?->diffForHumans() }}</span>
-            </div>
-        </div>
+        <div class="flex gap-3">
+            <img src="{{ $comment->avatar_url }}" alt="{{ $comment->name }}" class="w-10 h-10 rounded-full object-cover bg-white border border-slate-200 dark:border-slate-700">
 
-        @if($comment->parent)
-            <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">
-                <span class="italic">{{ $comment->parent->name }}</span> -কে উত্তর
-            </div>
-        @endif
+            <div class="flex-1 space-y-1">
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $comment->name }}</span>
+                    <div class="flex items-center gap-3">
+                        <button type="button" wire:click="setReply({{ $comment->id }})" class="text-blue-600 hover:underline">উত্তর দিন</button>
+                        <span>{{ $comment->created_at?->diffForHumans() }}</span>
+                    </div>
+                </div>
 
-        <div class="text-sm text-slate-700 dark:text-slate-100 whitespace-pre-line">
-            {{ $comment->content }}
+                @if($comment->parent)
+                    <div class="text-xs text-slate-500 dark:text-slate-400">
+                        <span class="italic">{{ $comment->parent->name }}</span> -কে উত্তর
+                    </div>
+                @endif
+
+                <div class="text-sm text-slate-700 dark:text-slate-100 whitespace-pre-line">
+                    {{ $comment->content }}
+                </div>
+            </div>
         </div>
     </article>
 
