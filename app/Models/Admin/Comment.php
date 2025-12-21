@@ -45,4 +45,12 @@ class Comment extends Model
     {
         return $this->hasMany(self::class, 'parent_id');
     }
+
+    public function repliesRecursive()
+    {
+        return $this->replies()
+            ->approved()
+            ->oldest()
+            ->with(['parent', 'repliesRecursive']);
+    }
 }

@@ -110,9 +110,7 @@ class PostComments extends Component
             ->whereNull('parent_id')
             ->approved()
             ->latest()
-            ->with(['replies' => function ($query) {
-                $query->approved()->oldest();
-            }])
+            ->with(['parent', 'repliesRecursive'])
             ->get();
     }
 
