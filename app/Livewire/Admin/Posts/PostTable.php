@@ -80,6 +80,38 @@ class PostTable extends Component
         $this->dispatch('media-toast', title: 'success', message: 'Successfully deleted post(s) from trashed.');
     }
 
+    /** Bulk restore from trash */
+    public function bulkRestore(): void
+    {
+        if (empty($this->selected)) {
+            session()->flash('message', 'No posts selected.');
+            return;
+        }
+
+        Post::onlyTrashed()->whereIn('id', $this->selected)->restore();
+
+        $this->selected  = [];
+        $this->selectAll = false;
+        $this->dispatch('media-toast', title: 'success', message: 'Selected posts restored from trash.');
+    }
+
+    /** Bulk permanently delete */
+    public function bulkForceDelete(): void
+    {
+        abort_unless(auth()->user()->can('post.delete'), 403);
+
+        if (empty($this->selected)) {
+            session()->flash('message', 'No posts selected.');
+            return;
+        }
+
+        Post::onlyTrashed()->whereIn('id', $this->selected)->forceDelete();
+
+        $this->selected  = [];
+        $this->selectAll = false;
+        $this->dispatch('media-toast', title: 'success', message: 'Selected posts permanently deleted.');
+    }
+
     public function toggleStatus(int $id): void
     {
         abort_unless(auth()->user()->can('post.view'), 403);

@@ -36,7 +36,20 @@
                     <button type="button"
                             wire:click="bulkDelete"
                             class="block w-full px-3 py-2 text-left text-xs text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/20">
-                        Delete selected
+                        Move to trash
+                    </button>
+
+                    <button type="button"
+                            wire:click="bulkRestore"
+                            class="block w-full px-3 py-2 text-left text-xs text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-900/20">
+                        Restore selected
+                    </button>
+
+                    <button type="button"
+                            onclick="confirm('Delete permanently selected posts?') || event.stopImmediatePropagation()"
+                            wire:click="bulkForceDelete"
+                            class="block w-full px-3 py-2 text-left text-xs text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-900/20">
+                        Delete forever
                     </button>
                 </div>
             </div>

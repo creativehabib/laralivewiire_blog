@@ -49,10 +49,23 @@
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 <div class="flex items-center gap-2">
                     {{-- Bulk actions --}}
-                    <button type="button" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 shadow-sm hover:border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-500">
-                        Bulk Actions
-                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                    </button>
+                    <div x-data="{ open: false }" class="relative">
+                        <button type="button" @click="open = !open"
+                                class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 shadow-sm hover:border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-500">
+                            Bulk Actions
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+
+                        <div x-show="open" @click.outside="open = false"
+                             class="absolute z-20 mt-1 w-36 rounded-md border border-slate-200 bg-white shadow dark:border-slate-700 dark:bg-slate-900">
+                            <button type="button"
+                                    onclick="confirm('Delete selected tags?') || event.stopImmediatePropagation()"
+                                    wire:click="bulkDelete"
+                                    class="block w-full px-3 py-2 text-left text-xs text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-900/20">
+                                Delete selected
+                            </button>
+                        </div>
+                    </div>
 
                     {{-- Filters (status) --}}
                     <select wire:model.live="status" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 cursor-pointer shadow-sm focus:border-sky-300 focus:ring-sky-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:focus:border-sky-500 dark:focus:ring-slate-700">
@@ -110,7 +123,10 @@
                     <thead class="sticky top-0 bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 shadow-[0_2px_0_rgba(15,23,42,0.02)] dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700">
                     <tr>
                         <th class="w-10 px-4 py-3">
-                            <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
+                            <input type="checkbox"
+                                   wire:click="toggleSelectAll"
+                                   {{ $selectAll ? 'checked' : '' }}
+                                   class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
                         </th>
                         <th class="w-16 px-4 py-3 text-slate-700 dark:text-slate-200">ID</th>
                         <th class="px-4 py-3 text-slate-700 dark:text-slate-200">Name</th>
@@ -124,7 +140,10 @@
                     @forelse ($tags as $tag)
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60">
                             <td class="px-4 py-3">
-                                <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
+                                <input type="checkbox"
+                                       wire:model="selected"
+                                       value="{{ $tag->id }}"
+                                       class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
                             </td>
                             <td class="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">{{ $tag->id }}</td>
                             <td class="px-4 py-3">
