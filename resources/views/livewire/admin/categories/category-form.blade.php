@@ -4,7 +4,7 @@
     <div class="text-sm text-gray-600 dark:text-gray-300">
         <span class="text-gray-400 dark:text-gray-500">Dashboard</span> /
         <span class="text-gray-400 dark:text-gray-500">Blog</span> /
-        <a href="{{ route('blogs.categories.index') }}" class="text-blue-600 dark:text-blue-400">Categories</a> /
+        <a href="{{ route('blogs.categories.index') }}/table?as=table" class="text-blue-600 dark:text-blue-400">Categories</a> /
         <span class="font-semibold text-gray-800 dark:text-gray-100">
             {{ $categoryId ? 'Edit Category' : 'Create a new category' }}
         </span>

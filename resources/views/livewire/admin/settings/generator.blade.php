@@ -78,7 +78,7 @@
                                             hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800">
                                     <input type="radio"
                                            id="{{ $id }}"
-                                           class="mt-1 h-4 w-4 text-indigo-600"
+                                           class="mt-1 h-4 w-4"
                                            wire:model.live="data.{{ $key }}"
                                            value="{{ $optKey }}">
                                     <span>
@@ -99,7 +99,7 @@
                                         hover:border-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-slate-800">
                                 <input type="radio"
                                        id="permalink-custom"
-                                       class="mt-1 h-4 w-4 text-indigo-600"
+                                       class="mt-1 h-4 w-4"
                                        wire:model.live="data.{{ $key }}"
                                        value="custom">
                                 <span>
@@ -208,7 +208,7 @@
                         <label class="inline-flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200">
                             <input type="checkbox"
                                    wire:model.live="data.{{ $key }}"
-                                   class="h-4 w-4 rounded border-slate-300 text-indigo-600">
+                                   class="h-4 w-4 rounded border-slate-300">
                             <span>{{ $field['hint'] ?? '' }}</span>
                         </label>
                         {{-- ✅ CKEDITOR FOR DYNAMIC SETTINGS --}}

@@ -38,7 +38,7 @@
                     <div class="flex flex-wrap gap-4 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
                         @foreach($availableTypes as $type)
                             <label class="flex items-center space-x-3 cursor-pointer group select-none">
-                                <input type="checkbox" wire:model.live="sitemap_post_types" value="{{ $type }}" class="h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                                <input type="checkbox" wire:model.live="sitemap_post_types" value="{{ $type }}" class="h-4 w-4 border-slate-300 rounded focus:ring-indigo-500">
                                 <span class="text-sm font-medium text-slate-600 dark:text-slate-300 uppercase">{{ $type }}</span>
                             </label>
                         @endforeach
@@ -148,7 +148,7 @@
                             wire:click="$toggle('sitemap_include_images')"
                             type="button"
                             class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200"
-                            :class="$wire.sitemap_include_images ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'">
+                            :class="$wire.sitemap_include_images ? 'bg-sky-500' : 'bg-slate-300 dark:bg-slate-600'">
                             <span class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200" :class="$wire.sitemap_include_images ? 'translate-x-4' : 'translate-x-0'"></span>
                         </button>
                     </div>

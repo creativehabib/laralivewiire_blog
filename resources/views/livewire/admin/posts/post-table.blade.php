@@ -203,7 +203,7 @@
                         <input type="checkbox"
                                wire:click="toggleSelectAll"
                                {{ $selectAll ? 'checked' : '' }}
-                               class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
+                               class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
                     </th>
 
                     {{-- sortable ID --}}
@@ -262,7 +262,7 @@
                             <input type="checkbox"
                                    wire:model="selected"
                                    value="{{ $post->id }}"
-                                   class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
+                                   class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-800">
                         </td>
 
                         {{-- ID --}}
