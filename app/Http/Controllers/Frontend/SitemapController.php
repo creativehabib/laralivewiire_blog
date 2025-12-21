@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\Tag;
 use App\Models\Admin\Page;
 use App\Models\Category;
 use App\Models\Post;
@@ -29,6 +30,7 @@ class SitemapController extends Controller
             $includePosts = in_array('post', $postTypes);
             $includeCategories = in_array('category', $postTypes);
             $includePages = in_array('page', $postTypes);
+            $includeTags = in_array('tag', $postTypes);
 
             $postGroups = collect();
 
@@ -48,9 +50,35 @@ class SitemapController extends Controller
                 'postGroups' => $postGroups,
                 'categoryLastUpdated' => $includeCategories ? Category::max('updated_at') : null,
                 'pageLastUpdated' => $includePages ? Page::max('updated_at') : null,
+                'tagLastUpdated' => $includeTags ? Tag::where('status', 'published')->max('updated_at') : null,
                 'includePosts' => $includePosts,
                 'includeCategories' => $includeCategories,
                 'includePages' => $includePages,
+                'includeTags' => $includeTags,
+            ])->render();
+        });
+
+        return response($content)->header('Content-Type', 'application/xml');
+    }
+
+    public function tags(): Response
+    {
+        if (! $this->isSitemapEnabled() || ! in_array('tag', $this->postTypes())) abort(404);
+
+        $config = $this->getConfigFor('tag');
+        $cacheKey = 'sitemap_tags_'.md5(json_encode($config));
+
+        $content = $this->remember($cacheKey, function () use ($config) {
+            $tags = Tag::query()
+                ->select('id', 'slug', 'updated_at', 'created_at')
+                ->where('status', 'published')
+                ->orderByDesc('updated_at')
+                ->get();
+
+            return view('frontend.sitemap-tags', [
+                'tags' => $tags,
+                'changeFrequency' => $config['frequency'],
+                'priority' => $config['priority'],
             ])->render();
         });
 
@@ -164,7 +192,7 @@ class SitemapController extends Controller
             return $types;
         }
 
-        return is_string($types) ? json_decode($types, true) : ($types ?? []);
+        return is_string($types) ? json_decode($types, true) : ($types ?? ['post', 'page', 'category', 'tag']);
     }
 
     // ফিক্স ২: getConfigFor মেথডটিও একইভাবে চেক করবে

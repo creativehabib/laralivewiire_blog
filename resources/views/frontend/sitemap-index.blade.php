@@ -51,4 +51,15 @@
             @endif
         </sitemap>
     @endif
+
+    @if(!empty($includeTags))
+        <sitemap>
+            <loc>{{ route('sitemap.tags') }}</loc>
+            @if(!empty($tagLastUpdated))
+                <lastmod>
+                    {{ \Carbon\Carbon::parse($tagLastUpdated)->tz('UTC')->toAtomString() }}
+                </lastmod>
+            @endif
+        </sitemap>
+    @endif
 </sitemapindex>

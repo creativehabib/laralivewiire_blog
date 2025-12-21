@@ -53,6 +53,7 @@ Route::get('/sitemap-posts-{year}-{month}.xml', [SitemapController::class, 'post
     ->where(['year' => '[0-9]{4}', 'month' => '[0-9]{2}'])
     ->name('sitemap.posts');
 Route::get('/sitemap-categories.xml', [SitemapController::class, 'categories'])->name('sitemap.categories');
+Route::get('/sitemap-tags.xml', [SitemapController::class, 'tags'])->name('sitemap.tags');
 Route::get('/sitemap-pages.xml', [SitemapController::class, 'pages'])->name('sitemap.pages');
 
 /**
