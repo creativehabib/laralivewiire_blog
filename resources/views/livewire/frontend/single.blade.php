@@ -114,21 +114,12 @@
         </section>
         @endif
 
-        <!-- Comment Placeholder -->
+        <!-- Comments -->
         <section class="mt-6">
             <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
                 মন্তব্য করুন
             </h2>
-            <form class="space-y-2 text-sm">
-                <input type="text" placeholder="নাম"
-                       class="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/60">
-                <textarea rows="4" placeholder="আপনার মন্তব্য লিখুন…"
-                          class="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/60"></textarea>
-                <button type="submit"
-                        class="px-4 py-2 bg-primary-dark text-white rounded-md text-sm font-semibold hover:bg-primary">
-                    মন্তব্য পাঠান
-                </button>
-            </form>
+            <livewire:frontend.post-comments :post="$post" />
         </section>
         @endunless
     </article>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Admin\Tag;
+use App\Models\Admin\Comment;
 use App\Models\Concerns\HasMetaBoxes; // যদি meta ব্যবহার করো
 use App\Models\Concerns\HasSeoMeta;
 use Illuminate\Database\Eloquent\Model;
@@ -62,6 +63,11 @@ class Post extends Model
     public function scopePublished($query)
     {
         return $query->whereIn('status', ['published', 'publish']);
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function getImageUrlAttribute(): string
