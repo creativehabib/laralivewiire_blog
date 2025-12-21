@@ -1,4 +1,4 @@
-@props(['comment', 'level' => 0, 'threadDepth' => 0, 'threaded' => false, 'allowComments' => true])
+@props(['comment', 'level' => 0, 'threadDepth' => 0, 'threaded' => false, 'allowComments' => true, 'showAvatar' => true])
 
 @php
     $isNested = $level > 0;
@@ -7,8 +7,10 @@
 
 <div class="{{ $isNested ? 'pl-6 mt-2 space-y-2 border-l border-slate-200 dark:border-slate-700' : '' }}">
     <article class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 {{ $isNested ? 'bg-white dark:bg-slate-900/50' : 'bg-slate-50 dark:bg-slate-900/60' }}">
-        <div class="flex gap-3">
-            <img src="{{ $comment->avatar_url }}" alt="{{ $comment->name }}" class="w-10 h-10 rounded-full object-cover bg-white border border-slate-200 dark:border-slate-700">
+        <div class="flex {{ $showAvatar && $comment->avatar_url ? 'gap-3' : 'gap-0' }}">
+            @if($showAvatar && $comment->avatar_url)
+                <img src="{{ $comment->avatar_url }}" alt="{{ $comment->name }}" class="w-10 h-10 rounded-full object-cover bg-white border border-slate-200 dark:border-slate-700">
+            @endif
 
             <div class="flex-1 space-y-1">
                     <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">

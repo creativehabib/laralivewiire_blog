@@ -29,6 +29,7 @@
                 'threadDepth' => $threadDepth,
                 'threaded' => $threaded,
                 'allowComments' => $allowComments,
+                'showAvatar' => $commentSettings['show_avatars'] ?? true,
             ])
         @empty
             <p class="text-sm text-slate-600 dark:text-slate-300">এখনো কোনো মন্তব্য নেই। প্রথম মন্তব্যটি করুন!</p>
