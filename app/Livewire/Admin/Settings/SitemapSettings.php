@@ -12,9 +12,12 @@ class SitemapSettings extends Component
     // Settings Group
     public $group = 'seo';
 
+    // Available Types
+    public array $availableTypes = ['post', 'page', 'category', 'tag'];
+
     // Sitemap Properties
     public $sitemap_enabled = true;
-    public $sitemap_post_types = ['post', 'page', 'category'];
+    public $sitemap_post_types = ['post', 'page', 'category', 'tag'];
     public $sitemap_include_images = true;
     public $sitemap_items_per_page = 1000;
 
@@ -35,7 +38,7 @@ class SitemapSettings extends Component
         $types = setting('sitemap_post_types');
         $this->sitemap_post_types = is_string($types)
             ? json_decode($types, true)
-            : ($types ?? ['post', 'page', 'category']);
+            : ($types ?? $this->availableTypes);
 
         // 3. Load Type Specific Settings (Priority & Frequency)
         $savedTypeSettings = setting('sitemap_type_settings');
@@ -62,6 +65,7 @@ class SitemapSettings extends Component
             'post' => ['frequency' => 'daily', 'priority' => '0.8'],
             'page' => ['frequency' => 'monthly', 'priority' => '0.6'],
             'category' => ['frequency' => 'weekly', 'priority' => '0.5'],
+            'tag' => ['frequency' => 'weekly', 'priority' => '0.4'],
             // Fallback for others
             'default' => ['frequency' => 'weekly', 'priority' => '0.5'],
         ];

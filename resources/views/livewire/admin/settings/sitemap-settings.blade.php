@@ -36,7 +36,7 @@
                         <i class="fas fa-layer-group mr-1 text-slate-400"></i> Post Types to Include
                     </label>
                     <div class="flex flex-wrap gap-4 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                        @foreach(['post', 'page', 'category'] as $type)
+                        @foreach($availableTypes as $type)
                             <label class="flex items-center space-x-3 cursor-pointer group select-none">
                                 <input type="checkbox" wire:model.live="sitemap_post_types" value="{{ $type }}" class="h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
                                 <span class="text-sm font-medium text-slate-600 dark:text-slate-300 uppercase">{{ $type }}</span>
