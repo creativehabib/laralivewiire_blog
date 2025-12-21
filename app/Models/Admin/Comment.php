@@ -81,20 +81,19 @@ class Comment extends Model
 
         $rating = setting('comment_avatar_rating', 'g');
 
-        $shouldForceDefault = in_array($default, ['blank', 'identicon', 'wavatar', 'monsterid', 'retro'], true);
-
         $queryParams = [
             's' => 80,
             'd' => $default,
             'r' => $rating,
         ];
 
-        if ($shouldForceDefault) {
+        if (in_array($default, ['blank', 'identicon', 'wavatar', 'monsterid', 'retro'], true)) {
             $queryParams['f'] = 'y';
         }
 
         $query = http_build_query($queryParams, '', '&', PHP_QUERY_RFC3986);
 
-        return "https://www.gravatar.com/avatar/{$hash}?s=80&d=identicon";
+        return "https://www.gravatar.com/avatar/{$hash}?{$query}";
     }
+
 }
