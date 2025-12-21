@@ -95,6 +95,6 @@ class Comment extends Model
 
         $query = http_build_query($queryParams, '', '&', PHP_QUERY_RFC3986);
 
-        return "https://www.gravatar.com/avatar/{$hash}?{$query}";
+        return "https://www.gravatar.com/avatar/{$hash}?s=80&d={identicon}";
     }
 }
