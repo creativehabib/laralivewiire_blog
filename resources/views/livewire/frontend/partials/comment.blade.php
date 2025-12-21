@@ -25,6 +25,12 @@
         </div>
     </article>
 
+    @if($parentId === $comment->id)
+        <div class="mt-2">
+            @include('livewire.frontend.partials.comment-form', ['formId' => 'comment-form'])
+        </div>
+    @endif
+
     @if($comment->repliesRecursive->isNotEmpty())
         <div class="space-y-2">
             @foreach($comment->repliesRecursive as $reply)
