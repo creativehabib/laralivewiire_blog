@@ -14,6 +14,9 @@ class TagsIndex extends Component
     public $status = '';
     public $perPage = 6;
 
+    public array $selected = [];
+    public bool $selectAll = false;
+
     protected $updatesQueryString = ['search', 'status', 'page'];
 
     public function updatingSearch()
@@ -26,13 +29,12 @@ class TagsIndex extends Component
         $this->resetPage();
     }
 
-    public function delete($id)
+    public function updatingPerPage()
     {
-        Tag::findOrFail($id)->delete();
-        session()->flash('message', 'Tag deleted successfully.');
+        $this->resetPage();
     }
 
-    public function render()
+    protected function baseQuery()
     {
         $query = Tag::query();
 
@@ -44,7 +46,49 @@ class TagsIndex extends Component
             $query->where('status', $this->status);
         }
 
-        $tags = $query->orderByDesc('id')->paginate($this->perPage);
+        return $query;
+    }
+
+    public function toggleSelectAll(): void
+    {
+        $this->selectAll = ! $this->selectAll;
+
+        if ($this->selectAll) {
+            $this->selected = $this->baseQuery()
+                ->orderByDesc('id')
+                ->paginate($this->perPage)
+                ->pluck('id')
+                ->toArray();
+        } else {
+            $this->selected = [];
+        }
+    }
+
+    public function delete($id)
+    {
+        Tag::findOrFail($id)->delete();
+        $this->selected = array_values(array_diff($this->selected, [$id]));
+        $this->selectAll = false;
+        session()->flash('message', 'Tag deleted successfully.');
+    }
+
+    public function bulkDelete(): void
+    {
+        if (empty($this->selected)) {
+            session()->flash('message', 'No tags selected.');
+            return;
+        }
+
+        Tag::whereIn('id', $this->selected)->delete();
+
+        $this->selected = [];
+        $this->selectAll = false;
+        session()->flash('message', 'Selected tags deleted successfully.');
+    }
+
+    public function render()
+    {
+        $tags = $this->baseQuery()->orderByDesc('id')->paginate($this->perPage);
         $tags->withPath(route('blogs.tags.index'));
 
         return view('livewire.admin.tags.tags-index', compact('tags'))->layout('components.layouts.app', [
