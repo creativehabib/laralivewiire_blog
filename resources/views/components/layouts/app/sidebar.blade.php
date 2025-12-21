@@ -300,6 +300,16 @@
                     {{ __('Comments') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="chat-bubble-left-ellipsis"
+                    :href="route('settings.comments.moderation')"
+                    :current="request()->routeIs('settings.comments.moderation')"
+                    tooltip="{{ __('Comments Moderation') }}"
+                    wire:navigate
+                >
+                    {{ __('Comments Moderation') }}
+                </flux:sidebar.item>
+
 
             </flux:sidebar.group>
 

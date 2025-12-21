@@ -6,9 +6,9 @@
     @endif
 
     @if(! $allowComments)
-        <p class="text-sm text-slate-600 dark:text-slate-300">
-            এই পোস্টের মন্তব্য বন্ধ রয়েছে।
-        </p>
+        <div class="p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-700 text-sm">
+            {{ $blockedReason ?? 'এই পোস্টের মন্তব্য বন্ধ রয়েছে।' }}
+        </div>
     @else
         @if(! $parentId)
             @include('livewire.frontend.partials.comment-form', ['formId' => 'comment-form'])
@@ -24,7 +24,12 @@
         </h3>
 
         @forelse($comments as $comment)
-            @include('livewire.frontend.partials.comment', ['comment' => $comment])
+            @include('livewire.frontend.partials.comment', [
+                'comment' => $comment,
+                'threadDepth' => $threadDepth,
+                'threaded' => $threaded,
+                'allowComments' => $allowComments,
+            ])
         @empty
             <p class="text-sm text-slate-600 dark:text-slate-300">এখনো কোনো মন্তব্য নেই। প্রথম মন্তব্যটি করুন!</p>
         @endforelse
