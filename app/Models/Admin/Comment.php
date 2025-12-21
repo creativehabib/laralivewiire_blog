@@ -79,12 +79,14 @@ class Comment extends Model
             default      => 'mp',
         };
 
-        if (filter_var($default, FILTER_VALIDATE_URL)) {
-            $default = urlencode($default);
-        }
-
         $rating = setting('comment_avatar_rating', 'g');
 
-        return "https://www.gravatar.com/avatar/{$hash}?s=80&d={$default}&r={$rating}";
+        $query = http_build_query([
+            's' => 80,
+            'd' => $default,
+            'r' => $rating,
+        ], '', '&', PHP_QUERY_RFC3986);
+
+        return "https://www.gravatar.com/avatar/{$hash}?{$query}";
     }
 }
