@@ -71,7 +71,7 @@ class Comment extends Model
 
         $default = match (setting('comment_avatar_default', 'mystery')) {
             'blank'      => 'blank',
-            'gravatar'   => 'https://www.gravatar.com/images/logo/gravatar-80.png',
+            'gravatar'   => 'https://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536',
             'identicon'  => 'identicon',
             'wavatar'    => 'wavatar',
             'monsterid'  => 'monsterid',
