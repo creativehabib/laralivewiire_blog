@@ -71,13 +71,17 @@ class Comment extends Model
 
         $default = match (setting('comment_avatar_default', 'mystery')) {
             'blank'      => 'blank',
-            'gravatar'   => 'gravatar',
+            'gravatar'   => 'https://www.gravatar.com/images/logo/gravatar-80.png',
             'identicon'  => 'identicon',
             'wavatar'    => 'wavatar',
             'monsterid'  => 'monsterid',
             'retro'      => 'retro',
             default      => 'mp',
         };
+
+        if (filter_var($default, FILTER_VALIDATE_URL)) {
+            $default = urlencode($default);
+        }
 
         $rating = setting('comment_avatar_rating', 'g');
 
