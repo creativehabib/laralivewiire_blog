@@ -8,6 +8,7 @@ use App\Models\Menu;
 use App\Models\Post;
 use App\Support\CacheSettings;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\URL; // ১. URL ফাসাদটি যোগ করা হয়েছে
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // ২. প্রোডাকশন এনভায়রনমেন্টে HTTPS ফোর্স করার কোড
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         $this->registerCacheResetHooks();
     }
 
@@ -45,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
             }
         }
     }
+
     protected function flushCacheOnChange(): void
     {
         if( ! CacheSettings::resetOnContentChange()){
