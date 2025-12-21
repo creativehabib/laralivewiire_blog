@@ -27,6 +27,10 @@
                 ->get();
         }
     @endphp
+    @php
+        $primaryMenu = get_menu_by_location('primary');
+        $primaryMenuItems = $primaryMenu?->items ?? collect();
+    @endphp
     <div class="container flex items-center justify-between px-4 py-3">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
             <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">NP</div>
@@ -37,13 +41,17 @@
         </a>
         <div class="flex items-center gap-3">
             <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-                <a href="{{ route('home') }}" class="text-primary-dark dark:text-primary-light relative transition-colors duration-150">হোম</a>
-                @foreach($navCategories as $category)
-                    <a href="{{ route('categories.show', $category->slug) }}"
-                       class="text-slate-700 dark:text-slate-200 hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-150">
-                        {{ $category->name }}
-                    </a>
-                @endforeach
+                @if($primaryMenuItems->isNotEmpty())
+                    <x-frontends.menu-list :items="$primaryMenuItems" variant="desktop" />
+                @else
+                    <a href="{{ route('home') }}" class="text-primary-dark dark:text-primary-light relative transition-colors duration-150">হোম</a>
+                    @foreach($navCategories as $category)
+                        <a href="{{ route('categories.show', $category->slug) }}"
+                           class="text-slate-700 dark:text-slate-200 hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-150">
+                            {{ $category->name }}
+                        </a>
+                    @endforeach
+                @endif
             </nav>
             <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
                 <span class="sr-only">Toggle navigation</span>
@@ -104,12 +112,16 @@
             @endauth
             <!-- /লগইন/ড্যাশবোর্ড বাটন -->
 
-            <a href="{{ route('home') }}" class="block px-2 py-2 rounded-md text-sm font-medium text-primary-dark dark:text-primary-light bg-primary-light/70 dark:bg-slate-800 mt-2">হোম</a>
-            @foreach($navCategories as $category)
-                <a href="{{ route('categories.show', $category->slug) }}" class="block px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-                    {{ $category->name }}
-                </a>
-            @endforeach
+            @if($primaryMenuItems->isNotEmpty())
+                <x-frontends.menu-list :items="$primaryMenuItems" variant="mobile" />
+            @else
+                <a href="{{ route('home') }}" class="block px-2 py-2 rounded-md text-sm font-medium text-primary-dark dark:text-primary-light bg-primary-light/70 dark:bg-slate-800 mt-2">হোম</a>
+                @foreach($navCategories as $category)
+                    <a href="{{ route('categories.show', $category->slug) }}" class="block px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        {{ $category->name }}
+                    </a>
+                @endforeach
+            @endif
         </div>
     </nav>
 </header>
