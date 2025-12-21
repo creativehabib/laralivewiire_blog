@@ -4,6 +4,7 @@ namespace App\Models\Admin;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Comment extends Model
 {
@@ -51,6 +52,19 @@ class Comment extends Model
         return $this->replies()
             ->approved()
             ->oldest()
-            ->with(['parent', 'repliesRecursive']);
+            ->with(['parent', 'repliesRecursive', 'user']);
+    }
+
+    public function getAvatarUrlAttribute(): string
+    {
+        $userAvatar = $this->user?->avatar;
+
+        if ($userAvatar) {
+            return Storage::url($userAvatar);
+        }
+
+        $hash = md5(strtolower(trim($this->email)));
+
+        return "https://www.gravatar.com/avatar/{$hash}?s=80&d=identicon";
     }
 }
