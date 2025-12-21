@@ -17,10 +17,34 @@
         {{-- Top bar --}}
         <div class="px-4 py-3 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
             <div class="flex items-center space-x-2">
-                <button
-                    class="text-xs px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
-                    Bulk Actions <i class="fa-solid fa-caret-down ml-1"></i>
-                </button>
+                <div x-data="{ open: false }" class="relative">
+                    <button
+                        type="button"
+                        @click="open = !open"
+                        class="text-xs px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex items-center">
+                        Bulk Actions <i class="fa-solid fa-caret-down ml-1"></i>
+                    </button>
+
+                    <div x-show="open" @click.outside="open = false"
+                         class="absolute z-10 mt-1 w-48 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow">
+                        <button type="button"
+                                onclick="confirm('Delete selected categories?') || event.stopImmediatePropagation()"
+                                wire:click="bulkDelete"
+                                class="block w-full px-3 py-2 text-left text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                            Delete selected
+                        </button>
+                        <button type="button"
+                                wire:click="bulkPublish"
+                                class="block w-full px-3 py-2 text-left text-xs text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20">
+                            Mark as published
+                        </button>
+                        <button type="button"
+                                wire:click="bulkDraft"
+                                class="block w-full px-3 py-2 text-left text-xs text-yellow-700 dark:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20">
+                            Mark as draft
+                        </button>
+                    </div>
+                </div>
                 <button
                     class="text-xs px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
                     <i class="fa-solid fa-sliders mr-1"></i> Filters
@@ -37,6 +61,13 @@
             </div>
 
             <div class="flex items-center space-x-2">
+                <select
+                    wire:model.live="perPage"
+                    class="text-xs border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100 px-2 py-1.5">
+                    <option value="10">10 / page</option>
+                    <option value="25">25 / page</option>
+                    <option value="50">50 / page</option>
+                </select>
                 <a href="{{ route('blogs.categories.create') }}"
                    class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded flex items-center space-x-1 shadow-sm">
                     <i class="fa-solid fa-plus"></i>
@@ -57,7 +88,10 @@
                 <thead class="bg-gray-50 dark:bg-gray-800/70 border-b border-gray-100 dark:border-gray-800">
                 <tr>
                     <th class="px-4 py-2">
-                        <input type="checkbox">
+                        <input type="checkbox"
+                               wire:click="toggleSelectAll"
+                               {{ $selectAll ? 'checked' : '' }}
+                               class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800">
                     </th>
                     <th class="px-2 py-2 text-left text-xs text-gray-500 dark:text-gray-400">
                         ID <i class="fa-solid fa-sort text-[10px] ml-1"></i>
@@ -92,7 +126,10 @@
                 @forelse($categories as $category)
                     <tr class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/60 dark:hover:bg-gray-800/60">
                         <td class="px-4 py-2">
-                            <input type="checkbox">
+                            <input type="checkbox"
+                                   wire:model="selected"
+                                   value="{{ $category->id }}"
+                                   class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800">
                         </td>
 
                         {{-- ID --}}
