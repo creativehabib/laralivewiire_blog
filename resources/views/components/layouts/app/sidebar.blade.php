@@ -280,6 +280,16 @@
                     {{ __('Ads Settings') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="presentation-chart-line"
+                    :href="route('settings.activity-logs')"
+                    :current="request()->routeIs('settings.activity-logs')"
+                    tooltip="{{ __('Activity Logs') }}"
+                    wire:navigate
+                >
+                    {{ __('Activity Logs') }}
+                </flux:sidebar.item>
+
 
             </flux:sidebar.group>
 

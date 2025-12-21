@@ -15,6 +15,7 @@ use App\Livewire\Admin\Pages\PageForm;
 use App\Livewire\Admin\Pages\PageTable;
 use App\Livewire\Admin\Posts\PostForm;
 use App\Livewire\Admin\Posts\PostTable;
+use App\Livewire\Admin\Settings\ActivityLogs;
 use App\Livewire\Admin\Settings\AdsSettings;
 use App\Livewire\Admin\Settings\CustomCssSettings;
 use App\Livewire\Admin\Settings\CustomHtmlSettings;
@@ -153,6 +154,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
             Route::get('/custom-html', CustomHtmlSettings::class)->name('custom-html')->middleware('permission:setting.view');
             Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
             Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
+            Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs')->middleware('permission:setting.view');
         });
 
     Route::prefix('blog')->name('blogs.')->group(function () {
