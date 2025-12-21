@@ -13,7 +13,7 @@
                 <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                     <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $comment->name }}</span>
                     <div class="flex items-center gap-3">
-                        <button type="button" wire:click="setReply({{ $comment->id }})" class="text-blue-600 hover:underline">উত্তর দিন</button>
+                        <button type="button" wire:click="setReply({{ $comment->id }})" class="text-blue-600 hover:underline cursor-pointer">উত্তর দিন</button>
                         <span>{{ $comment->created_at?->diffForHumans() }}</span>
                     </div>
                 </div>

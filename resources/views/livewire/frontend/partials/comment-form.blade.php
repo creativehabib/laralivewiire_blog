@@ -4,7 +4,7 @@
             <div class="text-blue-700 dark:text-blue-100 text-xs">
                 <span class="font-semibold">{{ $replyingTo }}</span> - এর উত্তরে লিখছেন
             </div>
-            <button type="button" wire:click="cancelReply" class="text-xs text-blue-600 hover:underline">বাতিল</button>
+            <button type="button" wire:click="cancelReply" class="text-xs text-blue-600 hover:underline cursor-pointer">বাতিল</button>
         </div>
     @endif
 
@@ -50,7 +50,7 @@
     </div>
 
     <button type="submit"
-            class="px-4 py-2 bg-primary-dark text-white rounded-md text-sm font-semibold hover:bg-primary disabled:opacity-60"
+            class="px-4 py-2 bg-primary-dark text-white rounded-md text-sm font-semibold hover:bg-primary disabled:opacity-60 cursor-pointer"
             wire:loading.attr="disabled"
             wire:target="submit">
         <span wire:loading.remove wire:target="submit">মন্তব্য পাঠান</span>
