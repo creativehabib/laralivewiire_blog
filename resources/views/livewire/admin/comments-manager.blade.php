@@ -53,7 +53,7 @@
                 <thead>
                 <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-[11px] uppercase text-slate-500 font-bold tracking-wider">
                     <th class="p-4 w-10 text-center">
-                        <input type="checkbox" wire:model.live="selectAll" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                        <input type="checkbox" wire:model.live="selectAll" class="rounded border-slate-300 focus:ring-blue-500 w-4 h-4">
                     </th>
                     <th class="p-4 w-16">ID</th>
                     <th class="p-4 w-64">Author</th>
@@ -68,7 +68,7 @@
                 @forelse($comments as $comment)
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                         <td class="p-4 text-center">
-                            <input type="checkbox" wire:model.live="selected" value="{{ $comment->id }}" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                            <input type="checkbox" wire:model.live="selected" value="{{ $comment->id }}" class="rounded border-slate-300 focus:ring-blue-500 w-4 h-4">
                         </td>
                         <td class="p-4 text-slate-500">{{ $comment->id }}</td>
 
@@ -99,7 +99,7 @@
                         {{-- Response To --}}
                         <td class="p-4">
                             @if($comment->commentable)
-                                <a href="#" class="text-blue-600 hover:underline text-sm font-medium line-clamp-2" title="{{ $comment->commentable->title }}">
+                                <a href="#" class="hover:underline text-sm font-medium line-clamp-2" title="{{ $comment->commentable->title }}">
                                     {{ $comment->commentable->title ?? 'Deleted Content' }}
                                 </a>
                                 <a href="#" target="_blank" class="text-xs text-slate-400 hover:text-blue-500 block mt-1">

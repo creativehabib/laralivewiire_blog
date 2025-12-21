@@ -17,15 +17,15 @@
             </div>
             <div class="p-6 space-y-3 text-sm">
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="notify_linked_blogs" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="notify_linked_blogs" class="w-4 h-4  border-slate-300 rounded">
                     <span>Attempt to notify any blogs linked to from the post</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="allow_pingbacks" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="allow_pingbacks" class="w-4 h-4  border-slate-300 rounded">
                     <span>Allow link notifications from other blogs (pingbacks and trackbacks) on new posts</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="allow_comments_default" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="allow_comments_default" class="w-4 h-4  border-slate-300 rounded">
                     <span>Allow people to submit comments on new posts</span>
                 </label>
             </div>
@@ -39,18 +39,18 @@
             <div class="p-6 space-y-4 text-sm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="require_name_email" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="require_name_email" class="w-4 h-4  border-slate-300 rounded">
                         <span>Comment author must fill out name and email</span>
                     </label>
                     <label class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="require_login" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="require_login" class="w-4 h-4  border-slate-300 rounded">
                         <span>Users must be registered and logged in to comment</span>
                     </label>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <label class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="auto_close" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="auto_close" class="w-4 h-4  border-slate-300 rounded">
                         <span>Automatically close comments on posts older than</span>
                     </label>
                     <div class="flex items-center gap-2">
@@ -60,13 +60,13 @@
                 </div>
 
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="cookies_opt_in" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="cookies_opt_in" class="w-4 h-4  border-slate-300 rounded">
                     <span>Show comments cookies opt-in checkbox, allowing comment author cookies to be set</span>
                 </label>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="threaded_comments" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="threaded_comments" class="w-4 h-4  border-slate-300 rounded">
                         <span>Enable threaded (nested) comments</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -77,7 +77,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="paginate_comments" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="paginate_comments" class="w-4 h-4  border-slate-300 rounded">
                         <span>Break comments into pages with</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -108,11 +108,11 @@
             </div>
             <div class="p-6 space-y-3 text-sm">
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="email_notify_any" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="email_notify_any" class="w-4 h-4  border-slate-300 rounded">
                     <span>Anyone posts a comment</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="email_notify_moderation" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="email_notify_moderation" class="w-4 h-4  border-slate-300 rounded">
                     <span>A comment is held for moderation</span>
                 </label>
             </div>
@@ -124,11 +124,11 @@
             </div>
             <div class="p-6 space-y-3 text-sm">
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="manual_approval" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="manual_approval" class="w-4 h-4  border-slate-300 rounded">
                     <span>Comment must be manually approved</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="require_prior_approval" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="require_prior_approval" class="w-4 h-4  border-slate-300 rounded">
                     <span>Comment author must have a previously approved comment</span>
                 </label>
             </div>
@@ -165,7 +165,7 @@
             </div>
             <div class="p-6 space-y-5 text-sm">
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="show_avatars" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="show_avatars" class="w-4 h-4  border-slate-300 rounded">
                     <span>Show Avatars</span>
                 </div>
 
@@ -187,31 +187,31 @@
                     <p class="text-xs text-slate-500">For users without a custom avatar you can either display a generic logo or a generated one.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="mystery" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4  border-slate-300" value="mystery" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Mystery Person</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="blank" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4  border-slate-300" value="blank" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Blank</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="gravatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4  border-slate-300" value="gravatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Gravatar Logo</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="identicon" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4  border-slate-300" value="identicon" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Identicon (Generated)</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="wavatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4  border-slate-300" value="wavatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Wavatar (Generated)</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="monsterid" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4  border-slate-300" value="monsterid" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>MonsterID (Generated)</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="retro" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4  border-slate-300" value="retro" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Retro (Generated)</span>
                         </label>
                     </div>
