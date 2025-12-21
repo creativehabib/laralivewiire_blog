@@ -258,7 +258,9 @@
     .typography video,
     .typography iframe,
     .typography table {
-        max-width: 100%;
+        max-width: 100% !important;
+        height: auto !important;
+        display: block;
     }
 
     .typography img,
@@ -274,12 +276,13 @@
         display: block;
         overflow-x: auto;
         margin: 1.1em 0;
+        -webkit-overflow-scrolling: touch;
     }
 
     .typography table,
     .ck-content table {
-        display: inline-table;
-        overflow-x: auto;
+        display: table;
+        min-width: 100%;
         width: 100% !important;
         border-collapse: collapse;
     }
