@@ -134,6 +134,91 @@
             </div>
         </div>
 
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Comment moderation</h2>
+            </div>
+            <div class="p-6 space-y-4 text-sm">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span>Hold a comment in the queue if it contains</span>
+                    <input type="number" min="0" max="20" wire:model.live="moderation_links" class="w-20 px-3 py-2 text-sm border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <span>or more links. <span class="text-slate-500">(A common characteristic of comment spam is a large number of hyperlinks.)</span></span>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-semibold text-slate-700 dark:text-slate-200">Comment Moderation</label>
+                    <p class="text-xs text-slate-500">When a comment contains any of these words in its content, name, URL, email, or IP address, it will be held in the moderation queue.</p>
+                    <textarea wire:model.live="moderation_keys" rows="4" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="One word or IP address per line, it will match inside words."></textarea>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-semibold text-slate-700 dark:text-slate-200">Disallowed Comment Keys</label>
+                    <p class="text-xs text-slate-500">When a comment contains any of these words in its content, name, URL, email, or IP address, it will be put in the Trash. One word or IP address per line. It will match inside words, so “press” will match “WordPress”.</p>
+                    <textarea wire:model.live="disallowed_keys" rows="4" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Avatars</h2>
+            </div>
+            <div class="p-6 space-y-5 text-sm">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" wire:model.live="show_avatars" class="w-4 h-4 text-blue-600 border-slate-300 rounded">
+                    <span>Show Avatars</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                    <div>
+                        <h3 class="text-xs uppercase font-semibold text-slate-500">Maximum Rating</h3>
+                        <p class="text-xs text-slate-500">Show avatars of comments with a rating of</p>
+                    </div>
+                    <select wire:model.live="avatar_rating" class="px-3 py-2 text-sm border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500" @disabled(! $show_avatars)>
+                        <option value="g">G — Suitable for all audiences</option>
+                        <option value="pg">PG — Possibly offensive, usually for audiences 13 and above</option>
+                        <option value="r">R — Intended for adult audiences above 17</option>
+                        <option value="x">X — Even more mature than above</option>
+                    </select>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-xs uppercase font-semibold text-slate-500">Default Avatar</h3>
+                    <p class="text-xs text-slate-500">For users without a custom avatar you can either display a generic logo or a generated one.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label class="flex items-center gap-3">
+                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="mystery" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <span>Mystery Person</span>
+                        </label>
+                        <label class="flex items-center gap-3">
+                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="blank" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <span>Blank</span>
+                        </label>
+                        <label class="flex items-center gap-3">
+                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="gravatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <span>Gravatar Logo</span>
+                        </label>
+                        <label class="flex items-center gap-3">
+                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="identicon" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <span>Identicon (Generated)</span>
+                        </label>
+                        <label class="flex items-center gap-3">
+                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="wavatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <span>Wavatar (Generated)</span>
+                        </label>
+                        <label class="flex items-center gap-3">
+                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="monsterid" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <span>MonsterID (Generated)</span>
+                        </label>
+                        <label class="flex items-center gap-3">
+                            <input type="radio" class="w-4 h-4 text-blue-600 border-slate-300" value="retro" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <span>Retro (Generated)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="flex items-center justify-end gap-3">
             <button type="button" wire:click="$refresh" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-300 rounded-md hover:bg-slate-50">Reset</button>
             <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">Save settings</button>

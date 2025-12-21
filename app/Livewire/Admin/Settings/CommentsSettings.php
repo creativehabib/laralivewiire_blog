@@ -31,6 +31,14 @@ class CommentsSettings extends Component
     public bool $manual_approval = true;
     public bool $require_prior_approval = false;
 
+    public int $moderation_links = 2;
+    public string $moderation_keys = '';
+    public string $disallowed_keys = '';
+
+    public bool $show_avatars = true;
+    public string $avatar_rating = 'g';
+    public string $avatar_default = 'mystery';
+
     public function mount(): void
     {
         $this->notify_linked_blogs     = (bool) setting('comment_notify_linked_blogs', false);
@@ -56,6 +64,14 @@ class CommentsSettings extends Component
 
         $this->manual_approval         = (bool) setting('comment_manual_approval', true);
         $this->require_prior_approval  = (bool) setting('comment_require_prior_approval', false);
+
+        $this->moderation_links        = (int) setting('comment_moderation_links', 2);
+        $this->moderation_keys         = (string) setting('comment_moderation_keys', '');
+        $this->disallowed_keys         = (string) setting('comment_disallowed_keys', '');
+
+        $this->show_avatars            = (bool) setting('comment_show_avatars', true);
+        $this->avatar_rating           = (string) setting('comment_avatar_rating', 'g');
+        $this->avatar_default          = (string) setting('comment_avatar_default', 'mystery');
     }
 
     public function updatedAutoClose(bool $value): void
@@ -91,6 +107,14 @@ class CommentsSettings extends Component
 
             'manual_approval'         => ['boolean'],
             'require_prior_approval'  => ['boolean'],
+
+            'moderation_links'        => ['integer', 'min:0', 'max:20'],
+            'moderation_keys'         => ['nullable', 'string'],
+            'disallowed_keys'         => ['nullable', 'string'],
+
+            'show_avatars'            => ['boolean'],
+            'avatar_rating'           => ['in:g,pg,r,x'],
+            'avatar_default'          => ['in:mystery,blank,gravatar,identicon,wavatar,monsterid,retro'],
         ];
     }
 
@@ -122,6 +146,14 @@ class CommentsSettings extends Component
 
             'comment_manual_approval'         => $this->manual_approval,
             'comment_require_prior_approval'  => $this->require_prior_approval,
+
+            'comment_moderation_links'        => $this->moderation_links,
+            'comment_moderation_keys'         => $this->moderation_keys,
+            'comment_disallowed_keys'         => $this->disallowed_keys,
+
+            'comment_show_avatars'            => $this->show_avatars,
+            'comment_avatar_rating'           => $this->avatar_rating,
+            'comment_avatar_default'          => $this->avatar_default,
         ];
 
         foreach ($settings as $key => $value) {
