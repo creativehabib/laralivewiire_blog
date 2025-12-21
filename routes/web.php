@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\SitemapController;
 use App\Livewire\Admin\Categories\CategoryForm;
 use App\Livewire\Admin\Categories\CategoryTable;
 use App\Livewire\Admin\Categories\Index as CategoryIndex;
+use App\Livewire\Admin\CommentsManager;
 use App\Livewire\Admin\Pages\PageForm;
 use App\Livewire\Admin\Pages\PageTable;
 use App\Livewire\Admin\Posts\PostForm;
@@ -155,6 +156,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
             Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
             Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
             Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs')->middleware('permission:setting.view');
+            Route::get('/comments', CommentsManager::class)->name('comments')->middleware('permission:setting.view');
         });
 
     Route::prefix('blog')->name('blogs.')->group(function () {

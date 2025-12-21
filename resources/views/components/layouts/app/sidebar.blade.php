@@ -290,6 +290,16 @@
                     {{ __('Activity Logs') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="presentation-chart-line"
+                    :href="route('settings.comments')"
+                    :current="request()->routeIs('settings.comments')"
+                    tooltip="{{ __('Comments') }}"
+                    wire:navigate
+                >
+                    {{ __('Comments') }}
+                </flux:sidebar.item>
+
 
             </flux:sidebar.group>
 
