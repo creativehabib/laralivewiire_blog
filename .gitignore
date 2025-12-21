@@ -6,6 +6,10 @@
 /storage/*.key
 /storage/pail
 /vendor
+/.htaccess
+/public/.htaccess
+/public/ads.txt
+/public/robots.txt
 .env
 .env.backup
 .env.production
