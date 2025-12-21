@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Category;
+use App\Models\Admin\Tag;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\Post;
@@ -35,8 +36,10 @@ class MenuManagement extends Component
     ];
     public array $selectedCategories = [];
     public array $selectedPosts = [];
+    public array $selectedTags = [];
     public string $categorySearch = '';
     public string $postSearch = '';
+    public string $tagSearch = '';
     public string $activeTab = 'custom-link';
     public array $locationSuggestions = [];
 
@@ -182,6 +185,23 @@ class MenuManagement extends Component
         $this->dispatch('media-toast', type: 'success', message: 'Posts Added Successfully.');
     }
 
+    public function addTagsToMenu(): void
+    {
+        if (! $this->ensureSelectedMenu()) return;
+         $this->ensureAuthorized('menu.edit');
+        $this->validate([
+            'selectedTags' => ['required', 'array', 'min:1'],
+            'selectedTags.*' => ['integer', 'exists:tags,id'],
+        ]);
+        $tags = Tag::whereIn('id', $this->selectedTags)->get();
+        foreach ($tags as $tag) {
+            $this->createMenuItem($tag->name, route('tags.show', ['slug' => $tag->slug]));
+        }
+        $this->selectedTags = [];
+        $this->afterMenuItemsMutated('Selected tags added to the menu.');
+        $this->dispatch('media-toast', type: 'success', message: 'Tags Added Successfully.');
+    }
+
     public function startEditing(int $itemId): void
     {
         if (! $this->ensureSelectedMenu()) return;
@@ -284,6 +304,16 @@ class MenuManagement extends Component
         return Post::query()
             ->orderByDesc('created_at')
             ->when($this->postSearch, fn ($q) => $q->where('name', 'like', '%' . $this->postSearch . '%'))
+            ->take(50)
+            ->get(['id', 'name', 'slug']);
+    }
+
+    #[Computed]
+    public function tagOptions()
+    {
+        return Tag::query()
+            ->orderBy('name')
+            ->when($this->tagSearch, fn ($q) => $q->where('name', 'like', '%' . $this->tagSearch . '%'))
             ->take(50)
             ->get(['id', 'name', 'slug']);
     }
