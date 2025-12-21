@@ -268,11 +268,26 @@
         display: block;
     }
 
-    .typography table {
+    .typography table,
+    .ck-content table {
         display: block;
         overflow-x: auto;
-        width: 100%;
+        width: 100% !important;
         border-collapse: collapse;
+    }
+
+    .typography table th,
+    .typography table td,
+    .ck-content table th,
+    .ck-content table td {
+        padding: 0.5rem;
+        border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+        white-space: nowrap;
+    }
+
+    .typography table thead,
+    .ck-content table thead {
+        background: color-mix(in srgb, currentColor 6%, transparent);
     }
 
     .typography video,
