@@ -57,6 +57,10 @@ class Comment extends Model
 
     public function getAvatarUrlAttribute(): string
     {
+        if (! setting('comment_show_avatars', true)) {
+            return '';
+        }
+
         $userAvatar = $this->user?->avatar;
 
         if ($userAvatar) {
@@ -65,6 +69,18 @@ class Comment extends Model
 
         $hash = md5(strtolower(trim($this->email)));
 
-        return "https://www.gravatar.com/avatar/{$hash}?s=80&d=identicon";
+        $default = match (setting('comment_avatar_default', 'mystery')) {
+            'blank'      => 'blank',
+            'gravatar'   => 'gravatar',
+            'identicon'  => 'identicon',
+            'wavatar'    => 'wavatar',
+            'monsterid'  => 'monsterid',
+            'retro'      => 'retro',
+            default      => 'mp',
+        };
+
+        $rating = setting('comment_avatar_rating', 'g');
+
+        return "https://www.gravatar.com/avatar/{$hash}?s=80&d={$default}&r={$rating}";
     }
 }

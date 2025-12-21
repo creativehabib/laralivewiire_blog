@@ -121,6 +121,7 @@ class PostComments extends Component
             'blockedReason' => $this->blockedReason,
             'threadDepth'   => $this->commentSettings['thread_depth'] ?? 0,
             'threaded'      => $this->commentSettings['threaded_comments'] ?? false,
+            'commentSettings' => $this->commentSettings,
         ]);
     }
 
@@ -161,6 +162,9 @@ class PostComments extends Component
             'manual_approval'        => (bool) setting('comment_manual_approval', true),
             'require_prior_approval' => (bool) setting('comment_require_prior_approval', false),
             'comments_order'         => (string) setting('comment_order', 'older'),
+            'show_avatars'           => (bool) setting('comment_show_avatars', true),
+            'avatar_rating'          => (string) setting('comment_avatar_rating', 'g'),
+            'avatar_default'         => (string) setting('comment_avatar_default', 'mystery'),
         ];
     }
 
