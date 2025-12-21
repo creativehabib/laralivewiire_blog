@@ -18,7 +18,7 @@
                 <div class="relative group">
                     <a href="{{ $url }}"
                        target="{{ $target }}"
-                       class="text-slate-700 dark:text-slate-200 hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-150">
+                       class="p-2 text-slate-700 dark:text-slate-200 hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-150">
                         {{ $title }}
                     </a>
                     @if($hasChildren)
