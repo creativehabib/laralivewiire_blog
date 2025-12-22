@@ -1,4 +1,5 @@
 <div class="max-w-5xl mx-auto antialiased text-slate-900 dark:text-slate-100">
+    {{-- Header Section --}}
     <div class="flex items-center justify-between mb-4">
         <div>
             <h1 class="text-xl font-bold text-slate-800 dark:text-slate-100">Discussion Settings</h1>
@@ -11,26 +12,29 @@
     </div>
 
     <form wire:submit.prevent="save" class="space-y-5">
+
+        {{-- 1. Default Post Settings --}}
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Default post settings</h2>
             </div>
             <div class="p-6 space-y-3 text-sm">
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="notify_linked_blogs" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="notify_linked_blogs" class="w-4 h-4 border-slate-300 rounded">
                     <span>Attempt to notify any blogs linked to from the post</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="allow_pingbacks" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="allow_pingbacks" class="w-4 h-4 border-slate-300 rounded">
                     <span>Allow link notifications from other blogs (pingbacks and trackbacks) on new posts</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="allow_comments_default" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="allow_comments_default" class="w-4 h-4 border-slate-300 rounded">
                     <span>Allow people to submit comments on new posts</span>
                 </label>
             </div>
         </div>
 
+        {{-- 2. Comment Systems --}}
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Comment systems</h2>
@@ -38,21 +42,21 @@
             <div class="p-6 space-y-3 text-sm">
                 <p class="text-slate-500 dark:text-slate-400">Choose which commenting experience you want to provide.</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700">
+                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700 cursor-pointer">
                         <input type="radio" class="mt-1 w-4 h-4 border-slate-300" value="default" wire:model.live="comment_system">
                         <div>
                             <div class="font-semibold">Default comments</div>
                             <p class="text-xs text-slate-500">Use the built-in comment system only.</p>
                         </div>
                     </label>
-                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700">
+                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700 cursor-pointer">
                         <input type="radio" class="mt-1 w-4 h-4 border-slate-300" value="facebook" wire:model.live="comment_system">
                         <div>
                             <div class="font-semibold">Facebook comments</div>
                             <p class="text-xs text-slate-500">Show only the Facebook comment plugin.</p>
                         </div>
                     </label>
-                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700">
+                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700 cursor-pointer">
                         <input type="radio" class="mt-1 w-4 h-4 border-slate-300" value="both" wire:model.live="comment_system">
                         <div>
                             <div class="font-semibold">Both systems</div>
@@ -62,7 +66,7 @@
                 </div>
 
                 <div class="flex items-start gap-3 pt-2">
-                    <input type="checkbox" wire:model.live="facebook_enabled" class="mt-1 w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="facebook_enabled" class="mt-1 w-4 h-4 border-slate-300 rounded">
                     <div>
                         <div class="font-semibold">Enable Facebook comments</div>
                         <p class="text-xs text-slate-500">Toggle to load the Facebook comments plugin instead of, or alongside, the default system.</p>
@@ -93,6 +97,7 @@
             </div>
         </div>
 
+        {{-- 3. Other Comment Settings --}}
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Other comment settings</h2>
@@ -101,18 +106,18 @@
             <div class="p-6 space-y-4 text-sm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="require_name_email" class="w-4 h-4  border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="require_name_email" class="w-4 h-4 border-slate-300 rounded">
                         <span>Comment author must fill out name and email</span>
                     </label>
                     <label class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="require_login" class="w-4 h-4  border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="require_login" class="w-4 h-4 border-slate-300 rounded">
                         <span>Users must be registered and logged in to comment</span>
                     </label>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <label class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="auto_close" class="w-4 h-4  border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="auto_close" class="w-4 h-4 border-slate-300 rounded">
                         <span>Automatically close comments on posts older than</span>
                     </label>
                     <div class="flex items-center gap-2">
@@ -122,13 +127,13 @@
                 </div>
 
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="cookies_opt_in" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="cookies_opt_in" class="w-4 h-4 border-slate-300 rounded">
                     <span>Show comments cookies opt-in checkbox, allowing comment author cookies to be set</span>
                 </label>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="threaded_comments" class="w-4 h-4  border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="threaded_comments" class="w-4 h-4 border-slate-300 rounded">
                         <span>Enable threaded (nested) comments</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -139,7 +144,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" wire:model.live="paginate_comments" class="w-4 h-4  border-slate-300 rounded">
+                        <input type="checkbox" wire:model.live="paginate_comments" class="w-4 h-4 border-slate-300 rounded">
                         <span>Break comments into pages with</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -164,38 +169,41 @@
             </div>
         </div>
 
+        {{-- 4. Email Notifications --}}
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Email me whenever</h2>
             </div>
             <div class="p-6 space-y-3 text-sm">
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="email_notify_any" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="email_notify_any" class="w-4 h-4 border-slate-300 rounded">
                     <span>Anyone posts a comment</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="email_notify_moderation" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="email_notify_moderation" class="w-4 h-4 border-slate-300 rounded">
                     <span>A comment is held for moderation</span>
                 </label>
             </div>
         </div>
 
+        {{-- 5. Before Comment Appears --}}
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Before a comment appears</h2>
             </div>
             <div class="p-6 space-y-3 text-sm">
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="manual_approval" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="manual_approval" class="w-4 h-4 border-slate-300 rounded">
                     <span>Comment must be manually approved</span>
                 </label>
                 <label class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="require_prior_approval" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="require_prior_approval" class="w-4 h-4 border-slate-300 rounded">
                     <span>Comment author must have a previously approved comment</span>
                 </label>
             </div>
         </div>
 
+        {{-- 6. Moderation --}}
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Comment moderation</h2>
@@ -221,13 +229,14 @@
             </div>
         </div>
 
+        {{-- 7. Avatars --}}
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Avatars</h2>
             </div>
             <div class="p-6 space-y-5 text-sm">
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" wire:model.live="show_avatars" class="w-4 h-4  border-slate-300 rounded">
+                    <input type="checkbox" wire:model.live="show_avatars" class="w-4 h-4 border-slate-300 rounded">
                     <span>Show Avatars</span>
                 </div>
 
@@ -249,31 +258,31 @@
                     <p class="text-xs text-slate-500">For users without a custom avatar you can either display a generic logo or a generated one.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4  border-slate-300" value="mystery" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4 border-slate-300" value="mystery" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Mystery Person</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4  border-slate-300" value="blank" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4 border-slate-300" value="blank" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Blank</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4  border-slate-300" value="gravatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4 border-slate-300" value="gravatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Gravatar Logo</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4  border-slate-300" value="identicon" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4 border-slate-300" value="identicon" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Identicon (Generated)</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4  border-slate-300" value="wavatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4 border-slate-300" value="wavatar" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Wavatar (Generated)</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4  border-slate-300" value="monsterid" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4 border-slate-300" value="monsterid" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>MonsterID (Generated)</span>
                         </label>
                         <label class="flex items-center gap-3">
-                            <input type="radio" class="w-4 h-4  border-slate-300" value="retro" wire:model.live="avatar_default" @disabled(! $show_avatars)>
+                            <input type="radio" class="w-4 h-4 border-slate-300" value="retro" wire:model.live="avatar_default" @disabled(! $show_avatars)>
                             <span>Retro (Generated)</span>
                         </label>
                     </div>
@@ -281,9 +290,31 @@
             </div>
         </div>
 
-        <div class="flex items-center justify-end gap-3">
-            <button type="button" wire:click="$refresh" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-300 rounded-md hover:bg-slate-50">Reset</button>
-            <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">Save settings</button>
+        {{-- Action Buttons (Using FontAwesome Icons & Loading Spinner) --}}
+        <div class="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-slate-200 dark:border-slate-700">
+            <button
+                type="button"
+                wire:click="$refresh"
+                wire:loading.attr="disabled"
+                class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-colors"
+            >
+                <i class="fas fa-undo"></i>
+                Reset
+            </button>
+
+            <button
+                type="submit"
+                wire:loading.attr="disabled"
+                wire:target="save"
+                class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75 disabled:cursor-wait shadow-blue-500/30"
+            >
+                <i wire:loading wire:target="save" class="fas fa-spinner fa-spin"></i>
+
+                <i wire:loading.remove wire:target="save" class="fas fa-save"></i>
+
+                <span wire:loading.remove wire:target="save">Save changes</span>
+                <span wire:loading wire:target="save">Saving...</span>
+            </button>
         </div>
     </form>
 </div>
