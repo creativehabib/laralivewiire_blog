@@ -7,7 +7,7 @@
 
     @if(! $allowComments)
         <div class="p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-700 text-sm">
-            {{ $blockedReason ?? 'এই পোস্টের মন্তব্য বন্ধ রয়েছে।' }}
+            {{ $blockedReason ?? 'এই কনটেন্টের মন্তব্য বন্ধ রয়েছে।' }}
         </div>
     @else
         @if(! $parentId)

@@ -148,7 +148,7 @@
                     </div>
 
                     <div class="p-4" x-show="activeTab === 'default'">
-                        <livewire:frontend.post-comments :post="$post" />
+                        <livewire:frontend.comments :commentable="$post" />
                     </div>
 
                     <div class="p-4" x-show="activeTab === 'facebook'" x-cloak>
@@ -176,7 +176,7 @@
                     <div class="fb-comments" data-href="{{ request()->url() }}" data-width="100%" data-numposts="5"></div>
                 </div>
             @else
-                <livewire:frontend.post-comments :post="$post" />
+                <livewire:frontend.comments :commentable="$post" />
             @endif
         </section>
         @endunless
