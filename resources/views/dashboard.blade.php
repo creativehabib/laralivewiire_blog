@@ -7,6 +7,13 @@
             ['label' => __('New Comments'), 'value' => '32', 'subtitle' => __('From last Week'), 'delta' => '+1', 'badge' => 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-200'],
         ];
 
+        $visitorSeries = [
+            ['name' => '2024', 'data' => [420, 540, 610, 720, 680, 750, 820]],
+            ['name' => '2023', 'data' => [360, 460, 510, 580, 600, 640, 690]],
+        ];
+
+        $weeks = [__('1 Week'), __('2 Week'), __('3 Week'), __('4 Week'), __('5 Week'), __('6 Week'), __('7 Week')];
+
         $countries = [
             ['name' => 'India', 'value' => 50, 'color' => 'bg-amber-500'],
             ['name' => 'Usa', 'value' => 10, 'color' => 'bg-blue-500'],
@@ -24,12 +31,12 @@
         ];
 
         $colorMap = [
-            'bg-amber-500' => '#f59e0b',
             'bg-blue-500' => '#3b82f6',
             'bg-emerald-500' => '#10b981',
             'bg-indigo-500' => '#6366f1',
             'bg-rose-500' => '#f43f5e',
             'bg-slate-500' => '#64748b',
+            'bg-amber-500' => '#f59e0b',
         ];
 
         $devices = [
@@ -44,6 +51,25 @@
             ['name' => __('Deleted'), 'value' => 60, 'color' => 'bg-rose-500'],
             ['name' => __('Featured'), 'value' => 60, 'color' => 'bg-amber-500'],
             ['name' => __('Banners'), 'value' => 40, 'color' => 'bg-slate-500'],
+        ];
+
+        $pieCharts = collect([
+            ['title' => __('Top Countries'), 'data' => $countries],
+            ['title' => __('Top Browser'), 'data' => $browsers],
+            ['title' => __('Top Device'), 'data' => $devices],
+        ])->map(function ($chart) use ($colorMap) {
+            return [
+                'id' => Str::slug($chart['title'], '-') . '-chart',
+                'labels' => array_column($chart['data'], 'name'),
+                'series' => array_column($chart['data'], 'value'),
+                'colors' => array_map(fn($item) => $colorMap[$item['color']] ?? '#cbd5e1', $chart['data']),
+            ];
+        })->values();
+
+        $statusChart = [
+            'categories' => array_column($statuses, 'name'),
+            'series' => array_column($statuses, 'value'),
+            'colors' => array_map(fn($item) => $colorMap[$item['color']] ?? '#cbd5e1', $statuses),
         ];
 
         $categories = [
@@ -115,76 +141,20 @@
                     </div>
                 </div>
                 <div class="mt-6">
-                    <div class="h-64 rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
-                        <svg viewBox="0 0 600 240" class="h-full w-full" role="img" aria-label="Visitor line chart placeholder">
-                            <defs>
-                                <linearGradient id="line2024" x1="0" x2="0" y1="0" y2="1">
-                                    <stop offset="0%" stop-color="rgb(99 102 241)" stop-opacity="0.55" />
-                                    <stop offset="100%" stop-color="rgb(99 102 241)" stop-opacity="0" />
-                                </linearGradient>
-                                <linearGradient id="line2023" x1="0" x2="0" y1="0" y2="1">
-                                    <stop offset="0%" stop-color="rgb(251 191 36)" stop-opacity="0.5" />
-                                    <stop offset="100%" stop-color="rgb(251 191 36)" stop-opacity="0" />
-                                </linearGradient>
-                            </defs>
-                            <rect x="40" y="10" width="520" height="180" rx="18" class="fill-white dark:fill-slate-900 stroke-slate-200 dark:stroke-slate-700" />
-                            <polyline points="60,150 140,120 220,140 300,90 380,110 460,70 540,105" fill="none" stroke="rgb(59 130 246)" stroke-width="4" stroke-linecap="round" />
-                            <path d="M60 150 L140 120 L220 140 L300 90 L380 110 L460 70 L540 105 L540 190 L60 190 Z" fill="url(#line2024)" opacity="0.8" />
-                            <polyline points="60,170 140,130 220,150 300,110 380,130 460,90 540,130" fill="none" stroke="rgb(251 191 36)" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 8" />
-                            <path d="M60 170 L140 130 L220 150 L300 110 L380 130 L460 90 L540 130 L540 190 L60 190 Z" fill="url(#line2023)" opacity="0.8" />
-                            <g fill="rgb(99 102 241)" stroke="white" stroke-width="2">
-                                <circle cx="140" cy="120" r="6" />
-                                <circle cx="300" cy="90" r="6" />
-                                <circle cx="460" cy="70" r="6" />
-                            </g>
-                            <g fill="rgb(251 191 36)" stroke="white" stroke-width="2">
-                                <circle cx="180" cy="140" r="6" />
-                                <circle cx="360" cy="120" r="6" />
-                                <circle cx="500" cy="110" r="6" />
-                            </g>
-                            <g class="text-[11px] fill-slate-400">
-                                <text x="80" y="210">{{ __('1 Week') }}</text>
-                                <text x="160" y="210">{{ __('2 Week') }}</text>
-                                <text x="240" y="210">{{ __('3 Week') }}</text>
-                                <text x="320" y="210">{{ __('4 Week') }}</text>
-                                <text x="400" y="210">{{ __('5 Week') }}</text>
-                                <text x="480" y="210">{{ __('6 Week') }}</text>
-                                <text x="560" y="210">{{ __('7 Week') }}</text>
-                            </g>
-                        </svg>
-                    </div>
+                    <div id="visitorsChart" class="h-72"></div>
                 </div>
             </div>
 
             <div class="grid gap-4">
                 @foreach ([['title' => __('Top Countries'), 'data' => $countries], ['title' => __('Top Browser'), 'data' => $browsers], ['title' => __('Top Device'), 'data' => $devices]] as $pie)
-                    @php
-                        $total = array_reduce($pie['data'], fn($carry, $item) => $carry + $item['value'], 0);
-                        $start = 0;
-                        $segments = [];
-
-                        foreach ($pie['data'] as $segment) {
-                            $end = $start + ($segment['value'] / $total) * 360;
-                            $color = $colorMap[$segment['color']] ?? '#cbd5e1';
-                            $segments[] = "$color {$start}deg {$end}deg";
-                            $start = $end;
-                        }
-
-                        $gradient = implode(', ', $segments);
-                    @endphp
                     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                         <div class="flex items-center justify-between gap-2">
                             <p class="text-sm font-semibold text-slate-600 dark:text-slate-200">{{ $pie['title'] }}</p>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ $total }} {{ __('Entries') }}</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ array_sum(array_column($pie['data'], 'value')) }} {{ __('Entries') }}</span>
                         </div>
-                        <div class="mt-4 flex items-center gap-4">
-                            <div class="relative size-28 shrink-0">
-                                <div class="size-full rounded-full bg-slate-100 dark:bg-slate-800"></div>
-                                <div class="absolute inset-0 rounded-full" style="background: conic-gradient({{ $gradient }});"></div>
-                                <div class="absolute inset-3 rounded-full bg-white dark:bg-slate-900"></div>
-                                <div class="absolute inset-0 flex items-center justify-center text-lg font-semibold text-slate-700 dark:text-white">{{ $total }}</div>
-                            </div>
-                            <div class="flex-1 space-y-2">
+                        <div class="mt-4 space-y-3">
+                            <div id="{{ Str::slug($pie['title'], '-') }}-chart" class="h-56"></div>
+                            <div class="space-y-2">
                                 @foreach ($pie['data'] as $segment)
                                     <div class="flex items-center justify-between text-sm">
                                         <div class="flex items-center gap-2">
@@ -207,16 +177,13 @@
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Post Status') }}</p>
                     <button class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200">{{ __('Refresh') }}</button>
                 </div>
-                <div class="mt-4 space-y-4">
+                <div id="post-status-chart" class="mt-4 h-72"></div>
+                <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-200">
                     @foreach ($statuses as $status)
-                        <div>
-                            <div class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-200">
-                                <span>{{ $status['name'] }}</span>
-                                <span>{{ $status['value'] }}%</span>
-                            </div>
-                            <div class="mt-2 h-2 rounded-full bg-slate-100 dark:bg-slate-800">
-                                <div class="h-full rounded-full {{ $status['color'] }}" style="width: {{ $status['value'] }}%"></div>
-                            </div>
+                        <div class="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800/60">
+                            <span class="size-2.5 rounded-full {{ $status['color'] }}"></span>
+                            <span class="flex-1">{{ $status['name'] }}</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ $status['value'] }}%</span>
                         </div>
                     @endforeach
                 </div>
@@ -376,4 +343,139 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const visitorChartEl = document.querySelector('#visitorsChart');
+                if (visitorChartEl) {
+                    new ApexCharts(visitorChartEl, {
+                        chart: {
+                            type: 'area',
+                            height: 320,
+                            toolbar: { show: false },
+                            zoom: { enabled: false },
+                        },
+                        series: @json($visitorSeries),
+                        colors: ['#6366f1', '#f59e0b'],
+                        dataLabels: { enabled: false },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 3,
+                        },
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 0.7,
+                                opacityFrom: 0.45,
+                                opacityTo: 0.05,
+                                stops: [0, 90, 100],
+                            },
+                        },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.35)',
+                        },
+                        xaxis: {
+                            categories: @json($weeks),
+                            labels: {
+                                style: { colors: Array(@json(count($weeks))).fill('#94a3b8') },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: { colors: ['#94a3b8'] },
+                            },
+                        },
+                        legend: { show: true },
+                        tooltip: { shared: true },
+                    }).render();
+                }
+
+                const pieCharts = @json($pieCharts);
+                pieCharts.forEach((chart) => {
+                    const chartEl = document.getElementById(chart.id);
+                    if (!chartEl) return;
+
+                    new ApexCharts(chartEl, {
+                        chart: {
+                            type: 'donut',
+                            height: 220,
+                        },
+                        labels: chart.labels,
+                        series: chart.series,
+                        colors: chart.colors,
+                        legend: { show: false },
+                        dataLabels: { enabled: false },
+                        stroke: { width: 0 },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '60%',
+                                    labels: {
+                                        show: true,
+                                        name: { show: true },
+                                        value: {
+                                            formatter: (value) => `${parseInt(value).toLocaleString()}`,
+                                        },
+                                        total: {
+                                            show: true,
+                                            label: 'Total',
+                                            formatter: () => chart.series.reduce((a, b) => a + b, 0),
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: (value) => `${value.toLocaleString()}`,
+                            },
+                        },
+                    }).render();
+                });
+
+                const statusData = @json($statusChart);
+                const statusEl = document.getElementById('post-status-chart');
+                if (statusEl) {
+                    new ApexCharts(statusEl, {
+                        chart: {
+                            type: 'bar',
+                            height: 320,
+                            toolbar: { show: false },
+                        },
+                        series: [
+                            {
+                                name: '{{ __('Posts') }}',
+                                data: statusData.series,
+                            },
+                        ],
+                        colors: statusData.colors,
+                        plotOptions: {
+                            bar: {
+                                horizontal: true,
+                                borderRadius: 8,
+                                distributed: true,
+                            },
+                        },
+                        dataLabels: { enabled: false },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.25)',
+                        },
+                        xaxis: {
+                            categories: statusData.categories,
+                            labels: {
+                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                            },
+                        },
+                    }).render();
+                }
+            });
+        </script>
+    @endpush
 </x-layouts.app>
