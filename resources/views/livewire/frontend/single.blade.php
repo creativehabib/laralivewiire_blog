@@ -119,65 +119,7 @@
             <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
                 মন্তব্য করুন
             </h2>
-            @php($commentSystem = setting('comment_system', 'default'))
-            @php($facebookAppId = setting('comment_facebook_app_id'))
-            @php($fbSdkUrl = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0' . ($facebookAppId ? '&appId=' . urlencode($facebookAppId) : ''))
-
-            @if($commentSystem === 'both')
-                <div
-                    x-data="{ activeTab: 'default' }"
-                    class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800"
-                >
-                    <div class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60">
-                        <button
-                            type="button"
-                            class="flex-1 px-4 py-2 text-sm font-semibold focus:outline-none transition-colors"
-                            :class="activeTab === 'default' ? 'text-primary-dark dark:text-primary-light bg-white dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'"
-                            @click="activeTab = 'default'"
-                        >
-                            Default comments
-                        </button>
-                        <button
-                            type="button"
-                            class="flex-1 px-4 py-2 text-sm font-semibold focus:outline-none transition-colors border-l border-slate-200 dark:border-slate-700"
-                            :class="activeTab === 'facebook' ? 'text-primary-dark dark:text-primary-light bg-white dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'"
-                            @click="activeTab = 'facebook'"
-                        >
-                            Facebook comments
-                        </button>
-                    </div>
-
-                    <div class="p-4" x-show="activeTab === 'default'">
-                        <livewire:frontend.comments :commentable="$post" />
-                    </div>
-
-                    <div class="p-4" x-show="activeTab === 'facebook'" x-cloak>
-                        @once
-                            <div id="fb-root"></div>
-                            @push('scripts')
-                                <script async defer crossorigin="anonymous" src="{{ $fbSdkUrl }}" nonce="fb-comments"></script>
-                            @endpush
-                        @endonce
-
-                        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                            <div class="fb-comments" data-href="{{ request()->url() }}" data-width="100%" data-numposts="5"></div>
-                        </div>
-                    </div>
-                </div>
-            @elseif($commentSystem === 'facebook')
-                @once
-                    <div id="fb-root"></div>
-                    @push('scripts')
-                        <script async defer crossorigin="anonymous" src="{{ $fbSdkUrl }}" nonce="fb-comments"></script>
-                    @endpush
-                @endonce
-
-                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                    <div class="fb-comments" data-href="{{ request()->url() }}" data-width="100%" data-numposts="5"></div>
-                </div>
-            @else
-                <livewire:frontend.comments :commentable="$post" />
-            @endif
+            <x-comments.section :commentable="$post" :canonical-url="request()->url()" />
         </section>
         @endunless
     </article>

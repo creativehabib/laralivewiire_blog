@@ -2,10 +2,12 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Admin\Comment;
 use App\Models\Concerns\HasMetaBoxes;
 use App\Models\Concerns\HasSeoMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Page extends Model
 {
@@ -19,5 +21,10 @@ class Page extends Model
     public function scopePublished($q)
     {
         return $q->where('status', 'published');
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }
