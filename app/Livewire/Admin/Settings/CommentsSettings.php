@@ -84,17 +84,6 @@ class CommentsSettings extends Component
         $this->facebook_app_secret     = setting('comment_facebook_app_secret');
     }
 
-    public function updatedCommentSystem(string $value): void
-    {
-        if (in_array($value, ['facebook', 'both'], true)) {
-            $this->facebook_enabled = true;
-        }
-
-        if ($value === 'default') {
-            $this->facebook_enabled = false;
-        }
-    }
-
     public function updatedAutoClose(bool $value): void
     {
         if (! $value) {
