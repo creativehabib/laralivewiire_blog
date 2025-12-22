@@ -23,7 +23,6 @@
         <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
             মন্তব্য করুন
         </h2>
-
-       ে
+        <x-comments.section :commentable="$page" :canonical-url="request()->url()" />
     </section>
 </div>
