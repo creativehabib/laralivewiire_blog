@@ -237,10 +237,7 @@ class Dashboard extends Component
 
     private function fetchPopularTags(): Collection
     {
-        return Tag::select('tags.*')
-            ->leftJoin('post_tags', 'tags.id', '=', 'post_tags.tag_id')
-            ->selectRaw('count(post_tags.post_id) as posts_count')
-            ->groupBy('tags.id')
+        return Tag::withCount(['posts' => fn ($query) => $query->published()])
             ->orderByDesc('posts_count')
             ->take(10)
             ->get();
