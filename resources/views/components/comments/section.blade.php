@@ -158,8 +158,62 @@
         @endpush
     @endonce
 
-    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex justify-center">
-        <div class="fb-comments" data-href="{{ $canonicalUrl }}" data-width="100%" data-numposts="5"></div>
+    <div
+        x-data="{
+            fbLoaded: typeof window !== 'undefined' && !!window.FB,
+            sdkUrl: @js($facebookSdkUrl),
+
+            ensureFacebookSdk() {
+                return new Promise((resolve) => {
+                    if (! this.sdkUrl) {
+                        resolve();
+                        return;
+                    }
+
+                    if (this.fbLoaded || (typeof window !== 'undefined' && window.FB)) {
+                        this.fbLoaded = true;
+                        resolve();
+                        return;
+                    }
+
+                    if (this.sdkUrl && ! document.getElementById('facebook-jssdk')) {
+                        const fbScript = document.createElement('script');
+                        fbScript.id = 'facebook-jssdk';
+                        fbScript.async = true;
+                        fbScript.defer = true;
+                        fbScript.src = this.sdkUrl;
+                        fbScript.crossOrigin = 'anonymous';
+                        document.body.appendChild(fbScript);
+                    }
+
+                    const waitForFb = () => {
+                        if (typeof window !== 'undefined' && window.FB) {
+                            this.fbLoaded = true;
+                            resolve();
+                        } else {
+                            setTimeout(waitForFb, 150);
+                        }
+                    };
+
+                    waitForFb();
+                });
+            },
+
+            renderFacebook() {
+                this.ensureFacebookSdk().then(() => {
+                    if (window.FB && this.$refs.fbContainer) {
+                        window.FB.XFBML.parse(this.$refs.fbContainer);
+                    }
+                });
+            }
+        }"
+        x-init="renderFacebook()"
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex flex-col gap-2"
+    >
+        <div x-ref="fbContainer" class="flex justify-center">
+            <div class="fb-comments" data-href="{{ $canonicalUrl }}" data-width="100%" data-numposts="5"></div>
+        </div>
+        <div x-show="!fbLoaded" class="text-center text-xs text-red-400">Loading Facebook SDK...</div>
     </div>
 
 @else
