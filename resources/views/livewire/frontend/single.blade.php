@@ -120,6 +120,8 @@
                 মন্তব্য করুন
             </h2>
             @php($commentSystem = setting('comment_system', 'default'))
+            @php($facebookAppId = setting('comment_facebook_app_id'))
+            @php($fbSdkUrl = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0' . ($facebookAppId ? '&appId=' . urlencode($facebookAppId) : ''))
 
             @if($commentSystem === 'both')
                 <div
@@ -153,7 +155,7 @@
                         @once
                             <div id="fb-root"></div>
                             @push('scripts')
-                                <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0" nonce="fb-comments"></script>
+                                <script async defer crossorigin="anonymous" src="{{ $fbSdkUrl }}" nonce="fb-comments"></script>
                             @endpush
                         @endonce
 
@@ -166,7 +168,7 @@
                 @once
                     <div id="fb-root"></div>
                     @push('scripts')
-                        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0" nonce="fb-comments"></script>
+                        <script async defer crossorigin="anonymous" src="{{ $fbSdkUrl }}" nonce="fb-comments"></script>
                     @endpush
                 @endonce
 
