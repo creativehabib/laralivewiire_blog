@@ -24,6 +24,6 @@
             মন্তব্য করুন
         </h2>
 
-        <x-comments.section :commentable="$page" :canonical-url="request()->url()" />
+       ে
     </section>
 </div>
