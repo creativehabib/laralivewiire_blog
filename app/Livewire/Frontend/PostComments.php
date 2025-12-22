@@ -170,6 +170,8 @@ class PostComments extends Component
             'moderation_links'       => (int) setting('comment_moderation_links', 2),
             'moderation_keys'        => (string) setting('comment_moderation_keys', ''),
             'disallowed_keys'        => (string) setting('comment_disallowed_keys', ''),
+
+            'comment_system'         => (string) setting('comment_system', 'default'),
         ];
     }
 

@@ -119,7 +119,31 @@
             <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
                 মন্তব্য করুন
             </h2>
-            <livewire:frontend.post-comments :post="$post" />
+            @php($commentSystem = setting('comment_system', 'default'))
+
+            @if(in_array($commentSystem, ['default', 'both']))
+                @if($commentSystem === 'both')
+                    <h3 class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wide">Default comments</h3>
+                @endif
+                <livewire:frontend.post-comments :post="$post" />
+            @endif
+
+            @if(in_array($commentSystem, ['facebook', 'both']))
+                @once
+                    <div id="fb-root"></div>
+                    @push('scripts')
+                        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0" nonce="fb-comments"></script>
+                    @endpush
+                @endonce
+
+                @if($commentSystem === 'both')
+                    <h3 class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-6 mb-2 uppercase tracking-wide">Facebook comments</h3>
+                @endif
+
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                    <div class="fb-comments" data-href="{{ request()->url() }}" data-width="100%" data-numposts="5"></div>
+                </div>
+            @endif
         </section>
         @endunless
     </article>

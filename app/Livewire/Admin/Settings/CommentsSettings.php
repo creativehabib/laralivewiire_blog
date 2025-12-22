@@ -39,6 +39,8 @@ class CommentsSettings extends Component
     public string $avatar_rating = 'g';
     public string $avatar_default = 'mystery';
 
+    public string $comment_system = 'default';
+
     public function mount(): void
     {
         $this->notify_linked_blogs     = (bool) setting('comment_notify_linked_blogs', false);
@@ -72,6 +74,8 @@ class CommentsSettings extends Component
         $this->show_avatars            = (bool) setting('comment_show_avatars', true);
         $this->avatar_rating           = (string) setting('comment_avatar_rating', 'g');
         $this->avatar_default          = (string) setting('comment_avatar_default', 'mystery');
+
+        $this->comment_system          = (string) setting('comment_system', 'default');
     }
 
     public function updatedAutoClose(bool $value): void
@@ -115,6 +119,8 @@ class CommentsSettings extends Component
             'show_avatars'            => ['boolean'],
             'avatar_rating'           => ['in:g,pg,r,x'],
             'avatar_default'          => ['in:mystery,blank,gravatar,identicon,wavatar,monsterid,retro'],
+
+            'comment_system'          => ['in:default,facebook,both'],
         ];
     }
 
@@ -154,6 +160,8 @@ class CommentsSettings extends Component
             'comment_show_avatars'            => $this->show_avatars,
             'comment_avatar_rating'           => $this->avatar_rating,
             'comment_avatar_default'          => $this->avatar_default,
+
+            'comment_system'                  => $this->comment_system,
         ];
 
         foreach ($settings as $key => $value) {
