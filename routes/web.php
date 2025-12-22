@@ -22,6 +22,7 @@ use App\Livewire\Admin\Settings\CommentsSettings;
 use App\Livewire\Admin\Settings\CustomCssSettings;
 use App\Livewire\Admin\Settings\CustomHtmlSettings;
 use App\Livewire\Admin\Settings\CustomJsSettings;
+use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\Settings\HtaccessSettings;
 use App\Livewire\Admin\Settings\RobotsTxt;
 use App\Livewire\Admin\Settings\SettingsGenerator;
@@ -45,7 +46,7 @@ use Livewire\Volt\Volt;
 
 Route::get('/', Homepage::class)->name('home');
 
-Route::view('dashboard', 'dashboard')->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', Dashboard::class)->middleware(['auth', 'verified'])->name('dashboard');
 Route::view('media', 'media')->middleware(['auth', 'verified'])->name('media');
 
 /**
