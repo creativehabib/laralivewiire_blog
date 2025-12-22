@@ -13,22 +13,53 @@
         x-data="{
             activeTab: 'default',
             fbLoaded: typeof window !== 'undefined' && !!window.FB,
+            sdkUrl: @js($facebookSdkUrl),
 
             // ট্যাব পরিবর্তনের ফাংশন
+            ensureFacebookSdk() {
+                return new Promise((resolve) => {
+                    if (! this.sdkUrl) {
+                        resolve();
+                        return;
+                    }
+
+                    if (this.fbLoaded || (typeof window !== 'undefined' && window.FB)) {
+                        this.fbLoaded = true;
+                        resolve();
+                        return;
+                    }
+
+                    if (this.sdkUrl && ! document.getElementById('facebook-jssdk')) {
+                        const fbScript = document.createElement('script');
+                        fbScript.id = 'facebook-jssdk';
+                        fbScript.async = true;
+                        fbScript.defer = true;
+                        fbScript.src = this.sdkUrl;
+                        fbScript.crossOrigin = 'anonymous';
+                        document.body.appendChild(fbScript);
+                    }
+
+                    const waitForFb = () => {
+                        if (typeof window !== 'undefined' && window.FB) {
+                            this.fbLoaded = true;
+                            resolve();
+                        } else {
+                            setTimeout(waitForFb, 150);
+                        }
+                    };
+
+                    waitForFb();
+                });
+            },
+
             loadFacebook() {
                 this.activeTab = 'facebook';
 
-                // SDK তৈরি হওয়ার পর পার্স করার চেষ্টা করতে থাকবে
-                const parseWhenReady = () => {
+                this.ensureFacebookSdk().then(() => {
                     if (window.FB) {
                         window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
-                        this.fbLoaded = true;
-                    } else {
-                        setTimeout(parseWhenReady, 150);
                     }
-                };
-
-                parseWhenReady();
+                });
             }
         }"
         class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800"
@@ -83,7 +114,7 @@
                             }
                         </script>
                         {{-- nonce বাদ দেওয়া হয়েছে কারণ এটি 403 এরর করছিল --}}
-                        <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
+                        <script id="facebook-jssdk" async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
                     @endpush
                 @endonce
             @endif
@@ -119,7 +150,7 @@
                     }
                 }
             </script>
-            <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
+            <script id="facebook-jssdk" async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
         @endpush
     @endonce
 
