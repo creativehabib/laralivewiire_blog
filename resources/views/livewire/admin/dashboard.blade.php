@@ -2,8 +2,7 @@
     use Illuminate\Support\Str;
 @endphp
 
-<x-layouts.app :title="__('Dashboard')">
-    <div class="space-y-6 py-4">
+<div class="space-y-6 py-4">
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             @foreach ($stats as $stat)
                 <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -208,138 +207,138 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const visitorChartEl = document.querySelector('#visitorsChart');
-                if (visitorChartEl) {
-                    new ApexCharts(visitorChartEl, {
-                        chart: {
-                            type: 'area',
-                            height: 320,
-                            toolbar: { show: false },
-                            zoom: { enabled: false },
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const visitorChartEl = document.querySelector('#visitorsChart');
+            if (visitorChartEl) {
+                new ApexCharts(visitorChartEl, {
+                    chart: {
+                        type: 'area',
+                        height: 320,
+                        toolbar: { show: false },
+                        zoom: { enabled: false },
+                    },
+                    series: @json($visitorSeries),
+                    colors: ['#6366f1', '#f59e0b'],
+                    dataLabels: { enabled: false },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 3,
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 0.7,
+                            opacityFrom: 0.45,
+                            opacityTo: 0.05,
+                            stops: [0, 90, 100],
                         },
-                        series: @json($visitorSeries),
-                        colors: ['#6366f1', '#f59e0b'],
-                        dataLabels: { enabled: false },
-                        stroke: {
-                            curve: 'smooth',
-                            width: 3,
+                    },
+                    grid: {
+                        borderColor: 'rgba(148, 163, 184, 0.35)',
+                    },
+                    xaxis: {
+                        categories: @json($weeks),
+                        labels: {
+                            style: { colors: Array(@json(count($weeks))).fill('#94a3b8') },
                         },
-                        fill: {
-                            type: 'gradient',
-                            gradient: {
-                                shadeIntensity: 0.7,
-                                opacityFrom: 0.45,
-                                opacityTo: 0.05,
-                                stops: [0, 90, 100],
-                            },
+                    },
+                    yaxis: {
+                        labels: {
+                            style: { colors: ['#94a3b8'] },
                         },
-                        grid: {
-                            borderColor: 'rgba(148, 163, 184, 0.35)',
-                        },
-                        xaxis: {
-                            categories: @json($weeks),
-                            labels: {
-                                style: { colors: Array(@json(count($weeks))).fill('#94a3b8') },
-                            },
-                        },
-                        yaxis: {
-                            labels: {
-                                style: { colors: ['#94a3b8'] },
-                            },
-                        },
-                        legend: { show: true },
-                        tooltip: { shared: true },
-                    }).render();
-                }
+                    },
+                    legend: { show: true },
+                    tooltip: { shared: true },
+                }).render();
+            }
 
-                const pieCharts = @json($pieCharts);
-                pieCharts.forEach((chart) => {
-                    const chartEl = document.getElementById(chart.id);
-                    if (!chartEl) return;
+            const pieCharts = @json($pieCharts);
+            pieCharts.forEach((chart) => {
+                const chartEl = document.getElementById(chart.id);
+                if (!chartEl) return;
 
-                    new ApexCharts(chartEl, {
-                        chart: {
-                            type: 'donut',
-                            height: 220,
-                        },
-                        labels: chart.labels,
-                        series: chart.series,
-                        colors: chart.colors,
-                        legend: { show: false },
-                        dataLabels: { enabled: false },
-                        stroke: { width: 0 },
-                        plotOptions: {
-                            pie: {
-                                donut: {
-                                    size: '60%',
-                                    labels: {
+                new ApexCharts(chartEl, {
+                    chart: {
+                        type: 'donut',
+                        height: 220,
+                    },
+                    labels: chart.labels,
+                    series: chart.series,
+                    colors: chart.colors,
+                    legend: { show: false },
+                    dataLabels: { enabled: false },
+                    stroke: { width: 0 },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '60%',
+                                labels: {
+                                    show: true,
+                                    name: { show: true },
+                                    value: {
+                                        formatter: (value) => `${parseInt(value).toLocaleString()}`,
+                                    },
+                                    total: {
                                         show: true,
-                                        name: { show: true },
-                                        value: {
-                                            formatter: (value) => `${parseInt(value).toLocaleString()}`,
-                                        },
-                                        total: {
-                                            show: true,
-                                            label: 'Total',
-                                            formatter: () => chart.series.reduce((a, b) => a + b, 0),
-                                        },
+                                        label: 'Total',
+                                        formatter: () => chart.series.reduce((a, b) => a + b, 0),
                                     },
                                 },
                             },
                         },
-                        tooltip: {
-                            y: {
-                                formatter: (value) => `${value.toLocaleString()}`,
-                            },
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: (value) => `${value.toLocaleString()}`,
                         },
-                    }).render();
-                });
-
-                const statusData = @json($statusChart);
-                const statusEl = document.getElementById('post-status-chart');
-                if (statusEl) {
-                    new ApexCharts(statusEl, {
-                        chart: {
-                            type: 'bar',
-                            height: 320,
-                            toolbar: { show: false },
-                        },
-                        series: [
-                            {
-                                name: '{{ __('Posts') }}',
-                                data: statusData.series,
-                            },
-                        ],
-                        colors: statusData.colors,
-                        plotOptions: {
-                            bar: {
-                                horizontal: true,
-                                borderRadius: 8,
-                                distributed: true,
-                            },
-                        },
-                        dataLabels: { enabled: false },
-                        grid: {
-                            borderColor: 'rgba(148, 163, 184, 0.25)',
-                        },
-                        xaxis: {
-                            categories: statusData.categories,
-                            labels: {
-                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
-                            },
-                        },
-                        yaxis: {
-                            labels: {
-                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
-                            },
-                        },
-                    }).render();
-                }
+                    },
+                }).render();
             });
-        </script>
-    @endpush
-</x-layouts.app>
+
+            const statusData = @json($statusChart);
+            const statusEl = document.getElementById('post-status-chart');
+            if (statusEl) {
+                new ApexCharts(statusEl, {
+                    chart: {
+                        type: 'bar',
+                        height: 320,
+                        toolbar: { show: false },
+                    },
+                    series: [
+                        {
+                            name: '{{ __('Posts') }}',
+                            data: statusData.series,
+                        },
+                    ],
+                    colors: statusData.colors,
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            borderRadius: 8,
+                            distributed: true,
+                        },
+                    },
+                    dataLabels: { enabled: false },
+                    grid: {
+                        borderColor: 'rgba(148, 163, 184, 0.25)',
+                    },
+                    xaxis: {
+                        categories: statusData.categories,
+                        labels: {
+                            style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                        },
+                    },
+                    yaxis: {
+                        labels: {
+                            style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                        },
+                    },
+                }).render();
+            }
+        });
+    </script>
+@endpush
+</div>
