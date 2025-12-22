@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    {{-- 🔥 FIX 1: এই মেটা ট্যাগটি 403 Forbidden এরর ফিক্স করে --}}
     <meta name="referrer" content="origin-when-cross-origin">
 
     @php
-        $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'বাংলাদেশী নিউজ পোর্টাল']);
+        $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'ржмрж╛ржВрж▓рж╛ржжрзЗрж╢рзА ржирж┐ржЙржЬ ржкрзЛрж░рзНржЯрж╛рж▓']);
     @endphp
     <x-seo.meta :seo="$seoData" />
 
@@ -51,30 +49,26 @@
 
 <body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out">
 
-{{-- 🔥 FIX 2: fb-root বডি ট্যাগের শুরুতেই থাকতে হবে --}}
-<div id="fb-root"></div>
+    @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
+    @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
 
-@if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
-@if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
+    <x-frontends.top-bar/>
+    <x-frontends.navbar />
 
-<x-frontends.top-bar/>
-<x-frontends.navbar />
+    <main class="min-h-screen">
+        {{ $slot }}
+    </main>
 
-<main class="min-h-screen">
-    {{ $slot }}
-</main>
+    @if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
+    <x-frontends.footer />
 
-@if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
-<x-frontends.footer />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+    <script src="{{ asset('assets/js/script.js') }}" defer></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
-<script src="{{ asset('assets/js/script.js') }}" defer></script>
+    @livewireScripts
+    @stack('scripts')
 
-@livewireScripts
-{{-- স্ক্রিপ্ট লোড হওয়ার জায়গা --}}
-@stack('scripts')
-
-@if($footerJs = setting('custom_footer_js')) {!! $footerJs !!} @endif
+    @if($footerJs = setting('custom_footer_js')) {!! $footerJs !!} @endif
 </body>
 </html>
