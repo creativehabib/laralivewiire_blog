@@ -24,12 +24,12 @@
             <div class="xl:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Content Activity') }}</p>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Posts and comments for the past 7 weeks') }}</p>
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Current vs previous year performance') }}</p>
                     </div>
                     <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ __('Posts') }}</span>
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ __('Comments') }}</span>
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>2024</span>
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>2023</span>
                     </div>
                 </div>
                 <div class="mt-6">

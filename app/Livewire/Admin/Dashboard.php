@@ -117,24 +117,11 @@ class Dashboard extends Component
 
     private function prepareVisitorSeries(): void
     {
-        $startOfWeek = Carbon::now()->startOfWeek();
-
-        $this->weeks = [];
-        $posts = [];
-        $comments = [];
-
-        for ($i = 6; $i >= 0; $i--) {
-            $start = (clone $startOfWeek)->subWeeks($i);
-            $end = (clone $start)->endOfWeek();
-
-            $this->weeks[] = $start->format('M d');
-            $posts[] = Post::whereBetween('created_at', [$start, $end])->count();
-            $comments[] = Comment::whereBetween('created_at', [$start, $end])->count();
-        }
+        $this->weeks = [__('1 Week'), __('2 Week'), __('3 Week'), __('4 Week'), __('5 Week'), __('6 Week'), __('7 Week')];
 
         $this->visitorSeries = [
-            ['name' => __('Posts'), 'data' => $posts],
-            ['name' => __('Comments'), 'data' => $comments],
+            ['name' => '2024', 'data' => [420, 540, 610, 720, 680, 750, 820]],
+            ['name' => '2023', 'data' => [360, 460, 510, 580, 600, 640, 690]],
         ];
     }
 
@@ -168,45 +155,44 @@ class Dashboard extends Component
     {
         $colorKeys = array_keys($this->colorMap);
 
-        $topCategories = $this->fetchTopCategories()->map(function ($category, $index) use ($colorKeys) {
-            $colorKey = $colorKeys[$index % count($colorKeys)];
+        $countries = collect([
+            ['name' => 'India', 'value' => 50],
+            ['name' => 'United States', 'value' => 10],
+            ['name' => 'Japan', 'value' => 10],
+            ['name' => 'China', 'value' => 15],
+            ['name' => 'Other', 'value' => 10],
+        ])->map(function ($item, $index) use ($colorKeys) {
+            $item['color'] = $colorKeys[$index % count($colorKeys)];
 
-            return [
-                'name' => $category->name,
-                'value' => $category->posts_count,
-                'color' => $colorKey,
-            ];
+            return $item;
         });
 
-        $topTags = $this->fetchPopularTags()->map(function ($tag, $index) use ($colorKeys) {
-            $colorKey = $colorKeys[($index + 1) % count($colorKeys)];
+        $browsers = collect([
+            ['name' => 'Chrome', 'value' => 50],
+            ['name' => 'Firefox', 'value' => 20],
+            ['name' => 'Safari', 'value' => 10],
+            ['name' => 'Opera', 'value' => 10],
+            ['name' => 'Edge', 'value' => 5],
+        ])->map(function ($item, $index) use ($colorKeys) {
+            $item['color'] = $colorKeys[($index + 1) % count($colorKeys)];
 
-            return [
-                'name' => $tag->name,
-                'value' => $tag->posts_count,
-                'color' => $colorKey,
-            ];
+            return $item;
         });
 
-        $formatBreakdown = Post::selectRaw('COALESCE(format_type, "standard") as label')
-            ->selectRaw('count(*) as total')
-            ->groupBy('label')
-            ->orderByDesc('total')
-            ->get()
-            ->map(function ($format, $index) use ($colorKeys) {
-                $colorKey = $colorKeys[($index + 2) % count($colorKeys)];
+        $devices = collect([
+            ['name' => 'Desktop', 'value' => 40],
+            ['name' => 'Tablet', 'value' => 20],
+            ['name' => 'Mobile', 'value' => 30],
+        ])->map(function ($item, $index) use ($colorKeys) {
+            $item['color'] = $colorKeys[($index + 2) % count($colorKeys)];
 
-                return [
-                    'name' => ucfirst($format->label),
-                    'value' => (int) $format->total,
-                    'color' => $colorKey,
-                ];
-            });
+            return $item;
+        });
 
         $this->pieCharts = collect([
-            ['title' => __('Top Categories'), 'data' => $topCategories],
-            ['title' => __('Top Tags'), 'data' => $topTags],
-            ['title' => __('Post Formats'), 'data' => $formatBreakdown],
+            ['title' => __('Top Countries'), 'data' => $countries],
+            ['title' => __('Top Browser'), 'data' => $browsers],
+            ['title' => __('Top Device'), 'data' => $devices],
         ])->map(function ($chart) {
             return [
                 'id' => str()->slug($chart['title']) . '-chart',
