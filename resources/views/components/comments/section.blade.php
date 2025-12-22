@@ -14,6 +14,41 @@
             activeTab: 'default',
             fbLoaded: typeof window !== 'undefined' && !!window.FB,
             sdkUrl: @js($facebookSdkUrl),
+            colorScheme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+
+            getColorScheme() {
+                return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            },
+
+            syncColorScheme() {
+                this.colorScheme = this.getColorScheme();
+
+                const fbElement = this.$refs.fbComments;
+
+                if (fbElement) {
+                    fbElement.setAttribute('data-colorscheme', this.colorScheme);
+
+                    if (this.activeTab === 'facebook' && this.fbLoaded && window.FB) {
+                        window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
+                    }
+                }
+            },
+
+            observeThemeChanges() {
+                const observer = new MutationObserver(() => this.syncColorScheme());
+                observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+                if (mediaQuery?.addEventListener) {
+                    mediaQuery.addEventListener('change', () => this.syncColorScheme());
+                }
+            },
+
+            init() {
+                this.observeThemeChanges();
+                this.syncColorScheme();
+            },
 
             // ট্যাব পরিবর্তনের ফাংশন
             ensureFacebookSdk() {
@@ -54,6 +89,7 @@
 
             loadFacebook() {
                 this.activeTab = 'facebook';
+                this.syncColorScheme();
 
                 this.ensureFacebookSdk().then(() => {
                     if (window.FB) {
@@ -62,6 +98,7 @@
                 });
             }
         }"
+        x-init="init()"
         class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800"
     >
         {{-- Tabs Header --}}
@@ -121,9 +158,11 @@
 
             <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white flex justify-center">
                 <div class="fb-comments"
+                     x-ref="fbComments"
                      data-href="{{ $canonicalUrl }}"
                      data-width="100%"
-                     data-numposts="5">
+                     data-numposts="5"
+                     :data-colorscheme="colorScheme">
                 </div>
             </div>
 
@@ -154,8 +193,62 @@
         @endpush
     @endonce
 
-    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex justify-center">
-        <div class="fb-comments" data-href="{{ $canonicalUrl }}" data-width="100%" data-numposts="5"></div>
+    <div
+        x-data="{
+            colorScheme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+            fbLoaded: typeof window !== 'undefined' && !!window.FB,
+
+            getColorScheme() {
+                return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            },
+
+            refreshFacebook() {
+                if (this.fbLoaded && window.FB && this.$refs.fbCommentsOnly) {
+                    window.FB.XFBML.parse(this.$refs.fbCommentsOnly.parentElement);
+                }
+            },
+
+            syncColorScheme() {
+                this.colorScheme = this.getColorScheme();
+                this.$refs.fbCommentsOnly?.setAttribute('data-colorscheme', this.colorScheme);
+                this.refreshFacebook();
+            },
+
+            observeThemeChanges() {
+                const observer = new MutationObserver(() => this.syncColorScheme());
+                observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+                if (mediaQuery?.addEventListener) {
+                    mediaQuery.addEventListener('change', () => this.syncColorScheme());
+                }
+            },
+
+            init() {
+                this.observeThemeChanges();
+                this.syncColorScheme();
+
+                const waitForFb = setInterval(() => {
+                    if (window.FB) {
+                        this.fbLoaded = true;
+                        clearInterval(waitForFb);
+                        this.refreshFacebook();
+                    }
+                }, 200);
+            }
+        }"
+        x-init="init()"
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex justify-center"
+    >
+        <div
+            class="fb-comments"
+            x-ref="fbCommentsOnly"
+            data-href="{{ $canonicalUrl }}"
+            data-width="100%"
+            data-numposts="5"
+            :data-colorscheme="colorScheme"
+        ></div>
     </div>
 
 @else
