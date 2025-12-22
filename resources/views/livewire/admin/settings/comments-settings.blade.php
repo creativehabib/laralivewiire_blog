@@ -296,7 +296,7 @@
                 type="button"
                 wire:click="$refresh"
                 wire:loading.attr="disabled"
-                class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-colors"
+                class="inline-flex items-center gap-2 px-4 py-2.5 cursor-pointer text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-colors"
             >
                 <i class="fas fa-undo"></i>
                 Reset
@@ -306,7 +306,7 @@
                 type="submit"
                 wire:loading.attr="disabled"
                 wire:target="save"
-                class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75 disabled:cursor-wait shadow-blue-500/30"
+                class="inline-flex items-center gap-2 px-5 py-2.5 cursor-pointer text-sm font-semibold text-white transition-all duration-200 bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75 disabled:cursor-wait shadow-blue-500/30"
             >
                 <i wire:loading wire:target="save" class="fas fa-spinner fa-spin"></i>
 
