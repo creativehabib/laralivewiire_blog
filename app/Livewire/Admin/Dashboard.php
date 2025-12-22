@@ -8,8 +8,10 @@ use App\Models\Admin\Tag;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\VisitorLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -117,11 +119,26 @@ class Dashboard extends Component
 
     private function prepareVisitorSeries(): void
     {
-        $this->weeks = [__('1 Week'), __('2 Week'), __('3 Week'), __('4 Week'), __('5 Week'), __('6 Week'), __('7 Week')];
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $currentYear = $startOfWeek->year;
+        $previousYear = (clone $startOfWeek)->subYear()->year;
+
+        $weeks = collect(range(6, 0))->map(function ($index) use ($startOfWeek) {
+            $weekStart = (clone $startOfWeek)->subWeeks($index);
+            $weekEnd = (clone $weekStart)->endOfWeek();
+
+            return [
+                'label' => $weekStart->format('M d'),
+                'current' => VisitorLog::whereBetween('visited_at', [$weekStart, $weekEnd])->count(),
+                'previous' => VisitorLog::whereBetween('visited_at', [$weekStart->copy()->subYear(), $weekEnd->copy()->subYear()])->count(),
+            ];
+        });
+
+        $this->weeks = $weeks->pluck('label')->toArray();
 
         $this->visitorSeries = [
-            ['name' => '2024', 'data' => [420, 540, 610, 720, 680, 750, 820]],
-            ['name' => '2023', 'data' => [360, 460, 510, 580, 600, 640, 690]],
+            ['name' => (string) $currentYear, 'data' => $weeks->pluck('current')->toArray()],
+            ['name' => (string) $previousYear, 'data' => $weeks->pluck('previous')->toArray()],
         ];
     }
 
@@ -155,39 +172,44 @@ class Dashboard extends Component
     {
         $colorKeys = array_keys($this->colorMap);
 
-        $countries = collect([
-            ['name' => 'India', 'value' => 50],
-            ['name' => 'United States', 'value' => 10],
-            ['name' => 'Japan', 'value' => 10],
-            ['name' => 'China', 'value' => 15],
-            ['name' => 'Other', 'value' => 10],
-        ])->map(function ($item, $index) use ($colorKeys) {
-            $item['color'] = $colorKeys[$index % count($colorKeys)];
+        $countries = VisitorLog::select('country', DB::raw('count(*) as total'))
+            ->groupBy('country')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get()
+            ->map(function ($item, $index) use ($colorKeys) {
+                $item['color'] = $colorKeys[$index % count($colorKeys)];
+                $item['name'] = $item->country ?: __('Unknown');
+                $item['value'] = (int) $item->total;
 
-            return $item;
-        });
+                return $item;
+            });
 
-        $browsers = collect([
-            ['name' => 'Chrome', 'value' => 50],
-            ['name' => 'Firefox', 'value' => 20],
-            ['name' => 'Safari', 'value' => 10],
-            ['name' => 'Opera', 'value' => 10],
-            ['name' => 'Edge', 'value' => 5],
-        ])->map(function ($item, $index) use ($colorKeys) {
-            $item['color'] = $colorKeys[($index + 1) % count($colorKeys)];
+        $browsers = VisitorLog::select('browser', DB::raw('count(*) as total'))
+            ->groupBy('browser')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get()
+            ->map(function ($item, $index) use ($colorKeys) {
+                $item['color'] = $colorKeys[($index + 1) % count($colorKeys)];
+                $item['name'] = $item->browser ?: __('Unknown');
+                $item['value'] = (int) $item->total;
 
-            return $item;
-        });
+                return $item;
+            });
 
-        $devices = collect([
-            ['name' => 'Desktop', 'value' => 40],
-            ['name' => 'Tablet', 'value' => 20],
-            ['name' => 'Mobile', 'value' => 30],
-        ])->map(function ($item, $index) use ($colorKeys) {
-            $item['color'] = $colorKeys[($index + 2) % count($colorKeys)];
+        $devices = VisitorLog::select('device', DB::raw('count(*) as total'))
+            ->groupBy('device')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get()
+            ->map(function ($item, $index) use ($colorKeys) {
+                $item['color'] = $colorKeys[($index + 2) % count($colorKeys)];
+                $item['name'] = $item->device ?: __('Unknown');
+                $item['value'] = (int) $item->total;
 
-            return $item;
-        });
+                return $item;
+            });
 
         $this->pieCharts = collect([
             ['title' => __('Top Countries'), 'data' => $countries],
