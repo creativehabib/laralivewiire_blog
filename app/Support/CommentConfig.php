@@ -45,11 +45,26 @@ class CommentConfig
         $locale = $locale ?: config('app.locale', 'en_US');
         $locale = str_replace('-', '_', $locale);
 
+        $localeOverrides = [
+            'bn' => 'bn_IN',
+            'bn_BD' => 'bn_IN',
+        ];
+
+        $locale = $localeOverrides[$locale] ?? $locale;
+
         if (! str_contains($locale, '_')) {
             $locale = $locale === 'en'
                 ? 'en_US'
                 : $locale . '_' . strtoupper($locale);
         }
+
+        [$language, $region] = array_pad(explode('_', $locale, 2), 2, '');
+        $language = strtolower($language);
+        $region = strtoupper($region);
+
+        $locale = ($language && $region)
+            ? $language . '_' . $region
+            : 'en_US';
 
         return "https://connect.facebook.net/{$locale}/sdk.js#xfbml=1&version=v18.0&appId=" . urlencode($appId);
     }
