@@ -12,93 +12,19 @@
     <div
         x-data="{
             activeTab: 'default',
-            fbLoaded: typeof window !== 'undefined' && !!window.FB,
-            sdkUrl: @js($facebookSdkUrl),
-            colorScheme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-
-            getColorScheme() {
-                return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            },
-
-            syncColorScheme() {
-                this.colorScheme = this.getColorScheme();
-
-                const fbElement = this.$refs.fbComments;
-
-                if (fbElement) {
-                    fbElement.setAttribute('data-colorscheme', this.colorScheme);
-
-                    if (this.activeTab === 'facebook' && this.fbLoaded && window.FB) {
-                        window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
-                    }
-                }
-            },
-
-            observeThemeChanges() {
-                const observer = new MutationObserver(() => this.syncColorScheme());
-                observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-                if (mediaQuery?.addEventListener) {
-                    mediaQuery.addEventListener('change', () => this.syncColorScheme());
-                }
-            },
-
-            init() {
-                this.observeThemeChanges();
-                this.syncColorScheme();
-            },
 
             // ট্যাব পরিবর্তনের ফাংশন
-            ensureFacebookSdk() {
-                return new Promise((resolve) => {
-                    if (! this.sdkUrl) {
-                        resolve();
-                        return;
-                    }
-
-                    if (this.fbLoaded || (typeof window !== 'undefined' && window.FB)) {
-                        this.fbLoaded = true;
-                        resolve();
-                        return;
-                    }
-
-                    if (this.sdkUrl && ! document.getElementById('facebook-jssdk')) {
-                        const fbScript = document.createElement('script');
-                        fbScript.id = 'facebook-jssdk';
-                        fbScript.async = true;
-                        fbScript.defer = true;
-                        fbScript.src = this.sdkUrl;
-                        fbScript.crossOrigin = 'anonymous';
-                        document.body.appendChild(fbScript);
-                    }
-
-                    const waitForFb = () => {
-                        if (typeof window !== 'undefined' && window.FB) {
-                            this.fbLoaded = true;
-                            resolve();
-                        } else {
-                            setTimeout(waitForFb, 150);
-                        }
-                    };
-
-                    waitForFb();
-                });
-            },
-
             loadFacebook() {
                 this.activeTab = 'facebook';
-                this.syncColorScheme();
 
-                this.ensureFacebookSdk().then(() => {
+                // ১০০ মিলি-সেকেন্ড অপেক্ষা করে ফেসবুককে রেন্ডার করতে বলা
+                setTimeout(() => {
                     if (window.FB) {
                         window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
                     }
-                });
+                }, 100);
             }
         }"
-        x-init="init()"
         class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800"
     >
         {{-- Tabs Header --}}
@@ -139,35 +65,22 @@
                 @once
                     <div id="fb-root"></div>
                     @push('scripts')
-                        <script>
-                            window.fbAsyncInit = function() {
-                                if (window.FB) {
-                                    window.FB.init({
-                                        appId: '{{ data_get($config, 'facebook.app_id') }}',
-                                        xfbml: true,
-                                        version: 'v18.0',
-                                    });
-                                }
-                            }
-                        </script>
                         {{-- nonce বাদ দেওয়া হয়েছে কারণ এটি 403 এরর করছিল --}}
-                        <script id="facebook-jssdk" async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
+                        <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
                     @endpush
                 @endonce
             @endif
 
             <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white flex justify-center">
                 <div class="fb-comments"
-                     x-ref="fbComments"
                      data-href="{{ $canonicalUrl }}"
                      data-width="100%"
-                     data-numposts="5"
-                     :data-colorscheme="colorScheme">
+                     data-numposts="5">
                 </div>
             </div>
 
             {{-- লোডিং মেসেজ --}}
-            <div x-show="activeTab === 'facebook' && !fbLoaded" class="text-center text-xs text-red-400 mt-2">
+            <div x-show="activeTab === 'facebook' && !window.FB" class="text-center text-xs text-red-400 mt-2">
                 Loading Facebook SDK...
             </div>
         </div>
@@ -178,77 +91,12 @@
     @once
         <div id="fb-root"></div>
         @push('scripts')
-            <script>
-                window.fbAsyncInit = function() {
-                    if (window.FB) {
-                        window.FB.init({
-                            appId: '{{ data_get($config, 'facebook.app_id') }}',
-                            xfbml: true,
-                            version: 'v18.0',
-                        });
-                    }
-                }
-            </script>
-            <script id="facebook-jssdk" async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
+            <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
         @endpush
     @endonce
 
-    <div
-        x-data="{
-            colorScheme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-            fbLoaded: typeof window !== 'undefined' && !!window.FB,
-
-            getColorScheme() {
-                return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            },
-
-            refreshFacebook() {
-                if (this.fbLoaded && window.FB && this.$refs.fbCommentsOnly) {
-                    window.FB.XFBML.parse(this.$refs.fbCommentsOnly.parentElement);
-                }
-            },
-
-            syncColorScheme() {
-                this.colorScheme = this.getColorScheme();
-                this.$refs.fbCommentsOnly?.setAttribute('data-colorscheme', this.colorScheme);
-                this.refreshFacebook();
-            },
-
-            observeThemeChanges() {
-                const observer = new MutationObserver(() => this.syncColorScheme());
-                observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-                if (mediaQuery?.addEventListener) {
-                    mediaQuery.addEventListener('change', () => this.syncColorScheme());
-                }
-            },
-
-            init() {
-                this.observeThemeChanges();
-                this.syncColorScheme();
-
-                const waitForFb = setInterval(() => {
-                    if (window.FB) {
-                        this.fbLoaded = true;
-                        clearInterval(waitForFb);
-                        this.refreshFacebook();
-                    }
-                }, 200);
-            }
-        }"
-        x-init="init()"
-        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex justify-center"
-    >
-        <div
-            class="fb-comments"
-            x-ref="fbCommentsOnly"
-            data-href="{{ $canonicalUrl }}"
-            data-width="100%"
-            data-numposts="5"
-            :data-colorscheme="colorScheme"
-        ></div>
+    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex justify-center">
+        <div class="fb-comments" data-href="{{ $canonicalUrl }}" data-width="100%" data-numposts="5"></div>
     </div>
 
 @else
