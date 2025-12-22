@@ -12,17 +12,62 @@
     <div
         x-data="{
             activeTab: 'default',
+            fbLoaded: typeof window !== 'undefined' && !!window.FB,
+            sdkUrl: @js($facebookSdkUrl),
 
-            // ট্যাব পরিবর্তনের ফাংশন
+            // ফেসবুক SDK নিশ্চিত করার ফাংশন (Promise based)
+            ensureFacebookSdk() {
+                return new Promise((resolve) => {
+                    // ১. যদি SDK URL না থাকে
+                    if (! this.sdkUrl) {
+                        resolve();
+                        return;
+                    }
+
+                    // ২. যদি ইতিমধ্যে লোড হয়ে থাকে
+                    if (this.fbLoaded || (typeof window !== 'undefined' && window.FB)) {
+                        this.fbLoaded = true;
+                        resolve();
+                        return;
+                    }
+
+                    // ৩. স্ক্রিপ্ট ট্যাগ না থাকলে তৈরি করা (Fallback)
+                    if (this.sdkUrl && ! document.getElementById('facebook-jssdk')) {
+                        const fbScript = document.createElement('script');
+                        fbScript.id = 'facebook-jssdk';
+                        fbScript.async = true;
+                        fbScript.defer = true;
+                        fbScript.src = this.sdkUrl;
+                        fbScript.crossOrigin = 'anonymous';
+                        document.body.appendChild(fbScript);
+                    }
+
+                    // ৪. উইন্ডো অবজেক্টে FB আসা পর্যন্ত অপেক্ষা করা (Polling)
+                    const waitForFb = () => {
+                        if (typeof window !== 'undefined' && window.FB) {
+                            this.fbLoaded = true;
+                            resolve();
+                        } else {
+                            setTimeout(waitForFb, 150); // ১৫০ms পর পর চেক করবে
+                        }
+                    };
+
+                    waitForFb();
+                });
+            },
+
             loadFacebook() {
                 this.activeTab = 'facebook';
 
-                // ১০০ মিলি-সেকেন্ড অপেক্ষা করে ফেসবুককে রেন্ডার করতে বলা
-                setTimeout(() => {
+                // SDK রেডি হওয়ার পর রেন্ডার করবে
+                this.ensureFacebookSdk().then(() => {
                     if (window.FB) {
-                        window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
+                        // আগে কন্টেইনার ভিজিবল হতে হবে, তারপর পার্স
+                        setTimeout(() => {
+                            window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
+                        }, 50);
                     }
-                }, 100);
+                });
             }
         }"
         class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800"
@@ -53,20 +98,27 @@
         </div>
 
         {{-- Facebook Comments --}}
-        {{-- x-show এর বদলে hidden ক্লাস টগল করা হচ্ছে --}}
         <div
             id="fb-tab-content"
             class="p-4 bg-white dark:bg-slate-800"
             :class="activeTab === 'facebook' ? 'block' : 'hidden'"
         >
-            {{-- যদি লেআউটে স্ক্রিপ্ট থাকে তবে এখানে আর @push দরকার নেই --}}
-            {{-- কিন্তু যদি লেআউটে না থাকে তবে নিচের অংশটুকু রাখা লাগবে --}}
             @if($facebookSdkUrl)
                 @once
                     <div id="fb-root"></div>
                     @push('scripts')
-                        {{-- nonce বাদ দেওয়া হয়েছে কারণ এটি 403 এরর করছিল --}}
-                        <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
+                        <script>
+                            window.fbAsyncInit = function() {
+                                if (window.FB) {
+                                    window.FB.init({
+                                        appId: '{{ data_get($config, 'facebook.app_id') }}',
+                                        xfbml: true,
+                                        version: 'v18.0',
+                                    });
+                                }
+                            }
+                        </script>
+                        <script id="facebook-jssdk" async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
                     @endpush
                 @endonce
             @endif
@@ -80,7 +132,7 @@
             </div>
 
             {{-- লোডিং মেসেজ --}}
-            <div x-show="activeTab === 'facebook' && !window.FB" class="text-center text-xs text-red-400 mt-2">
+            <div x-show="activeTab === 'facebook' && !fbLoaded" class="text-center text-xs text-red-400 mt-2">
                 Loading Facebook SDK...
             </div>
         </div>
@@ -91,7 +143,18 @@
     @once
         <div id="fb-root"></div>
         @push('scripts')
-            <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
+            <script>
+                window.fbAsyncInit = function() {
+                    if (window.FB) {
+                        window.FB.init({
+                            appId: '{{ data_get($config, 'facebook.app_id') }}',
+                            xfbml: true,
+                            version: 'v18.0',
+                        });
+                    }
+                }
+            </script>
+            <script id="facebook-jssdk" async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
         @endpush
     @endonce
 
