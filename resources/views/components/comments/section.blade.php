@@ -12,6 +12,7 @@
     <div
         x-data="{
             activeTab: 'default',
+            fbLoaded: typeof window !== 'undefined' && !!window.FB,
 
             // ট্যাব পরিবর্তনের ফাংশন
             loadFacebook() {
@@ -21,6 +22,7 @@
                 const parseWhenReady = () => {
                     if (window.FB) {
                         window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
+                        this.fbLoaded = true;
                     } else {
                         setTimeout(parseWhenReady, 150);
                     }
@@ -95,7 +97,7 @@
             </div>
 
             {{-- লোডিং মেসেজ --}}
-            <div x-show="activeTab === 'facebook' && !window.FB" class="text-center text-xs text-red-400 mt-2">
+            <div x-show="activeTab === 'facebook' && !fbLoaded" class="text-center text-xs text-red-400 mt-2">
                 Loading Facebook SDK...
             </div>
         </div>
