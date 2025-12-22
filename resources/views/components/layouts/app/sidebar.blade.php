@@ -270,8 +270,10 @@
                     {{ __('Htaccess') }}
                 </flux:sidebar.item>
 
+                {{-- UPDATED ICONS BELOW --}}
+
                 <flux:sidebar.item
-                    icon="presentation-chart-line"
+                    icon="megaphone"
                     :href="route('settings.ads-settings')"
                     :current="request()->routeIs('settings.ads-settings')"
                     tooltip="{{ __('Ads Settings') }}"
@@ -281,7 +283,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="presentation-chart-line"
+                    icon="list-bullet"
                     :href="route('settings.activity-logs')"
                     :current="request()->routeIs('settings.activity-logs')"
                     tooltip="{{ __('Activity Logs') }}"
@@ -291,7 +293,7 @@
                 </flux:sidebar.item>
 
                 <flux:sidebar.item
-                    icon="presentation-chart-line"
+                    icon="chat-bubble-left-right"
                     :href="route('settings.comments')"
                     :current="request()->routeIs('settings.comments')"
                     tooltip="{{ __('Comments') }}"
