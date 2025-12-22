@@ -62,7 +62,9 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.admin.dashboard');
+        return view('livewire.admin.dashboard')->layout('components.layouts.app', [
+            'title' => __('Dashboard'),
+        ]);
     }
 
     private function prepareStats(): void
