@@ -52,3 +52,17 @@ it('uses local provider when facebook integration is disabled', function () {
     expect($config['provider'])->toBe('local')
         ->and($config['facebook']['enabled'])->toBeFalse();
 });
+
+it('builds facebook sdk url with a valid locale when app locale is bengali', function () {
+    config(['app.locale' => 'bn']);
+
+    set_setting('comment_system', 'facebook', 'comments');
+    set_setting('comment_facebook_enabled', true, 'comments');
+    set_setting('comment_facebook_app_id', 'fb-app', 'comments');
+
+    $url = CommentConfig::facebookSdkUrl();
+
+    expect($url)
+        ->toContain('connect.facebook.net/bn_IN/sdk.js')
+        ->toContain('appId=fb-app');
+});
