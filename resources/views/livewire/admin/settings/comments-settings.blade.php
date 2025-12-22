@@ -60,6 +60,17 @@
                         </div>
                     </label>
                 </div>
+
+                <div class="pt-4 space-y-1">
+                    <label class="font-semibold text-slate-700 dark:text-slate-200">Facebook App ID</label>
+                    <p class="text-xs text-slate-500">Provide your Facebook App ID to ensure the comments plugin loads correctly for your site.</p>
+                    <input
+                        type="text"
+                        wire:model.live="facebook_app_id"
+                        placeholder="123456789012345"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-900/40 dark:border-slate-700"
+                    >
+                </div>
             </div>
         </div>
 

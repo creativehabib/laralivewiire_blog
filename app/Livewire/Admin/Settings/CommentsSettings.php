@@ -40,6 +40,7 @@ class CommentsSettings extends Component
     public string $avatar_default = 'mystery';
 
     public string $comment_system = 'default';
+    public ?string $facebook_app_id = null;
 
     public function mount(): void
     {
@@ -76,6 +77,7 @@ class CommentsSettings extends Component
         $this->avatar_default          = (string) setting('comment_avatar_default', 'mystery');
 
         $this->comment_system          = (string) setting('comment_system', 'default');
+        $this->facebook_app_id         = setting('comment_facebook_app_id');
     }
 
     public function updatedAutoClose(bool $value): void
@@ -121,6 +123,7 @@ class CommentsSettings extends Component
             'avatar_default'          => ['in:mystery,blank,gravatar,identicon,wavatar,monsterid,retro'],
 
             'comment_system'          => ['in:default,facebook,both'],
+            'facebook_app_id'         => ['nullable', 'string'],
         ];
     }
 
@@ -162,6 +165,7 @@ class CommentsSettings extends Component
             'comment_avatar_default'          => $this->avatar_default,
 
             'comment_system'                  => $this->comment_system,
+            'comment_facebook_app_id'         => $this->facebook_app_id ? trim($this->facebook_app_id) : null,
         ];
 
         foreach ($settings as $key => $value) {
