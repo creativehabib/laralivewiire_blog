@@ -71,7 +71,7 @@
                 @endonce
             @endif
 
-            <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white dark:bg-slate-700 flex justify-center">
+            <div class="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white flex justify-center">
                 <div class="fb-comments"
                      data-href="{{ $canonicalUrl }}"
                      data-width="100%"
@@ -95,7 +95,7 @@
         @endpush
     @endonce
 
-    <div class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex justify-center">
+    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 flex justify-center">
         <div class="fb-comments" data-href="{{ $canonicalUrl }}" data-width="100%" data-numposts="5"></div>
     </div>
 
