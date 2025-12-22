@@ -6,39 +6,28 @@
 ])
 
 @php($config = $commentConfig ?? \App\Support\CommentConfig::get())
-
-{{-- সরাসরি অ্যাপ আইডি বসিয়ে দিচ্ছি ডিবাগিংয়ের জন্য --}}
+{{-- হার্ডকোড করা অ্যাপ আইডি সহ URL --}}
 @php($facebookSdkUrl = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0&appId=4371088989883299")
-
-{{-- SDK Script --}}
-@once
-    <div id="fb-root"></div>
-    @push('scripts')
-        <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}" nonce="fb-comments"></script>
-    @endpush
-@endonce
 
 <div
     x-data="{
         activeTab: 'default',
         refreshFacebook() {
-            console.log('Tab switched to Facebook. Checking FB SDK...'); // কনসোলে চেক করার জন্য
+            console.log('Tab switched. Checking for FB SDK...');
 
-            // একটু সময় নিয়ে বারবার চেক করবে (৩ বার)
-            let checkCount = 0;
+            let attempts = 0;
             let interval = setInterval(() => {
-                checkCount++;
+                attempts++;
                 if (window.FB) {
-                    console.log('FB SDK found! Parsing now...');
-                    window.FB.XFBML.parse(document.getElementById('fb-comment-container'));
+                    console.log('Success: FB SDK found. Rendering...');
+                    window.FB.XFBML.parse(document.getElementById('fb-comment-wrapper'));
                     clearInterval(interval);
                 } else {
-                    console.log('FB SDK not found yet...');
+                    console.log('Waiting for FB SDK...');
                 }
 
-                // ৩ সেকেন্ড পর বন্ধ করে দিবে
-                if (checkCount > 10) clearInterval(interval);
-            }, 300);
+                if (attempts > 20) clearInterval(interval); // ১০ সেকেন্ড চেষ্টা করবে
+            }, 500);
         }
     }"
     class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800"
@@ -69,10 +58,14 @@
     </div>
 
     {{-- Facebook Comments --}}
-    <div class="p-4" x-show="activeTab === 'facebook'" x-cloak id="fb-comment-container">
-        {{-- ডিবাগিং মেসেজ: যদি বক্স না আসে, এই লেখাটি দেখা যাবে --}}
+    <div class="p-4" x-show="activeTab === 'facebook'" x-cloak id="fb-comment-wrapper">
+
+        {{-- ১. স্ক্রিপ্টটি সরাসরি এখানে দিচ্ছি (@push বাদ দিয়ে) --}}
+        <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}" nonce="fb-comments"></script>
+
+        {{-- ডিবাগ মেসেজ --}}
         <div class="text-xs text-red-400 mb-2 text-center" x-show="!window.FB">
-            Loading Facebook SDK...
+            Connecting to Facebook... (Please disable AdBlock if it takes too long)
         </div>
 
         <div class="bg-white flex justify-center w-full">
