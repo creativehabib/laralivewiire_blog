@@ -32,6 +32,38 @@
         </div>
 
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Comment systems</h2>
+            </div>
+            <div class="p-6 space-y-3 text-sm">
+                <p class="text-slate-500 dark:text-slate-400">Choose which commenting experience you want to provide.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700">
+                        <input type="radio" class="mt-1 w-4 h-4 border-slate-300" value="default" wire:model.live="comment_system">
+                        <div>
+                            <div class="font-semibold">Default comments</div>
+                            <p class="text-xs text-slate-500">Use the built-in comment system only.</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700">
+                        <input type="radio" class="mt-1 w-4 h-4 border-slate-300" value="facebook" wire:model.live="comment_system">
+                        <div>
+                            <div class="font-semibold">Facebook comments</div>
+                            <p class="text-xs text-slate-500">Show only the Facebook comment plugin.</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-700">
+                        <input type="radio" class="mt-1 w-4 h-4 border-slate-300" value="both" wire:model.live="comment_system">
+                        <div>
+                            <div class="font-semibold">Both systems</div>
+                            <p class="text-xs text-slate-500">Display Facebook and default comments together.</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Other comment settings</h2>
                 <span class="text-[11px] px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-500">Front-end enforced</span>
