@@ -17,12 +17,16 @@
             loadFacebook() {
                 this.activeTab = 'facebook';
 
-                // ১০০ মিলি-সেকেন্ড অপেক্ষা করে ফেসবুককে রেন্ডার করতে বলা
-                setTimeout(() => {
+                // SDK তৈরি হওয়ার পর পার্স করার চেষ্টা করতে থাকবে
+                const parseWhenReady = () => {
                     if (window.FB) {
                         window.FB.XFBML.parse(document.getElementById('fb-tab-content'));
+                    } else {
+                        setTimeout(parseWhenReady, 150);
                     }
-                }, 100);
+                };
+
+                parseWhenReady();
             }
         }"
         class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800"
@@ -65,6 +69,17 @@
                 @once
                     <div id="fb-root"></div>
                     @push('scripts')
+                        <script>
+                            window.fbAsyncInit = function() {
+                                if (window.FB) {
+                                    window.FB.init({
+                                        appId: '{{ data_get($config, 'facebook.app_id') }}',
+                                        xfbml: true,
+                                        version: 'v18.0',
+                                    });
+                                }
+                            }
+                        </script>
                         {{-- nonce বাদ দেওয়া হয়েছে কারণ এটি 403 এরর করছিল --}}
                         <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
                     @endpush
@@ -91,6 +106,17 @@
     @once
         <div id="fb-root"></div>
         @push('scripts')
+            <script>
+                window.fbAsyncInit = function() {
+                    if (window.FB) {
+                        window.FB.init({
+                            appId: '{{ data_get($config, 'facebook.app_id') }}',
+                            xfbml: true,
+                            version: 'v18.0',
+                        });
+                    }
+                }
+            </script>
             <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}"></script>
         @endpush
     @endonce
