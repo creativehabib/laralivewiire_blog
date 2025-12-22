@@ -7,7 +7,9 @@ class CommentConfig
     public static function get(): array
     {
         $mode = (string) setting('comment_system', 'default');
-        $facebookEnabled = (bool) setting('comment_facebook_enabled', false);
+
+        $facebookEnabled = (bool) setting('comment_facebook_enabled', false)
+            || in_array($mode, ['facebook', 'both'], true);
         $facebookAppId = trim((string) (setting('comment_facebook_app_id') ?? ''));
 
         $facebookReady = $facebookEnabled && $facebookAppId !== '';
