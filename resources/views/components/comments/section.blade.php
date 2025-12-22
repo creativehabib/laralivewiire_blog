@@ -6,27 +6,39 @@
 ])
 
 @php($config = $commentConfig ?? \App\Support\CommentConfig::get())
-{{-- হার্ডকোড করা অ্যাপ আইডি সহ URL --}}
-@php($facebookSdkUrl = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0&appId=4371088989883299")
+@php($fbAppId = '4371088989883299') {{-- আপনার অ্যাপ আইডি --}}
+
+{{-- 🔥 FIX 3: SDK লোড করার স্ট্যান্ডার্ড পদ্ধতি (Active Tab এর বাইরে) --}}
+@push('scripts')
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId            : '{{ $fbAppId }}',
+                autoLogAppEvents : true,
+                xfbml            : true,
+                version          : 'v18.0'
+            });
+        };
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+@endpush
 
 <div
     x-data="{
         activeTab: 'default',
-        refreshFacebook() {
-            console.log('Tab switched. Checking for FB SDK...');
+        facebookInitialized: false,
 
-            let attempts = 0;
-            let interval = setInterval(() => {
-                attempts++;
+        loadFacebook() {
+            this.activeTab = 'facebook';
+
+            // ট্যাব বদলানোর পর একটু সময় দিয়ে রেন্ডার করা
+            setTimeout(() => {
                 if (window.FB) {
-                    console.log('Success: FB SDK found. Rendering...');
-                    window.FB.XFBML.parse(document.getElementById('fb-comment-wrapper'));
-                    clearInterval(interval);
+                    console.log('Rendering FB Comments...');
+                    window.FB.XFBML.parse(document.getElementById('fb-wrapper'));
                 } else {
                     console.log('Waiting for FB SDK...');
                 }
-
-                if (attempts > 20) clearInterval(interval); // ১০ সেকেন্ড চেষ্টা করবে
             }, 500);
         }
     }"
@@ -37,44 +49,40 @@
         <button
             type="button"
             class="flex-1 px-4 py-2 text-sm font-semibold focus:outline-none transition-colors"
-            :class="activeTab === 'default' ? 'text-blue-600 border-b-2 border-blue-600 bg-white' : 'text-slate-600'"
+            :class="activeTab === 'default' ? 'text-blue-600 border-b-2 border-blue-600 bg-white dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'"
             @click="activeTab = 'default'"
         >
             Default comments
         </button>
         <button
             type="button"
-            class="flex-1 px-4 py-2 text-sm font-semibold focus:outline-none transition-colors border-l border-slate-200"
-            :class="activeTab === 'facebook' ? 'text-blue-600 border-b-2 border-blue-600 bg-white' : 'text-slate-600'"
-            @click="activeTab = 'facebook'; refreshFacebook()"
+            class="flex-1 px-4 py-2 text-sm font-semibold focus:outline-none transition-colors border-l border-slate-200 dark:border-slate-700"
+            :class="activeTab === 'facebook' ? 'text-blue-600 border-b-2 border-blue-600 bg-white dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'"
+            @click="loadFacebook()"
         >
             Facebook comments
         </button>
     </div>
 
     {{-- Default Comments --}}
-    <div class="p-4" x-show="activeTab === 'default'">
+    <div x-show="activeTab === 'default'" class="p-4">
         <livewire:frontend.comments :commentable="$commentable" :comment-relation="$commentRelation" />
     </div>
 
     {{-- Facebook Comments --}}
-    <div class="p-4" x-show="activeTab === 'facebook'" x-cloak id="fb-comment-wrapper">
-
-        {{-- ১. স্ক্রিপ্টটি সরাসরি এখানে দিচ্ছি (@push বাদ দিয়ে) --}}
-        <script async defer crossorigin="anonymous" src="{{ $facebookSdkUrl }}" nonce="fb-comments"></script>
-
-        {{-- ডিবাগ মেসেজ --}}
-        <div class="text-xs text-red-400 mb-2 text-center" x-show="!window.FB">
-            Connecting to Facebook... (Please disable AdBlock if it takes too long)
-        </div>
-
-        <div class="bg-white flex justify-center w-full">
+    {{-- x-show এর বদলে hidden ক্লাস ব্যবহার করা নিরাপদ --}}
+    <div :class="activeTab === 'facebook' ? 'block' : 'hidden'" class="p-4 bg-white" id="fb-wrapper">
+        <div class="flex justify-center w-full min-h-[150px]">
             <div class="fb-comments"
                  data-href="{{ $canonicalUrl }}"
                  data-width="100%"
-                 data-numposts="5"
-                 style="width: 100%;">
+                 data-numposts="5">
             </div>
+        </div>
+
+        {{-- Fallback --}}
+        <div x-show="activeTab === 'facebook' && !window.FB" class="text-center text-xs text-slate-400 mt-4">
+            Loading Facebook system...
         </div>
     </div>
 </div>
