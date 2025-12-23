@@ -20,7 +20,7 @@
         </div>
 
         <a
-            href="{{ route('admin.users.index') }}"
+            href="{{ route('system.users.index') }}"
             class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800
                    dark:text-indigo-400 dark:hover:text-indigo-300"
         >
@@ -32,7 +32,7 @@
     {{-- Content --}}
     <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
         <div class="p-6 md:p-7">
-            <form action="{{ route('admin.users.update', $user) }}" method="POST" class="space-y-8">
+            <form action="{{ route('system.users.update', $user) }}" method="POST" class="space-y-8">
                 @csrf
                 @method('PUT')
 
@@ -216,7 +216,7 @@
                     </button>
 
                     <a
-                        href="{{ route('admin.users.index') }}"
+                        href="{{ route('system.users.index') }}"
                         class="inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-600
                                bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold
                                text-slate-700 dark:text-slate-100

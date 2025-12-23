@@ -5,7 +5,7 @@
             <h1 class="text-xl font-bold text-slate-800 dark:text-slate-100">Discussion Settings</h1>
             <p class="text-sm text-slate-500">Configure how comments behave across the site.</p>
         </div>
-        <a href="{{ route('settings.comments.moderation') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/60">
+        <a href="{{ route('admin.comments.moderation') }}" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/60">
             <i class="fas fa-comments"></i>
             Moderate Comments
         </a>

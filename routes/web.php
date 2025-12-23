@@ -47,7 +47,7 @@ use Livewire\Volt\Volt;
 Route::get('/', Homepage::class)->name('home');
 
 Route::get('dashboard', Dashboard::class)->middleware(['auth', 'verified'])->name('dashboard');
-Route::view('media', 'media')->middleware(['auth', 'verified'])->name('media');
+Route::view('admin/media', 'media')->middleware(['auth', 'verified'])->name('media');
 
 /**
  * SITEMAPS
@@ -146,23 +146,13 @@ Route::get('/{key}.txt', function ($key) {
  */
 Route::middleware(['auth', 'preventBackHistory'])->group(function () {
 
-    Route::prefix('setting')->name('settings.')->group(function () {
-            Route::controller(SettingController::class)->group(function () {
-                Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
-            });
-            Route::get('/robots', RobotsTxt::class)->name('robots')->middleware('permission:setting.view');
-            Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
-            Route::get('/customs-css', CustomCssSettings::class)->name('custom-css')->middleware('permission:setting.view');
-            Route::get('/custom-js', CustomJsSettings::class)->name('custom-js')->middleware('permission:setting.view');
-            Route::get('/custom-html', CustomHtmlSettings::class)->name('custom-html')->middleware('permission:setting.view');
-            Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
-            Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
-            Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs')->middleware('permission:setting.view');
-            Route::get('/comments', CommentsSettings::class)->name('comments')->middleware('permission:setting.view');
-            Route::get('/comments/moderation', CommentsManager::class)->name('comments.moderation')->middleware('permission:setting.view');
-        });
+    Route::prefix('admin/setting')->name('settings.')->group(function () {
+        Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
+        Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
+        Route::get('/comments', CommentsSettings::class)->name('comments')->middleware('permission:setting.view');
+    });
 
-    Route::prefix('blog')->name('blogs.')->group(function () {
+    Route::prefix('admin')->name('blogs.')->group(function () {
         Route::get('/categories', CategoryIndex::class)->name('categories.index')->middleware('permission:category.view');
         Route::get('/categories/table', CategoryTable::class)->name('categories.table')->middleware('permission:category.view');
         Route::get('/categories/create', CategoryForm::class)->name('categories.create')->middleware('permission:category.create');
@@ -177,10 +167,36 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::get('/posts/{post}/edit', PostForm::class)->name('posts.edit')->middleware('permission:post.edit');
     });
 
-    Route::prefix('admins')->name('admins.')->group(function () {
+    Route::prefix('admin')->name('admins.')->group(function () {
         Route::get('/pages/index', PageTable::class)->name('pages.index')->middleware('permission:page.view');
         Route::get('/pages/create', PageForm::class)->name('pages.create')->middleware('permission:page.create');
         Route::get('/pages/{page}/edit', PageForm::class)->name('pages.edit')->middleware('permission:page.edit');
+    });
+});
+
+// Menus
+Route::middleware(['auth', 'preventBackHistory'])->group(function () {
+    //Appearance Menu
+    Route::prefix('admin')->name('appearance.')->group(function () {
+
+        Route::view('/menus', 'backend.pages.menus.index')->name('menus.index')->middleware('permission:menu.view');
+        Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
+        Route::get('/customs-css', CustomCssSettings::class)->name('custom-css')->middleware('permission:setting.view');
+        Route::get('/custom-js', CustomJsSettings::class)->name('custom-js')->middleware('permission:setting.view');
+        Route::get('/custom-html', CustomHtmlSettings::class)->name('custom-html')->middleware('permission:setting.view');
+        Route::get('/robots', RobotsTxt::class)->name('robots')->middleware('permission:setting.view');
+
+    });
+
+    // System Settings Menu
+    Route::prefix('admin/system')->name('system.')->group(function () {
+        Route::controller(SettingController::class)->group(function () {
+            Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
+        });
+        Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs')->middleware('permission:setting.view');
+        Route::resource('/roles', RoleController::class);
+        Route::resource('/permissions', PermissionController::class);
+        Route::resource('/users', UserManagementController::class);
     });
 });
 
@@ -209,16 +225,14 @@ Route::middleware(['auth','preventBackHistory'])
  */
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'preventBackHistory'])->group(function () {
+        Route::get('/comments/moderation', CommentsManager::class)->name('comments.moderation')->middleware('permission:setting.view');
         Route::get('/setting/{group}', SettingsGenerator::class)->name('settings.dynamic')->middleware('permission:setting.view');
         Route::controller(AdminController::class)->group(function () {
             Route::get('/settings', 'generalSettings')->name('settings')->middleware('permission:setting.view');
         });
 
-        Route::resource('roles', RoleController::class);
-        Route::resource('permissions', PermissionController::class);
-        Route::resource('users', UserManagementController::class);
 
-        Route::view('menus', 'backend.pages.menus.index')->name('menus.index')->middleware('permission:menu.view');
+
     });
 });
 

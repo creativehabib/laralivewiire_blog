@@ -119,7 +119,7 @@
         </button>
 
         <a
-            href="{{ route('admin.roles.index') }}"
+            href="{{ route('system.roles.index') }}"
             class="inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-600
                    bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-100
                    hover:bg-slate-50 dark:hover:bg-slate-800 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"

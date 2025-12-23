@@ -103,7 +103,7 @@
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Activity Logs') }}</p>
                     <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Recent platform activities') }}</p>
                 </div>
-                <a href="{{ route('settings.activity-logs') }}" class="text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400">
+                <a href="{{ route('system.activity-logs') }}" class="text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400">
                     {{ __('View All') }}
                 </a>
             </div>

@@ -32,7 +32,7 @@
                     </span>
 
                     <a
-                        href="{{ route('admin.permissions.create') }}"
+                        href="{{ route('system.permissions.create') }}"
                         class="inline-flex w-full sm:w-auto items-center justify-center rounded-lg
                                bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm
                                hover:bg-indigo-700
@@ -57,7 +57,7 @@
                         </div>
 
                         {{-- placeholder for future filters/search --}}
-                        {{-- <x-admin.search-input /> --}}
+                        {{-- <x-system.search-input /> --}}
                     </div>
 
                     <div class="overflow-x-auto">
@@ -132,7 +132,7 @@
                                     <td class="px-4 py-3 text-center align-middle">
                                         <div class="inline-flex items-center gap-2">
                                             <a
-                                                href="{{ route('admin.permissions.edit', $permission) }}"
+                                                href="{{ route('system.permissions.edit', $permission) }}"
                                                 class="inline-flex items-center gap-1 rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-xs font-medium
                                                        text-slate-700 dark:text-slate-100
                                                        bg-white dark:bg-slate-900
@@ -146,7 +146,7 @@
                                             </a>
 
                                             <form
-                                                action="{{ route('admin.permissions.destroy', $permission) }}"
+                                                action="{{ route('system.permissions.destroy', $permission) }}"
                                                 method="POST"
                                                 class="inline-flex"
                                                 onsubmit="return confirm('Are you sure you want to delete this permission?');"
@@ -186,7 +186,7 @@
                                                 Start by creating a new permission to control access to specific actions and resources.
                                             </p>
                                             <a
-                                                href="{{ route('admin.permissions.create') }}"
+                                                href="{{ route('system.permissions.create') }}"
                                                 class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-50 dark:focus:ring-offset-slate-900"
                                             >
                                                 <x-icon.plus class="h-3 w-3" />

@@ -27,7 +27,7 @@
 
                 <div class="w-full sm:w-auto flex items-center justify-end">
                     <a
-                        href="{{ route('admin.roles.create') }}"
+                        href="{{ route('system.roles.create') }}"
                         class="inline-flex w-full sm:w-auto items-center justify-center rounded-lg
                                bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm
                                hover:bg-indigo-700
@@ -133,7 +133,7 @@
                                         <div class="inline-flex flex-wrap items-center justify-center gap-2">
                                             {{-- Edit --}}
                                             <a
-                                                href="{{ route('admin.roles.edit', $role) }}"
+                                                href="{{ route('system.roles.edit', $role) }}"
                                                 class="inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-600
                                                            bg-white dark:bg-slate-900
                                                            px-3 py-1.5 text-xs font-semibold
@@ -149,7 +149,7 @@
 
                                             {{-- Delete --}}
                                             <form
-                                                action="{{ route('admin.roles.destroy', $role) }}"
+                                                action="{{ route('system.roles.destroy', $role) }}"
                                                 method="POST"
                                                 class="inline-flex"
                                             >
@@ -192,7 +192,7 @@
                                                 Create roles to group permissions and control access to different areas of your application.
                                             </p>
                                             <a
-                                                href="{{ route('admin.roles.create') }}"
+                                                href="{{ route('system.roles.create') }}"
                                                 class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-50 dark:focus:ring-offset-slate-900"
                                             >
                                                 <i class="fa-solid fa-plus h-3 w-3"></i>

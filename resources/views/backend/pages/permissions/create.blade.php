@@ -9,7 +9,7 @@
     <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
         <div class="p-6">
 
-            <form action="{{ route('admin.permissions.store') }}" method="POST">
+            <form action="{{ route('system.permissions.store') }}" method="POST">
                 @csrf
 
                 {{-- Permission Name --}}
@@ -73,7 +73,7 @@
                     </button>
 
                     <a
-                        href="{{ route('admin.permissions.index') }}"
+                        href="{{ route('system.permissions.index') }}"
                         class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2
                                text-sm font-semibold text-gray-700 hover:bg-gray-50
                                dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700

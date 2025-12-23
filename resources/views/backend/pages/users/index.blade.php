@@ -23,7 +23,7 @@
 
                 <div class="w-full sm:w-auto">
                     <a
-                        href="{{ route('admin.users.create') }}"
+                        href="{{ route('system.users.create') }}"
                         class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm
                                hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500
                                focus:ring-offset-2 focus:ring-offset-slate-50 dark:focus:ring-offset-slate-900"
@@ -106,7 +106,7 @@
                                             <div class="inline-flex items-center gap-2">
                                                 {{-- Edit --}}
                                                 <a
-                                                    href="{{ route('admin.users.edit', $user) }}"
+                                                    href="{{ route('system.users.edit', $user) }}"
                                                     class="inline-flex items-center rounded-md border border-indigo-500 px-3 py-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-300
                                                            hover:bg-indigo-50 dark:hover:bg-indigo-500/10
                                                            focus:outline-none focus:ring-2 focus:ring-indigo-500
@@ -117,7 +117,7 @@
 
                                                 {{-- Delete --}}
                                                 <form
-                                                    action="{{ route('admin.users.destroy', $user) }}"
+                                                    action="{{ route('system.users.destroy', $user) }}"
                                                     method="POST"
                                                     class="inline-flex"
                                                     onsubmit="return confirm('Are you sure you want to delete this user?');"
