@@ -418,6 +418,7 @@
 
                     <button
                         id="sidebarFeaturedPrev"
+                        aria-label="Previous Slide"
                         type="button"
                         class="absolute left-2 top-1/2 -translate-y-1/2 z-10
                             w-8 h-8 rounded-full bg-white/95 dark:bg-slate-900/95 shadow
@@ -430,6 +431,7 @@
 
                     <button
                         id="sidebarFeaturedNext"
+                        aria-label="Next Slide"
                         type="button"
                         class="absolute right-2 top-1/2 -translate-y-1/2 z-10
                             w-8 h-8 rounded-full bg-white/95 dark:bg-slate-900/95 shadow

@@ -1,4 +1,4 @@
-<header class="bg-white dark:bg-slate-900/95 shadow-sm sticky top-0 z-50
+া<header class="bg-white dark:bg-slate-900/95 shadow-sm sticky top-0 z-50
                border-b border-slate-200/70 dark:border-slate-700/70
                backdrop-blur transition-colors duration-300">
     @php
@@ -74,7 +74,7 @@
             @endauth
             <!-- /লগইন/ড্যাশবোর্ড বাটন -->
 
-            <button id="themeToggle" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <button id="themeToggle" aria-label="Toggle Dark Mode" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <i id="moonIcon" class="fa-solid fa-moon text-sm"></i>
                 <i id="sunIcon" class="fa-solid fa-sun text-sm hidden"></i>
             </button>
