@@ -97,6 +97,44 @@
             </div>
         </div>
 
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Activity Logs') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Recent platform activities') }}</p>
+                </div>
+                <a href="{{ route('settings.activity-logs') }}" class="text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400">
+                    {{ __('View All') }}
+                </a>
+            </div>
+
+            <div class="mt-4 divide-y divide-slate-100 text-sm text-slate-700 dark:divide-slate-800 dark:text-slate-200">
+                @forelse ($activityLogs as $log)
+                    <div class="flex items-start justify-between gap-3 py-3">
+                        <div class="flex items-start gap-3">
+                            <span class="flex size-10 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                {{ Str::upper(Str::substr($log->causer?->name ?? __('System'), 0, 1)) }}
+                            </span>
+                            <div class="space-y-1">
+                                <p class="font-semibold">{{ $log->causer?->name ?? __('System') }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ $log->description }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right text-xs text-slate-500 dark:text-slate-400">
+                            <p>{{ $log->created_at->diffForHumans() }}</p>
+                            @if (data_get($log->properties, 'ip'))
+                                <p class="text-[11px] text-blue-500">{{ data_get($log->properties, 'ip') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                        {{ __('No activity logs found') }}
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
         <div class="grid gap-4 xl:grid-cols-3">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
