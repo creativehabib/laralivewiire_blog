@@ -15,7 +15,7 @@
             wire:model="category_ids"
             wire:change="toggleCategory({{ $category->id }})"
             value="{{ $category->id }}"
-            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500
+            class="mt-0.5 h-4 w-4 rounded border-slate-300 focus:ring-indigo-500
                    dark:border-slate-600"
         />
         <div class="flex-1">

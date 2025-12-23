@@ -670,10 +670,13 @@ select:focus[data-flux-control] {
 
 /* ১. পুরো এডিটরের বর্ডার এবং রাউন্ডেড কর্নার */
 .cke_chrome {
-    border: 1px solid #334155 !important;
     border-radius: 0.75rem !important;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.dark .cke_chrome{
+    border: 1px solid #3f444f !important;
 }
 
 /* ২. টুলবার এরিয়া (Top Section) */
@@ -687,7 +690,7 @@ select:focus[data-flux-control] {
     align-items: center !important;
 }
 
-/* ✅ ডার্ক মোডে আইকন এলাইনমেন্ট ফিক্স */
+/* ডার্ক মোডে আইকন এলাইনমেন্ট ফিক্স */
 .dark .cke_toolbar {
     display: flex !important;
     align-items: center !important;
@@ -755,8 +758,6 @@ select:focus[data-flux-control] {
 .dark .cke_bottom {
     background-color: #0f172a !important;
     border-top: 1px solid #334155 !important;
-    display: flex !important;
-    align-items: center !important;
 }
 
 .dark .cke_path_item {
@@ -764,8 +765,3 @@ select:focus[data-flux-control] {
     text-shadow: none !important;
 }
 
-/* ৭. রিসাইজ হ্যান্ডলার */
-.dark .cke_resizer {
-    border-color: transparent #475569 transparent transparent !important;
-    margin-top: 6px !important;
-}

@@ -149,12 +149,15 @@
                         </div>
 
                         {{-- Is featured --}}
-                        <div class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200">
-                            <input type="checkbox"
-                                   wire:model="is_featured"
-                                   class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500
+                        <div class="text-xs text-slate-700 dark:text-slate-200">
+                            <label for="is_featured" class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox"
+                                       wire:model="is_featured"
+                                       id="is_featured"
+                                       class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500
                                           dark:border-slate-600 dark:bg-slate-900">
-                            <span>Is featured?</span>
+                                <span>Is featured?</span>
+                            </label>
                         </div>
 
                         {{-- Content --}}
@@ -162,15 +165,15 @@
                             <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
                                 Content
                             </label>
-                            <div class="flex gap-2 text-[11px]">
+                            <div class="flex gap-2 text-[11px] mb-2">
                                 <button type="button"
-                                        class="inline-flex items-center gap-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600">
+                                        class="inline-flex items-center gap-1 rounded border cursor-pointer border-slate-300 px-2 py-1 text-xs text-slate-600 dark:border-slate-600 dark:text-gray-100">
                                     <i class="fa-regular fa-eye"></i>
                                     Show/Hide Editor
                                 </button>
                                 <button type="button"
                                         onclick="openCkeditorImagePicker('content')"
-                                        class="inline-flex items-center gap-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600">
+                                        class="inline-flex items-center gap-1 cursor-pointer rounded border border-slate-300 dark:border-slate-600 px-2 py-1 text-xs text-slate-600 dark:text-gray-100">
                                     <i class="fa-regular fa-images"></i>
                                     Add media
                                 </button>
@@ -273,7 +276,7 @@
                        dark:border-slate-700 dark:bg-slate-800">
                 {{-- Header --}}
                 <div class="flex items-start gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
-                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50
                                    dark:bg-indigo-900/30 dark:text-indigo-300">
                         <i class="fa-solid fa-layer-group text-sm"></i>
                     </span>
@@ -446,7 +449,7 @@
                     <label class="flex items-center gap-2">
                         <input type="checkbox"
                                wire:model="allow_comments"
-                               class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500
+                               class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500
                                       dark:border-slate-600 dark:bg-slate-900">
                         <span>Allow comments</span>
                     </label>
@@ -454,7 +457,7 @@
                     <label class="flex items-center gap-2">
                         <input type="checkbox"
                                wire:model="is_breaking"
-                               class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500
+                               class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500
                                       dark:border-slate-600 dark:bg-slate-900">
                         <span>Is breaking news?</span>
                     </label>
