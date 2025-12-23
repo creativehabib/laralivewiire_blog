@@ -17,6 +17,8 @@ class Post extends Model
     use HasMetaBoxes;
     use HasSeoMeta;
 
+    const CONTENT_TYPE_VIDEO = 'video';
+
     protected $fillable = [
         'name',
         'description',

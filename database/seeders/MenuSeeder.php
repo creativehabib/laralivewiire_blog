@@ -67,7 +67,7 @@ class MenuSeeder extends Seeder
         if (! $footerMenu->items()->exists()) {
             $order = 1;
 
-            $contactEmail = general_settings('site_email') ?? config('mail.from.address', 'info@example.com');
+            $contactEmail = setting('site_email') ?? config('mail.from.address', 'info@example.com');
 
             MenuItem::create([
                 'menu_id' => $footerMenu->id,

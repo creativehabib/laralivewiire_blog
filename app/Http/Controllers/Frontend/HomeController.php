@@ -98,10 +98,4 @@ class HomeController extends Controller
         ]);
     }
 
-    protected function settings(): ?GeneralSetting
-    {
-        return Cache::remember('general_settings', now()->addHour(), function () {
-            return GeneralSetting::query()->first();
-        });
-    }
 }
