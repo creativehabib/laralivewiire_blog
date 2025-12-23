@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use function Livewire\Volt\title;
 
 class PostForm extends Component
 {
@@ -121,7 +122,7 @@ class PostForm extends Component
             'category_ids'   => ['required', 'array', 'min:1', 'max:3'],
             'category_ids.*' => ['integer', 'exists:categories,id'],
 
-            // 🔥 tags: আইডি গুলো valid কিনা
+            // tags: আইডি গুলো valid কিনা
             'selectedTagIds'   => ['array'],
             'selectedTagIds.*' => ['integer', 'exists:tags,id'],
 
@@ -227,7 +228,7 @@ class PostForm extends Component
     }
 
     /**
-     * 🔥 Tag input change হলে সাজেশন লোড
+     * Tag input change হলে সাজেশন লোড
      */
     public function updatedTagInput(string $value): void
     {
@@ -248,7 +249,7 @@ class PostForm extends Component
     }
 
     /**
-     * 🔥 সাজেশন লিস্ট থেকে tag নির্বাচন
+     * সাজেশন লিস্ট থেকে tag নির্বাচন
      */
     public function addTag(int $tagId): void
     {
@@ -262,7 +263,7 @@ class PostForm extends Component
     }
 
     /**
-     * 🔥 selected chip থেকে remove
+     * selected chip থেকে remove
      */
     public function removeTag(int $tagId): void
     {
@@ -272,7 +273,7 @@ class PostForm extends Component
     }
 
     /**
-     * 🔥 Enter চেপে নতুন tag তৈরি করা + select এ যোগ করা
+     * Enter চেপে নতুন tag তৈরি করা + select এ যোগ করা
      */
     public function createTagFromInput(): void
     {
@@ -345,7 +346,7 @@ class PostForm extends Component
             $post->categories()->sync($this->category_ids);
         }
 
-        // 🔥 tags sync (selectedTagIds থেকে)
+        // tags sync (selectedTagIds থেকে)
         if (method_exists($post, 'tags')) {
             $post->tags()->sync($this->selectedTagIds);
         }
@@ -364,8 +365,8 @@ class PostForm extends Component
         $this->post   = $post;
         $this->postId = $post->id;
 
-        // redirect এর পর toast show করার জন্য session flash
-        session()->flash('toast_success', 'Post saved successfully.');
+        // redirect এর পর toast show
+        $this->dispatch('media-toast', title: 'success', message: 'Post saved successfully.');
 
         if ($redirect === 'exit') {
             return redirect()->route('blogs.posts.index');
@@ -405,7 +406,7 @@ class PostForm extends Component
 
                 $q->where(function ($query) use ($search) {
                     $query->where('name', 'like', '%'.$search.'%')
-                        ->orWhere('slug', 'like', '%'.$search.'%'); // 🔹 slug search
+                        ->orWhere('slug', 'like', '%'.$search.'%');
                 });
             })
             ->orderBy('name')

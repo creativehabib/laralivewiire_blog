@@ -25,10 +25,14 @@ class PostTable extends Component
     protected $queryString = ['search', 'status', 'category'];
 
     // search / filter change হলে page reset
-    public function updatingSearch()   { $this->resetPage(); }
-    public function updatingStatus()   { $this->resetPage(); }
-    public function updatingCategory() { $this->resetPage(); }
-    public function updatingPerPage()  { $this->resetPage(); }
+    public function updatingSearch(): void
+    { $this->resetPage(); }
+    public function updatingStatus(): void
+    { $this->resetPage(); }
+    public function updatingCategory(): void
+    { $this->resetPage(); }
+    public function updatingPerPage(): void
+    { $this->resetPage(); }
 
     /** Sort handler */
     public function sortBy(string $field): void

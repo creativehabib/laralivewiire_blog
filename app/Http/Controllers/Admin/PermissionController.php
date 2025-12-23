@@ -44,7 +44,7 @@ class PermissionController extends Controller implements HasMiddleware
             'group_name' => $request->group_name,
         ]);
 
-        return redirect()->route('admin.permissions.index')->with('success', 'Permission created successfully.');
+        return redirect()->route('system.permissions.index')->with('success', 'Permission created successfully.');
     }
 
     public function edit(Permission $permission)
@@ -66,12 +66,12 @@ class PermissionController extends Controller implements HasMiddleware
             'group_name' => $request->group_name,
         ]);
 
-        return redirect()->route('admin.permissions.index')->with('success', 'Permission updated successfully.');
+        return redirect()->route('system.permissions.index')->with('success', 'Permission updated successfully.');
     }
 
     public function destroy(Permission $permission)
     {
         $permission->delete();
-        return redirect()->route('admin.permissions.index')->with('success', 'Permission deleted successfully.');
+        return redirect()->route('system.permissions.index')->with('success', 'Permission deleted successfully.');
     }
 }

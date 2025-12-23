@@ -52,7 +52,7 @@ class UserManagementController extends Controller implements HasMiddleware
         // Role assign করা
         $user->assignRole($request->role);
 
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
+        return redirect()->route('system.users.index')->with('success', 'User created successfully.');
     }
 
     public function edit(User $user)
@@ -79,7 +79,7 @@ class UserManagementController extends Controller implements HasMiddleware
 
         $user->syncRoles($request->role);
 
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('system.users.index')->with('success', 'User updated successfully.');
     }
 
     public function destroy(User $user)

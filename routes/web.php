@@ -1,11 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\PollController as AdminPollController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserManagementController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Frontend\SitemapController;
 
 use App\Livewire\Admin\Categories\CategoryForm;
@@ -208,18 +206,6 @@ Route::middleware(['auth', 'preventBackHistory'])
     ->name('settings.dynamic')
     ->middleware('permission:setting.view');
 
-Route::middleware(['auth','preventBackHistory'])
-    ->prefix('setting')
-    ->group(function () {
-        Route::get('/export', [AdminController::class, 'export'])
-            ->name('settings.export')
-            ->middleware('permission:setting.view');
-
-        Route::post('/import', [AdminController::class, 'import'])
-            ->name('settings.import')
-            ->middleware('permission:setting.edit');
-    });
-
 /**
  * Admin panel
  */
@@ -227,12 +213,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::get('/comments/moderation', CommentsManager::class)->name('comments.moderation')->middleware('permission:setting.view');
         Route::get('/setting/{group}', SettingsGenerator::class)->name('settings.dynamic')->middleware('permission:setting.view');
-        Route::controller(AdminController::class)->group(function () {
-            Route::get('/settings', 'generalSettings')->name('settings')->middleware('permission:setting.view');
-        });
-
-
-
     });
 });
 

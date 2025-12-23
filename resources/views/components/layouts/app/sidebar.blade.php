@@ -36,6 +36,7 @@
         }
         .dd-list { list-style: none; padding-left: 0; }
     </style>
+    @stack('styles')
 </head>
 <body class="min-h-screen bg-white dark:bg-slate-800">
 
