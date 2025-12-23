@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Spatie\Activitylog\Models\Activity;
 
 class Dashboard extends Component
 {
@@ -40,6 +41,8 @@ class Dashboard extends Component
 
     public Collection $mostViewedPosts;
 
+    public Collection $activityLogs;
+
     protected array $colorMap = [
         'bg-blue-500' => '#3b82f6',
         'bg-emerald-500' => '#10b981',
@@ -63,6 +66,7 @@ class Dashboard extends Component
         $this->recentPosts = Post::latest()->take(6)->get(['id', 'name', 'created_at', 'views']);
         $this->recentPages = Page::latest()->take(6)->get(['id', 'name', 'slug', 'created_at']);
         $this->mostViewedPosts = Post::orderByDesc('views')->take(5)->get(['id', 'name', 'views']);
+        $this->activityLogs = Activity::with('causer')->latest()->take(6)->get(['id', 'description', 'properties', 'created_at', 'causer_id', 'causer_type']);
     }
 
     public function render()
