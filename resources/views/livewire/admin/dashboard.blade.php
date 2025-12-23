@@ -20,6 +20,40 @@
             @endforeach
         </div>
 
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Visit Vs Visitor') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Monthly comparison overview') }}</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                    @foreach ($visitVsVisitor['series'] as $series)
+                        <span class="inline-flex items-center gap-2">
+                            <span class="size-3 rounded-full" style="background-color: {{ $series['color'] }}"></span>
+                            {{ $series['name'] }}
+                        </span>
+                    @endforeach
+                </div>
+            </div>
+            <div class="mt-6">
+                <div id="visitVsVisitorChart" class="h-80"></div>
+            </div>
+            <div class="mt-6 grid gap-4 md:grid-cols-3">
+                <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
+                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Unique Visitors (:year)', ['year' => $visitVsVisitor['totals']['year']]) }}</p>
+                    <p class="mt-1 text-2xl font-semibold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['uniqueVisitors']) }}</p>
+                </div>
+                <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
+                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Visits (This Month)') }}</p>
+                    <p class="mt-1 text-3xl font-bold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['totalVisits']) }}</p>
+                </div>
+                <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
+                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Visitors (This Month)') }}</p>
+                    <p class="mt-1 text-3xl font-bold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['totalVisitors']) }}</p>
+                </div>
+            </div>
+        </div>
+
         <div class="grid gap-4 xl:grid-cols-3">
             <div class="xl:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
@@ -211,6 +245,51 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const visitVsVisitor = @json($visitVsVisitor);
+            const visitVsVisitorEl = document.getElementById('visitVsVisitorChart');
+            if (visitVsVisitorEl) {
+                new ApexCharts(visitVsVisitorEl, {
+                    chart: {
+                        type: 'area',
+                        height: 320,
+                        toolbar: { show: false },
+                        zoom: { enabled: false },
+                    },
+                    series: visitVsVisitor.series,
+                    colors: visitVsVisitor.series.map((series) => series.color),
+                    dataLabels: { enabled: false },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 3,
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 0.7,
+                            opacityFrom: 0.45,
+                            opacityTo: 0.05,
+                            stops: [0, 90, 100],
+                        },
+                    },
+                    grid: {
+                        borderColor: 'rgba(148, 163, 184, 0.35)',
+                    },
+                    xaxis: {
+                        categories: visitVsVisitor.categories,
+                        labels: {
+                            style: { colors: Array(visitVsVisitor.categories.length).fill('#94a3b8') },
+                        },
+                    },
+                    yaxis: {
+                        labels: {
+                            style: { colors: ['#94a3b8'] },
+                        },
+                    },
+                    legend: { show: false },
+                    tooltip: { shared: true },
+                }).render();
+            }
+
             const visitorChartEl = document.querySelector('#visitorsChart');
             if (visitorChartEl) {
                 new ApexCharts(visitorChartEl, {

@@ -26,6 +26,8 @@ class Dashboard extends Component
 
     public array $statusChart = [];
 
+    public array $visitVsVisitor = [];
+
     public Collection $topCategories;
 
     public Collection $popularTags;
@@ -51,6 +53,7 @@ class Dashboard extends Component
     {
         $this->prepareStats();
         $this->prepareVisitorSeries();
+        $this->prepareVisitVsVisitor();
         $this->prepareStatusChart();
         $this->preparePieCharts();
 
@@ -139,6 +142,58 @@ class Dashboard extends Component
         $this->visitorSeries = [
             ['name' => (string) $currentYear, 'data' => $weeks->pluck('current')->toArray()],
             ['name' => (string) $previousYear, 'data' => $weeks->pluck('previous')->toArray()],
+        ];
+    }
+
+    private function prepareVisitVsVisitor(): void
+    {
+        $now = Carbon::now();
+        $startOfMonth = (clone $now)->startOfMonth();
+        $endOfMonth = (clone $now)->endOfMonth();
+
+        $dailyMetrics = VisitorLog::whereBetween('visited_at', [$startOfMonth, $endOfMonth])
+            ->selectRaw('DATE(visited_at) as visit_date')
+            ->selectRaw('COUNT(*) as total_visits')
+            ->selectRaw('COUNT(DISTINCT ip_address) as total_visitors')
+            ->groupBy('visit_date')
+            ->orderBy('visit_date')
+            ->get()
+            ->keyBy('visit_date');
+
+        $daysInMonth = (int) $now->daysInMonth;
+        $categories = range(1, $daysInMonth);
+        $visitsSeries = [];
+        $visitorsSeries = [];
+
+        foreach ($categories as $day) {
+            $date = $startOfMonth->copy()->addDays($day - 1)->toDateString();
+            $visitsSeries[] = (int) ($dailyMetrics[$date]->total_visits ?? 0);
+            $visitorsSeries[] = (int) ($dailyMetrics[$date]->total_visitors ?? 0);
+        }
+
+        $monthlyVisits = array_sum($visitsSeries);
+        $monthlyVisitors = array_sum($visitorsSeries);
+
+        $this->visitVsVisitor = [
+            'categories' => $categories,
+            'series' => [
+                [
+                    'name' => __('Current Month Visits'),
+                    'data' => $visitsSeries,
+                    'color' => '#7c3aed',
+                ],
+                [
+                    'name' => __('Current Month Visitors'),
+                    'data' => $visitorsSeries,
+                    'color' => '#fb7185',
+                ],
+            ],
+            'totals' => [
+                'uniqueVisitors' => VisitorLog::whereYear('visited_at', $now->year)->distinct('ip_address')->count('ip_address'),
+                'totalVisits' => $monthlyVisits,
+                'totalVisitors' => $monthlyVisitors,
+                'year' => $now->year,
+            ],
         ];
     }
 
