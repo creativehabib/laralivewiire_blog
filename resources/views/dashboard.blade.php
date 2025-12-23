@@ -7,9 +7,12 @@
             ['label' => __('New Comments'), 'value' => '32', 'subtitle' => __('From last Week'), 'delta' => '+1', 'badge' => 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-200'],
         ];
 
+        $currentYear = now()->year;
+        $previousYear = now()->subYear()->year;
+
         $visitorSeries = [
-            ['name' => '2024', 'data' => [420, 540, 610, 720, 680, 750, 820]],
-            ['name' => '2023', 'data' => [360, 460, 510, 580, 600, 640, 690]],
+            ['name' => (string) $currentYear, 'data' => [420, 540, 610, 720, 680, 750, 820]],
+            ['name' => (string) $previousYear, 'data' => [360, 460, 510, 580, 600, 640, 690]],
         ];
 
         $visitVsVisitor = [
@@ -30,6 +33,7 @@
                 'uniqueVisitors' => 16603,
                 'totalVisits' => 421495,
                 'totalVisitors' => 64234,
+                'year' => $currentYear,
             ],
         ];
 
@@ -169,7 +173,7 @@
             </div>
             <div class="mt-6 grid gap-4 md:grid-cols-3">
                 <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
-                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Unique Visitors (2025)') }}</p>
+                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Unique Visitors (:year)', ['year' => $visitVsVisitor['totals']['year']]) }}</p>
                     <p class="mt-1 text-2xl font-semibold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['uniqueVisitors']) }}</p>
                 </div>
                 <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
@@ -188,11 +192,11 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('June 2024 vs 2023') }}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __(now()->translatedFormat('F Y')) }} vs {{ $previousYear }}</p>
                     </div>
                     <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>2024</span>
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>2023</span>
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? $currentYear }}</span>
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? $previousYear }}</span>
                     </div>
                 </div>
                 <div class="mt-6">
