@@ -62,8 +62,8 @@
                         <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Current vs previous year performance') }}</p>
                     </div>
                     <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>2024</span>
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>2023</span>
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? __('Current Year') }}</span>
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? __('Previous Year') }}</span>
                     </div>
                 </div>
                 <div class="mt-6">
