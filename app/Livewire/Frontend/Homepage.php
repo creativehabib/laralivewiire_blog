@@ -58,7 +58,8 @@ class Homepage extends Component
         $basePostQuery = Post::query()
             ->published()
             ->with([
-                'categories:id,name,slug',
+                'categories:id,name',
+                'categories.slugRecord',
                 'author:id,name',
             ]);
 
@@ -84,7 +85,7 @@ class Homepage extends Component
             ->where('status', 'published')
             ->with(['posts' => function ($query) {
                 $query->published()
-                    ->with(['categories:id,name,slug', 'author:id,name'])
+                    ->with(['categories:id,name', 'categories.slugRecord', 'author:id,name'])
                     ->latest()
                     ->take(6);
             }])

@@ -159,8 +159,12 @@
                                 ? url('category/sample-category')
                                 : url('sample-category');
 
+                            $tagPrefixEnabled = $data['tag_slug_prefix_enabled'] ?? true;
+                            $tagPrefixEnabled = is_null($tagPrefixEnabled) || (bool) $tagPrefixEnabled;
                             $tagBase = trim((string)($data['tag_slug_prefix'] ?? 'tag'), '/');
-                            $tagPreview = url($tagBase . '/sample-tag');
+                            $tagPreview = $tagPrefixEnabled
+                                ? url($tagBase . '/sample-tag')
+                                : url('sample-tag');
                         @endphp
 
                         <div class="space-y-3">

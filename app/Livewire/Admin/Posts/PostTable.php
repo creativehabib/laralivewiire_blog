@@ -159,7 +159,9 @@ class PostTable extends Component
             $search = $this->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('slug', 'like', '%' . $search . '%')
+                    ->orWhereHas('slugRecord', function ($slugQuery) use ($search) {
+                        $slugQuery->where('key', 'like', '%' . $search . '%');
+                    })
                     ->orWhere('description', 'like', '%' . $search . '%');
             });
         }

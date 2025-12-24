@@ -38,7 +38,8 @@ class CategoryPage extends Component
             $baseQuery = Post::query()
                 ->published()
                 ->with([
-                    'categories:id,name,slug',
+                    'categories:id,name',
+                    'categories.slugRecord',
                     'author:id,name',
                 ])
                 ->whereHas('categories', fn ($query) => $query->where('categories.id', $this->category->id))

@@ -68,7 +68,7 @@ Route::get('/author/{author}', AuthorPage::class)->name('authors.show');
 $tagPrefixEnabled = PermalinkManager::tagPrefixEnabled();
 $tagPrefix        = PermalinkManager::tagPrefix();
 
-$tagUri = $tagPrefixEnabled ? "/{$tagPrefix}/{slug}" : "/{slug}";
+$tagUri = $tagPrefixEnabled ? "/{$tagPrefix}/{tag}" : "/{tag}";
 
 $tagRoute = Route::get($tagUri, TagPage::class)->name('tags.show');
 
@@ -95,7 +95,7 @@ $permalinkRoute = PermalinkManager::routeDefinition();
 $categoryPrefixEnabled = setting('category_slug_prefix_enabled');
 $categoryPrefixEnabled = is_null($categoryPrefixEnabled) || (bool) $categoryPrefixEnabled;
 
-$categoryUri = $categoryPrefixEnabled ? '/category/{category:slug}' : '/{category:slug}';
+$categoryUri = $categoryPrefixEnabled ? '/category/{category}' : '/{category}';
 $categoryRoute = Route::get($categoryUri, CategoryPage::class)->name('categories.show');
 
 /**
@@ -104,7 +104,7 @@ $categoryRoute = Route::get($categoryUri, CategoryPage::class)->name('categories
 $pagePrefixEnabled = PermalinkManager::pagePrefixEnabled();
 $pagePrefix        = PermalinkManager::pagePrefix();
 
-$pageUri = $pagePrefixEnabled ? "/{$pagePrefix}/{page:slug}" : "/{page:slug}";
+$pageUri = $pagePrefixEnabled ? "/{$pagePrefix}/{page}" : "/{page}";
 $pageRoute = Route::get($pageUri, PageShow::class)->name('pages.show');
 
 if (! $pagePrefixEnabled && $permalinkRoute['template'] === '%postname%') {

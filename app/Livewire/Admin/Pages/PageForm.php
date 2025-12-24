@@ -16,6 +16,7 @@ class PageForm extends Component
 {
     public ?Page $page = null;
     public ?int $pageId = null;
+    public ?int $slugId = null;
 
     // Fields
     public string $name = '';
@@ -42,6 +43,7 @@ class PageForm extends Component
         if ($page) {
             $this->page   = $page;
             $this->pageId = $page->id;
+            $this->slugId = $page->slugRecord?->id;
 
             $this->name        = (string) $page->name;
             $this->slug        = (string) $page->slug;
@@ -93,7 +95,7 @@ class PageForm extends Component
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('pages', 'slug')->ignore($this->pageId),
+                Rule::unique('slugs', 'key')->ignore($this->slugId),
             ], $crossRule),
             'description' => ['nullable', 'string', 'max:400'],
             'content'     => ['nullable', 'string'],
@@ -156,6 +158,8 @@ class PageForm extends Component
         $page->image       = $this->image;
 
         $page->save();
+
+        $this->slugId = $page->slugRecord?->id;
 
         // Save SEO meta (HasMetaBoxes)
 

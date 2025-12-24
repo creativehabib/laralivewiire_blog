@@ -168,7 +168,7 @@ class PermalinkManager
                 if ($post->relationLoaded('categories')) {
                     $cat = $post->categories->first();
                 } else {
-                    $cat = $post->categories()->select('slug')->first();
+                    $cat = $post->categories()->with('slugRecord')->first();
                 }
 
                 $params['category'] = $cat?->slug ?: 'uncategorized';
@@ -252,7 +252,8 @@ class PermalinkManager
             $parameter = $meta['parameter'];
 
             if ($parameter === 'post' && $meta['type'] === 'slug') {
-                $uri = str_replace($token, '{post:slug}', $uri);
+                $uri = str_replace($token, '{post}', $uri);
+                $constraints['post'] = $meta['pattern'];
             } elseif ($parameter === 'post' && $meta['type'] === 'id') {
                 $uri = str_replace($token, '{post}', $uri);
                 $constraints['post'] = $meta['pattern'];

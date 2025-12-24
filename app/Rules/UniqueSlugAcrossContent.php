@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use Closure;
+use App\Models\Slug;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,20 +21,21 @@ class UniqueSlugAcrossContent implements ValidationRule
     {
         $slug = (string) $value;
 
-        foreach ($this->models as $modelClass) {
-            /** @var Model $model */
-            $model = new $modelClass();
+        $query = Slug::query()->where('key', $slug);
 
-            $query = $modelClass::query()->where($model->getRouteKeyName(), $slug);
+        if (! empty($this->models)) {
+            $query->whereIn('reference_type', $this->models);
+        }
 
-            if ($this->ignore && $this->ignore instanceof $modelClass) {
-                $query->whereKeyNot($this->ignore->getKey());
+        if ($this->ignore) {
+            $slugId = $this->ignore->slugRecord?->id ?? $this->ignore->slugRecord()->value('id');
+            if ($slugId) {
+                $query->whereKeyNot($slugId);
             }
+        }
 
-            if ($query->exists()) {
-                $fail("This slug is already used in {$model->getTable()}.");
-                return;
-            }
+        if ($query->exists()) {
+            $fail('This slug is already used.');
         }
     }
 }
