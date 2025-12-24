@@ -195,7 +195,7 @@ class MenuManagement extends Component
         ]);
         $tags = Tag::whereIn('id', $this->selectedTags)->get();
         foreach ($tags as $tag) {
-            $this->createMenuItem($tag->name, route('tags.show', ['slug' => $tag->slug]));
+            $this->createMenuItem($tag->name, route('tags.show', ['tag' => $tag->slug]));
         }
         $this->selectedTags = [];
         $this->afterMenuItemsMutated('Selected tags added to the menu.');
@@ -295,7 +295,8 @@ class MenuManagement extends Component
             ->orderBy('name')
             ->when($this->categorySearch, fn ($q) => $q->where('name', 'like', '%' . $this->categorySearch . '%'))
             ->take(50)
-            ->get(['id', 'name', 'slug']);
+            ->with('slugRecord')
+            ->get(['id', 'name']);
     }
 
     #[Computed]
@@ -305,7 +306,8 @@ class MenuManagement extends Component
             ->orderByDesc('created_at')
             ->when($this->postSearch, fn ($q) => $q->where('name', 'like', '%' . $this->postSearch . '%'))
             ->take(50)
-            ->get(['id', 'name', 'slug']);
+            ->with('slugRecord')
+            ->get(['id', 'name']);
     }
 
     #[Computed]
@@ -315,7 +317,8 @@ class MenuManagement extends Component
             ->orderBy('name')
             ->when($this->tagSearch, fn ($q) => $q->where('name', 'like', '%' . $this->tagSearch . '%'))
             ->take(50)
-            ->get(['id', 'name', 'slug']);
+            ->with('slugRecord')
+            ->get(['id', 'name']);
     }
 
     public function render()

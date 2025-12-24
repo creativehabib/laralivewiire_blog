@@ -64,7 +64,10 @@ class Dashboard extends Component
         $this->popularTags = $this->fetchPopularTags();
         $this->latestMembers = User::latest()->take(5)->get(['id', 'name', 'created_at']);
         $this->recentPosts = Post::latest()->take(6)->get(['id', 'name', 'created_at', 'views']);
-        $this->recentPages = Page::latest()->take(6)->get(['id', 'name', 'slug', 'created_at']);
+        $this->recentPages = Page::latest()
+            ->with('slugRecord')
+            ->take(6)
+            ->get(['id', 'name', 'created_at']);
         $this->mostViewedPosts = Post::orderByDesc('views')->take(5)->get(['id', 'name', 'views']);
         $this->activityLogs = Activity::with('causer')->latest()->take(6)->get(['id', 'description', 'properties', 'created_at', 'causer_id', 'causer_type']);
     }

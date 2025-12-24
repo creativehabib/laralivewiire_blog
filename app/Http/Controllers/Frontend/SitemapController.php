@@ -70,7 +70,8 @@ class SitemapController extends Controller
 
         $content = $this->remember($cacheKey, function () use ($config) {
             $tags = Tag::query()
-                ->select('id', 'slug', 'updated_at', 'created_at')
+                ->select('id', 'updated_at', 'created_at')
+                ->with('slugRecord')
                 ->where('status', 'published')
                 ->orderByDesc('updated_at')
                 ->get();
@@ -128,7 +129,11 @@ class SitemapController extends Controller
         $cacheKey = 'sitemap_categories_'.md5(json_encode($config));
 
         $content = $this->remember($cacheKey, function () use ($config) {
-            $categories = Category::query()->select('id', 'slug', 'updated_at')->orderByDesc('updated_at')->get();
+            $categories = Category::query()
+                ->select('id', 'updated_at')
+                ->with('slugRecord')
+                ->orderByDesc('updated_at')
+                ->get();
             return view('frontend.sitemap-categories', [
                 'categories' => $categories,
                 'changeFrequency' => $config['frequency'],

@@ -76,7 +76,8 @@ class AuthorPage extends Component
         return Post::query()
             ->published()
             ->with([
-                'categories:id,name,slug',
+                'categories:id,name',
+                'categories.slugRecord',
                 'author:id,name',
             ]);
     }

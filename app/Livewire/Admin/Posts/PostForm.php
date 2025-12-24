@@ -16,6 +16,7 @@ class PostForm extends Component
 {
     public ?Post $post = null;
     public ?int  $postId = null;
+    public ?int $slugId = null;
     public ?string $focus_keyword = null;
     public int $nameMax = 250;
     public int $descMax = 400;
@@ -51,9 +52,10 @@ class PostForm extends Component
         if ($post && $post->exists) {
             $this->post   = $post;
             $this->postId = $post->id;
+            $this->slugId = $post->slugRecord?->id;
 
             $this->name        = $post->name;
-            $this->slug        = $post->slug;
+            $this->slug        = $post->slug ?? '';
             $this->description = $post->description;
             $this->content     = $post->content;
             $this->status      = $post->status;
@@ -107,7 +109,7 @@ class PostForm extends Component
             'name' => ['required', 'string', 'max:255'],
             'slug' => [
                 'required', 'string', 'max:255',
-                Rule::unique('posts', 'slug')->ignore($this->postId),
+                Rule::unique('slugs', 'key')->ignore($this->slugId),
             ],
             'description' => ['nullable', 'string', 'max:400'],
             'content'     => ['nullable', 'string'],
@@ -286,14 +288,15 @@ class PostForm extends Component
         $slug = Str::slug($name);
 
         // আগে থেকে আছে কিনা দেখি
-        $tag = Tag::where('slug', $slug)->orWhere('name', $name)->first();
+        $tag = \App\Support\SlugHelper::resolveModel($slug, Tag::class)
+            ?? Tag::where('name', $name)->first();
 
         if (! $tag) {
-            $tag = Tag::create([
-                'name'   => $name,
-                'slug'   => $slug,
-                'status' => 'published',
-            ]);
+            $tag = new Tag();
+            $tag->name = $name;
+            $tag->slug = $slug;
+            $tag->status = 'published';
+            $tag->save();
         }
 
         if (! in_array($tag->id, $this->selectedTagIds, true)) {
@@ -364,6 +367,7 @@ class PostForm extends Component
 
         $this->post   = $post;
         $this->postId = $post->id;
+        $this->slugId = $post->slugRecord?->id;
 
         // redirect এর পর toast show
         $this->dispatch('media-toast', title: 'success', message: 'Post saved successfully.');
@@ -406,7 +410,9 @@ class PostForm extends Component
 
                 $q->where(function ($query) use ($search) {
                     $query->where('name', 'like', '%'.$search.'%')
-                        ->orWhere('slug', 'like', '%'.$search.'%');
+                        ->orWhereHas('slugRecord', function ($slugQuery) use ($search) {
+                            $slugQuery->where('key', 'like', '%'.$search.'%');
+                        });
                 });
             })
             ->orderBy('name')

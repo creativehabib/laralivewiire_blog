@@ -11,6 +11,7 @@ use Livewire\Component;
 class TagEdit extends Component
 {
     public Tag $tag;
+    public ?int $slugId = null;
 
     public $name;
     public $slug;
@@ -34,6 +35,7 @@ class TagEdit extends Component
         // form fields pre-fill
         $this->name        = $tag->name;
         $this->slug        = $tag->slug;
+        $this->slugId      = $tag->slugRecord?->id;
         $this->description = $tag->description;
         $this->status      = $tag->status;
         $this->author_id   = $tag->author_id;
@@ -59,7 +61,7 @@ class TagEdit extends Component
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('tags', 'slug')->ignore($this->tag->id),
+                Rule::unique('slugs', 'key')->ignore($this->slugId),
             ],
             'description' => ['nullable', 'string'],
             'status'      => ['required', Rule::in(['published', 'draft'])],
@@ -92,14 +94,15 @@ class TagEdit extends Component
             $this->author_type = get_class($user);
         }
 
-        $this->tag->update([
-            'name'        => $this->name,
-            'slug'        => $this->slug,
-            'description' => $this->description,
-            'status'      => $this->status,
-            'author_id'   => $this->author_id,
-            'author_type' => $this->author_type,
-        ]);
+        $this->tag->name        = $this->name;
+        $this->tag->slug        = $this->slug;
+        $this->tag->description = $this->description;
+        $this->tag->status      = $this->status;
+        $this->tag->author_id   = $this->author_id;
+        $this->tag->author_type = $this->author_type;
+        $this->tag->save();
+
+        $this->slugId = $this->tag->slugRecord?->id;
 
         // meta থাকলে save করো
         if (method_exists($this->tag, 'setMeta')) {

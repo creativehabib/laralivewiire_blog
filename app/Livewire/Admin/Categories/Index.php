@@ -19,6 +19,7 @@ class Index extends Component
 
     // form fields
     public $categoryId = null;
+    public ?int $slugId = null;
 
     public $name;
     public $slug;
@@ -48,10 +49,10 @@ class Index extends Component
 
     protected function rules()
     {
-        $slugRule = 'required|string|max:255|unique:categories,slug';
+        $slugRule = 'required|string|max:255|unique:slugs,key';
 
         if ($this->categoryId) {
-            $slugRule = 'required|string|max:255|unique:categories,slug,' . $this->categoryId;
+            $slugRule = 'required|string|max:255|unique:slugs,key,' . $this->slugId;
         }
 
         return [
@@ -127,6 +128,7 @@ class Index extends Component
         $this->categoryId  = $category->id;
         $this->name        = $category->name;
         $this->slug        = $category->slug;
+        $this->slugId      = $category->slugRecord?->id;
         $this->parent_id   = $category->parent_id;
         $this->description = $category->description;
         $this->icon        = $category->icon;
@@ -180,6 +182,8 @@ class Index extends Component
         $category->order       = $this->order ?? 0;
         $category->image       = $this->image;
         $category->save();
+
+        $this->slugId = $category->slugRecord?->id;
 
         $category->setMeta('seo_meta', [[
             'seo_title'       => $this->seo_title,

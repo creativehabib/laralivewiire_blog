@@ -14,6 +14,7 @@ class CategoryForm extends Component
     use WithFileUploads;
 
     public $categoryId = null;
+    public ?int $slugId = null;
 
     public $name;
     public $slug;
@@ -33,9 +34,9 @@ class CategoryForm extends Component
 
     protected function rules()
     {
-        $slugRule = 'required|string|max:255|unique:categories,slug';
+        $slugRule = 'required|string|max:255|unique:slugs,key';
         if ($this->categoryId) {
-            $slugRule = 'required|string|max:255|unique:categories,slug,' . $this->categoryId;
+            $slugRule = 'required|string|max:255|unique:slugs,key,' . $this->slugId;
         }
 
         return [
@@ -74,6 +75,7 @@ class CategoryForm extends Component
 
             $this->name        = $category->name;
             $this->slug        = $category->slug;
+            $this->slugId      = $category->slugRecord?->id;
             $this->parent_id   = $category->parent_id;
             $this->description = $category->description;
             $this->icon        = $category->icon;
@@ -141,6 +143,8 @@ class CategoryForm extends Component
         $category->image       = $this->image;
         $category->save();
 
+        $this->slugId = $category->slugRecord?->id;
+
         $category->setMeta('seo_meta', [[
             'seo_title'       => $this->seo_title,
             'seo_description' => $this->seo_description,
@@ -194,4 +198,3 @@ class CategoryForm extends Component
         return $dummy->analyzeSeo($this->focus_keyword, $meta);
     }
 }
-

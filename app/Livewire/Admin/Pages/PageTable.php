@@ -72,7 +72,9 @@ class PageTable extends Component
             $s = $this->search;
             $query->where(function ($q) use ($s) {
                 $q->where('name', 'like', "%{$s}%")
-                    ->orWhere('slug', 'like', "%{$s}%")
+                    ->orWhereHas('slugRecord', function ($slugQuery) use ($s) {
+                        $slugQuery->where('key', 'like', "%{$s}%");
+                    })
                     ->orWhere('description', 'like', "%{$s}%");
             });
         }

@@ -62,7 +62,7 @@
             <div class="mt-4 flex flex-wrap gap-2 text-xs">
                 <div class="flex flex-wrap gap-2">
                     @foreach($post->tags as $tag)
-                        <a href="{{ route('tags.show', $tag->slug) }}" class="px-2 py-1 rounded-full bg-primary-light text-primary-dark dark:bg-slate-800 dark:text-slate-100" wire:navigate>
+                        <a href="{{ route('tags.show', ['tag' => $tag->slug]) }}" class="px-2 py-1 rounded-full bg-primary-light text-primary-dark dark:bg-slate-800 dark:text-slate-100" wire:navigate>
                             #{{ $tag->name }}
                         </a>
                     @endforeach

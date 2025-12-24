@@ -3,6 +3,7 @@
 namespace App\Livewire\Frontend;
 
 use App\Models\Post;
+use App\Support\SlugHelper;
 use App\Support\Seo;
 use App\Support\PostViewCounter;
 use Illuminate\Database\Eloquent\Collection;
@@ -61,21 +62,13 @@ class SinglePost extends Component
 
         $postParameter = (string) $postParameter;
 
-        // slug based
-        $post = Post::query()
-            ->published()
-            ->where((new Post())->getRouteKeyName(), $postParameter)
-            ->first();
+        $post = SlugHelper::resolveModel($postParameter, Post::class);
 
-        // numeric permalink fallback
-        if (! $post && is_numeric($postParameter)) {
-            $post = Post::query()
-                ->published()
-                ->whereKey($postParameter)
-                ->first();
+        if ($post) {
+            return in_array($post->status, ['published', 'publish'], true) ? $post : abort(404);
         }
 
-        return $post ?? abort(404);
+        return abort(404);
     }
 
     /**
@@ -92,15 +85,17 @@ class SinglePost extends Component
         }
 
         $post->loadMissing([
-            'categories:id,name,slug',
-            'tags:id,name,slug',
+            'categories:id,name',
+            'categories.slugRecord',
+            'tags:id,name',
+            'tags.slugRecord',
             'author:id,name',
         ]);
 
         // Related posts (same category)
         $this->relatedPosts = Post::query()
             ->published()
-            ->with(['categories:id,name,slug', 'author:id,name'])
+            ->with(['categories:id,name', 'categories.slugRecord', 'author:id,name'])
             ->whereHas('categories', function ($q) use ($post) {
                 $q->whereIn('categories.id', $post->categories->pluck('id'));
             })
@@ -112,7 +107,7 @@ class SinglePost extends Component
         // Trending posts
         $this->trendingPosts = Post::query()
             ->published()
-            ->with(['categories:id,name,slug'])
+            ->with(['categories:id,name', 'categories.slugRecord'])
             ->whereKeyNot($post->id)
             ->orderByDesc('views')
             ->latest('created_at')

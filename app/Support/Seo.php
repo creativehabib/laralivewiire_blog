@@ -89,7 +89,7 @@ class Seo
             'description' => $seoMeta['seo_description'] ?? $tag->description,
             'image' => $seoMeta['seo_image'] ?? null,
             'index' => $seoMeta['index'] ?? 'index',
-            'url' => route('tags.show', ['slug' => $tag->slug]),
+            'url' => route('tags.show', ['tag' => $tag->slug]),
             'type' => 'website',
         ];
 

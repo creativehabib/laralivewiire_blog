@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Tags;
 use App\Models\Admin\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class TagCreate extends Component
@@ -27,14 +28,9 @@ class TagCreate extends Component
 
     protected function rules()
     {
-        $slugRule = 'required|string|max:255|unique:tags,slug';
-        if ($this->tagId) {
-            $slugRule = 'required|string|max:255|unique:tags,slug,' . $this->tagId;
-        }
-
         return [
             'name'        => 'required|string|max:255',
-            'slug'        => $slugRule,
+            'slug'        => ['required', 'string', 'max:255', Rule::unique('slugs', 'key')],
             'description' => 'nullable|string',
             'status'      => 'required|in:published,draft',
 

@@ -3,7 +3,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     @foreach($tags as $tag)
         <url>
-            <loc>{{ route('tags.show', ['slug' => $tag->slug]) }}</loc>
+            <loc>{{ route('tags.show', ['tag' => $tag->slug]) }}</loc>
             <lastmod>{{ optional($tag->updated_at ?? $tag->created_at)->tz('UTC')->toAtomString() }}</lastmod>
             <changefreq>{{ $changeFrequency }}</changefreq>
             <priority>{{ $priority }}</priority>

@@ -6,6 +6,7 @@ use App\Models\Admin\Tag;
 use App\Models\Admin\Comment;
 use App\Models\Concerns\HasMetaBoxes; // যদি meta ব্যবহার করো
 use App\Models\Concerns\HasSeoMeta;
+use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,7 @@ class Post extends Model
     use SoftDeletes;
     use HasMetaBoxes;
     use HasSeoMeta;
+    use HasSlug;
 
     const CONTENT_TYPE_VIDEO = 'video';
 
@@ -23,7 +25,6 @@ class Post extends Model
         'name',
         'description',
         'content',
-        'slug',
         'status',
         'author_id',
         'author_type',

@@ -4,16 +4,16 @@ namespace App\Models\Admin;
 
 use App\Models\Post;
 use App\Models\Concerns\HasMetaBoxes;
+use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-    use HasFactory, HasMetaBoxes;
+    use HasFactory, HasMetaBoxes, HasSlug;
     protected $fillable = [
         'name',
         'description',
-        'slug',
         'status',
         'author_id',
         'author_type',

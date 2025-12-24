@@ -10,30 +10,25 @@ use Livewire\Component;
 
 class TagPage extends Component
 {
-    public string $slug;
-
     public ?Tag $tag = null;
 
     public bool $ready = false;
 
     public Collection $posts;
 
-    public function mount(string $slug)
+    public function mount(Tag $tag)
     {
-        $this->slug = $slug;
+        $this->tag = $tag;
         $this->posts = collect();
     }
 
     public function loadTag(): void
     {
-        $this->tag = Tag::query()
-            ->where('slug', $this->slug)
-            ->firstOrFail();
-
         $this->posts = Post::query()
             ->published()
             ->with([
-                'categories:id,name,slug',
+                'categories:id,name',
+                'categories.slugRecord',
                 'author:id,name',
             ])
             ->whereHas('tags', fn ($query) => $query->where('tags.id', $this->tag->id))

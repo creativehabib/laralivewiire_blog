@@ -7,7 +7,9 @@ use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Post;
 use App\Support\CacheSettings;
+use App\Support\SlugHelper;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL; // ১. URL ফাসাদটি যোগ করা হয়েছে
 use Illuminate\Support\ServiceProvider;
 
@@ -31,7 +33,32 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        $this->registerSlugBindings();
         $this->registerCacheResetHooks();
+    }
+
+    protected function registerSlugBindings(): void
+    {
+        Route::bind('post', function (string $value) {
+            $model = SlugHelper::resolveModel($value, Post::class);
+            abort_if(! $model, 404);
+            return $model;
+        });
+        Route::bind('category', function (string $value) {
+            $model = SlugHelper::resolveModel($value, Category::class);
+            abort_if(! $model, 404);
+            return $model;
+        });
+        Route::bind('page', function (string $value) {
+            $model = SlugHelper::resolveModel($value, Page::class);
+            abort_if(! $model, 404);
+            return $model;
+        });
+        Route::bind('tag', function (string $value) {
+            $model = SlugHelper::resolveModel($value, \App\Models\Admin\Tag::class);
+            abort_if(! $model, 404);
+            return $model;
+        });
     }
 
     protected function registerCacheResetHooks(): void

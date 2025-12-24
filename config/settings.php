@@ -141,12 +141,28 @@ return [
                     'hint' => 'Example: tags',
                 ],
                 [
+                    'key' => 'tag_slug_prefix_enabled',
+                    'type' => 'switch',
+                    'label' => 'Tag URL prefix',
+                    'default' => true,
+                    'rules' => ['nullable'],
+                    'hint' => 'Tag URL এ prefix থাকবে?',
+                ],
+                [
                     'key'     => 'page_slug_prefix',
                     'label'   => 'Page URL base',
                     'type'    => 'text',
                     'default' => 'page',
-                    'rules'   => ['required', 'regex:/^[a-z0-9\-]+$/'],
+                    'rules'   => ['required', 'regex:/^[a-z0-9\\-]+$/'],
                     'hint' => 'Example: page, info, docs',
+                ],
+                [
+                    'key' => 'page_slug_prefix_enabled',
+                    'type' => 'switch',
+                    'label' => 'Page URL prefix',
+                    'default' => true,
+                    'rules' => ['nullable'],
+                    'hint' => 'Page URL এ prefix থাকবে?',
                 ],
 
                 [
