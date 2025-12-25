@@ -92,10 +92,10 @@ $permalinkRoute = PermalinkManager::routeDefinition();
 /**
  * CATEGORY ROUTE
  */
-$categoryPrefixEnabled = setting('category_slug_prefix_enabled');
-$categoryPrefixEnabled = is_null($categoryPrefixEnabled) || (bool) $categoryPrefixEnabled;
+$categoryPrefixEnabled = PermalinkManager::categoryPrefixEnabled();
+$categoryPrefix        = PermalinkManager::categoryPrefix();
 
-$categoryUri = $categoryPrefixEnabled ? '/category/{category}' : '/{category}';
+$categoryUri = $categoryPrefixEnabled ? "/{$categoryPrefix}/{category}" : '/{category}';
 $categoryRoute = Route::get($categoryUri, CategoryPage::class)->name('categories.show');
 
 /**
