@@ -65,6 +65,10 @@ class SlugHelper
 
     public static function prefixForModel(Model $model): string
     {
+        if ($model instanceof Post) {
+            return PermalinkManager::postPrefix();
+        }
+
         if ($model instanceof Category) {
             return PermalinkManager::categoryPrefix();
         }

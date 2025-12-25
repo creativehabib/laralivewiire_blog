@@ -443,5 +443,24 @@ class PermalinkManager
         return $prefix;
     }
 
+    public static function postPrefix(): string
+    {
+        [$structure, $custom] = self::currentStructure();
+        $template = self::normalizedTemplate($structure, $custom);
+
+        $segments = array_filter(explode('/', trim($template, '/')));
+        $prefixSegments = [];
+
+        foreach ($segments as $segment) {
+            if (str_contains($segment, '%')) {
+                break;
+            }
+
+            $prefixSegments[] = $segment;
+        }
+
+        return implode('/', $prefixSegments);
+    }
+
 
 }
