@@ -38,6 +38,7 @@ use App\Livewire\Frontend\SinglePost;
 use App\Livewire\Frontend\TagPage;
 
 use App\Support\PermalinkManager;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
@@ -72,6 +73,9 @@ $tagUri = $tagPrefixEnabled ? "/{$tagPrefix}/{tag}" : "/{tag}";
 
 $tagRoute = Route::get($tagUri, $tagPrefixEnabled ? TagPage::class : SlugDispatcher::class)
     ->name('tags.show');
+if (! $tagPrefixEnabled) {
+    $tagRoute->withoutMiddleware(SubstituteBindings::class);
+}
 
 /**
  * Fallback: prefix OFF হলে /slug conflict হতে পারে (page/category/post)
@@ -92,6 +96,9 @@ $categoryPrefix        = PermalinkManager::categoryPrefix();
 $categoryUri = $categoryPrefixEnabled ? "/{$categoryPrefix}/{category}" : '/{category}';
 $categoryRoute = Route::get($categoryUri, $categoryPrefixEnabled ? CategoryPage::class : SlugDispatcher::class)
     ->name('categories.show');
+if (! $categoryPrefixEnabled) {
+    $categoryRoute->withoutMiddleware(SubstituteBindings::class);
+}
 
 /**
  * PAGE ROUTE (prefix depends on setting)
@@ -102,6 +109,9 @@ $pagePrefix        = PermalinkManager::pagePrefix();
 $pageUri = $pagePrefixEnabled ? "/{$pagePrefix}/{page}" : "/{page}";
 $pageRoute = Route::get($pageUri, $pagePrefixEnabled ? PageShow::class : SlugDispatcher::class)
     ->name('pages.show');
+if (! $pagePrefixEnabled) {
+    $pageRoute->withoutMiddleware(SubstituteBindings::class);
+}
 /**
  * IMPORTANT:
  * Post greedy route MUST be last
