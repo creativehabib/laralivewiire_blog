@@ -152,6 +152,8 @@ class SettingsGenerator extends Component
             ($previous['category_slug_prefix'] ?? null) !== ($current['category_slug_prefix'] ?? null)
             || ($previous['tag_slug_prefix'] ?? null) !== ($current['tag_slug_prefix'] ?? null)
             || ($previous['page_slug_prefix'] ?? null) !== ($current['page_slug_prefix'] ?? null)
+            || ($previous['custom_permalink_structure'] ?? null) !== ($current['custom_permalink_structure'] ?? null)
+            || ($previous['permalink_structure'] ?? null) !== ($current['permalink_structure'] ?? null)
         ) {
             Slug::where('reference_type', Category::class)
                 ->update(['prefix' => SlugHelper::prefixForModel(new Category())]);
@@ -159,13 +161,8 @@ class SettingsGenerator extends Component
                 ->update(['prefix' => SlugHelper::prefixForModel(new Tag())]);
             Slug::where('reference_type', Page::class)
                 ->update(['prefix' => SlugHelper::prefixForModel(new Page())]);
-        }
-
-        if (
-            ($previous['permalink_structure'] ?? null) !== ($current['permalink_structure'] ?? null)
-            || ($previous['custom_permalink_structure'] ?? null) !== ($current['custom_permalink_structure'] ?? null)
-        ) {
-            $this->syncPostSlugs();
+            Slug::where('reference_type', Post::class)
+                ->update(['prefix' => SlugHelper::prefixForModel(new Post())]);
         }
     }
 

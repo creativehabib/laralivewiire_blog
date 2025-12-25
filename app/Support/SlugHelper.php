@@ -77,6 +77,10 @@ class SlugHelper
             return PermalinkManager::pagePrefix();
         }
 
+        if($model instanceof Post) {
+            return PermalinkManager::postPrefix();
+        }   
+
         return '';
     }
 }

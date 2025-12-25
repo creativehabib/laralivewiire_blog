@@ -443,5 +443,13 @@ class PermalinkManager
         return $prefix;
     }
 
+    public static function postPrefix(): string
+    {
+        $prefix = setting('permalink_structure', '');
+        $prefix = $prefix === null ? '' : trim((string) $prefix, '/');
+
+        return $prefix;
+    }
+
 
 }
