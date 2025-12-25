@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Rules\UniqueSlugAcrossContent;
 use App\Support\SeoAnalyzer;
+use App\Support\PermalinkManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -79,8 +80,7 @@ class PageForm extends Component
     {
         $id = $this->pageId ?? 'NULL';
 
-        $pagePrefixEnabled = setting('page_slug_prefix_enabled');
-        $pagePrefixEnabled = is_null($pagePrefixEnabled) || (bool) $pagePrefixEnabled;
+        $pagePrefixEnabled = PermalinkManager::pagePrefixEnabled();
 
         $crossRule = $pagePrefixEnabled ? [] : [
             new UniqueSlugAcrossContent(

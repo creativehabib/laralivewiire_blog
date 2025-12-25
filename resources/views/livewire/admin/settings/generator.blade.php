@@ -152,19 +152,14 @@
 
                             $sample = PermalinkManager::previewSample($structure, $custom);
 
-                            $catPrefix = $data['category_slug_prefix_enabled'] ?? true;
-                            $catPrefix = is_null($catPrefix) || (bool)$catPrefix;
+                            $categoryPrefix = trim((string) ($data['category_slug_prefix'] ?? ''), '/');
+                            $categoryPrefix = $categoryPrefix !== '' ? $categoryPrefix : 'category';
 
-                            $categoryPreview = $catPrefix
-                                ? url('category/sample-category')
-                                : url('sample-category');
+                            $categoryPreview = url($categoryPrefix . '/sample-category');
 
-                            $tagPrefixEnabled = $data['tag_slug_prefix_enabled'] ?? true;
-                            $tagPrefixEnabled = is_null($tagPrefixEnabled) || (bool) $tagPrefixEnabled;
-                            $tagBase = trim((string)($data['tag_slug_prefix'] ?? 'tag'), '/');
-                            $tagPreview = $tagPrefixEnabled
-                                ? url($tagBase . '/sample-tag')
-                                : url('sample-tag');
+                            $tagBase = trim((string) ($data['tag_slug_prefix'] ?? ''), '/');
+                            $tagBase = $tagBase !== '' ? $tagBase : 'tags';
+                            $tagPreview = url($tagBase . '/sample-tag');
                         @endphp
 
                         <div class="space-y-3">

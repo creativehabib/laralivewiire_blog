@@ -124,12 +124,12 @@ return [
                 ],
 
                 [
-                    'key' => 'category_slug_prefix_enabled',
-                    'type' => 'switch',
-                    'label' => 'Category URL prefix',
-                    'default' => true,
-                    'rules' => ['nullable'],
-                    'hint' => 'Category URL এ "category" prefix থাকবে?',
+                    'key' => 'category_slug_prefix',
+                    'type' => 'text',
+                    'label' => 'Category URL base',
+                    'default' => 'category',
+                    'rules' => ['nullable', 'string', 'max:50'],
+                    'hint' => 'Example: category (খালি রাখলে ডিফল্ট থাকবে)',
                 ],
 
                 [
@@ -137,32 +137,16 @@ return [
                     'type' => 'text',
                     'label' => 'Tag URL base',
                     'default' => 'tags',
-                    'rules' => ['required', 'string', 'max:50'],
-                    'hint' => 'Example: tags',
-                ],
-                [
-                    'key' => 'tag_slug_prefix_enabled',
-                    'type' => 'switch',
-                    'label' => 'Tag URL prefix',
-                    'default' => true,
-                    'rules' => ['nullable'],
-                    'hint' => 'Tag URL এ prefix থাকবে?',
+                    'rules' => ['nullable', 'string', 'max:50'],
+                    'hint' => 'Example: tags (খালি রাখলে ডিফল্ট থাকবে)',
                 ],
                 [
                     'key'     => 'page_slug_prefix',
                     'label'   => 'Page URL base',
                     'type'    => 'text',
                     'default' => 'page',
-                    'rules'   => ['required', 'regex:/^[a-z0-9\\-]+$/'],
-                    'hint' => 'Example: page, info, docs',
-                ],
-                [
-                    'key' => 'page_slug_prefix_enabled',
-                    'type' => 'switch',
-                    'label' => 'Page URL prefix',
-                    'default' => true,
-                    'rules' => ['nullable'],
-                    'hint' => 'Page URL এ prefix থাকবে?',
+                    'rules'   => ['nullable', 'regex:/^[a-z0-9\\-]+$/'],
+                    'hint' => 'Example: page, info, docs (খালি রাখলে ডিফল্ট থাকবে)',
                 ],
 
                 [

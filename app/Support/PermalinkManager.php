@@ -381,14 +381,7 @@ class PermalinkManager
      */
     public static function categoryPreview(string $slug = 'your-slug', bool $absolute = true): string
     {
-        // settings থেকে category prefix নেওয়া
-        $categoryPrefixEnabled = setting('category_slug_prefix_enabled');
-        $categoryPrefixEnabled = is_null($categoryPrefixEnabled) || (bool)$categoryPrefixEnabled;
-
-        // prefix /category থাকবে নাকি সরাসরি /{slug}
-        $path = $categoryPrefixEnabled
-            ? 'category/' . ltrim($slug, '/')
-            : ltrim($slug, '/');
+        $path = self::categoryPrefix() . '/' . ltrim($slug, '/');
 
         // আগেই থাকা helper দিয়ে proper URL বানাচ্ছি
         return self::formatUrl($path, $absolute);
@@ -399,41 +392,55 @@ class PermalinkManager
      */
     public static function tagPreview(string $slug = 'your-tag', bool $absolute = true): string
     {
-        $path = self::tagPrefixEnabled()
-            ? self::tagPrefix() . '/' . ltrim($slug, '/')
-            : ltrim($slug, '/');
+        $path = self::tagPrefix() . '/' . ltrim($slug, '/');
 
         return self::formatUrl($path, $absolute);
     }
+
+    public static function categoryPrefixEnabled(): bool
+    {
+        return self::categoryPrefix() !== '';
+    }
+
+    public static function categoryPrefix(): string
+    {
+        $prefix = setting('category_slug_prefix', 'category');
+        $prefix = $prefix === null ? '' : trim((string) $prefix, '/');
+
+        return $prefix !== '' ? $prefix : 'category';
+    }
+
     public static function pagePrefixEnabled(): bool
     {
-        $enabled = setting('page_slug_prefix_enabled');
-        return is_null($enabled) || (bool) $enabled;
+        return self::pagePrefix() !== '';
     }
 
     public static function pagePrefix(): string
     {
-        return trim((string) setting('page_slug_prefix', 'page'), '/');
+        $prefix = setting('page_slug_prefix', 'page');
+        $prefix = $prefix === null ? '' : trim((string) $prefix, '/');
+
+        return $prefix !== '' ? $prefix : 'page';
     }
 
     public static function pagePreview(string $slug = 'your-page', bool $absolute = true): string
     {
-        $path = self::pagePrefixEnabled()
-            ? self::pagePrefix() . '/' . ltrim($slug, '/')
-            : ltrim($slug, '/');
+        $path = self::pagePrefix() . '/' . ltrim($slug, '/');
 
         return self::formatUrl($path, $absolute);
     }
 
     public static function tagPrefixEnabled(): bool
     {
-        $enabled = setting('tag_slug_prefix_enabled', true);
-        return is_null($enabled) || (bool) $enabled;
+        return self::tagPrefix() !== '';
     }
 
     public static function tagPrefix(): string
     {
-        return trim((string) setting('tag_slug_prefix', 'tags'), '/');
+        $prefix = setting('tag_slug_prefix', 'tags');
+        $prefix = $prefix === null ? '' : trim((string) $prefix, '/');
+
+        return $prefix !== '' ? $prefix : 'tags';
     }
 
 

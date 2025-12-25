@@ -5,9 +5,12 @@ namespace App\Livewire\Admin\Settings;
 use App\Models\Admin\Page;
 use App\Models\Admin\Tag;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Slug;
+use App\Support\PermalinkManager;
 use App\Support\SlugHelper;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class SettingsGenerator extends Component
 {
@@ -69,6 +72,11 @@ class SettingsGenerator extends Component
                 $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
             }
 
+            if (in_array($key, ['category_slug_prefix', 'tag_slug_prefix', 'page_slug_prefix'], true)) {
+                $value = is_string($value) ? trim($value) : $value;
+                $value = $value === '' ? null : $value;
+            }
+
             set_setting($key, $value, $this->group);
         }
 
@@ -97,11 +105,11 @@ class SettingsGenerator extends Component
         }
 
         $keys = [
-            'category_slug_prefix_enabled',
+            'permalink_structure',
+            'custom_permalink_structure',
+            'category_slug_prefix',
             'tag_slug_prefix',
-            'tag_slug_prefix_enabled',
             'page_slug_prefix',
-            'page_slug_prefix_enabled',
         ];
 
         $availableKeys = collect($config['fields'] ?? [])
@@ -121,11 +129,11 @@ class SettingsGenerator extends Component
         }
 
         $current = [
-            'category_slug_prefix_enabled' => setting('category_slug_prefix_enabled'),
+            'permalink_structure' => setting('permalink_structure'),
+            'custom_permalink_structure' => setting('custom_permalink_structure'),
+            'category_slug_prefix' => setting('category_slug_prefix'),
             'tag_slug_prefix' => setting('tag_slug_prefix'),
-            'tag_slug_prefix_enabled' => setting('tag_slug_prefix_enabled'),
             'page_slug_prefix' => setting('page_slug_prefix'),
-            'page_slug_prefix_enabled' => setting('page_slug_prefix_enabled'),
         ];
 
         $changed = false;
@@ -140,11 +148,39 @@ class SettingsGenerator extends Component
             return;
         }
 
-        Slug::where('reference_type', Category::class)
-            ->update(['prefix' => SlugHelper::prefixForModel(new Category())]);
-        Slug::where('reference_type', Tag::class)
-            ->update(['prefix' => SlugHelper::prefixForModel(new Tag())]);
-        Slug::where('reference_type', Page::class)
-            ->update(['prefix' => SlugHelper::prefixForModel(new Page())]);
+        if (
+            ($previous['category_slug_prefix'] ?? null) !== ($current['category_slug_prefix'] ?? null)
+            || ($previous['tag_slug_prefix'] ?? null) !== ($current['tag_slug_prefix'] ?? null)
+            || ($previous['page_slug_prefix'] ?? null) !== ($current['page_slug_prefix'] ?? null)
+        ) {
+            Slug::where('reference_type', Category::class)
+                ->update(['prefix' => SlugHelper::prefixForModel(new Category())]);
+            Slug::where('reference_type', Tag::class)
+                ->update(['prefix' => SlugHelper::prefixForModel(new Tag())]);
+            Slug::where('reference_type', Page::class)
+                ->update(['prefix' => SlugHelper::prefixForModel(new Page())]);
+        }
+
+        if (
+            ($previous['permalink_structure'] ?? null) !== ($current['permalink_structure'] ?? null)
+            || ($previous['custom_permalink_structure'] ?? null) !== ($current['custom_permalink_structure'] ?? null)
+        ) {
+            $this->syncPostSlugs();
+        }
+    }
+
+    protected function syncPostSlugs(): void
+    {
+        [$structure, $custom] = PermalinkManager::currentStructure();
+        $template = PermalinkManager::normalizedTemplate($structure, $custom);
+        $usePostId = Str::contains($template, '%post_id%');
+
+        Post::query()
+            ->select('id', 'name', 'title')
+            ->chunkById(200, function ($posts) use ($usePostId): void {
+                foreach ($posts as $post) {
+                    $post->syncSlug($usePostId ? (string) $post->getKey() : null);
+                }
+            });
     }
 }

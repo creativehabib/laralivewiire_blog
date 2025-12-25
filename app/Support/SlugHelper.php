@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Slug;
 use Illuminate\Database\Eloquent\Model;
+use App\Support\PermalinkManager;
 
 class SlugHelper
 {
@@ -65,24 +66,15 @@ class SlugHelper
     public static function prefixForModel(Model $model): string
     {
         if ($model instanceof Category) {
-            $enabled = setting('category_slug_prefix_enabled');
-            $enabled = is_null($enabled) || (bool) $enabled;
-
-            return $enabled ? 'category' : '';
+            return PermalinkManager::categoryPrefix();
         }
 
         if ($model instanceof Tag) {
-            $enabled = setting('tag_slug_prefix_enabled', true);
-            $enabled = is_null($enabled) || (bool) $enabled;
-
-            return $enabled ? trim((string) setting('tag_slug_prefix', 'tags'), '/') : '';
+            return PermalinkManager::tagPrefix();
         }
 
         if ($model instanceof Page) {
-            $enabled = setting('page_slug_prefix_enabled');
-            $enabled = is_null($enabled) || (bool) $enabled;
-
-            return $enabled ? trim((string) setting('page_slug_prefix', 'page'), '/') : '';
+            return PermalinkManager::pagePrefix();
         }
 
         return '';
