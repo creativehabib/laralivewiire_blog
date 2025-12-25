@@ -176,7 +176,7 @@ class SettingsGenerator extends Component
         $usePostId = Str::contains($template, '%post_id%');
 
         Post::query()
-            ->select('id', 'name', 'title')
+            ->select('id', 'name')
             ->chunkById(200, function ($posts) use ($usePostId): void {
                 foreach ($posts as $post) {
                     $post->syncSlug($usePostId ? (string) $post->getKey() : null);
