@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Frontend\SitemapController;
+use App\Http\Controllers\Frontend\SlugRouterController;
 
 use App\Livewire\Admin\Categories\CategoryForm;
 use App\Livewire\Admin\Categories\CategoryTable;
@@ -37,7 +38,6 @@ use App\Livewire\Frontend\SinglePost;
 use App\Livewire\Frontend\TagPage;
 
 use App\Support\PermalinkManager;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
@@ -68,19 +68,10 @@ Route::get('/author/{author}', AuthorPage::class)->name('authors.show');
 $tagPrefixEnabled = PermalinkManager::tagPrefixEnabled();
 $tagPrefix        = PermalinkManager::tagPrefix();
 
-$tagUri = $tagPrefixEnabled ? "/{$tagPrefix}/{tag}" : "/{tag}";
+$tagUri = $tagPrefixEnabled ? "/{$tagPrefix}/{tag}" : "/{slug}";
 
-$tagRoute = Route::get($tagUri, TagPage::class)->name('tags.show');
-
-/**
- * Fallback: prefix OFF হলে /slug conflict হতে পারে (page/category/post)
- * তাই Tag fallback রাখা ভালো (optional)
- */
-if (! $tagPrefixEnabled) {
-    $tagRoute->missing(function (Request $request) {
-        abort(404);
-    });
-}
+$tagRoute = Route::get($tagUri, $tagPrefixEnabled ? TagPage::class : SlugRouterController::class)
+    ->name('tags.show');
 
 
 /**
@@ -95,8 +86,9 @@ $permalinkRoute = PermalinkManager::routeDefinition();
 $categoryPrefixEnabled = PermalinkManager::categoryPrefixEnabled();
 $categoryPrefix        = PermalinkManager::categoryPrefix();
 
-$categoryUri = $categoryPrefixEnabled ? "/{$categoryPrefix}/{category}" : '/{category}';
-$categoryRoute = Route::get($categoryUri, CategoryPage::class)->name('categories.show');
+$categoryUri = $categoryPrefixEnabled ? "/{$categoryPrefix}/{category}" : '/{slug}';
+$categoryRoute = Route::get($categoryUri, $categoryPrefixEnabled ? CategoryPage::class : SlugRouterController::class)
+    ->name('categories.show');
 
 /**
  * PAGE ROUTE (prefix depends on setting)
@@ -104,32 +96,21 @@ $categoryRoute = Route::get($categoryUri, CategoryPage::class)->name('categories
 $pagePrefixEnabled = PermalinkManager::pagePrefixEnabled();
 $pagePrefix        = PermalinkManager::pagePrefix();
 
-$pageUri = $pagePrefixEnabled ? "/{$pagePrefix}/{page}" : "/{page}";
-$pageRoute = Route::get($pageUri, PageShow::class)->name('pages.show');
+$pageUri = $pagePrefixEnabled ? "/{$pagePrefix}/{page}" : "/{slug}";
+$pageRoute = Route::get($pageUri, $pagePrefixEnabled ? PageShow::class : SlugRouterController::class)
+    ->name('pages.show');
 
-if (! $pagePrefixEnabled && $permalinkRoute['template'] === '%postname%') {
-    $pageRoute->missing(function (Request $request) {
-        return redirect()->route('posts.show', ['post' => $request->route('page')]);
-    });
-}
 /**
  * IMPORTANT:
  * Post greedy route MUST be last
  */
-$postRoute = Route::get($permalinkRoute['uri'], SinglePost::class)->name('posts.show');
-if (! empty($permalinkRoute['constraints'])) {
+$postUsesSlug = $permalinkRoute['template'] === '%postname%';
+$postRoute = Route::get(
+    $postUsesSlug ? '/{slug}' : $permalinkRoute['uri'],
+    $postUsesSlug ? SlugRouterController::class : SinglePost::class
+)->name('posts.show');
+if (! $postUsesSlug && ! empty($permalinkRoute['constraints'])) {
     $postRoute->where($permalinkRoute['constraints']);
-}
-
-/**
- * OPTIONAL: if category prefix OFF and permalink is exactly %postname%
- * then /slug could be post too.
- * (Settings validation prevents worst-case, but keep this as safety)
- */
-if (! $categoryPrefixEnabled && $permalinkRoute['template'] === '%postname%') {
-    $categoryRoute->missing(function (Request $request) {
-        return redirect()->route('posts.show', ['post' => $request->route('category')]);
-    });
 }
 
 Route::get('/{key}.txt', function ($key) {
