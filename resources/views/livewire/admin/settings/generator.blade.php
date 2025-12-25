@@ -153,12 +153,9 @@
                             $sample = PermalinkManager::previewSample($structure, $custom);
 
                             $categoryPrefix = trim((string) ($data['category_slug_prefix'] ?? ''), '/');
-                            $categoryPrefix = $categoryPrefix !== '' ? $categoryPrefix : 'category';
-
                             $categoryPreview = url($categoryPrefix . '/sample-category');
 
                             $tagBase = trim((string) ($data['tag_slug_prefix'] ?? ''), '/');
-                            $tagBase = $tagBase !== '' ? $tagBase : 'tags';
                             $tagPreview = url($tagBase . '/sample-tag');
                         @endphp
 

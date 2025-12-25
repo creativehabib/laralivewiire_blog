@@ -127,26 +127,26 @@ return [
                     'key' => 'category_slug_prefix',
                     'type' => 'text',
                     'label' => 'Category URL base',
-                    'default' => 'category',
+                    'default' => '',
                     'rules' => ['nullable', 'string', 'max:50'],
-                    'hint' => 'Example: category (খালি রাখলে ডিফল্ট থাকবে)',
+                    'hint' => 'Example: category (খালি রাখলে prefix থাকবে না)',
                 ],
 
                 [
                     'key' => 'tag_slug_prefix',
                     'type' => 'text',
                     'label' => 'Tag URL base',
-                    'default' => 'tags',
+                    'default' => '',
                     'rules' => ['nullable', 'string', 'max:50'],
-                    'hint' => 'Example: tags (খালি রাখলে ডিফল্ট থাকবে)',
+                    'hint' => 'Example: tags (খালি রাখলে prefix থাকবে না)',
                 ],
                 [
                     'key'     => 'page_slug_prefix',
                     'label'   => 'Page URL base',
                     'type'    => 'text',
-                    'default' => 'page',
+                    'default' => '',
                     'rules'   => ['nullable', 'regex:/^[a-z0-9\\-]+$/'],
-                    'hint' => 'Example: page, info, docs (খালি রাখলে ডিফল্ট থাকবে)',
+                    'hint' => 'Example: page, info, docs (খালি রাখলে prefix থাকবে না)',
                 ],
 
                 [
