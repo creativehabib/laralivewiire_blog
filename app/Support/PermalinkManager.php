@@ -404,10 +404,10 @@ class PermalinkManager
 
     public static function categoryPrefix(): string
     {
-        $prefix = setting('category_slug_prefix', 'category');
+        $prefix = setting('category_slug_prefix', '');
         $prefix = $prefix === null ? '' : trim((string) $prefix, '/');
 
-        return $prefix !== '' ? $prefix : 'category';
+        return $prefix;
     }
 
     public static function pagePrefixEnabled(): bool
@@ -417,10 +417,10 @@ class PermalinkManager
 
     public static function pagePrefix(): string
     {
-        $prefix = setting('page_slug_prefix', 'page');
+        $prefix = setting('page_slug_prefix', '');
         $prefix = $prefix === null ? '' : trim((string) $prefix, '/');
 
-        return $prefix !== '' ? $prefix : 'page';
+        return $prefix;
     }
 
     public static function pagePreview(string $slug = 'your-page', bool $absolute = true): string
@@ -437,10 +437,10 @@ class PermalinkManager
 
     public static function tagPrefix(): string
     {
-        $prefix = setting('tag_slug_prefix', 'tags');
+        $prefix = setting('tag_slug_prefix', '');
         $prefix = $prefix === null ? '' : trim((string) $prefix, '/');
 
-        return $prefix !== '' ? $prefix : 'tags';
+        return $prefix;
     }
 
 
