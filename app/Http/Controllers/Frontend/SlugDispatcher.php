@@ -13,6 +13,8 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Slug;
 use App\Support\PermalinkManager;
+use App\Support\SlugHelper;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class SlugDispatcher extends Controller
@@ -26,9 +28,13 @@ class SlugDispatcher extends Controller
             ->where('key', $slug)
             ->first();
 
-        abort_if(! $record, 404);
+        $reference = $record?->reference;
 
-        $reference = $record->reference;
+        if (! $reference) {
+            $reference = $this->resolveFallbackBySlug($slug);
+            abort_if(! $reference, 404);
+            $this->ensureSlugRecord($reference, $slug);
+        }
 
         return match (true) {
             $reference instanceof Category => $this->handleCategory($reference),
@@ -45,6 +51,44 @@ class SlugDispatcher extends Controller
         $value = array_values($params)[0] ?? '';
 
         return is_string($value) ? $value : (string) $value;
+    }
+
+    protected function resolveFallbackBySlug(string $slug): ?Model
+    {
+        $lookups = [];
+
+        if (! PermalinkManager::categoryPrefixEnabled()) {
+            $lookups[] = Category::class;
+        }
+
+        if (! PermalinkManager::tagPrefixEnabled()) {
+            $lookups[] = Tag::class;
+        }
+
+        if (! PermalinkManager::pagePrefixEnabled()) {
+            $lookups[] = Page::class;
+        }
+
+        foreach ($lookups as $modelClass) {
+            $model = $modelClass::query()->where('slug', $slug)->first();
+
+            if ($model) {
+                return $model;
+            }
+        }
+
+        return null;
+    }
+
+    protected function ensureSlugRecord(Model $model, string $slug): void
+    {
+        if (! method_exists($model, 'slugRecord')) {
+            return;
+        }
+
+        if (! $model->slugRecord()->exists()) {
+            SlugHelper::createOrUpdate($model, $slug);
+        }
     }
 
     protected function handleCategory(Category $category)
