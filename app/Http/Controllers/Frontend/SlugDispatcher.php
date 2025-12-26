@@ -16,6 +16,7 @@ use App\Support\PermalinkManager;
 use App\Support\SlugHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class SlugDispatcher extends Controller
 {
@@ -70,7 +71,19 @@ class SlugDispatcher extends Controller
         }
 
         foreach ($lookups as $modelClass) {
-            $model = $modelClass::query()->where('slug', $slug)->first();
+            $query = $modelClass::query();
+
+            if (method_exists($modelClass, 'slugRecord')) {
+                $query->whereHas('slugRecord', function ($slugQuery) use ($slug): void {
+                    $slugQuery->where('key', $slug);
+                });
+            } elseif (Schema::hasColumn((new $modelClass)->getTable(), 'slug')) {
+                $query->where('slug', $slug);
+            } else {
+                continue;
+            }
+
+            $model = $query->first();
 
             if ($model) {
                 return $model;
