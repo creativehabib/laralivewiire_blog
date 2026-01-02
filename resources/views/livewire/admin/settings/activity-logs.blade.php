@@ -51,18 +51,7 @@
                         <input type="checkbox" wire:model.live="selectAll" class="rounded border-slate-300 focus:ring-blue-500">
                     </th>
                     <th class="p-4 w-16">ID <i class="fas fa-sort text-slate-300 ml-1"></i></th>
-                    @if($showActivity)
-                        <th class="p-4">Activity</th>
-                    @endif
-                    @if($showIp)
-                        <th class="p-4">IP</th>
-                    @endif
-                    @if($showBrowser)
-                        <th class="p-4">Browser</th>
-                    @endif
-                    @if($showOs)
-                        <th class="p-4">OS</th>
-                    @endif
+                    <th class="p-4">Action</th>
                     <th class="p-4 text-right">Operations</th>
                 </tr>
                 </thead>
@@ -73,51 +62,41 @@
                             <input type="checkbox" wire:model.live="selected" value="{{ $log->id }}" class="rounded border-slate-300 focus:ring-blue-500">
                         </td>
                         <td class="p-4 text-slate-500">{{ $log->id }}</td>
-                        @if($showActivity)
-                            <td class="p-4">
-                                <div class="flex items-start gap-3">
-                                    {{-- User Icon --}}
-                                    <div class="w-10 h-10 rounded bg-slate-200 flex items-center justify-center text-slate-500 flex-shrink-0">
-                                        <i class="fas fa-user"></i>
+                        <td class="p-4">
+                            <div class="flex items-start gap-3">
+                                {{-- User Icon --}}
+                                <div class="w-10 h-10 rounded bg-slate-200 flex items-center justify-center text-slate-500 flex-shrink-0">
+                                    <i class="fas fa-user"></i>
+                                </div>
+
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-1.5 text-slate-800 dark:text-slate-200">
+                                        {{-- User Name --}}
+                                        <a href="#" class="font-semibold text-blue-600 hover:underline">
+                                            {{ $log->causer?->name ?? 'System' }}
+                                        </a>
+
+                                        {{-- Role Badge (Demo logic) --}}
+                                        @if($log->causer)
+                                            <span class="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">admin</span>
+                                        @endif
+
+                                        {{-- Action Description --}}
+                                        <span>{{ $log->description }}</span>
                                     </div>
 
-                                    <div>
-                                        <div class="flex flex-wrap items-center gap-1.5 text-slate-800 dark:text-slate-200">
-                                            {{-- User Name --}}
-                                            <a href="#" class="font-semibold text-blue-600 hover:underline">
-                                                {{ $log->causer?->name ?? 'System' }}
-                                            </a>
+                                    <div class="mt-1 text-xs text-slate-500 flex items-center gap-1">
+                                        {{-- Time --}}
+                                        <span>{{ $log->created_at->diffForHumans() }}</span>
 
-                                            {{-- Role Badge (Demo logic) --}}
-                                            @if($log->causer)
-                                                <span class="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">admin</span>
-                                            @endif
-
-                                            <span>{{ $log->description }}</span>
-                                        </div>
-
-                                        <div class="mt-1 text-xs text-slate-500 flex flex-wrap items-center gap-2">
-                                            <span>{{ $log->created_at->diffForHumans() }}</span>
-                                        </div>
+                                        {{-- IP Address --}}
+                                        @if(isset($log->properties['ip']))
+                                            <span class="text-blue-500">({{ $log->properties['ip'] }})</span>
+                                        @endif
                                     </div>
                                 </div>
-                            </td>
-                        @endif
-                        @if($showIp)
-                            <td class="p-4 text-slate-600">
-                                {{ $log->properties['ip'] ?? '—' }}
-                            </td>
-                        @endif
-                        @if($showBrowser)
-                            <td class="p-4 text-slate-600">
-                                {{ $this->resolveBrowser($log->properties['user_agent'] ?? null) }}
-                            </td>
-                        @endif
-                        @if($showOs)
-                            <td class="p-4 text-slate-600">
-                                {{ $this->resolveOs($log->properties['user_agent'] ?? null) }}
-                            </td>
-                        @endif
+                            </div>
+                        </td>
                         <td class="p-4 text-right">
                             <button wire:click="delete({{ $log->id }})" wire:confirm="Delete this log?" class="w-8 h-8 rounded bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center ml-auto">
                                 <i class="fas fa-trash"></i>
@@ -125,15 +104,8 @@
                         </td>
                     </tr>
                 @empty
-                    @php
-                        $columnCount = 3;
-                        $columnCount += $showActivity ? 1 : 0;
-                        $columnCount += $showIp ? 1 : 0;
-                        $columnCount += $showBrowser ? 1 : 0;
-                        $columnCount += $showOs ? 1 : 0;
-                    @endphp
                     <tr>
-                        <td colspan="{{ $columnCount }}" class="p-8 text-center text-slate-500">
+                        <td colspan="4" class="p-8 text-center text-slate-500">
                             No activity logs found.
                         </td>
                     </tr>
