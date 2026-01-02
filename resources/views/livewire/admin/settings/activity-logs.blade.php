@@ -9,55 +9,6 @@
     </div>
 
     <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-        {{-- Settings --}}
-        <div class="p-4 border-b border-slate-200 dark:border-slate-700">
-            <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">Activity Log Settings</h2>
-            <form wire:submit.prevent="saveSettings" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                            <input type="checkbox" wire:model="showActivity" class="rounded border-slate-300 focus:ring-blue-500">
-                            Show Activity
-                        </label>
-                        <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                            <input type="checkbox" wire:model="showIp" class="rounded border-slate-300 focus:ring-blue-500">
-                            Show IP Address
-                        </label>
-                        <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                            <input type="checkbox" wire:model="showBrowser" class="rounded border-slate-300 focus:ring-blue-500">
-                            Show Browser
-                        </label>
-                        <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                            <input type="checkbox" wire:model="showOs" class="rounded border-slate-300 focus:ring-blue-500">
-                            Show OS
-                        </label>
-                    </div>
-
-                    <div>
-                        <label class="text-sm font-medium text-slate-700 dark:text-slate-200">Retention Days</label>
-                        <input
-                            type="number"
-                            min="0"
-                            wire:model="retentionDays"
-                            class="mt-2 w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="15"
-                        >
-                        <p class="mt-2 text-xs text-slate-500">
-                            Set how many days to keep activity logs. Use 0 to disable automatic deletion.
-                        </p>
-                        @error('retentionDays')
-                            <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="flex justify-end">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700">
-                        Save Settings
-                    </button>
-                </div>
-            </form>
-        </div>
 
         {{-- Toolbar --}}
         <div class="p-4 flex flex-col sm:flex-row justify-between gap-4 border-b border-slate-200 dark:border-slate-700">
@@ -100,16 +51,16 @@
                         <input type="checkbox" wire:model.live="selectAll" class="rounded border-slate-300 focus:ring-blue-500">
                     </th>
                     <th class="p-4 w-16">ID <i class="fas fa-sort text-slate-300 ml-1"></i></th>
-                    @if($showActivity ?? false)
+                    @if($showActivity)
                         <th class="p-4">Activity</th>
                     @endif
-                    @if($showIp ?? false)
+                    @if($showIp)
                         <th class="p-4">IP</th>
                     @endif
-                    @if($showBrowser ?? false)
+                    @if($showBrowser)
                         <th class="p-4">Browser</th>
                     @endif
-                    @if($showOs ?? false)
+                    @if($showOs)
                         <th class="p-4">OS</th>
                     @endif
                     <th class="p-4 text-right">Operations</th>
@@ -122,7 +73,7 @@
                             <input type="checkbox" wire:model.live="selected" value="{{ $log->id }}" class="rounded border-slate-300 focus:ring-blue-500">
                         </td>
                         <td class="p-4 text-slate-500">{{ $log->id }}</td>
-                        @if($showActivity ?? false)
+                        @if($showActivity)
                             <td class="p-4">
                                 <div class="flex items-start gap-3">
                                     {{-- User Icon --}}
@@ -152,17 +103,17 @@
                                 </div>
                             </td>
                         @endif
-                        @if($showIp ?? false)
+                        @if($showIp)
                             <td class="p-4 text-slate-600">
                                 {{ $log->properties['ip'] ?? '—' }}
                             </td>
                         @endif
-                        @if($showBrowser ?? false)
+                        @if($showBrowser)
                             <td class="p-4 text-slate-600">
                                 {{ $this->resolveBrowser($log->properties['user_agent'] ?? null) }}
                             </td>
                         @endif
-                        @if($showOs ?? false)
+                        @if($showOs)
                             <td class="p-4 text-slate-600">
                                 {{ $this->resolveOs($log->properties['user_agent'] ?? null) }}
                             </td>
@@ -176,10 +127,10 @@
                 @empty
                     @php
                         $columnCount = 3;
-                        $columnCount += ($showActivity ?? false) ? 1 : 0;
-                        $columnCount += ($showIp ?? false) ? 1 : 0;
-                        $columnCount += ($showBrowser ?? false) ? 1 : 0;
-                        $columnCount += ($showOs ?? false) ? 1 : 0;
+                        $columnCount += $showActivity ? 1 : 0;
+                        $columnCount += $showIp ? 1 : 0;
+                        $columnCount += $showBrowser ? 1 : 0;
+                        $columnCount += $showOs ? 1 : 0;
                     @endphp
                     <tr>
                         <td colspan="{{ $columnCount }}" class="p-8 text-center text-slate-500">
