@@ -387,7 +387,7 @@
 
             <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
                 বিজ্ঞাপনের স্থান
-            </section>র
+            </section>
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
                 <div class="relative">
                     <div id="sidebarFeaturedCarousel" class="relative">
