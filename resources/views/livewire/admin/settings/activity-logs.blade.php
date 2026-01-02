@@ -50,7 +50,7 @@
                     <th class="p-4 w-10">
                         <input type="checkbox" wire:model.live="selectAll" class="rounded border-slate-300 focus:ring-blue-500">
                     </th>
-                    <th class="p-4 w-16">ID <i class="fas fa-sort text-slate-300 ml-1"></i></th>
+                    <th class="p-4 w-16 flex items-center">ID <i class="fas fa-sort text-slate-300 ml-1"></i></th>
                     <th class="p-4">Action</th>
                     <th class="p-4 text-right">Operations</th>
                 </tr>
