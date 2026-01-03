@@ -91,8 +91,18 @@
 
                         {{-- Comment Content --}}
                         <td class="p-4">
-                            <div class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
-                                {{ $comment->content }}
+                            <div class="space-y-1">
+                                @if($comment->parent)
+                                    <div class="text-xs text-slate-500">
+                                        In reply to
+                                        <span class="text-blue-600 dark:text-blue-400 font-medium">
+                                            {{ $comment->parent->name }}
+                                        </span>
+                                    </div>
+                                @endif
+                                <div class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
+                                    {{ $comment->content }}
+                                </div>
                             </div>
                         </td>
 
