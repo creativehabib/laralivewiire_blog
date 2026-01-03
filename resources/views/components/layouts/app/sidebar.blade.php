@@ -126,7 +126,7 @@
             <flux:sidebar.item
                 icon="chat-bubble-left-ellipsis"
                 :href="route('admin.comments.moderation')"
-                :current="request()->routeIs('admin.comments.moderation')"
+                :current="request()->routeIs('admin.comments.*')"
                 tooltip="{{ __('Comments') }}"
                 wire:navigate
             >
