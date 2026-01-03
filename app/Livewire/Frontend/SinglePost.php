@@ -47,24 +47,6 @@ class SinglePost extends Component
      */
     protected function resolvePostParameter(array $parameters): Post
     {
-        if (isset($parameters['post_id'])) {
-            $postId = $parameters['post_id'];
-            $post = Post::find($postId);
-
-            if (! $post) {
-                abort(404);
-            }
-
-            if (isset($parameters['post'])) {
-                $slug = (string) $parameters['post'];
-                if ($slug !== '' && $post->slug !== $slug) {
-                    abort(404);
-                }
-            }
-
-            return in_array($post->status, ['published', 'publish'], true) ? $post : abort(404);
-        }
-
         $values = array_values($parameters);
 
         // সবসময় LAST segment পোস্ট ধরা হচ্ছে

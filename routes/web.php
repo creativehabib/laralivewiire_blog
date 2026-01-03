@@ -85,13 +85,30 @@ if (! $tagPrefixEnabled) {
 
 /**
  * DYNAMIC FRONT ROUTES (Category + Page + Post)
- * NOTE: order matters.
  */
 Route::middleware(['auth', 'preventBackHistory'])
     ->get('/setting/{group}', SettingsGenerator::class)
     ->name('settings.dynamic')
     ->middleware('permission:setting.view');
 
+Route::middleware(['auth'])->group(function () {
+    Route::redirect('settings', 'settings/profile');
+
+    Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
+    Volt::route('settings/password', 'settings.password')->name('user-password.edit');
+    Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
+
+    Volt::route('settings/two-factor', 'settings.two-factor')
+        ->middleware(
+            when(
+                Features::canManageTwoFactorAuthentication()
+                && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
+                ['password.confirm'],
+                [],
+            )
+        )
+        ->name('two-factor.show');
+});
 $permalinkRoute = PermalinkManager::routeDefinition();
 
 /**
@@ -213,21 +230,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
 
-    Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
-    Volt::route('settings/password', 'settings.password')->name('user-password.edit');
-    Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
-
-    Volt::route('settings/two-factor', 'settings.two-factor')
-        ->middleware(
-            when(
-                Features::canManageTwoFactorAuthentication()
-                && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
-                ['password.confirm'],
-                [],
-            )
-        )
-        ->name('two-factor.show');
-});
