@@ -505,7 +505,7 @@
                     }
                 } else {
                     editor.insertHtml(
-                        '<img src="' + url + '" alt="' + (data?.name || '') + '"/>'
+                        '<img src="' + url + '" alt="' + (data?.name || '') + '" class="`w-full object-cover`"/>'
                     );
                 }
             });
@@ -546,6 +546,56 @@
                 CKEDITOR.instances.content.destroy(true);
             }
 
+            if (!CKEDITOR.plugins.get('ImgHippoUploader')) {
+                CKEDITOR.plugins.add('ImgHippoUploader', {
+                    init: function (editor) {
+                        editor.addCommand('imgHippoUpload', {
+                            exec: function (ed) {
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.accept = 'image/*';
+                                input.onchange = async function (event) {
+                                    const file = event.target.files && event.target.files[0];
+                                    if (!file) return;
+
+                                    const formData = new FormData();
+                                    formData.append('api_key', '135bffee9951bdd00673ecaa3c040a3b');
+                                    formData.append('file', file);
+
+                                    ed.showNotification('Uploading image...', 'info');
+
+                                    const response = await fetch('https://api.imghippo.com/v1/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                    });
+                                    const payload = await response.json();
+                                    if (!payload?.success) {
+                                        ed.showNotification(payload?.message || 'Upload failed', 'warning');
+                                        return;
+                                    }
+
+                                    const imageUrl = payload?.data?.view_url || payload?.data?.url;
+                                    if (!imageUrl) {
+                                        ed.showNotification('Image URL missing', 'warning');
+                                        return;
+                                    }
+
+                                    ed.insertHtml('<img src="' + imageUrl + '" alt="' + (payload?.data?.title || '') + '" class="`w-full object-cover`"/>');
+                                    ed.showNotification('Image uploaded', 'success');
+                                };
+                                input.click();
+                            }
+                        });
+
+                        editor.ui.addButton('ImgHippoUpload', {
+                            label: 'Upload Image to imgHippo',
+                            command: 'imgHippoUpload',
+                            toolbar: 'insert',
+                            icon: 'image'
+                        });
+                    }
+                });
+            }
             const editor = CKEDITOR.replace('content', {
                 // ডাইনামিক CSS ইনজেক্ট করা
                 contentsCss: [
@@ -554,7 +604,7 @@
                 ],
                 // আপনার বাকি সব কনফিগ এখানে থাকবে...
                 height: 400,
-                extraPlugins: 'imagemenu,mathjax,tableresize,wordcount,notification,ImageManager,codesnippet,embed',
+                extraPlugins: 'imagemenu,ImgHippoUploader,mathjax,tableresize,wordcount,notification,ImageManager,codesnippet,embed',
                 wordcount: { showCharCount: true, showWordCount: true },
 
                 toolbar: [
@@ -571,6 +621,7 @@
                         items: [
                             'Image',
                             'Table',
+                            'ImgHippoUpload',
                             'HorizontalRule',
                             'SpecialChar',
                             'Mathjax',

@@ -765,3 +765,11 @@ select:focus[data-flux-control] {
     text-shadow: none !important;
 }
 
+a.cke_button{
+    cursor: pointer !important;
+}
+
+.prose-article img {
+    width: 100%;
+}
+
