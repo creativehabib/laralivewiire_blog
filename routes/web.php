@@ -87,6 +87,11 @@ if (! $tagPrefixEnabled) {
  * DYNAMIC FRONT ROUTES (Category + Page + Post)
  * NOTE: order matters.
  */
+Route::middleware(['auth', 'preventBackHistory'])
+    ->get('/setting/{group}', SettingsGenerator::class)
+    ->name('settings.dynamic')
+    ->middleware('permission:setting.view');
+
 $permalinkRoute = PermalinkManager::routeDefinition();
 
 /**
@@ -197,14 +202,6 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::resource('/users', UserManagementController::class);
     });
 });
-
-/**
- * Dynamic settings page
- */
-Route::middleware(['auth', 'preventBackHistory'])
-    ->get('/setting/{group}', SettingsGenerator::class)
-    ->name('settings.dynamic')
-    ->middleware('permission:setting.view');
 
 /**
  * Admin panel
