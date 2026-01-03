@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\SitemapController;
 use App\Livewire\Admin\Categories\CategoryForm;
 use App\Livewire\Admin\Categories\CategoryTable;
 use App\Livewire\Admin\Categories\Index as CategoryIndex;
+use App\Livewire\Admin\Comments\CommentEdit;
 use App\Livewire\Admin\CommentsManager;
 use App\Livewire\Admin\Pages\PageForm;
 use App\Livewire\Admin\Pages\PageTable;
@@ -225,8 +226,8 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
  */
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'preventBackHistory'])->group(function () {
+        Route::get('/comments/{comment}/edit', CommentEdit::class)->name('comments.edit')->middleware('permission:setting.view');
         Route::get('/comments/moderation', CommentsManager::class)->name('comments.moderation')->middleware('permission:setting.view');
         Route::get('/setting/{group}', SettingsGenerator::class)->name('settings.dynamic')->middleware('permission:setting.view');
     });
 });
-

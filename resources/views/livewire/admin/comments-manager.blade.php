@@ -156,6 +156,9 @@
                         {{-- Operations --}}
                         <td class="p-4 text-center">
                             <div class="flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <a href="{{ route('admin.comments.edit', $comment) }}" title="Edit" class="w-8 h-8 rounded bg-indigo-500 text-white hover:bg-indigo-600 transition-colors flex items-center justify-center shadow-sm">
+                                    <i class="fas fa-pen text-xs"></i>
+                                </a>
                                 <button wire:click="openReplyModal({{ $comment->id }})" title="Reply" class="w-8 h-8 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center justify-center shadow-sm">
                                     <i class="fas fa-reply text-xs"></i>
                                 </button>
