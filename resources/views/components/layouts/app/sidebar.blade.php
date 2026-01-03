@@ -74,67 +74,80 @@
             </flux:sidebar.item>
 
             {{-- Pages --}}
-            <flux:sidebar.item
-                icon="document-text"
-                :href="route('admins.pages.index')"
-                :current="request()->routeIs('admins.pages.*')"
-                tooltip="{{ __('Pages') }}"
-                wire:navigate
-            >
-                {{ __('Pages') }}
-            </flux:sidebar.item>
+            @can('page.view')
+                <flux:sidebar.item
+                    icon="document-text"
+                    :href="route('admins.pages.index')"
+                    :current="request()->routeIs('admins.pages.*')"
+                    tooltip="{{ __('Pages') }}"
+                    wire:navigate
+                >
+                    {{ __('Pages') }}
+                </flux:sidebar.item>
+            @endcan
 
             {{-- Blog Group --}}
-            <flux:sidebar.group
-                heading="{{ __('Blog') }}"
-                icon="newspaper"
-                expandable
-                class="grid"
-                :expanded="request()->routeIs('blogs.*')"
-            >
-                <flux:sidebar.item
-                    icon="pencil-square"
-                    :href="route('blogs.posts.index')"
-                    :current="request()->routeIs('blogs.posts*')"
-                    tooltip="{{ __('Posts') }}"
-                    wire:navigate
+            @canany(['post.view', 'category.view', 'tags.view'])
+                <flux:sidebar.group
+                    heading="{{ __('Blog') }}"
+                    icon="newspaper"
+                    expandable
+                    class="grid"
+                    :expanded="request()->routeIs('blogs.*')"
                 >
-                    {{ __('Posts') }}
-                </flux:sidebar.item>
+                    @can('post.view')
+                        <flux:sidebar.item
+                            icon="pencil-square"
+                            :href="route('blogs.posts.index')"
+                            :current="request()->routeIs('blogs.posts*')"
+                            tooltip="{{ __('Posts') }}"
+                            wire:navigate
+                        >
+                            {{ __('Posts') }}
+                        </flux:sidebar.item>
+                    @endcan
+                    {{--BLOG--}}
+                    @can('category.view')
+                        <flux:sidebar.item
+                            icon="folder"
+                            :href="route('blogs.categories.index')"
+                            :current="request()->routeIs('blogs.categories.*')"
+                            tooltip="{{ __('Categories') }}"
+                            wire:navigate
+                        >
+                            {{ __('Categories') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-                <flux:sidebar.item
-                    icon="folder"
-                    :href="route('blogs.categories.index')"
-                    :current="request()->routeIs('blogs.categories.*')"
-                    tooltip="{{ __('Categories') }}"
-                    wire:navigate
-                >
-                    {{ __('Categories') }}
-                </flux:sidebar.item>
+                    @can('tags.view')
+                        <flux:sidebar.item
+                            icon="hashtag"
+                            :href="route('blogs.tags.index')"
+                            :current="request()->routeIs('blogs.tags.*')"
+                            tooltip="{{ __('Tags') }}"
+                            wire:navigate
+                        >
+                            {{ __('Tags') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-                <flux:sidebar.item
-                    icon="hashtag"
-                    :href="route('blogs.tags.index')"
-                    :current="request()->routeIs('blogs.tags.*')"
-                    tooltip="{{ __('Tags') }}"
-                    wire:navigate
-                >
-                    {{ __('Tags') }}
-                </flux:sidebar.item>
-            </flux:sidebar.group>
+                </flux:sidebar.group>
+            @endcanany
 
             <livewire:admin.comment-notifications />
 
             {{-- Media --}}
-            <flux:sidebar.item
-                icon="photo"
-                :href="route('media')"
-                :current="request()->routeIs('media')"
-                tooltip="{{ __('Media') }}"
-                wire:navigate
-            >
-                {{ __('Media') }}
-            </flux:sidebar.item>
+            @can('media.view')
+                <flux:sidebar.item
+                    icon="photo"
+                    :href="route('media')"
+                    :current="request()->routeIs('media')"
+                    tooltip="{{ __('Media') }}"
+                    wire:navigate
+                >
+                    {{ __('Media') }}
+                </flux:sidebar.item>
+            @endcan
 
 
         {{--Appearance--}}
@@ -195,6 +208,7 @@
                 {{ __('Customs HTML') }}
             </flux:sidebar.item>
 
+            {{--            --}}
             <flux:sidebar.item
                 icon="document-magnifying-glass"
                 :href="route('appearance.robots')"
@@ -235,8 +249,6 @@
                 {{ __('Sitemap Setting') }}
             </flux:sidebar.item>
 
-
-
             <flux:sidebar.item
                 icon="server"
                 :href="route('settings.htaccess')"
@@ -248,11 +260,6 @@
             </flux:sidebar.item>
 
             {{-- UPDATED ICONS BELOW --}}
-
-
-
-
-
             <flux:sidebar.item
                 icon="chat-bubble-left-right"
                 :href="route('settings.comments')"
@@ -262,9 +269,6 @@
             >
                 {{ __('Comments') }}
             </flux:sidebar.item>
-
-
-
 
         </flux:sidebar.group>
 

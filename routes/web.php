@@ -46,7 +46,7 @@ use Livewire\Volt\Volt;
 Route::get('/', Homepage::class)->name('home');
 
 Route::get('dashboard', Dashboard::class)->middleware(['auth', 'verified'])->name('dashboard');
-Route::view('admin/media', 'media')->middleware(['auth', 'verified'])->name('media');
+Route::view('admin/media', 'media')->middleware(['auth', 'verified', 'permission:media.view'])->name('media');
 
 /**
  * SITEMAPS
