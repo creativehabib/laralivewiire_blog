@@ -156,7 +156,7 @@
                         {{-- Operations --}}
                         <td class="p-4 text-center">
                             <div class="flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button title="Reply" class="w-8 h-8 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center justify-center shadow-sm">
+                                <button wire:click="openReplyModal({{ $comment->id }})" title="Reply" class="w-8 h-8 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center justify-center shadow-sm">
                                     <i class="fas fa-reply text-xs"></i>
                                 </button>
 
@@ -214,4 +214,70 @@
             </div>
         </div>
     </div>
+
+    @if($showReplyModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+            <div class="absolute inset-0 bg-slate-900/50" wire:click="closeReplyModal"></div>
+            <div class="relative w-full max-w-3xl bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                    <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">
+                        Reply to {{ $replyTargetName }}
+                    </h3>
+                    <button type="button" wire:click="closeReplyModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="px-6 py-4">
+                    <div wire:ignore>
+                        <textarea id="reply-editor" class="w-full border border-slate-300 rounded-md min-h-[220px]"></textarea>
+                    </div>
+                    @error('replyContent')
+                        <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40">
+                    <button type="button" wire:click="closeReplyModal" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-300 rounded-md hover:bg-slate-100">
+                        Cancel
+                    </button>
+                    <button type="button" wire:click="submitReply" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                        Reply
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
+
+@push('scripts')
+    <script>
+        function initReplyEditor(content = '') {
+            const editorId = 'reply-editor';
+
+            if (!window.CKEDITOR) {
+                return;
+            }
+
+            if (CKEDITOR.instances[editorId]) {
+                CKEDITOR.instances[editorId].destroy(true);
+            }
+
+            if (typeof window.setupCkeditorBase === 'function') {
+                window.setupCkeditorBase('{{ setting("hippo_api_key") }}');
+            }
+
+            const editor = CKEDITOR.replace(editorId, {
+                height: 260,
+            });
+
+            editor.setData(content || '');
+
+            editor.on('change', function () {
+                @this.set('replyContent', editor.getData());
+            });
+        }
+
+        window.addEventListener('init-reply-editor', (event) => {
+            initReplyEditor(event.detail?.content || '');
+        });
+    </script>
+@endpush
