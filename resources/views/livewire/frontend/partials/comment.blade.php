@@ -30,7 +30,7 @@
                 @endif
 
                 <div class="text-sm text-slate-700 dark:text-slate-100 whitespace-pre-line">
-                    {{ $comment->content }}
+                    {!! nl2br(e(strip_tags($comment->content))) !!}
                 </div>
             </div>
         </div>

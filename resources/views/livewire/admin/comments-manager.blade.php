@@ -101,7 +101,7 @@
                                     </div>
                                 @endif
                                 <div class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
-                                    {{ $comment->content }}
+                                    {{ strip_tags($comment->content) }}
                                 </div>
                             </div>
                         </td>
