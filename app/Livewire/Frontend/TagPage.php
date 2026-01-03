@@ -4,8 +4,6 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Admin\Tag;
 use App\Models\Post;
-use App\Support\PermalinkManager;
-use App\Support\SlugHelper;
 use App\Support\Seo;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -18,33 +16,10 @@ class TagPage extends Component
 
     public Collection $posts;
 
-    public function mount(Tag|string $tag)
+    public function mount(Tag $tag)
     {
+        $this->tag = $tag;
         $this->posts = collect();
-
-        if ($tag instanceof Tag) {
-            $this->tag = $tag;
-            return;
-        }
-
-        $slug = (string) $tag;
-        $resolved = SlugHelper::resolveModel($slug, Tag::class);
-
-        if ($resolved instanceof Tag) {
-            $this->tag = $resolved;
-            return;
-        }
-
-        if (! PermalinkManager::tagPrefixEnabled()
-            && PermalinkManager::routeDefinition()['template'] === '%postname%') {
-            $post = SlugHelper::resolveModel($slug, Post::class);
-
-            if ($post && in_array($post->status, ['published', 'publish'], true)) {
-                return redirect()->route('posts.show', ['post' => $slug]);
-            }
-        }
-
-        abort(404);
     }
 
     public function loadTag(): void

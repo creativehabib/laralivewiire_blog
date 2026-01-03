@@ -4,8 +4,6 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Category;
 use App\Models\Post;
-use App\Support\PermalinkManager;
-use App\Support\SlugHelper;
 use App\Support\Seo;
 use Livewire\WithPagination;
 use Livewire\Component;
@@ -20,31 +18,9 @@ class CategoryPage extends Component
 
     public int $perPage = 10;
 
-    public function mount(Category|string $category)
+    public function mount(Category $category)
     {
-        if ($category instanceof Category) {
-            $this->category = $category;
-            return;
-        }
-
-        $slug = (string) $category;
-        $resolved = SlugHelper::resolveModel($slug, Category::class);
-
-        if ($resolved instanceof Category) {
-            $this->category = $resolved;
-            return;
-        }
-
-        if (! PermalinkManager::categoryPrefixEnabled()
-            && PermalinkManager::routeDefinition()['template'] === '%postname%') {
-            $post = SlugHelper::resolveModel($slug, Post::class);
-
-            if ($post && in_array($post->status, ['published', 'publish'], true)) {
-                return redirect()->route('posts.show', ['post' => $slug]);
-            }
-        }
-
-        abort(404);
+        $this->category = $category;
     }
 
     public function loadCategory(): void

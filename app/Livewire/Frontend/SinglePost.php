@@ -7,6 +7,7 @@ use App\Support\SlugHelper;
 use App\Support\Seo;
 use App\Support\PostViewCounter;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
 class SinglePost extends Component
@@ -45,7 +46,7 @@ class SinglePost extends Component
     /**
      * 🔥 Core resolver (Controller-style)
      */
-    protected function resolvePostParameter(array $parameters): Post
+    protected function resolvePostParameter(array $parameters): Model
     {
         $values = array_values($parameters);
 

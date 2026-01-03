@@ -46,15 +46,18 @@ class AppServiceProvider extends ServiceProvider
         });
         Route::bind('category', function (string $value) {
             $model = SlugHelper::resolveModel($value, Category::class);
-            return $model ?? $value;
+            abort_if(! $model, 404);
+            return $model;
         });
         Route::bind('page', function (string $value) {
             $model = SlugHelper::resolveModel($value, Page::class);
-            return $model ?? $value;
+            abort_if(! $model, 404);
+            return $model;
         });
         Route::bind('tag', function (string $value) {
             $model = SlugHelper::resolveModel($value, \App\Models\Admin\Tag::class);
-            return $model ?? $value;
+            abort_if(! $model, 404);
+            return $model;
         });
     }
 
