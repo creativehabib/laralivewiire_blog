@@ -239,7 +239,7 @@
                         </td>
 
                         <td class="px-4 py-3 max-w-[360px]">
-                            <a href="{{ route('admins.pages.edit', $page->id) }}"
+                            <a href="{{ route('admins.pages.edit', ['pageId' => $page->id]) }}"
                                class="block truncate text-sky-700 hover:underline dark:text-sky-300">
                                 {{ $page->name }}
                             </a>
@@ -340,7 +340,7 @@
                                         Delete
                                     </button>
                                 @else
-                                    <a href="{{ route('admins.pages.edit', $page->id) }}"
+                                    <a href="{{ route('admins.pages.edit', ['pageId' => $page->id]) }}"
                                        class="inline-flex items-center rounded-md bg-sky-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-sky-500
                                               dark:bg-sky-500 dark:hover:bg-sky-400">
                                         <i class="fa-solid fa-pen text-[11px]"></i>

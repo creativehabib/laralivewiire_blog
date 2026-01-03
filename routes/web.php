@@ -191,7 +191,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
     Route::prefix('admin')->name('admins.')->group(function () {
         Route::get('/pages/index', PageTable::class)->name('pages.index')->middleware('permission:page.view');
         Route::get('/pages/create', PageForm::class)->name('pages.create')->middleware('permission:page.create');
-        Route::get('/pages/{page}/edit', PageForm::class)->name('pages.edit')->middleware('permission:page.edit');
+        Route::get('/pages/{pageId}/edit', PageForm::class)->name('pages.edit')->middleware('permission:page.edit');
     });
 });
 
@@ -229,5 +229,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/setting/{group}', SettingsGenerator::class)->name('settings.dynamic')->middleware('permission:setting.view');
     });
 });
-
 
