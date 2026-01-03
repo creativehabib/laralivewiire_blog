@@ -1,5 +1,18 @@
+@php
+    $adminLocale = setting('admin_language', app()->getLocale());
+    $adminDirection = setting('admin_language_direction', 'ltr');
+    $adminTitle = setting('admin_title', config('app.name'));
+    $adminLogo = setting('admin_logo');
+    $adminContainerWidth = setting('admin_container_width', 'default');
+    $adminContainerClass = match ($adminContainerWidth) {
+        'large' => 'max-w-screen-2xl',
+        'full' => 'max-w-none',
+        default => 'max-w-7xl',
+    };
+@endphp
+
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', $adminLocale) }}" dir="{{ $adminDirection }}" class="dark admin-appearance">
 <head>
     @include('partials.head')
 
@@ -52,9 +65,9 @@
         <flux:sidebar.header>
             <flux:sidebar.brand
                 href="{{ route('dashboard') }}"
-                logo="https://fluxui.dev/img/demo/logo.png"
-                logo:dark="https://fluxui.dev/img/demo/dark-mode-logo.png"
-                name="Laravel Livewire"
+                logo="{{ $adminLogo ?: 'https://fluxui.dev/img/demo/logo.png' }}"
+                logo:dark="{{ $adminLogo ?: 'https://fluxui.dev/img/demo/dark-mode-logo.png' }}"
+                name="{{ $adminTitle }}"
             />
             <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
         </flux:sidebar.header>
@@ -428,11 +441,15 @@
 
     {{-- ============= MAIN CONTENT ============= --}}
     <main id="main-content" tabindex="-1" class="flex-1 min-h-screen bg-white dark:bg-slate-800 focus:outline-none">
-        <div class="p-4 sm:p-6 lg:p-8">
+        <div class="p-4 sm:p-6 lg:p-8 mx-auto w-full {{ $adminContainerClass }}">
             {{ $slot }}
         </div>
     </main>
 </div>
+
+@if($adminBodyJs = setting('admin_body_js'))
+    {!! $adminBodyJs !!}
+@endif
 
 @include('mediamanager::includes.media-modal')
 @fluxScripts
@@ -512,5 +529,9 @@
     });
 </script>
 @stack('scripts')
+
+@if($adminFooterJs = setting('admin_footer_js'))
+    {!! $adminFooterJs !!}
+@endif
 </body>
 </html>
