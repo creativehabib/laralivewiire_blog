@@ -481,61 +481,14 @@
 @push('scripts')
     <script>
         /**
-         * মিডিয়া ম্যানেজার থেকে ইমেজ সিলেক্ট করে CKEditor-এ ইনসার্ট করার হেল্পার
-         */
-        function openCkeditorImagePicker(editorId) {
-            if (typeof openMediaManagerForEditor !== 'function') {
-                console.error('openMediaManagerForEditor() not found');
-                return;
-            }
-
-            openMediaManagerForEditor(function (url, data) {
-                const editor = CKEDITOR.instances[editorId];
-                if (!editor) return;
-
-                const selection = editor.getSelection();
-                const element = selection && selection.getStartElement
-                    ? selection.getStartElement()
-                    : null;
-
-                if (element && element.getName && element.getName() === 'img') {
-                    element.setAttribute('src', url);
-                    if (data?.name) {
-                        element.setAttribute('alt', data.name);
-                    }
-                } else {
-                    editor.insertHtml(
-                        '<img src="' + url + '" alt="' + (data?.name || '') + '" class="`w-full object-cover`"/>'
-                    );
-                }
-            });
-        }
-
-        // কাস্টম প্লাগইন: ImageManager বাটন
-        CKEDITOR.plugins.add('ImageManager', {
-            icons: 'image-plus',
-            init: function(editor) {
-                editor.addCommand('openImageManager', {
-                    exec: function(ed) {
-                        openCkeditorImagePicker(ed.name); // textarea এর id = editor.name
-                    }
-                });
-
-                editor.ui.addButton('ImageManager', {
-                    label: 'Media Manager',
-                    command: 'openImageManager',
-                    toolbar: 'insert',
-                    icon: '/assets/icons/image-plus.svg' // চাইলে কাস্টম আইকনও দিতে পার
-                });
-            }
-        });
-        /**
          * CKEditor init ফাংশন
          */
-
         function initCkeditor() {
             const textarea = document.getElementById('content');
             if (!textarea) return;
+
+            // ১. প্লাগইনগুলো লোড করা (ব্লেড থেকে কি পাস করা)
+            window.setupCkeditorBase('{{ setting("hippo_api_key") }}');
 
             // মোড ডিটেক্ট করা
             const isDarkMode = document.documentElement.classList.contains('dark');
@@ -546,56 +499,6 @@
                 CKEDITOR.instances.content.destroy(true);
             }
 
-            if (!CKEDITOR.plugins.get('ImgHippoUploader')) {
-                CKEDITOR.plugins.add('ImgHippoUploader', {
-                    init: function (editor) {
-                        editor.addCommand('imgHippoUpload', {
-                            exec: function (ed) {
-                                const input = document.createElement('input');
-                                input.type = 'file';
-                                input.accept = 'image/*';
-                                input.onchange = async function (event) {
-                                    const file = event.target.files && event.target.files[0];
-                                    if (!file) return;
-
-                                    const formData = new FormData();
-                                    formData.append('api_key', '{{ setting("hippo_api_key") }}');
-                                    formData.append('file', file);
-
-                                    ed.showNotification('Uploading image...', 'info');
-
-                                    const response = await fetch('https://api.imghippo.com/v1/upload', {
-                                        method: 'POST',
-                                        body: formData,
-                                    });
-                                    const payload = await response.json();
-                                    if (!payload?.success) {
-                                        ed.showNotification(payload?.message || 'Upload failed', 'warning');
-                                        return;
-                                    }
-
-                                    const imageUrl = payload?.data?.view_url || payload?.data?.url;
-                                    if (!imageUrl) {
-                                        ed.showNotification('Image URL missing', 'warning');
-                                        return;
-                                    }
-
-                                    ed.insertHtml('<img src="' + imageUrl + '" alt="' + (payload?.data?.title || '') + '" class="`w-full object-cover`"/>');
-                                    ed.showNotification('Image uploaded', 'success');
-                                };
-                                input.click();
-                            }
-                        });
-
-                        editor.ui.addButton('ImgHippoUpload', {
-                            label: 'Upload Image to imgHippo',
-                            command: 'imgHippoUpload',
-                            toolbar: 'insert',
-                            icon: 'image'
-                        });
-                    }
-                });
-            }
             const editor = CKEDITOR.replace('content', {
                 // ডাইনামিক CSS ইনজেক্ট করা
                 contentsCss: [
