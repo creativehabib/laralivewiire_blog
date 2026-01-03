@@ -32,7 +32,7 @@ class PermalinkManager
             'sample' => 'sample-post',
         ],
         '%post_id%' => [
-            'parameter' => 'post',
+            'parameter' => 'post_id',
             'type' => 'id',
             'pattern' => '\\d+',
             'sample' => '123',
@@ -137,8 +137,11 @@ class PermalinkManager
 
         $params = [];
 
-        if (Str::contains($template, '%post_id%')) {
-            $params['post'] = $post->getKey();
+        if (Str::contains($template, '%post_id%') && Str::contains($template, '%postname%')) {
+            $params['post_id'] = $post->getKey();
+            $params['post'] = $post->slug;
+        } elseif (Str::contains($template, '%post_id%')) {
+            $params['post_id'] = $post->getKey();
         } else {
             $params['post'] = $post->slug;
         }
@@ -254,9 +257,9 @@ class PermalinkManager
             if ($parameter === 'post' && $meta['type'] === 'slug') {
                 $uri = str_replace($token, '{post}', $uri);
                 $constraints['post'] = $meta['pattern'];
-            } elseif ($parameter === 'post' && $meta['type'] === 'id') {
-                $uri = str_replace($token, '{post}', $uri);
-                $constraints['post'] = $meta['pattern'];
+            } elseif ($parameter === 'post_id' && $meta['type'] === 'id') {
+                $uri = str_replace($token, '{post_id}', $uri);
+                $constraints['post_id'] = $meta['pattern'];
             } else {
                 $uri = str_replace($token, '{' . $parameter . '}', $uri);
                 if (! empty($meta['pattern'])) {
@@ -310,9 +313,8 @@ class PermalinkManager
             $tokens = self::extractTokens($custom ?? '');
             $unknown = collect($tokens)->diff(self::allowedTokens());
             $containsPostIdentifier = in_array('%postname%', $tokens, true) || in_array('%post_id%', $tokens, true);
-            $hasConflictingPostTokens = in_array('%postname%', $tokens, true) && in_array('%post_id%', $tokens, true);
 
-            if ($custom === '' || $unknown->isNotEmpty() || ! $containsPostIdentifier || $hasConflictingPostTokens) {
+            if ($custom === '' || $unknown->isNotEmpty() || ! $containsPostIdentifier) {
                 return [self::DEFAULT_STRUCTURE, null];
             }
 
