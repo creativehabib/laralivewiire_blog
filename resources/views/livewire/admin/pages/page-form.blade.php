@@ -244,37 +244,15 @@
         </div>
     </div>
 </div>
-
 @push('scripts')
     <script>
-        // Media Manager → CKEditor insert helper
-        function openCkeditorImagePicker(editorId) {
-            if (typeof openMediaManagerForEditor !== 'function') {
-                console.error('openMediaManagerForEditor() not found');
-                return;
-            }
-
-            openMediaManagerForEditor(function (url, data) {
-                const editor = CKEDITOR.instances[editorId];
-                if (!editor) return;
-
-                const selection = editor.getSelection();
-                const element = selection && selection.getStartElement ? selection.getStartElement() : null;
-
-                if (element && element.getName && element.getName() === 'img') {
-                    element.setAttribute('src', url);
-                    if (data?.name) element.setAttribute('alt', data.name);
-                } else {
-                    editor.insertHtml('<img src="' + url + '" alt="' + (data?.name || '') + '"/>');
-                }
-            });
-        }
 
         function initPageCkeditor() {
             const id = 'page_content';
             const textarea = document.getElementById(id);
             if (!textarea || typeof CKEDITOR === 'undefined') return;
 
+            window.setupCkeditorBase('{{ setting("hippo_api_key") }}');
             // মোড ডিটেক্ট করা
             const isDarkMode = document.documentElement.classList.contains('dark');
             const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
@@ -292,7 +270,7 @@
                 ],
                 height: 360,
                 removePlugins: 'cloudservices,uploadimage,uploadfile',
-                extraPlugins: 'wordcount,notification',
+                extraPlugins: 'wordcount,notification,ImgHippoUploader,imagemenu',
                 wordcount: { showCharCount: true, showWordCount: true },
                 allowedContent: true,
                 extraAllowedContent: '*(*){*}',
@@ -302,7 +280,7 @@
                     { name: 'basicstyles', items: ['Bold','Italic','Underline','Strike'] },
                     { name: 'paragraph', items: ['NumberedList','BulletedList','Outdent','Indent','Blockquote'] },
                     { name: 'links', items: ['Link','Unlink'] },
-                    { name: 'insert', items: ['Image','Table','HorizontalRule','SpecialChar'] },
+                    { name: 'insert', items: ['Image','Table','ImgHippoUpload','ImageMenu','HorizontalRule','SpecialChar'] },
                     { name: 'tools', items: ['Maximize','Source'] }
                 ],
             });

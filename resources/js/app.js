@@ -251,7 +251,7 @@ window.setupCkeditorBase = function(hippoApiKey) {
                     }
                 });
                 editor.ui.addButton('ImgHippoUpload', {
-                    label: 'Upload Image',
+                    label: 'Upload Image to image hippo',
                     command: 'imgHippoUpload',
                     toolbar: 'insert',
                     icon: 'image'
