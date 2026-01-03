@@ -99,12 +99,23 @@
                         {{-- Response To --}}
                         <td class="p-4">
                             @if($comment->commentable)
-                                <a href="#" class="hover:underline text-sm font-medium line-clamp-2" title="{{ $comment->commentable->title }}">
-                                    {{ $comment->commentable->title ?? 'Deleted Content' }}
+                                @php
+                                    $commentable = $comment->commentable;
+                                    $commentableTitle = $commentable->name
+                                        ?? $commentable->title
+                                        ?? 'Deleted Content';
+                                    $commentableUrl = $commentable instanceof \App\Models\Post
+                                        ? post_permalink($commentable)
+                                        : ($commentable instanceof \App\Models\Admin\Page ? page_permalink($commentable) : null);
+                                @endphp
+                                <a href="{{ $commentableUrl ?? '#' }}" class="hover:underline text-sm font-medium line-clamp-2" title="{{ $commentableTitle }}">
+                                    {{ $commentableTitle }}
                                 </a>
-                                <a href="#" target="_blank" class="text-xs text-slate-400 hover:text-blue-500 block mt-1">
-                                    <i class="fas fa-external-link-alt"></i> View Article
-                                </a>
+                                @if($commentableUrl)
+                                    <a href="{{ $commentableUrl }}" target="_blank" class="text-xs text-slate-400 hover:text-blue-500 block mt-1">
+                                        <i class="fas fa-external-link-alt"></i> View Article
+                                    </a>
+                                @endif
                             @else
                                 <span class="text-slate-400 italic">Content Deleted</span>
                             @endif
