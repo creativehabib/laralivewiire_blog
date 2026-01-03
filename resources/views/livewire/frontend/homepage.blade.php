@@ -104,7 +104,7 @@
                                         <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light line-clamp-3" wire:navigate>{{ $post->name }}</a>
                                     </h3>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
-                                        <span>{{ $post->created_at?->diffForHumans() }}</span>া
+                                        <span>{{ $post->created_at?->diffForHumans() }}</span>
                                     </div>
                                 </div>
                             </article>
