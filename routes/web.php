@@ -200,6 +200,10 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
 Route::middleware(['auth', 'preventBackHistory'])->group(function () {
     //Appearance Menu
     Route::prefix('admin/setting')->name('appearance.')->group(function () {
+        Route::get('/admin-appearance', SettingsGenerator::class)
+            ->name('admin-appearance')
+            ->defaults('group', 'admin-appearance')
+            ->middleware('permission:setting.view');
         Route::view('/menus', 'backend.pages.menus.index')->name('menus.index')->middleware('permission:menu.view');
         Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
         Route::get('/customs-css', CustomCssSettings::class)->name('custom-css')->middleware('permission:setting.view');

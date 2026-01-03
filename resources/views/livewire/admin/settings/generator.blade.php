@@ -187,6 +187,9 @@
                     @elseif($type === 'number')
                         <input type="number" wire:model.defer="data.{{ $key }}"
                                class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm">
+                    @elseif($type === 'color')
+                        <input type="color" wire:model.defer="data.{{ $key }}"
+                               class="h-10 w-16 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-1 py-1 text-sm">
                     @elseif($type === 'email')
                         <input type="email" wire:model.defer="data.{{ $key }}"
                                class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm">

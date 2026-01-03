@@ -159,6 +159,18 @@
                 class="grid"
                 :expanded="request()->routeIs('appearance.*')"
             >
+                @can('setting.view')
+                    <flux:sidebar.item
+                        icon="paint-brush"
+                        :href="route('appearance.admin-appearance')"
+                        :current="request()->routeIs('appearance.admin-appearance')"
+                        tooltip="{{ __('Admin appearance') }}"
+                        wire:navigate
+                    >
+                        {{ __('Admin appearance') }}
+                    </flux:sidebar.item>
+                @endcan
+
                 @can('menu.view')
                     <flux:sidebar.item
                         icon="bars-3"
