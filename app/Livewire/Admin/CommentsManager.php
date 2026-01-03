@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Admin\Comment;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,6 +17,12 @@ class CommentsManager extends Component
     public $selected = [];
     public $selectAll = false;
     public $perPage = 10;
+    public bool $showReplyModal = false;
+    public ?int $replyParentId = null;
+    public ?int $replyCommentableId = null;
+    public ?string $replyCommentableType = null;
+    public ?string $replyTargetName = null;
+    public string $replyContent = '';
 
     // বাল্ক অ্যাকশন
     public function deleteSelected()
@@ -42,6 +50,62 @@ class CommentsManager extends Component
     {
         Comment::find($id)->delete();
         $this->dispatch('media-toast', type: 'success', message: 'Comment deleted!');
+    }
+
+    public function openReplyModal(int $commentId): void
+    {
+        $comment = Comment::with('commentable')->findOrFail($commentId);
+
+        $this->replyParentId = $comment->id;
+        $this->replyCommentableId = $comment->commentable_id;
+        $this->replyCommentableType = $comment->commentable_type;
+        $this->replyTargetName = $comment->name;
+        $this->replyContent = '';
+        $this->showReplyModal = true;
+
+        $this->dispatch('init-reply-editor', content: $this->replyContent);
+    }
+
+    public function closeReplyModal(): void
+    {
+        $this->reset([
+            'showReplyModal',
+            'replyParentId',
+            'replyCommentableId',
+            'replyCommentableType',
+            'replyTargetName',
+            'replyContent',
+        ]);
+    }
+
+    public function submitReply(): void
+    {
+        $this->validate([
+            'replyContent' => ['required', 'string', 'min:3'],
+            'replyParentId' => ['required', 'integer', 'exists:comments,id'],
+            'replyCommentableId' => ['required', 'integer'],
+            'replyCommentableType' => ['required', 'string'],
+        ]);
+
+        $user = Auth::user();
+
+        Comment::create([
+            'name' => $user?->name ?? 'Admin',
+            'email' => $user?->email ?? 'admin@example.com',
+            'website' => null,
+            'content' => $this->replyContent,
+            'status' => 'approved',
+            'user_id' => $user?->id,
+            'ip_address' => Request::ip(),
+            'user_agent' => Request::userAgent(),
+            'parent_id' => $this->replyParentId,
+            'commentable_id' => $this->replyCommentableId,
+            'commentable_type' => $this->replyCommentableType,
+        ]);
+
+        $this->closeReplyModal();
+        $this->resetPage();
+        $this->dispatch('media-toast', type: 'success', message: 'Reply posted successfully!');
     }
 
     // Select All Logic
