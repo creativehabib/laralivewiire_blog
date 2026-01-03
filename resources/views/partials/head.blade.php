@@ -29,6 +29,12 @@
     $adminTextColor = setting('admin_text_color', '#334155');
     $adminLinkColor = setting('admin_link_color', '#2563eb');
     $adminLinkHoverColor = setting('admin_link_hover_color', '#1d4ed8');
+    $adminPrimaryColorDark = setting('admin_primary_color_dark', $adminPrimaryColor);
+    $adminSecondaryColorDark = setting('admin_secondary_color_dark', $adminSecondaryColor);
+    $adminHeadingColorDark = setting('admin_heading_color_dark', $adminHeadingColor);
+    $adminTextColorDark = setting('admin_text_color_dark', $adminTextColor);
+    $adminLinkColorDark = setting('admin_link_color_dark', $adminLinkColor);
+    $adminLinkHoverColorDark = setting('admin_link_hover_color_dark', $adminLinkHoverColor);
     $adminLogoHeight = (int) setting('admin_logo_height', 32);
     $adminFaviconMime = [
         'ico' => 'image/x-icon',
@@ -69,6 +75,17 @@
         --admin-link-color: {{ $adminLinkColor }};
         --admin-link-hover-color: {{ $adminLinkHoverColor }};
         --admin-logo-height: {{ $adminLogoHeight }}px;
+    }
+
+    .admin-appearance.dark {
+        --color-primary: {{ $adminPrimaryColorDark }};
+        --color-primary-dark: {{ $adminLinkHoverColorDark }};
+        --color-secondary: {{ $adminSecondaryColorDark }};
+        --color-accent: {{ $adminPrimaryColorDark }};
+        --admin-heading-color: {{ $adminHeadingColorDark }};
+        --admin-text-color: {{ $adminTextColorDark }};
+        --admin-link-color: {{ $adminLinkColorDark }};
+        --admin-link-hover-color: {{ $adminLinkHoverColorDark }};
     }
 
     .admin-appearance body {
