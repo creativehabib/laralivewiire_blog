@@ -95,6 +95,14 @@ return [
                     'rules' => ['boolean'],
                     'hint' => 'This site is currently in maintenance mode.',
                 ],
+                [
+                    'key' => 'hippo_api_key',
+                    'label' => 'Image hippo API Key',
+                    'type' => 'text',
+                    'default' => '',
+                    'placeholder' => 'API Key',
+                    'rules' => ['nullable', 'string', 'max:190'],
+                ],
             ],
         ],
 

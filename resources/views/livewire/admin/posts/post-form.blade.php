@@ -559,7 +559,7 @@
                                     if (!file) return;
 
                                     const formData = new FormData();
-                                    formData.append('api_key', '135bffee9951bdd00673ecaa3c040a3b');
+                                    formData.append('api_key', '{{ setting("hippo_api_key") }}');
                                     formData.append('file', file);
 
                                     ed.showNotification('Uploading image...', 'info');
