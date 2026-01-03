@@ -39,9 +39,10 @@ class PageForm extends Component
     public int $nameMax = 250;
     public int $descMax = 400;
 
-    public function mount(?Page $page = null): void
+    public function mount(?int $pageId = null): void
     {
-        if ($page) {
+        if ($pageId) {
+            $page = Page::query()->withTrashed()->findOrFail($pageId);
             $this->page   = $page;
             $this->pageId = $page->id;
             $this->slugId = $page->slugRecord?->id;
@@ -188,7 +189,7 @@ class PageForm extends Component
             return redirect()->route('admins.pages.index');
         }
 
-        return redirect()->route('admins.pages.edit', $page->id);
+        return redirect()->route('admins.pages.edit', ['pageId' => $page->id]);
     }
 
 
