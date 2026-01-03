@@ -145,6 +145,7 @@ Route::get('/{key}.txt', function ($key) {
 Route::middleware(['auth', 'preventBackHistory'])->group(function () {
 
     Route::prefix('admin/setting')->name('settings.')->group(function () {
+//        Route::get('/general', SettingsGenerator::class)->name('general')->middleware('permission:setting.view');
         Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
         Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
         Route::get('/comments', CommentsSettings::class)->name('comments')->middleware('permission:setting.view');
@@ -175,8 +176,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
 // Menus
 Route::middleware(['auth', 'preventBackHistory'])->group(function () {
     //Appearance Menu
-    Route::prefix('admin')->name('appearance.')->group(function () {
-
+    Route::prefix('admin/setting')->name('appearance.')->group(function () {
         Route::view('/menus', 'backend.pages.menus.index')->name('menus.index')->middleware('permission:menu.view');
         Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
         Route::get('/customs-css', CustomCssSettings::class)->name('custom-css')->middleware('permission:setting.view');

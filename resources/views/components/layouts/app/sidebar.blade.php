@@ -233,9 +233,6 @@
                 {{ __('General Setting') }}
             </flux:sidebar.item>
 
-
-
-
             <flux:sidebar.item
                 icon="map"
                 :href="route('settings.sitemap')"
