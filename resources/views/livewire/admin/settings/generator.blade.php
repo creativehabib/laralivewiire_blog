@@ -248,7 +248,15 @@
         </div>
 
         {{-- Footer --}}
-        <div class="border-t border-slate-200 dark:border-slate-700 p-4 flex justify-end">
+        <div class="border-t border-slate-200 dark:border-slate-700 p-4 flex flex-wrap items-center justify-between gap-3">
+            <button
+                type="button"
+                onclick="return confirm('Reset these settings back to their defaults?')"
+                wire:click="resetToDefaults"
+                class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
+            >
+                Reset to defaults
+            </button>
             <button wire:click="save"
                     wire:loading.attr="disabled"
                     class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">
@@ -350,7 +358,7 @@
                 });
 
                 editor.on('change', function() {
-                @this.set('data.' + dataKey, editor.getData());
+                    @this.set('data.' + dataKey, editor.getData());
                 });
             });
         }

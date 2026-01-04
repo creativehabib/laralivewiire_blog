@@ -83,7 +83,34 @@ class SettingsGenerator extends Component
         $this->syncSlugPrefixes($previous);
         $this->dispatch('media-toast', type: 'success', message: "{$config['title']} settings saved.");
     }
+    public function resetToDefaults(): void
+    {
+        $config = $this->groupConfig();
+        abort_if(! $config, 404);
 
+        $previous = $this->capturePrefixSettings($config);
+
+        foreach (($config['fields'] ?? []) as $field) {
+            $key = $field['key'] ?? null;
+            $type = $field['type'] ?? null;
+
+            if (! $key || $type === 'permalink_preview') {
+                continue;
+            }
+
+            $default = $field['default'] ?? null;
+
+            if ($type === 'switch') {
+                $default = filter_var($default, FILTER_VALIDATE_BOOLEAN);
+            }
+
+            $this->data[$key] = $default;
+            set_setting($key, $default, $this->group);
+        }
+
+        $this->syncSlugPrefixes($previous);
+        $this->dispatch('media-toast', type: 'success', message: "{$config['title']} settings reset to defaults.");
+    }
     public function getPagePreviewProperty(): string
     {
         return \App\Support\PermalinkManager::pagePreview('sample-page');
