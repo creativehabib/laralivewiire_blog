@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Tags;
 
 use App\Models\Admin\Tag;
+use App\Support\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -113,6 +114,12 @@ class TagEdit extends Component
                 'index'           => $this->seo_index ?: 'index',
             ]]);
         }
+
+        ActivityLogger::log(
+            $user,
+            'updated tag "' . $this->tag->name . '"',
+            $this->tag
+        );
 
         session()->flash('message', 'Tag updated successfully.');
 
