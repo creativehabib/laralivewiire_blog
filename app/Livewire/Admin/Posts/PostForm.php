@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Posts;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Admin\Tag;
+use App\Support\ActivityLogger;
 use App\Support\SeoAnalyzer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -297,6 +298,12 @@ class PostForm extends Component
             $tag->slug = $slug;
             $tag->status = 'published';
             $tag->save();
+
+            ActivityLogger::log(
+                Auth::user(),
+                'created tag "' . $tag->name . '"',
+                $tag
+            );
         }
 
         if (! in_array($tag->id, $this->selectedTagIds, true)) {
@@ -313,6 +320,7 @@ class PostForm extends Component
         $this->validate();
 
         $user = Auth::user();
+        $isNew = ! $this->postId;
 
         if ($this->postId) {
             $post = Post::findOrFail($this->postId);
@@ -368,6 +376,12 @@ class PostForm extends Component
         $this->post   = $post;
         $this->postId = $post->id;
         $this->slugId = $post->slugRecord?->id;
+
+        ActivityLogger::log(
+            $user,
+            ($isNew ? 'created' : 'updated') . ' post "' . $post->name . '"',
+            $post
+        );
 
         // redirect এর পর toast show
         $this->dispatch('media-toast', title: 'success', message: 'Post saved successfully.');

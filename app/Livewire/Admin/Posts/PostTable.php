@@ -4,6 +4,8 @@ namespace App\Livewire\Admin\Posts;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Support\ActivityLogger;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -61,7 +63,13 @@ class PostTable extends Component
     public function delete(int $id): void
     {
         abort_unless(auth()->user()->can('post.delete'), 404);
-        Post::findOrFail($id)->delete();
+        $post = Post::findOrFail($id);
+        $post->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'moved post "' . $post->name . '" to trash',
+            $post
+        );
 
         $this->selected = array_diff($this->selected, [$id]);
         $this->dispatch('media-toast', title: 'success', message: 'Successfully deleted post to trashed.');
@@ -77,7 +85,12 @@ class PostTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Post::whereIn('id', $this->selected)->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'moved ' . $count . ' posts to trash'
+        );
 
         $this->selected  = [];
         $this->selectAll = false;
@@ -92,7 +105,12 @@ class PostTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Post::onlyTrashed()->whereIn('id', $this->selected)->restore();
+        ActivityLogger::log(
+            Auth::user(),
+            'restored ' . $count . ' posts'
+        );
 
         $this->selected  = [];
         $this->selectAll = false;
@@ -109,7 +127,12 @@ class PostTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Post::onlyTrashed()->whereIn('id', $this->selected)->forceDelete();
+        ActivityLogger::log(
+            Auth::user(),
+            'permanently deleted ' . $count . ' posts'
+        );
 
         $this->selected  = [];
         $this->selectAll = false;
@@ -123,23 +146,37 @@ class PostTable extends Component
         $post = Post::findOrFail($id);
         $post->status = $post->status === 'published' ? 'draft' : 'published';
         $post->save();
+        ActivityLogger::log(
+            Auth::user(),
+            'updated post status for "' . $post->name . '" to ' . $post->status,
+            $post
+        );
         $this->dispatch('media-toast', title: 'success', message: 'Successfully updated post status.');
 
     }
 
     public function restore(int $id): void
     {
-        Post::onlyTrashed()
-            ->findOrFail($id)
-            ->restore();
+        $post = Post::onlyTrashed()
+            ->findOrFail($id);
+        $post->restore();
+        ActivityLogger::log(
+            Auth::user(),
+            'restored post "' . $post->name . '"',
+            $post
+        );
         $this->dispatch('media-toast', title: 'success', message: 'Successfully restored post to trashed.');
     }
     public function forceDelete(int $id): void
     {
         abort_unless(auth()->user()->can('post.delete'), 403);
-        Post::onlyTrashed()
-            ->findOrFail($id)
-            ->forceDelete();
+        $post = Post::onlyTrashed()
+            ->findOrFail($id);
+        $post->forceDelete();
+        ActivityLogger::log(
+            Auth::user(),
+            'permanently deleted post "' . $post->name . '"'
+        );
         $this->selected = array_diff($this->selected, [$id]);
         $this->dispatch('media-toast', title: 'success', message: 'Post permanently deleted from database.');
     }

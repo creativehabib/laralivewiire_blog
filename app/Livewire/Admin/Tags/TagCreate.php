@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Tags;
 
 use App\Models\Admin\Tag;
+use App\Support\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -63,6 +64,7 @@ class TagCreate extends Component
 
 
         $user = Auth::user();
+        $isNew = ! $this->tagId;
 
         if ($this->tagId) {
             $tag = Tag::findOrFail($this->tagId);
@@ -84,6 +86,12 @@ class TagCreate extends Component
             'seo_image'       => $this->seo_image,
             'index'           => $this->seo_index ?: 'index',
         ]]);
+
+        ActivityLogger::log(
+            $user,
+            ($isNew ? 'created' : 'updated') . ' tag "' . $tag->name . '"',
+            $tag
+        );
 
         session()->flash('message', 'Tag created successfully.');
 

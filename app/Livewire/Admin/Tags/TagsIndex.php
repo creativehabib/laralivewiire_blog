@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin\Tags;
 
 use App\Models\Admin\Tag;
+use App\Support\ActivityLogger;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -66,7 +68,13 @@ class TagsIndex extends Component
 
     public function delete($id)
     {
-        Tag::findOrFail($id)->delete();
+        $tag = Tag::findOrFail($id);
+        $tag->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'deleted tag "' . $tag->name . '"',
+            $tag
+        );
         $this->selected = array_values(array_diff($this->selected, [$id]));
         $this->selectAll = false;
         session()->flash('message', 'Tag deleted successfully.');
@@ -79,7 +87,12 @@ class TagsIndex extends Component
             return;
         }
 
+        $count = count($this->selected);
         Tag::whereIn('id', $this->selected)->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'deleted ' . $count . ' tags'
+        );
 
         $this->selected = [];
         $this->selectAll = false;
