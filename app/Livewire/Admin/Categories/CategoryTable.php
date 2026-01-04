@@ -4,6 +4,7 @@
 namespace App\Livewire\Admin\Categories;
 
 use App\Models\Category;
+use App\Support\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -71,6 +72,11 @@ class CategoryTable extends Component
     {
         $cat = Category::findOrFail($id);
         $cat->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'deleted category "' . $cat->name . '"',
+            $cat
+        );
         $this->selected = array_values(array_diff($this->selected, [$id]));
         $this->selectAll = false;
         session()->flash('success', 'Category deleted successfully.');
@@ -83,7 +89,12 @@ class CategoryTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Category::whereIn('id', $this->selected)->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'deleted ' . $count . ' categories'
+        );
 
         $this->selected = [];
         $this->selectAll = false;
@@ -97,7 +108,12 @@ class CategoryTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Category::whereIn('id', $this->selected)->update(['status' => 'published']);
+        ActivityLogger::log(
+            Auth::user(),
+            'published ' . $count . ' categories'
+        );
 
         $this->selected = [];
         $this->selectAll = false;
@@ -111,7 +127,12 @@ class CategoryTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Category::whereIn('id', $this->selected)->update(['status' => 'draft']);
+        ActivityLogger::log(
+            Auth::user(),
+            'moved ' . $count . ' categories to draft'
+        );
 
         $this->selected = [];
         $this->selectAll = false;

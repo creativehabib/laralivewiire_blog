@@ -6,6 +6,7 @@ use App\Models\Admin\Page;
 use App\Models\Category;
 use App\Models\Post;
 use App\Rules\UniqueSlugAcrossContent;
+use App\Support\ActivityLogger;
 use App\Support\SeoAnalyzer;
 use App\Support\PermalinkManager;
 use Illuminate\Support\Facades\Auth;
@@ -141,6 +142,7 @@ class PageForm extends Component
         $this->validate();
 
         $user = Auth::user();
+        $isNew = ! $this->pageId;
 
         if ($this->pageId) {
             $page = Page::query()->withTrashed()->findOrFail($this->pageId);
@@ -181,6 +183,12 @@ class PageForm extends Component
         $page->saveQuietly();
 
         $this->pageId = $page->id;
+
+        ActivityLogger::log(
+            $user,
+            ($isNew ? 'created' : 'updated') . ' page "' . $page->name . '"',
+            $page
+        );
 
         $this->dispatch('media-toast', type: 'success', message: 'Page Saved successfully.');
 
