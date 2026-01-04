@@ -26,6 +26,7 @@ use App\Livewire\Admin\Settings\HtaccessSettings;
 use App\Livewire\Admin\Settings\RobotsTxt;
 use App\Livewire\Admin\Settings\SettingsGenerator;
 use App\Livewire\Admin\Settings\SitemapSettings;
+use App\Livewire\Admin\Settings\Theme\ThemeOptionsSetting;
 use App\Livewire\Admin\Tags\TagCreate;
 use App\Livewire\Admin\Tags\TagEdit;
 use App\Livewire\Admin\Tags\TagsIndex;
@@ -168,7 +169,6 @@ Route::get('/{key}.txt', function ($key) {
 Route::middleware(['auth', 'preventBackHistory'])->group(function () {
 
     Route::prefix('admin/setting')->name('settings.')->group(function () {
-//        Route::get('/general', SettingsGenerator::class)->name('general')->middleware('permission:setting.view');
         Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
         Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
         Route::get('/comments', CommentsSettings::class)->name('comments')->middleware('permission:setting.view');
@@ -200,9 +200,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
 Route::middleware(['auth', 'preventBackHistory'])->group(function () {
     //Appearance Menu
     Route::prefix('admin/setting')->name('appearance.')->group(function () {
-        Route::get('/admin-appearance', SettingsGenerator::class)
-            ->name('admin-appearance')
-            ->defaults('group', 'admin-appearance')
+        Route::get('/admin-appearance', SettingsGenerator::class)->name('admin-appearance')->defaults('group', 'admin-appearance')
             ->middleware('permission:setting.view');
         Route::view('/menus', 'backend.pages.menus.index')->name('menus.index')->middleware('permission:menu.view');
         Route::get('/ads-settings', AdsSettings::class)->name('ads-settings')->middleware('permission:setting.view');
@@ -222,6 +220,14 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::resource('/roles', RoleController::class);
         Route::resource('/permissions', PermissionController::class);
         Route::resource('/users', UserManagementController::class);
+    });
+
+    // Theme options menu
+    Route::middleware(['auth', 'preventBackHistory'])->group(function () {
+        Route::prefix('admin/theme')->name('theme.')->group(function () {
+            Route::get('/options', ThemeOptionsSetting::class)->name('theme-options')->defaults('group', 'theme-options')
+                ->middleware('permission:setting.view');
+        });
     });
 });
 

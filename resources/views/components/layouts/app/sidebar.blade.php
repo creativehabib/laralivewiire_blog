@@ -250,7 +250,18 @@
 
             </flux:sidebar.group>
         @endcanany
-
+        {{--Theme Option--}}
+        @can('setting.view')
+            <flux:sidebar.item
+                icon="adjustments-horizontal"
+                :href="route('theme.theme-options')"
+                :current="request()->routeIs('theme.theme-options')"
+                tooltip="{{ __('Theme Options') }}"
+                wire:navigate
+            >
+                {{ __('Theme Options') }}
+            </flux:sidebar.item>
+        @endcan
         {{-- Settings Group --}}
         @can('setting.view')
             <flux:sidebar.group
