@@ -48,7 +48,7 @@
 <meta name="description" content="{{ $metaDescription ?? __('Streamlined Livewire starter dashboard for creating and managing content efficiently.') }}" />
 <meta name="theme-color" content="{{ $adminPrimaryColor }}" />
 <meta name="color-scheme" content="dark light" />
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ $pageTitle }}</title>
 
 @if($adminFavicon)

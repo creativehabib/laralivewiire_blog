@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="origin-when-cross-origin">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
         $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'ржмрж╛ржВрж▓рж╛ржжрзЗрж╢рзА ржирж┐ржЙржЬ ржкрзЛрж░рзНржЯрж╛рж▓']);
     @endphp

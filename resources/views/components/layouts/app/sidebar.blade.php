@@ -119,7 +119,7 @@
                             {{ __('Posts') }}
                         </flux:sidebar.item>
                     @endcan
-                    {{--BLOG--}}
+
                     @can('category.view')
                         <flux:sidebar.item
                             icon="folder"
