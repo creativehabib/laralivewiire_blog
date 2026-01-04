@@ -254,7 +254,7 @@
         @can('setting.view')
             <flux:sidebar.item
                 icon="adjustments-horizontal"
-                :href="route('theme.theme-options')"
+                :href="route('theme.theme-options', ['as' => 'general'])"
                 :current="request()->routeIs('theme.theme-options')"
                 tooltip="{{ __('Theme Options') }}"
                 wire:navigate
