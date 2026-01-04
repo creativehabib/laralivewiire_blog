@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin\Pages;
 
 use App\Models\Admin\Page;
+use App\Support\ActivityLogger;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -102,7 +104,13 @@ class PageTable extends Component
 
     public function delete(int $id): void
     {
-        Page::findOrFail($id)->delete(); // soft delete
+        $page = Page::findOrFail($id);
+        $page->delete(); // soft delete
+        ActivityLogger::log(
+            Auth::user(),
+            'moved page "' . $page->name . '" to trash',
+            $page
+        );
         $this->selected = array_values(array_diff($this->selected, [$id]));
         $this->selectAll = false;
 
@@ -111,7 +119,13 @@ class PageTable extends Component
 
     public function restore(int $id): void
     {
-        Page::onlyTrashed()->findOrFail($id)->restore();
+        $page = Page::onlyTrashed()->findOrFail($id);
+        $page->restore();
+        ActivityLogger::log(
+            Auth::user(),
+            'restored page "' . $page->name . '"',
+            $page
+        );
 
         $this->selected = array_values(array_diff($this->selected, [$id]));
         $this->selectAll = false;
@@ -121,7 +135,12 @@ class PageTable extends Component
 
     public function forceDelete(int $id): void
     {
-        Page::onlyTrashed()->findOrFail($id)->forceDelete();
+        $page = Page::onlyTrashed()->findOrFail($id);
+        $page->forceDelete();
+        ActivityLogger::log(
+            Auth::user(),
+            'permanently deleted page "' . $page->name . '"'
+        );
 
         $this->selected = array_values(array_diff($this->selected, [$id]));
         $this->selectAll = false;
@@ -136,7 +155,12 @@ class PageTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Page::whereIn('id', $this->selected)->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'moved ' . $count . ' pages to trash'
+        );
 
         $this->selected = [];
         $this->selectAll = false;
@@ -151,7 +175,12 @@ class PageTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Page::onlyTrashed()->whereIn('id', $this->selected)->restore();
+        ActivityLogger::log(
+            Auth::user(),
+            'restored ' . $count . ' pages'
+        );
 
         $this->selected = [];
         $this->selectAll = false;
@@ -166,7 +195,12 @@ class PageTable extends Component
             return;
         }
 
+        $count = count($this->selected);
         Page::onlyTrashed()->whereIn('id', $this->selected)->forceDelete();
+        ActivityLogger::log(
+            Auth::user(),
+            'permanently deleted ' . $count . ' pages'
+        );
 
         $this->selected = [];
         $this->selectAll = false;
@@ -183,6 +217,11 @@ class PageTable extends Component
 
         $page->status = $page->status === 'published' ? 'draft' : 'published';
         $page->save();
+        ActivityLogger::log(
+            Auth::user(),
+            'updated page status for "' . $page->name . '" to ' . $page->status,
+            $page
+        );
 
         $this->dispatch('media-toast', type: 'success', message: 'Status updated.');
     }

@@ -4,6 +4,7 @@
 namespace App\Livewire\Admin\Categories;
 
 use App\Models\Category;
+use App\Support\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -115,6 +116,7 @@ class CategoryForm extends Component
         $this->validate($this->rules());
 
         $user = Auth::user();
+        $isNew = ! $this->categoryId;
 
         if ($this->categoryId) {
             $category = Category::findOrFail($this->categoryId);
@@ -154,6 +156,12 @@ class CategoryForm extends Component
         ]]);
 
         $this->categoryId = $category->id;
+
+        ActivityLogger::log(
+            $user,
+            ($isNew ? 'created' : 'updated') . ' category "' . $category->name . '"',
+            $category
+        );
 
         session()->flash('success', 'Category saved successfully.');
         $this->dispatch('media-toast', type: 'success', message: 'Category saved successfully.');
