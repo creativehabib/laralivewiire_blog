@@ -5,6 +5,8 @@ namespace App\Livewire\Admin\Comments;
 use App\Models\Admin\Comment;
 use App\Models\Admin\Page;
 use App\Models\Post;
+use App\Support\ActivityLogger;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class CommentEdit extends Component
@@ -61,6 +63,11 @@ class CommentEdit extends Component
             'content' => $this->content,
             'status' => $this->status,
         ]);
+        ActivityLogger::log(
+            Auth::user(),
+            'updated comment #' . $this->comment->id,
+            $this->comment
+        );
 
         $this->dispatch('media-toast', type: 'success', message: 'Comment updated successfully!');
 

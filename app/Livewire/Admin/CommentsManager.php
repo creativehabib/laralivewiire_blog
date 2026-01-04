@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Admin\Comment;
+use App\Support\ActivityLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Livewire\Component;
@@ -27,14 +28,24 @@ class CommentsManager extends Component
     // বাল্ক অ্যাকশন
     public function deleteSelected()
     {
+        $count = count($this->selected);
         Comment::whereIn('id', $this->selected)->delete();
+        ActivityLogger::log(
+            Auth::user(),
+            'deleted ' . $count . ' comment(s)'
+        );
         $this->selected = [];
         $this->dispatch('media-toast', type: 'success', message: 'Comments deleted successfully!');
     }
 
     public function updateStatusSelected($status)
     {
+        $count = count($this->selected);
         Comment::whereIn('id', $this->selected)->update(['status' => $status]);
+        ActivityLogger::log(
+            Auth::user(),
+            'updated status for ' . $count . ' comment(s) to ' . $status
+        );
         $this->selected = [];
         $this->dispatch('media-toast', type: 'success', message: 'Status updated successfully!');
     }
@@ -42,13 +53,31 @@ class CommentsManager extends Component
     // সিঙ্গেল অ্যাকশন
     public function updateStatus($id, $status)
     {
-        Comment::find($id)->update(['status' => $status]);
+        $comment = Comment::find($id);
+
+        if ($comment) {
+            $comment->update(['status' => $status]);
+            ActivityLogger::log(
+                Auth::user(),
+                'updated comment #' . $comment->id . ' status to ' . $status,
+                $comment
+            );
+        }
         $this->dispatch('media-toast', type: 'success', message: 'Comment status changed to ' . ucfirst($status));
     }
 
     public function delete($id)
     {
-        Comment::find($id)->delete();
+        $comment = Comment::find($id);
+
+        if ($comment) {
+            $comment->delete();
+            ActivityLogger::log(
+                Auth::user(),
+                'deleted comment #' . $comment->id,
+                $comment
+            );
+        }
         $this->dispatch('media-toast', type: 'success', message: 'Comment deleted!');
     }
 
@@ -89,7 +118,7 @@ class CommentsManager extends Component
 
         $user = Auth::user();
 
-        Comment::create([
+        $comment = Comment::create([
             'name' => $user?->name ?? 'Admin',
             'email' => $user?->email ?? 'admin@example.com',
             'website' => null,
@@ -102,6 +131,11 @@ class CommentsManager extends Component
             'commentable_id' => $this->replyCommentableId,
             'commentable_type' => $this->replyCommentableType,
         ]);
+        ActivityLogger::log(
+            $user,
+            'replied to comment #' . $this->replyParentId,
+            $comment
+        );
 
         $this->closeReplyModal();
         $this->resetPage();
