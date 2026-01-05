@@ -13,8 +13,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    @if($primaryFont = setting('primary_font'))
+        @php
+            $primaryFont = trim($primaryFont);
+            $primaryFontWeights = trim((string) setting('primary_font_weights', '300;400;500;600;700'));
+            $googleFontHref = null;
+
+            if ($primaryFont !== '' && ! str_contains($primaryFont, ',')) {
+                $googleFontHref = 'https://fonts.googleapis.com/css2?family=' . urlencode($primaryFont) . ':wght@' . $primaryFontWeights . '&display=swap';
+            }
+        @endphp
+
+        @if($googleFontHref)
+            <link rel="preload" as="style" href="{{ $googleFontHref }}">
+            <link href="{{ $googleFontHref }}" rel="stylesheet" media="print" onload="this.media='all'">
+        @endif
+
+        <style>
+            :root { --font-sans: "{{ $primaryFont }}", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        </style>
+    @endif
 
     <style>
         .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }

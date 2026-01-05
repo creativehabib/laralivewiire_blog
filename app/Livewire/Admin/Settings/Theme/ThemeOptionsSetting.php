@@ -93,7 +93,20 @@ class ThemeOptionsSetting extends Component
 
         $fonts = json_decode(file_get_contents($path), true);
 
-        return is_array($fonts) ? $fonts : [];
+        if (! is_array($fonts)) {
+            return [];
+        }
+
+        $first = $fonts[0] ?? null;
+
+        if (is_string($first)) {
+            return array_map(fn (string $font) => [
+                'family' => $font,
+                'variants' => [],
+            ], $fonts);
+        }
+
+        return $fonts;
     }
 
     protected function formatSocialLinksForStorage(array $socialLinks): array
