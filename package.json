@@ -9,6 +9,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",
         "axios": "^1.7.4",
+        "choices.js": "^11.1.0",
         "codemirror": "^5.65.20",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^2.0",
