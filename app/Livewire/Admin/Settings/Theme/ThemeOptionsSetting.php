@@ -10,8 +10,12 @@ class ThemeOptionsSetting extends Component
 
     public function mount()
     {
+        $this->social_links = $this->normalizeSocialLinks(setting('social_links', []));
+
         // পেজ লোড হওয়ার সময় ডিফল্ট একটি খালি অপশন রাখতে পারেন
-        $this->addSocialLink();
+        if (empty($this->social_links)) {
+            $this->addSocialLink();
+        }
     }
 
     // নতুন সোশ্যাল লিঙ্ক অপশন যোগ করার ফাংশন
@@ -35,9 +39,80 @@ class ThemeOptionsSetting extends Component
 
     public function save()
     {
-        // এখানে ডাটাবেসে সেভ করার লজিক লিখুন
-        // উদাহরণ: Setting::updateOrCreate(['key' => 'social_links'], ['value' => json_encode($this->social_links)]);
+        set_setting('social_links', $this->formatSocialLinksForStorage($this->social_links), 'theme-options');
         session()->flash('success', 'Social links updated successfully!');
+    }
+
+    protected function formatSocialLinksForStorage(array $socialLinks): array
+    {
+        return array_map(function (array $link) {
+            return [
+                ['key' => 'name', 'value' => $link['name'] ?? ''],
+                ['key' => 'icon', 'value' => $link['icon'] ?? ''],
+                ['key' => 'url', 'value' => $link['url'] ?? ''],
+                ['key' => 'icon_image', 'value' => $link['icon_image'] ?? null],
+                ['key' => 'color', 'value' => $link['color'] ?? '#000000'],
+                ['key' => 'background-color', 'value' => $link['bg_color'] ?? '#ffffff'],
+            ];
+        }, $socialLinks);
+    }
+
+    protected function normalizeSocialLinks($socialLinks): array
+    {
+        if (! is_array($socialLinks)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($socialLinks as $link) {
+            if (! is_array($link)) {
+                continue;
+            }
+
+            if (array_key_exists('name', $link)) {
+                $normalized[] = [
+                    'name' => $link['name'] ?? '',
+                    'icon' => $link['icon'] ?? '',
+                    'url' => $link['url'] ?? '',
+                    'icon_image' => $link['icon_image'] ?? null,
+                    'color' => $link['color'] ?? '#000000',
+                    'bg_color' => $link['bg_color'] ?? '#ffffff',
+                ];
+                continue;
+            }
+
+            $mapped = [
+                'name' => '',
+                'icon' => '',
+                'url' => '',
+                'icon_image' => null,
+                'color' => '#000000',
+                'bg_color' => '#ffffff',
+            ];
+
+            foreach ($link as $pair) {
+                if (! is_array($pair) || ! array_key_exists('key', $pair)) {
+                    continue;
+                }
+
+                $key = $pair['key'];
+                $value = $pair['value'] ?? null;
+
+                if ($key === 'background-color') {
+                    $mapped['bg_color'] = $value ?? $mapped['bg_color'];
+                    continue;
+                }
+
+                if (array_key_exists($key, $mapped)) {
+                    $mapped[$key] = $value;
+                }
+            }
+
+            $normalized[] = $mapped;
+        }
+
+        return $normalized;
     }
     public function render()
     {
