@@ -232,14 +232,14 @@
 
     .dark .choices__list--dropdown,
     .dark .choices__list[aria-expanded] {
-        background-color: #1e293b;
-        border-color: #475569;
+        background-color: #0f172a;
+        border-color: #334155;
         color: #e2e8f0;
     }
 
     .dark .choices__list--dropdown .choices__item--selectable.is-highlighted,
     .dark .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
-        background-color: #334155;
+        background-color: #1e293b;
     }
 
     .typography blockquote {
