@@ -200,6 +200,48 @@
 
     .typography li { margin-bottom: 0.35em; }
 
+    /* Choices.js theming (light/dark) */
+    .choices__inner {
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #0f172a;
+    }
+
+    .choices__input {
+        background-color: transparent;
+        color: inherit;
+    }
+
+    .choices__list--dropdown,
+    .choices__list[aria-expanded] {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #0f172a;
+    }
+
+    .choices__list--dropdown .choices__item--selectable.is-highlighted,
+    .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+        background-color: #e2e8f0;
+    }
+
+    .dark .choices__inner {
+        background-color: #0f172a;
+        border-color: #334155;
+        color: #e2e8f0;
+    }
+
+    .dark .choices__list--dropdown,
+    .dark .choices__list[aria-expanded] {
+        background-color: #0f172a;
+        border-color: #334155;
+        color: #e2e8f0;
+    }
+
+    .dark .choices__list--dropdown .choices__item--selectable.is-highlighted,
+    .dark .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+        background-color: #1e293b;
+    }
+
     .typography blockquote {
         margin: 1.2em 0;
         padding-left: 1rem;
@@ -772,4 +814,3 @@ a.cke_button{
 .prose-article img {
     width: 100%;
 }
-
