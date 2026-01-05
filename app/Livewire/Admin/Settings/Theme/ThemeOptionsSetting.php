@@ -7,9 +7,16 @@ use Livewire\Component;
 class ThemeOptionsSetting extends Component
 {
     public array $social_links = [];
+    public string $activeMenu = 'general';
 
     public function mount()
     {
+        $menus = config('theme-options.menus', []);
+        $defaultMenu = $menus[0]['id'] ?? 'general';
+        $requestedMenu = request()->query('as', $defaultMenu);
+        $menuIds = collect($menus)->pluck('id')->all();
+
+        $this->activeMenu = in_array($requestedMenu, $menuIds, true) ? $requestedMenu : $defaultMenu;
         $this->social_links = $this->normalizeSocialLinks(setting('social_links', []));
 
         // পেজ লোড হওয়ার সময় ডিফল্ট একটি খালি অপশন রাখতে পারেন
@@ -113,7 +120,10 @@ class ThemeOptionsSetting extends Component
     }
     public function render()
     {
-        return view('livewire.admin.settings.theme.theme-options-setting')->layout('components.layouts.app', [
+        return view('livewire.admin.settings.theme.theme-options-setting', [
+            'activeMenu' => $this->activeMenu,
+            'menus' => config('theme-options.menus', []),
+        ])->layout('components.layouts.app', [
             'title' => 'Theme Options',
         ]);
     }

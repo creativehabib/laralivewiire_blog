@@ -1,7 +1,7 @@
-<x-theme.layout>
+<x-theme.layout :menus="$menus" :active-menu="$activeMenu">
     @php
-        $menus = config('theme-options.menus', []);
-        $activeMenu = request()->query('as', $menus[0]['id'] ?? 'general');
+        $menus = is_array($menus) ? $menus : [];
+        $activeMenu = $activeMenu ?? ($menus[0]['id'] ?? 'general');
     @endphp
 
     @switch($activeMenu)
