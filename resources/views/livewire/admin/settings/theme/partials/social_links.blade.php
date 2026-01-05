@@ -2,7 +2,7 @@
     @foreach($social_links as $index => $link)
         <div class="relative p-6 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 transition-all">
             {{-- Remove Button (X) --}}
-            <button wire:click="removeSocialLink({{ $index }})" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 cursor-pointer transition-colors">
+            <button type="button" wire:click="removeSocialLink({{ $index }})" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 cursor-pointer transition-colors">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
@@ -55,7 +55,7 @@
 
     {{-- Save Button --}}
     <div class="mt-6 pt-6 border-t flex justify-end">
-        <button wire:click="save" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+        <button type="button" wire:click="save" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
             Save Changes
         </button>
     </div>
