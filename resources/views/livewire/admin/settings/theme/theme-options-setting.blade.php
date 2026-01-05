@@ -17,8 +17,8 @@
             @include('livewire.admin.settings.theme.partials.logo')
             @break
 
-        @case('social')
-            @include('livewire.admin.settings.theme.partials.social')
+        @case('social_links')
+            @include('livewire.admin.settings.theme.partials.social_links')
             @break
 
         @default

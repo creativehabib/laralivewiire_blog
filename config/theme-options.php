@@ -27,10 +27,34 @@ return [
             'description' => 'Upload logos and brand assets.',
         ],
         [
-            'id' => 'social',
-            'icon' => 'share',
+            'id' => 'blog',
+            'icon' => 'blog',
+            'label' => 'Blog',
+            'description' => 'Manage blog posts.',
+        ],
+        [
+            'id' => 'typography',
+            'icon' => 'font',
+            'label' => 'Typography',
+            'description' => 'Configure typography.',
+        ],
+        [
+            'id' => 'social_links',
+            'icon' => 'link',
             'label' => 'Social Links',
-            'description' => 'Configure social profile links.',
+            'description' => 'Configure social links.',
+        ],
+        [
+            'id' => 'social_sharing',
+            'icon' => 'share',
+            'label' => 'Social Sharing',
+            'description' => 'Configure social share.',
+        ],
+        [
+            'id' => 'cookie_consent',
+            'icon' => 'cookie',
+            'label' => 'Cookie Consent',
+            'description' => 'Configure cookie consent.',
         ],
     ],
 ];
