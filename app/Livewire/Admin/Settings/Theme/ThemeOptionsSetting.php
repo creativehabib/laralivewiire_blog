@@ -8,6 +8,9 @@ class ThemeOptionsSetting extends Component
 {
     public array $social_links = [];
     public string $activeMenu = 'general';
+    public string $primary_font = '';
+    public string $primary_font_weights = '';
+    public array $google_fonts = [];
 
     public function mount()
     {
@@ -18,6 +21,9 @@ class ThemeOptionsSetting extends Component
 
         $this->activeMenu = in_array($requestedMenu, $menuIds, true) ? $requestedMenu : $defaultMenu;
         $this->social_links = $this->normalizeSocialLinks(setting('social_links', []));
+        $this->primary_font = (string) setting('primary_font', 'Hind Siliguri');
+        $this->primary_font_weights = (string) setting('primary_font_weights', '300;400;500;600;700');
+        $this->google_fonts = $this->loadGoogleFonts();
 
         // পেজ লোড হওয়ার সময় ডিফল্ট একটি খালি অপশন রাখতে পারেন
         if (empty($this->social_links)) {
@@ -48,6 +54,46 @@ class ThemeOptionsSetting extends Component
     {
         set_setting('social_links', $this->formatSocialLinksForStorage($this->social_links), 'theme-options');
         session()->flash('success', 'Social links updated successfully!');
+    }
+
+    public function saveTypography(): void
+    {
+        set_setting('primary_font', trim($this->primary_font), 'theme-options');
+        set_setting('primary_font_weights', trim($this->primary_font_weights), 'theme-options');
+        session()->flash('success', 'Typography settings updated successfully!');
+    }
+
+    public function updatedPrimaryFont(string $value): void
+    {
+        $fontFamily = trim($value);
+        $matchedFont = collect($this->google_fonts)->firstWhere('family', $fontFamily);
+
+        if (! $matchedFont) {
+            return;
+        }
+
+        $variants = $matchedFont['variants'] ?? [];
+        $weights = collect($variants)
+            ->filter(fn ($variant) => is_numeric($variant))
+            ->values()
+            ->all();
+
+        if ($weights) {
+            $this->primary_font_weights = implode(';', $weights);
+        }
+    }
+
+    protected function loadGoogleFonts(): array
+    {
+        $path = base_path('resources/data/google-fonts.json');
+
+        if (! file_exists($path)) {
+            return [];
+        }
+
+        $fonts = json_decode(file_get_contents($path), true);
+
+        return is_array($fonts) ? $fonts : [];
     }
 
     protected function formatSocialLinksForStorage(array $socialLinks): array
@@ -123,6 +169,7 @@ class ThemeOptionsSetting extends Component
         return view('livewire.admin.settings.theme.theme-options-setting', [
             'activeMenu' => $this->activeMenu,
             'menus' => config('theme-options.menus', []),
+            'googleFonts' => $this->google_fonts,
         ])->layout('components.layouts.app', [
             'title' => 'Theme Options',
         ]);
