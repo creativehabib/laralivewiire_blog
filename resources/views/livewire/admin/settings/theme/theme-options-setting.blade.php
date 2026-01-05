@@ -17,6 +17,10 @@
             @include('livewire.admin.settings.theme.partials.logo')
             @break
 
+        @case('typography')
+            @include('livewire.admin.settings.theme.partials.typography')
+            @break
+
         @case('social_links')
             @include('livewire.admin.settings.theme.partials.social_links')
             @break

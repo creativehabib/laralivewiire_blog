@@ -1,6 +1,6 @@
 <div class="space-y-8">
     @foreach($social_links as $index => $link)
-        <div class="relative p-6 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 transition-all">
+        <div class="relative p-6 border border-slate-200 dark:border-slate-700 rounded-md bg-slate-50 dark:bg-slate-800 transition-all">
             {{-- Remove Button (X) --}}
             <button type="button" wire:click="removeSocialLink({{ $index }})" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 cursor-pointer transition-colors">
                 <i class="fa-solid fa-xmark text-lg"></i>
