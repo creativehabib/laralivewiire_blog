@@ -1,4 +1,6 @@
 import CodeMirror from 'codemirror';
+import Choices from 'choices.js';
+import 'choices.js/public/assets/styles/choices.min.css';
 
 // Modes
 import 'codemirror/mode/css/css.js';
@@ -20,6 +22,7 @@ import 'codemirror/theme/monokai.css';
 
 // Global window object
 window.CodeMirror = CodeMirror;
+window.Choices = Choices;
 document.addEventListener('DOMContentLoaded', () => {
     const isInlineCode = (element) => {
         if (!(element instanceof HTMLElement)) {

@@ -10,6 +10,7 @@ class ThemeOptionsSetting extends Component
     public string $activeMenu = 'general';
     public string $primary_font = '';
     public string $primary_font_weights = '';
+    public string $body_font_size = '';
     public array $google_fonts = [];
 
     public function mount()
@@ -23,6 +24,7 @@ class ThemeOptionsSetting extends Component
         $this->social_links = $this->normalizeSocialLinks(setting('social_links', []));
         $this->primary_font = (string) setting('primary_font', 'Hind Siliguri');
         $this->primary_font_weights = (string) setting('primary_font_weights', '300;400;500;600;700');
+        $this->body_font_size = (string) setting('body_font_size', '16px');
         $this->google_fonts = $this->loadGoogleFonts();
 
         // পেজ লোড হওয়ার সময় ডিফল্ট একটি খালি অপশন রাখতে পারেন
@@ -60,6 +62,7 @@ class ThemeOptionsSetting extends Component
     {
         set_setting('primary_font', trim($this->primary_font), 'theme-options');
         set_setting('primary_font_weights', trim($this->primary_font_weights), 'theme-options');
+        set_setting('body_font_size', trim($this->body_font_size), 'theme-options');
         session()->flash('success', 'Typography settings updated successfully!');
     }
 

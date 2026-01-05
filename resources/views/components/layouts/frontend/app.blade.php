@@ -33,6 +33,11 @@
             :root { --font-sans: "{{ $primaryFont }}", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
         </style>
     @endif
+    @if($bodyFontSize = setting('body_font_size'))
+        <style>
+            :root { --body-font-size: {{ trim($bodyFontSize) }}; }
+        </style>
+    @endif
 
     <style>
         .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
@@ -67,7 +72,7 @@
     </script>
 </head>
 
-<body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out">
+<body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out" style="font-size: var(--body-font-size, 16px);">
 
     @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
     @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
