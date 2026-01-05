@@ -47,10 +47,16 @@
     @endforeach
 
     {{-- Add New Button --}}
-    <div class="pt-4">
-        <button type="button" wire:click="addSocialLink"
-                class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 rounded text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-            Add new
+    <div class="mt-4">
+        <button type="button" wire:click="addSocialLink" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 outline-none transition ease-in-out duration-150">
+            + Add New
+        </button>
+    </div>
+
+    {{-- Save Button --}}
+    <div class="mt-6 pt-6 border-t flex justify-end">
+        <button wire:click="save" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            Save Changes
         </button>
     </div>
 </div>

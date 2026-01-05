@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class ThemeOptionsSetting extends Component
 {
-    public $social_links = [];
+    public array $social_links = [];
 
     public function mount()
     {
@@ -19,7 +19,7 @@ class ThemeOptionsSetting extends Component
     }
 
     // নতুন সোশ্যাল লিঙ্ক অপশন যোগ করার ফাংশন
-    public function addSocialLink()
+    public function addSocialLink(): void
     {
         $this->social_links[] = [
             'name' => '',
@@ -31,13 +31,13 @@ class ThemeOptionsSetting extends Component
     }
 
     // কোনো অপশন মুছে ফেলার ফাংশন (প্রয়োজন হলে)
-    public function removeSocialLink($index)
+    public function removeSocialLink($index): void
     {
         unset($this->social_links[$index]);
         $this->social_links = array_values($this->social_links); // ইন্ডেক্স ঠিক করার জন্য
     }
 
-    public function save()
+    public function save(): void
     {
         set_setting('social_links', $this->formatSocialLinksForStorage($this->social_links), 'theme-options');
         session()->flash('success', 'Social links updated successfully!');
@@ -50,7 +50,6 @@ class ThemeOptionsSetting extends Component
                 ['key' => 'name', 'value' => $link['name'] ?? ''],
                 ['key' => 'icon', 'value' => $link['icon'] ?? ''],
                 ['key' => 'url', 'value' => $link['url'] ?? ''],
-                ['key' => 'icon_image', 'value' => $link['icon_image'] ?? null],
                 ['key' => 'color', 'value' => $link['color'] ?? '#000000'],
                 ['key' => 'background-color', 'value' => $link['bg_color'] ?? '#ffffff'],
             ];
@@ -75,7 +74,6 @@ class ThemeOptionsSetting extends Component
                     'name' => $link['name'] ?? '',
                     'icon' => $link['icon'] ?? '',
                     'url' => $link['url'] ?? '',
-                    'icon_image' => $link['icon_image'] ?? null,
                     'color' => $link['color'] ?? '#000000',
                     'bg_color' => $link['bg_color'] ?? '#ffffff',
                 ];
@@ -86,7 +84,6 @@ class ThemeOptionsSetting extends Component
                 'name' => '',
                 'icon' => '',
                 'url' => '',
-                'icon_image' => null,
                 'color' => '#000000',
                 'bg_color' => '#ffffff',
             ];
