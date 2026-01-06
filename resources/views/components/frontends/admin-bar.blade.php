@@ -5,6 +5,7 @@
         $pageModel = request()->route('page');
         $postModel = request()->route('post');
         $categoryModel = request()->route('category');
+        $tagModel = request()->route('tag');
 
         if ($postModel instanceof \App\Models\Post) {
             $editItemLabel = __('Edit Post');
@@ -14,6 +15,10 @@
             $editItemLabel = __('Edit Category');
             $editItemUrl = route('blogs.categories.edit', ['categoryId' => $categoryModel->id]);
             $editIcon = 'fa-layer-group';
+        } elseif ($tagModel instanceof \App\Models\Admin\Tag) {
+            $editItemLabel = __('Edit Tag');
+            $editItemUrl = route('tags.edit', ['tag' => $tagModel->id]);
+            $editIcon = 'fa-tags';
         } elseif ($pageModel instanceof \App\Models\Admin\Page) {
             $editItemLabel = __('Edit Page');
             $editItemUrl = route('admins.pages.edit', ['pageId' => $pageModel->id]);
