@@ -17,7 +17,7 @@
             $editIcon = 'fa-layer-group';
         } elseif ($tagModel instanceof \App\Models\Admin\Tag) {
             $editItemLabel = __('Edit Tag');
-            $editItemUrl = route('tags.edit', ['tag' => $tagModel->id]);
+            $editItemUrl = route('blogs.tags.edit', ['tag' => $tagModel->id]);
             $editIcon = 'fa-tags';
         } elseif ($pageModel instanceof \App\Models\Admin\Page) {
             $editItemLabel = __('Edit Page');
