@@ -8,19 +8,19 @@
         $tagModel = request()->route('tag');
 
         if ($postModel instanceof \App\Models\Post) {
-            $editItemLabel = __('Edit Post');
+            $editItemLabel = __('Edit this post');
             $editItemUrl = route('blogs.posts.edit', ['post' => $postModel->id]);
             $editIcon = 'fa-pencil';
         } elseif ($categoryModel instanceof \App\Models\Category) {
-            $editItemLabel = __('Edit Category');
+            $editItemLabel = __('Edit this category');
             $editItemUrl = route('blogs.categories.edit', ['categoryId' => $categoryModel->id]);
             $editIcon = 'fa-layer-group';
         } elseif ($tagModel instanceof \App\Models\Admin\Tag) {
-            $editItemLabel = __('Edit Tag');
+            $editItemLabel = __('Edit this tag');
             $editItemUrl = route('blogs.tags.edit', ['tag' => $tagModel->id]);
             $editIcon = 'fa-tags';
         } elseif ($pageModel instanceof \App\Models\Admin\Page) {
-            $editItemLabel = __('Edit Page');
+            $editItemLabel = __('Edit this page');
             $editItemUrl = route('admins.pages.edit', ['pageId' => $pageModel->id]);
             $editIcon = 'fa-file-lines';
         } else {
