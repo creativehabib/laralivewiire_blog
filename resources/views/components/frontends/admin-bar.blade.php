@@ -20,7 +20,7 @@
             $editItemUrl = route('admins.pages.index');
         }
     @endphp
-    <div class="bg-slate-900 text-white text-sm">
+    <div class="sticky top-0 z-[9999] bg-slate-900 text-white text-sm">
         <div class="container flex flex-wrap items-center justify-between gap-3 px-4 py-2">
             <div class="flex flex-wrap items-center gap-4">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 font-semibold">
