@@ -1,4 +1,7 @@
-<header class="bg-white dark:bg-slate-900/95 shadow-sm sticky top-0 z-50
+@php
+    $adminBarOffset = auth()->check() ? 'top-12' : 'top-0';
+@endphp
+<header class="bg-white dark:bg-slate-900/95 shadow-sm sticky {{ $adminBarOffset }} z-50
                border-b border-slate-200/70 dark:border-slate-700/70
                backdrop-blur transition-colors duration-300">
     @php
