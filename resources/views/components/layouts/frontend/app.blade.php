@@ -77,6 +77,7 @@
     @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
     @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
 
+    <x-frontends.admin-bar />
     <x-frontends.top-bar/>
     <x-frontends.navbar />
 
