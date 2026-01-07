@@ -4,6 +4,7 @@
 namespace App\Livewire\Admin\Categories;
 
 use App\Models\Category;
+use App\Models\Slug;
 use App\Support\ActivityLogger;
 use App\Support\SlugService;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,7 @@ class CategoryForm extends Component
     public $seo_index = 'index';
     public $seo_image;
     public ?string $focus_keyword = null;
+    public bool $autoSeoTitle = true;
 
     protected function rules()
     {
@@ -93,24 +95,30 @@ class CategoryForm extends Component
             $this->seo_image       = $seo['seo_image']       ?? null;
             $this->seo_index       = $seo['index']           ?? 'index';
             $this->focus_keyword   = $seo['focus_keyword']   ?? null;
+            $this->autoSeoTitle    = ! $this->seo_title;
         }
     }
 
-    public function updatedName($value)
-    {
-        if (!$this->slug) {
-            $this->slug = Str::slug($value);
-        }
-        if (!$this->seo_title) {
-            $this->seo_title = $value;
-        }
-    }
-
-    public function updatedSlug($value)
+    public function updatedSlug($value): void
     {
         $this->slug = Str::slug($value);
     }
 
+    public function syncSlugFromName($value) : void
+    {
+        $this->name = $value;
+
+        $this->slug = SlugService::create($value, '', $this->slugId);
+
+        if ($this->autoSeoTitle) {
+            $this->seo_title = $value;
+        }
+    }
+    public function updatedSeoTitle($value): void
+    {
+        $this->slug = Str::slug($value);
+        $this->autoSeoTitle = trim((string) $value) === '';
+    }
     /** Save / Save & exit */
     public function save($exit = false)
     {
