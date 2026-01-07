@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Tags;
 
 use App\Models\Admin\Tag;
 use App\Support\ActivityLogger;
+use App\Support\SlugService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -60,6 +61,8 @@ class TagCreate extends Component
 
     public function save($redirect = 'stay')
     {
+        $this->slug = SlugService::create($this->slug ?: $this->name);
+
         $this->validate($this->rules());
 
 

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Admin\Tag;
 use App\Support\ActivityLogger;
 use App\Support\SeoAnalyzer;
+use App\Support\SlugService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -293,6 +294,7 @@ class PostForm extends Component
             ?? Tag::where('name', $name)->first();
 
         if (! $tag) {
+            $slug = SlugService::create($slug);
             $tag = new Tag();
             $tag->name = $name;
             $tag->slug = $slug;
@@ -316,6 +318,8 @@ class PostForm extends Component
 
     public function save(string $redirect = 'stay')
     {
+        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+
         // validation + error–গুলোকে toast এও দেখাতে চাইলে try/catch করতে পারো (আগে দেখিয়েছি)
         $this->validate();
 

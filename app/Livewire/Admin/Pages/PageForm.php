@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Rules\UniqueSlugAcrossContent;
 use App\Support\ActivityLogger;
 use App\Support\SeoAnalyzer;
+use App\Support\SlugService;
 use App\Support\PermalinkManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -139,6 +140,8 @@ class PageForm extends Component
 
     public function save(string $redirect = 'stay')
     {
+        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+
         $this->validate();
 
         $user = Auth::user();

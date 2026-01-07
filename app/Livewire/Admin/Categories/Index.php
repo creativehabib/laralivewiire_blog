@@ -5,6 +5,7 @@
 namespace App\Livewire\Admin\Categories;
 
 use App\Models\Category;
+use App\Support\SlugService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -151,6 +152,8 @@ class Index extends Component
     /** Save / Update (Save & Save & Exit দুটোর জন্য) */
     public function save($exit = false)
     {
+        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+
         $this->validate($this->rules());
 
         $user = Auth::user();

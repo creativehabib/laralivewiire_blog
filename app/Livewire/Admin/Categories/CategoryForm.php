@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Categories;
 
 use App\Models\Category;
 use App\Support\ActivityLogger;
+use App\Support\SlugService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -113,6 +114,8 @@ class CategoryForm extends Component
     /** Save / Save & exit */
     public function save($exit = false)
     {
+        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+
         $this->validate($this->rules());
 
         $user = Auth::user();
