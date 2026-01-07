@@ -3,7 +3,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     @foreach($categories as $category)
         <url>
-            <loc>{{ route('categories.show', $category) }}</loc>
+            <loc>{{ route('categories.show', ['category' => $category->slug]) }}</loc>
             <lastmod>{{ optional($category->updated_at ?? $category->created_at)->tz('UTC')->toAtomString() }}</lastmod>
             <changefreq>{{ $changeFrequency }}</changefreq>
             <priority>{{ $priority }}</priority>

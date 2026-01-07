@@ -166,7 +166,7 @@ class SitemapController extends Controller
             $dbPages = Page::query()->published()->orderByDesc('updated_at')->get()
                 ->map(function ($page) use ($config) {
                     return [
-                        'url' => route('pages.show', $page),
+                        'url' => route('pages.show', ['page' => $page->slug]),
                         'lastmod' => $page->updated_at,
                         'priority' => $config['priority'] // ডাইনামিক সেটিংস থেকে প্রায়োরিটি
                     ];
