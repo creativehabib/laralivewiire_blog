@@ -28,7 +28,7 @@ class PermalinkManager
         '%postname%' => [
             'parameter' => 'post',
             'type' => 'slug',
-            'pattern' => '[A-Za-z0-9\\-_]+',
+            'pattern' => '[^/]+',
             'sample' => 'sample-post',
         ],
         '%post_id%' => [
@@ -58,7 +58,7 @@ class PermalinkManager
         '%category%' => [
             'parameter' => 'category',
             'type' => 'taxonomy',
-            'pattern' => '[A-Za-z0-9\\-_]+',
+            'pattern' => '[^/]+',
             'sample' => 'sample-category',
         ],
     ];
