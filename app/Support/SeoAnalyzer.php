@@ -126,16 +126,17 @@ class SeoAnalyzer
             $analysis['content_ok'] = true;
         }
 
-        // Image Alt check
-        if (preg_match_all('/<img\b[^>]*alt="/i', $contentHtml)) {
+        // 1. Image Presence check
+        if (preg_match('/<img\b[^>]*>/i', $contentHtml)) {
             $analysis['score'] += $config['weights']['image'];
             $analysis['image_ok'] = true;
         }
 
-        if (preg_match_all('/<img\b[^>]*alt="([^"]*)"/i', $contentHtml, $alts)) {
+        // 2. Keyword in Image Alt check (NCTB Books সাপোর্টসহ)
+        if ($kwNorm !== '' && preg_match_all('/<img\b[^>]*alt="([^"]*)"/i', $contentHtml, $alts)) {
             foreach ($alts[1] as $altText) {
-                // কিউওয়ার্ড এবং অল্টার টেক্সট উভয়কেই ছোট হাতের অক্ষরে নিয়ে চেক করা
-                if ($altText && mb_strpos(mb_strtolower($altText, 'UTF-8'), $kwNorm) !== false) {
+                $altLower = mb_strtolower($altText, 'UTF-8');
+                if ($altText !== '' && (mb_strpos($altLower, $kwNorm) !== false || mb_strpos($altLower, $kwSlugMatch) !== false)) {
                     $analysis['score'] += $config['weights']['kw_in_alt'];
                     $analysis['kw_in_alt'] = true;
                     break;
@@ -149,10 +150,16 @@ class SeoAnalyzer
             $analysis['head_ok'] = true;
         }
 
-        // Slug pattern (Unicode support)
-        if (preg_match('/^[\p{L}\p{N}]+(-[\p{L}\p{N}]+)*$/u', $slug)) {
+        // Slug pattern (Unicode/Bengali support)
+        if (preg_match('/^[\x{0980}-\x{09FF}a-z0-9]+(-[\x{0980}-\x{09FF}a-z0-9]+)*$/u', $slug)) {
             $analysis['score'] += $config['weights']['slug'];
             $analysis['slug_ok'] = true;
+        } else {
+            $cleanSlug = str_replace('-', '', $slug);
+            if (preg_match('/^[\x{0980}-\x{09FF}a-z0-9]+$/u', $cleanSlug)) {
+                $analysis['score'] += $config['weights']['slug'];
+                $analysis['slug_ok'] = true;
+            }
         }
 
         // Links check
@@ -177,8 +184,7 @@ class SeoAnalyzer
                 $analysis['kw_in_title'] = true;
             }
 
-            // Slug (Updated: NCTB Books সমস্যা সমাধানের জন্য)
-            // এটি হুবহু কিউওয়ার্ড অথবা হাইফেনযুক্ত ভার্সন দুইটাই চেক করবে
+            // Slug
             if ($contains($slug, $kwNorm) || ($kwSlugMatch !== '' && $contains($slug, $kwSlugMatch))) {
                 $analysis['score'] += $config['weights']['kw_in_slug'];
                 $analysis['kw_in_slug'] = true;
@@ -212,7 +218,7 @@ class SeoAnalyzer
             // Keyword density
             $contentLower = mb_strtolower($contentText, 'UTF-8');
             $kwCount = mb_substr_count($contentLower, $kwNorm);
-            $density = ($kwCount / $words) * 100;
+            $density = ($words > 0) ? ($kwCount / $words) * 100 : 0;
             $analysis['kw_density'] = round($density, 2);
 
             if ($density >= $config['density']['min'] && $density <= $config['density']['max']) {
