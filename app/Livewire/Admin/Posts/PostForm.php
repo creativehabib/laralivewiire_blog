@@ -170,7 +170,7 @@ class PostForm extends Component
     public function syncSlugFromName($value) : void
     {
         $this->name = $value;
-        $this->slug = SlugService::create($value, '', $this->slugId);
+        $this->slug = SlugService::create($value, '-', $this->slugId);
 
         if ($this->autoSeoTitle) {
             $this->seo_title = $value;
@@ -178,18 +178,18 @@ class PostForm extends Component
     }
     public function updatedSlug($value): void
     {
-        $this->slug = SlugService::create($value, '', $this->slugId);
+        $this->slug = SlugService::create($value, '-', $this->slugId);
     }
 
     public function updatedSeoTitle($value): void
     {
-        $this->slug = SlugService::create($value, '', $this->slugId);
+        $this->slug = SlugService::create($value, '-', $this->slugId);
         $this->autoSeoTitle = trim((string) $value) === '';
     }
 
     public function generateSlug(): void
     {
-        $this->slug = SlugService::create($this->name, '', $this->slugId);
+        $this->slug = SlugService::create($this->name, '-', $this->slugId);
     }
 
     public function toggleCategory($categoryId): void
@@ -329,7 +329,7 @@ class PostForm extends Component
 
     public function save(string $redirect = 'stay')
     {
-        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+        $this->slug = SlugService::create($this->slug ?: $this->name, '-', $this->slugId);
 
         // validation + error–গুলোকে toast এও দেখাতে চাইলে try/catch করতে পারো (আগে দেখিয়েছি)
         $this->validate();

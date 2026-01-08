@@ -6,22 +6,35 @@ use App\Models\Slug;
 
 class SlugService
 {
-    public static function create(string $name, ?string $prefix = '', ?int $ignoreId = null): string
+    /**
+     * ইউনিক এবং বাংলা সাপোর্টসহ স্লাগ তৈরি।
+     * 'Compilation failed' এরর স্থায়ীভাবে দূর করার জন্য কোডটি রি-রাইট করা হয়েছে।
+     */
+    public static function create(string $name, ?string $separator = '-', ?int $ignoreId = null): string
     {
-        // ১. সরাসরি বাংলা ক্যারেক্টার ও স্পেস ছাড়া সব রিমুভ করুন
-        // স্পেসকে হাইফেন দিয়ে পরিবর্তন
-        $slug = mb_strtolower($name, 'UTF-8');
-        $slug = preg_replace('/[^\x{0980}-\x{09FF}a-z0-9\s]/u', '', $slug); // বাংলা ও ইংরেজি বাদে সব বাদ
-        $slug = preg_replace('/\s+/u', '-', trim($slug)); // স্পেসকে হাইফেন করা
-        $slug = preg_replace('/-{2,}/u', '-', $slug); // ডাবল হাইফেন রিমুভ
+        // সেপারেটর ডিফল্ট হিসেবে হাইফেন সেট করা
+        $sep = $separator ?: '-';
 
+        // ১. বড় হাতের অক্ষর ছোট করা (UTF-8 সাপোর্টসহ)
+        $slug = mb_strtolower($name, 'UTF-8');
+
+        // ২. বাংলা ক্যারেক্টার (\x{0980}-\x{09FF}), ইংরেজি (a-z) এবং সংখ্যা (0-9) বাদে বাকি সব সিম্বলকে
+        // একটি নির্দিষ্ট অস্থায়ী চিহ্ন (যেমন স্পেস) দিয়ে রিপ্লেস করা।
+        $slug = preg_replace('/[^\x{0980}-\x{09FF}a-z0-9]+/u', ' ', $slug);
+
+        // ৩. এবার সব স্পেসকে আপনার দেওয়া সেপারেটর (হাইফেন) দিয়ে রিপ্লেস করা
+        $slug = trim($slug);
+        $slug = preg_replace('/\s+/', $sep, $slug);
+
+        // ৪. যদি স্লাগ খালি থাকে (যেমন শুধু বিশেষ চিহ্ন ছিল), তবে টাইমস্ট্যাম্প ব্যবহার
         $base = $slug ?: (string) time();
 
         $candidate = $base;
         $counter = 1;
 
+        // ৫. ডাটাবেসে ইউনিকনেস চেক
         while (self::exists($candidate, $ignoreId)) {
-            $candidate = $base . '-' . $counter;
+            $candidate = $base . $sep . $counter;
             $counter++;
         }
 
@@ -32,7 +45,9 @@ class SlugService
     {
         return Slug::query()
             ->where('key', $slug)
-            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+            ->when($ignoreId, function ($query) use ($ignoreId) {
+                return $query->where('id', '!=', $ignoreId);
+            })
             ->exists();
     }
 }
