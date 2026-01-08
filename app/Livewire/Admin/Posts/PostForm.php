@@ -47,6 +47,7 @@ class PostForm extends Component
     public ?string $seo_description = null;
     public ?string $seo_image = null;
     public string  $seo_index = 'index';
+    public bool $autoSeoTitle = true;
 
     public function mount(Post $post = null): void
     {
@@ -165,23 +166,33 @@ class PostForm extends Component
         }
         $this->resetErrorBag('category_ids');
     }
-    public function updatedName($value): void
-    {
-        if (! $this->slug) {
-            $this->slug = Str::slug($value);
-        }
 
-        if (! $this->seo_title) {
+    public function syncSlugFromName($value) : void
+    {
+        $this->name = $value;
+        $this->slug = SlugService::create($value, '', $this->slugId);
+
+        if ($this->autoSeoTitle) {
             $this->seo_title = $value;
         }
     }
-
     public function updatedSlug($value): void
     {
-        $this->slug = Str::slug($value);
+        $this->slug = SlugService::create($value, '', $this->slugId);
     }
 
-    public function toggleCategory($categoryId)
+    public function updatedSeoTitle($value): void
+    {
+        $this->slug = SlugService::create($value, '', $this->slugId);
+        $this->autoSeoTitle = trim((string) $value) === '';
+    }
+
+    public function generateSlug(): void
+    {
+        $this->slug = SlugService::create($this->name, '', $this->slugId);
+    }
+
+    public function toggleCategory($categoryId): void
     {
         $category = Category::with('childrenRecursive')->find($categoryId);
 
