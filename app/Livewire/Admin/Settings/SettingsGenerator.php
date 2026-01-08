@@ -77,6 +77,10 @@ class SettingsGenerator extends Component
                 $value = $value === '' ? null : $value;
             }
 
+            if (in_array($key, ['post_url_extension', 'category_url_extension', 'tag_url_extension', 'page_url_extension'], true)) {
+                $value = PermalinkManager::normalizeExtensionInput(is_string($value) ? trim($value) : $value);
+            }
+
             set_setting($key, $value, $this->group);
         }
 

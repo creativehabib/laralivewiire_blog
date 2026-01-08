@@ -121,6 +121,11 @@ class PermalinkManager
 
         $template = self::normalizedTemplate($structure, $custom);
         $compiled = self::compileTemplate($template);
+        $postExtension = self::postExtension();
+
+        if ($postExtension !== '') {
+            $compiled['uri'] .= $postExtension;
+        }
 
         return [
             'uri' => $compiled['uri'],
@@ -191,6 +196,7 @@ class PermalinkManager
         $sample = self::replaceTokens($template, collect(self::TOKEN_META)->mapWithKeys(function ($meta, $token) {
             return [$token => $meta['sample']];
         })->all());
+        $sample = self::appendExtension($sample, self::postExtension());
 
         return self::formatUrl($sample);
     }
@@ -373,6 +379,7 @@ class PermalinkManager
         ];
 
         $path = self::replaceTokens($template, $replacements);
+        $path = self::appendExtension($path, self::postExtension());
 
         return self::formatUrl($path, $absolute);
     }
@@ -382,6 +389,7 @@ class PermalinkManager
     public static function categoryPreview(string $slug = 'your-slug', bool $absolute = true): string
     {
         $path = self::categoryPrefix() . '/' . ltrim($slug, '/');
+        $path = self::appendExtension($path, self::categoryExtension());
 
         // আগেই থাকা helper দিয়ে proper URL বানাচ্ছি
         return self::formatUrl($path, $absolute);
@@ -393,6 +401,7 @@ class PermalinkManager
     public static function tagPreview(string $slug = 'your-tag', bool $absolute = true): string
     {
         $path = self::tagPrefix() . '/' . ltrim($slug, '/');
+        $path = self::appendExtension($path, self::tagExtension());
 
         return self::formatUrl($path, $absolute);
     }
@@ -426,6 +435,7 @@ class PermalinkManager
     public static function pagePreview(string $slug = 'your-page', bool $absolute = true): string
     {
         $path = self::pagePrefix() . '/' . ltrim($slug, '/');
+        $path = self::appendExtension($path, self::pageExtension());
 
         return self::formatUrl($path, $absolute);
     }
@@ -443,5 +453,51 @@ class PermalinkManager
         return $prefix;
     }
 
+    public static function postExtension(): string
+    {
+        return self::normalizeExtension(setting('post_url_extension', ''));
+    }
+
+    public static function categoryExtension(): string
+    {
+        return self::normalizeExtension(setting('category_url_extension', ''));
+    }
+
+    public static function tagExtension(): string
+    {
+        return self::normalizeExtension(setting('tag_url_extension', ''));
+    }
+
+    public static function pageExtension(): string
+    {
+        return self::normalizeExtension(setting('page_url_extension', ''));
+    }
+
+    public static function normalizeExtensionInput(?string $extension): ?string
+    {
+        $normalized = self::normalizeExtension($extension);
+
+        return $normalized === '' ? null : $normalized;
+    }
+
+    protected static function normalizeExtension(?string $extension): string
+    {
+        $extension = trim((string) $extension);
+
+        if ($extension === '') {
+            return '';
+        }
+
+        return '.' . ltrim($extension, '.');
+    }
+
+    protected static function appendExtension(string $path, string $extension): string
+    {
+        if ($extension === '') {
+            return $path;
+        }
+
+        return rtrim($path, '/') . $extension;
+    }
 
 }

@@ -396,6 +396,15 @@ return [
                 ],
 
                 [
+                    'key' => 'post_url_extension',
+                    'type' => 'text',
+                    'label' => 'Post URL extension',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:20', 'regex:/^\\.[a-z0-9]+$/i'],
+                    'hint' => 'Example: .html (খালি রাখলে extension থাকবে না)',
+                ],
+
+                [
                     'key' => 'category_slug_prefix',
                     'type' => 'text',
                     'label' => 'Category URL base',
@@ -419,6 +428,33 @@ return [
                     'default' => '',
                     'rules'   => ['nullable', 'regex:/^[a-z0-9\\-]+$/'],
                     'hint' => 'Example: page, info, docs (খালি রাখলে prefix থাকবে না)',
+                ],
+
+                [
+                    'key' => 'category_url_extension',
+                    'type' => 'text',
+                    'label' => 'Category URL extension',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:20', 'regex:/^\\.[a-z0-9]+$/i'],
+                    'hint' => 'Example: .html (খালি রাখলে extension থাকবে না)',
+                ],
+
+                [
+                    'key' => 'tag_url_extension',
+                    'type' => 'text',
+                    'label' => 'Tag URL extension',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:20', 'regex:/^\\.[a-z0-9]+$/i'],
+                    'hint' => 'Example: .html (খালি রাখলে extension থাকবে না)',
+                ],
+
+                [
+                    'key' => 'page_url_extension',
+                    'type' => 'text',
+                    'label' => 'Page URL extension',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:20', 'regex:/^\\.[a-z0-9]+$/i'],
+                    'hint' => 'Example: .html (খালি রাখলে extension থাকবে না)',
                 ],
 
                 [
