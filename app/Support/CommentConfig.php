@@ -10,7 +10,8 @@ class CommentConfig
         $facebookEnabled = (bool) setting('comment_facebook_enabled', false);
         $facebookAppId = trim((string) (setting('comment_facebook_app_id') ?? ''));
 
-        $facebookReady = $facebookEnabled && $facebookAppId !== '';
+        $facebookRequested = in_array($mode, ['facebook', 'both'], true);
+        $facebookReady = $facebookAppId !== '' && ($facebookEnabled || $facebookRequested);
 
         $provider = match ($mode) {
             'facebook' => $facebookReady ? 'facebook' : 'local',
