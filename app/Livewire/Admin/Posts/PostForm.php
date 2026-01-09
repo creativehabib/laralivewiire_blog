@@ -169,7 +169,13 @@ class PostForm extends Component
         }
         $this->resetErrorBag('category_ids');
     }
-
+    public function updatedName($value): void
+    {
+        $this->slug = $this->generateSlugValue((string) $value);
+        if ($this->autoSeoTitle) {
+            $this->seo_title = $value;
+        }
+    }
     public function toggleCategory($categoryId): void
     {
         $category = Category::with('childrenRecursive')->find($categoryId);

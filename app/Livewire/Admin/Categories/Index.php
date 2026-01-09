@@ -89,6 +89,7 @@ class Index extends Component
 
     public function updatedName($value): void
     {
+        $this->slug = $this->generateSlugValue((string) $value);
         if (empty($this->seo_title)) {
             $this->seo_title = $value;
         }

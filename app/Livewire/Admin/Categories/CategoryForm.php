@@ -96,7 +96,13 @@ class CategoryForm extends Component
             $this->autoSeoTitle    = ! $this->seo_title;
         }
     }
-
+    public function updatedName($value): void
+    {
+        $this->slug = $this->generateSlugValue((string) $value);
+        if ($this->autoSeoTitle) {
+            $this->seo_title = $value;
+        }
+    }
     /** Save / Save & exit */
     public function save($exit = false)
     {

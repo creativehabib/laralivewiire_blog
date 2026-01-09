@@ -27,6 +27,7 @@ class TagEdit extends Component
     public $seo_description;
     public $seo_image;
     public $seo_index = 'index';
+    public $autoSeoTitle = true;
 
     public function mount(Tag $tag)
     {
@@ -76,7 +77,8 @@ class TagEdit extends Component
 
     public function updatedName($value): void
     {
-        if (! $this->seo_title) {
+        $this->slug = $this->generateSlugValue((string) $value);
+        if ($this->autoSeoTitle) {
             $this->seo_title = $value;
         }
     }

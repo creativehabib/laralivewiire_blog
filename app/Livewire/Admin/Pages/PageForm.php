@@ -36,6 +36,7 @@ class PageForm extends Component
     public string  $seo_index = 'index';
     public ?string $seo_image = null;
     public string $focus_keyword = '';
+    public bool $autoSeoTitle = true;
 
     // UI helpers
     public int $nameMax = 250;
@@ -116,7 +117,13 @@ class PageForm extends Component
         ];
     }
 
-
+    public function updatedName($value): void
+    {
+        $this->slug = $this->generateSlugValue((string) $value);
+        if ($this->autoSeoTitle) {
+            $this->seo_title = $value;
+        }
+    }
     public function getSeoAnalysisProperty(): array
     {
         return SeoAnalyzer::analyzeContent(
@@ -198,8 +205,9 @@ class PageForm extends Component
 
     public function render()
     {
-        return view('livewire.admin.pages.page-form')
-            ->layout('components.layouts.app', [
+        return view('livewire.admin.pages.page-form',[
+            'baseUrl'        => config('app.url'),
+        ])->layout('components.layouts.app', [
                 'title' => $this->pageId ? 'Edit Page' : 'Create Page',
             ]);
     }

@@ -59,7 +59,6 @@
                             <input
                                 type="text"
                                 wire:model.live="name"
-                                wire:keyup.debounce.300ms="syncSlugFromName($event.target.value)"
                                 maxlength="{{ $nameMax }}"
                                 class="block w-full rounded-lg border px-3 py-2 text-sm
                                        border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
@@ -71,11 +70,11 @@
 
                         {{-- Slug --}}
                         <x-admin.permalink-field
-                            label="Permalink (Slug)"
+                            label="Permalink"
+                            :base-url="$baseUrl"
                             preview-type="page"
-                            :slug="$slug"
-                            preview-as-link="false"
-                            placeholder="page-slug"
+                            :slug="$this->slug"
+                            placeholder="slug"
                             label-class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1"
                             container-class=""
                             input-wrapper-class="mt-2 flex rounded-md shadow-sm"

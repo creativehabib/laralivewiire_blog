@@ -67,8 +67,7 @@
                                 </span>
                                 <input
                                     type="text"
-                                    wire:model.defer="name"
-                                    wire:keyup.debounce.300ms="syncSlugFromName($event.target.value)"
+                                    wire:model.live="name"
                                     maxlength="{{ $nameMax }}"
                                     class="block w-full rounded-lg border px-3 py-2 pl-10 text-sm
                                            border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400

@@ -141,38 +141,32 @@
                             <label class="block text-xs font-semibold text-gray-700 mb-1 dark:text-gray-300">
                                 Name <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" wire:model="name"
-                                   wire:keyup.debounce.300ms="syncSlugFromName($event.target.value)"
+                            <input type="text" wire:model.live="name"
                                    class="w-full border rounded px-3 py-2 text-sm bg-white text-gray-800 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 dark:focus:border-blue-400">
                             @error('name')
                             <div class="text-xs text-red-600 mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1 dark:text-gray-300">
-                                Permalink <span class="text-red-500">*</span>
-                            </label>
-                            <div class="flex items-center text-sm">
-                                    <span
-                                        class="px-2 py-2 border border-r-0 rounded-l bg-gray-50 text-gray-500 text-xs truncate max-w-[40%] dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
-                                        {{ rtrim($baseUrl, '/') }}/
-                                    </span>
-                                <input type="text" wire:model="slug"
-                                       class="flex-1 border rounded-r px-3 py-2 text-sm bg-white text-gray-800 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 dark:focus:border-blue-400">
-                            </div>
-                            @error('slug')
-                            <div class="text-xs text-red-600 mt-1">{{ $message }}</div>
-                            @enderror
-                            <div class="text-xs text-gray-500 mt-1 dark:text-gray-400">
-                                Preview:
-                                <a href="{{ preview_url('category',$this->slug) }}"
-                                   target="_blank"
-                                   class="text-blue-500 underline">
-                                    {{ preview_url('category', $this->slug) }}
-                                </a>
-                            </div>
-                        </div>
+                        <x-admin.permalink-field
+                            label="Permalink"
+                            :base-url="$baseUrl"
+                            preview-type="category"
+                            :slug="$this->slug"
+                            placeholder="slug"
+                            label-class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                            container-class=""
+                            input-wrapper-class="mt-2 flex rounded-md shadow-sm"
+                            prefix-class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs sm:text-sm"
+                            input-class="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm placeholder:text-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out outline-none"
+                            action-wrapper-class="inline-flex items-center border border-l-0 border-gray-300 dark:border-gray-700 rounded-r-md bg-gray-50 dark:bg-gray-900 overflow-hidden"
+                            action-button-class="px-3 py-2 text-gray-400 hover:text-amber-500 cursor-pointer transition-colors"
+                            preview-wrapper-class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                            preview-class="text-blue-500 dark:text-blue-400 underline"
+                            error-class="text-xs text-red-600 mt-1"
+                            generate-action="generateSlug"
+                            wire:model.blur="slug"
+                        />
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-700 mb-1 dark:text-gray-300">

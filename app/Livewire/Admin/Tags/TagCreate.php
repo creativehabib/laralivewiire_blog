@@ -27,6 +27,7 @@ class TagCreate extends Component
     public $seo_description;
     public $seo_index = 'index';
     public $seo_image;
+    public bool $autoSeoTitle = true;
 
 
     protected function rules()
@@ -51,7 +52,13 @@ class TagCreate extends Component
             $this->author_type = get_class(auth()->user()); // যেমন: App\Models\User
         }
     }
-
+    public function updatedName($value): void
+    {
+        $this->slug = $this->generateSlugValue((string) $value);
+        if ($this->autoSeoTitle) {
+            $this->seo_title = $value;
+        }
+    }
     public function save($redirect = 'stay')
     {
         $this->slug = SlugService::create($this->slug ?: $this->name);
