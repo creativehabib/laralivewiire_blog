@@ -76,8 +76,8 @@ class ThemeOptionsSetting extends Component
             ])
             ->all();
         $this->pages = Page::query()
-            ->orderBy('title')
-            ->get(['id', 'title'])
+            ->orderBy('name')
+            ->get(['id', 'name'])
             ->map(fn (Page $page) => [
                 'id' => $page->id,
                 'title' => $page->title,
