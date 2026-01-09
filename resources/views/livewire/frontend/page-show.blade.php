@@ -15,8 +15,7 @@
         @endif
 
         @php
-            $builderEnabled = ($builderState['enabled'] ?? false) && !empty($builderState['sections']);
-            $builderSections = $builderState['sections'] ?? [];
+            $builderEnabled = ($builderState['enabled'] ?? false) && !empty($builderSections);
         @endphp
 
         @if ($builderEnabled)
@@ -42,10 +41,37 @@
 
                             <div class="space-y-3">
                                 @forelse ($blocks as $block)
-                                    <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                                        <p class="font-semibold">{{ $block['name'] ?? 'Block' }}</p>
-                                        @if (!empty($block['layout']))
-                                            <p class="text-xs text-slate-500">Layout: {{ $block['layout'] }}</p>
+                                    @php
+                                        $settings = $block['settings'] ?? [];
+                                        $blockTitle = $settings['title'] ?: ($block['name'] ?? 'Block');
+                                        $posts = $block['posts'] ?? [];
+                                    @endphp
+                                    <div class="space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <div>
+                                                <p class="font-semibold">{{ $blockTitle }}</p>
+                                                @if (!empty($settings['tags']))
+                                                    <p class="text-xs text-slate-500">Tags: {{ $settings['tags'] }}</p>
+                                                @endif
+                                            </div>
+                                            @if (!empty($settings['url']))
+                                                <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">View all</a>
+                                            @endif
+                                        </div>
+                                        @if (count($posts))
+                                            <div class="grid gap-3 sm:grid-cols-2">
+                                                @foreach ($posts as $post)
+                                                    <article class="flex gap-3">
+                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                        <div class="space-y-1">
+                                                            <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ $post->name }}</p>
+                                                            <p class="text-xs text-slate-500">{{ $post->excerpt }}</p>
+                                                        </div>
+                                                    </article>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-xs text-slate-500">No posts matched this block settings.</p>
                                         @endif
                                     </div>
                                 @empty

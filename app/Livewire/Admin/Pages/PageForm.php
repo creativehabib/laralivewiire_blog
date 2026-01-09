@@ -30,6 +30,7 @@ class PageForm extends Component
     public ?string $template = null;
     public ?string $image = null;
     public array $builderState = [];
+    public array $categories = [];
 
     // SEO (meta_boxes)
     public ?string $seo_title = null;
@@ -45,6 +46,15 @@ class PageForm extends Component
 
     public function mount(?int $pageId = null): void
     {
+        $this->categories = Category::query()
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Category $category) => [
+                'id' => $category->id,
+                'name' => $category->name,
+            ])
+            ->toArray();
+
         if ($pageId) {
             $page = Page::query()->withTrashed()->findOrFail($pageId);
             $this->page   = $page;
@@ -217,6 +227,7 @@ class PageForm extends Component
     {
         return view('livewire.admin.pages.page-form',[
             'baseUrl'        => config('app.url'),
+            'categories'     => $this->categories,
         ])->layout('components.layouts.app', [
                 'title' => $this->pageId ? 'Edit Page' : 'Create Page',
             ]);

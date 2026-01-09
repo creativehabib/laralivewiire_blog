@@ -10,9 +10,12 @@
     sections: [],
     nextSectionId: 1,
     activeSectionId: null,
+    activeBlockId: null,
     showSectionModal: false,
     showBlockModal: false,
+    showBlockSettingsModal: false,
     sectionTab: 'general',
+    blockTab: 'general',
     selectedSidebar: 'none',
     blocks: [
         { id: 1, name: 'List + Sidebar', layout: 'list-sidebar' },
@@ -32,6 +35,15 @@
         }));
         this.builderEnabled = storedEnabled;
         this.nextSectionId = this.sections.length ? Math.max(...this.sections.map((section) => section.id)) + 1 : 1;
+    },
+    findActiveBlock() {
+        const section = this.sections.find((item) => item.id === this.activeSectionId);
+
+        if (!section) {
+            return null;
+        }
+
+        return section.blocks.find((block) => block.id === this.activeBlockId) ?? null;
     },
     syncBuilderState() {
         this.builderState = {
@@ -62,6 +74,12 @@
         this.activeSectionId = sectionId;
         this.showBlockModal = true;
     },
+    openBlockSettings(sectionId, blockId) {
+        this.activeSectionId = sectionId;
+        this.activeBlockId = blockId;
+        this.blockTab = 'general';
+        this.showBlockSettingsModal = true;
+    },
     addBlockToSection(block) {
         const section = this.sections.find((item) => item.id === this.activeSectionId);
 
@@ -69,13 +87,31 @@
             return;
         }
 
-        section.blocks.push({
+        const newBlock = {
             id: Date.now() + Math.random(),
             name: block.name,
-            layout: block.layout
-        });
+            layout: block.layout,
+            settings: {
+                title: '',
+                icon: '',
+                url: '',
+                categories: [],
+                tags: '',
+                trending: false,
+                exclude: '',
+                sort: 'recent',
+                order: 'desc',
+                count: 5,
+                offset: 0,
+                days: '',
+                pagination: 'disable',
+            }
+        };
+
+        section.blocks.push(newBlock);
         this.showBlockModal = false;
         this.syncBuilderState();
+        this.openBlockSettings(section.id, newBlock.id);
     },
     removeBlockFromSection(sectionId, blockId) {
         const section = this.sections.find((item) => item.id === sectionId);
@@ -96,6 +132,35 @@
         }
 
         section.sidebar = value;
+        this.syncBuilderState();
+    },
+    updateActiveBlockField(field, value) {
+        const block = this.findActiveBlock();
+
+        if (!block) {
+            return;
+        }
+
+        block.settings = block.settings ?? {};
+        block.settings[field] = value;
+        this.syncBuilderState();
+    },
+    toggleActiveBlockCategory(categoryId) {
+        const block = this.findActiveBlock();
+
+        if (!block) {
+            return;
+        }
+
+        block.settings = block.settings ?? {};
+        block.settings.categories = block.settings.categories ?? [];
+
+        if (block.settings.categories.includes(categoryId)) {
+            block.settings.categories = block.settings.categories.filter((id) => id !== categoryId);
+        } else {
+            block.settings.categories.push(categoryId);
+        }
+
         this.syncBuilderState();
     }
 }">
@@ -293,7 +358,7 @@
                                                                         <button type="button" class="h-7 w-7 rounded bg-slate-700 hover:bg-slate-600" @click="removeBlockFromSection(section.id, block.id)">
                                                                             <i class="fa-solid fa-trash text-[11px]"></i>
                                                                         </button>
-                                                                        <button type="button" class="h-7 w-7 rounded bg-slate-700 hover:bg-slate-600">
+                                                                        <button type="button" class="h-7 w-7 rounded bg-slate-700 hover:bg-slate-600" @click="openBlockSettings(section.id, block.id)">
                                                                             <i class="fa-solid fa-pen text-[11px]"></i>
                                                                         </button>
                                                                     </div>
@@ -501,6 +566,171 @@
                                                 <span x-text="block.name"></span>
                                             </button>
                                         </template>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div x-show="showBlockSettingsModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 p-4">
+                                <div class="w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-slate-900">
+                                    <div class="flex items-center justify-between border-b border-slate-200 bg-slate-900 px-6 py-4 text-white dark:border-slate-700">
+                                        <div>
+                                            <h3 class="text-base font-semibold">Edit Block</h3>
+                                            <p class="text-xs text-white/70" x-text="findActiveBlock()?.name ?? ''"></p>
+                                        </div>
+                                        <button type="button" class="rounded bg-sky-600 px-4 py-2 text-xs font-semibold hover:bg-sky-500" @click="showBlockSettingsModal = false">
+                                            Done
+                                        </button>
+                                    </div>
+                                    <div class="flex bg-sky-600 text-xs font-semibold text-white">
+                                        <button type="button" class="relative px-5 py-3" :class="blockTab === 'general' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'general'">
+                                            General
+                                            <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="blockTab === 'general'"></span>
+                                        </button>
+                                        <button type="button" class="relative px-5 py-3" :class="blockTab === 'styling' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'styling'">
+                                            Styling Settings
+                                            <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="blockTab === 'styling'"></span>
+                                        </button>
+                                        <button type="button" class="relative px-5 py-3" :class="blockTab === 'advanced' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'advanced'">
+                                            Advanced Settings
+                                            <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="blockTab === 'advanced'"></span>
+                                        </button>
+                                    </div>
+                                    <div class="max-h-[70vh] overflow-y-auto bg-slate-50 p-6 dark:bg-slate-800">
+                                        <div class="space-y-5" x-show="blockTab === 'general'" x-cloak>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-start rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">Custom Title (optional)</label>
+                                                <input type="text"
+                                                       class="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                       :value="findActiveBlock()?.settings?.title ?? ''"
+                                                       @input="updateActiveBlockField('title', $event.target.value)"
+                                                       placeholder="Block Title">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-start rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">Icon (optional)</label>
+                                                <div class="flex items-center gap-3 max-w-md">
+                                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-indigo-500 text-indigo-600 bg-indigo-50 dark:bg-indigo-500/10">
+                                                        <i class="fa-solid fa-star"></i>
+                                                    </span>
+                                                    <input type="text"
+                                                           class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                           :value="findActiveBlock()?.settings?.icon ?? ''"
+                                                           @input="updateActiveBlockField('icon', $event.target.value)"
+                                                           placeholder="fa-solid fa-star">
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-start rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">Title URL (optional)</label>
+                                                <input type="url"
+                                                       class="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                       :value="findActiveBlock()?.settings?.url ?? ''"
+                                                       @input="updateActiveBlockField('url', $event.target.value)"
+                                                       placeholder="https://">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-start rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">Categories</label>
+                                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                    @foreach ($categories as $category)
+                                                        <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                                            <input type="checkbox"
+                                                                   class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                                                   :checked="(findActiveBlock()?.settings?.categories ?? []).includes({{ $category['id'] }})"
+                                                                   @change="toggleActiveBlockCategory({{ $category['id'] }})">
+                                                            <span>{{ $category['name'] }}</span>
+                                                        </label>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-start rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">Tags</label>
+                                                <div>
+                                                    <input type="text"
+                                                           class="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                           :value="findActiveBlock()?.settings?.tags ?? ''"
+                                                           @input="updateActiveBlockField('tags', $event.target.value)"
+                                                           placeholder="Enter tag names separated by commas.">
+                                                    <p class="mt-2 text-xs text-slate-500">Enter a tag name, or names separated by comma.</p>
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Trending Posts</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.trending ?? false"
+                                                               @change="updateActiveBlockField('trending', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                    <span class="text-xs text-slate-500">Only show posts marked as trending</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-5" x-show="blockTab === 'styling'" x-cloak>
+                                            <div class="rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <p class="text-sm text-slate-600 dark:text-slate-300">Styling options will be available soon.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-5" x-show="blockTab === 'advanced'" x-cloak>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-start rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">Exclude Posts</label>
+                                                <div>
+                                                    <input type="text"
+                                                           class="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                           :value="findActiveBlock()?.settings?.exclude ?? ''"
+                                                           @input="updateActiveBlockField('exclude', $event.target.value)"
+                                                           placeholder="Enter a post ID, or IDs separated by comma.">
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Sort by</label>
+                                                <select class="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                        :value="findActiveBlock()?.settings?.sort ?? 'recent'"
+                                                        @change="updateActiveBlockField('sort', $event.target.value)">
+                                                    <option value="recent">Recent Posts</option>
+                                                    <option value="popular">Popular Posts</option>
+                                                </select>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Order</label>
+                                                <select class="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                        :value="findActiveBlock()?.settings?.order ?? 'desc'"
+                                                        @change="updateActiveBlockField('order', $event.target.value)">
+                                                    <option value="desc">Descending</option>
+                                                    <option value="asc">Ascending</option>
+                                                </select>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Number of posts to show</label>
+                                                <input type="number" min="1"
+                                                       class="w-full max-w-xs rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                       :value="findActiveBlock()?.settings?.count ?? 5"
+                                                       @input="updateActiveBlockField('count', Number($event.target.value))">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Offset - number of posts to pass over</label>
+                                                <input type="number" min="0"
+                                                       class="w-full max-w-xs rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                       :value="findActiveBlock()?.settings?.offset ?? 0"
+                                                       @input="updateActiveBlockField('offset', Number($event.target.value))">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Published in the last (days)</label>
+                                                <input type="number" min="0"
+                                                       class="w-full max-w-xs rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                       :value="findActiveBlock()?.settings?.days ?? ''"
+                                                       @input="updateActiveBlockField('days', $event.target.value)">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Pagination</label>
+                                                <select class="w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                        :value="findActiveBlock()?.settings?.pagination ?? 'disable'"
+                                                        @change="updateActiveBlockField('pagination', $event.target.value)">
+                                                    <option value="disable">Disable</option>
+                                                    <option value="enable">Enable</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
