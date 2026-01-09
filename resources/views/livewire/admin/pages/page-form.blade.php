@@ -5,6 +5,7 @@
 <div class="space-y-4" x-data="{
     name: @entangle('name').live,
     description: @entangle('description').live,
+    builderState: @entangle('builderState').live,
     builderEnabled: false,
     sections: [],
     nextSectionId: 1,
@@ -20,11 +21,35 @@
         { id: 4, name: 'Hero + List', layout: 'hero-list' },
         { id: 5, name: 'Half Width', layout: 'half-width' }
     ],
+    init() {
+        const storedSections = Array.isArray(this.builderState?.sections) ? this.builderState.sections : [];
+        const storedEnabled = this.builderState?.enabled ?? false;
+
+        this.sections = storedSections.map((section) => ({
+            id: section.id ?? Date.now() + Math.random(),
+            blocks: Array.isArray(section.blocks) ? section.blocks : [],
+            sidebar: section.sidebar ?? 'none'
+        }));
+        this.builderEnabled = storedEnabled;
+        this.nextSectionId = this.sections.length ? Math.max(...this.sections.map((section) => section.id)) + 1 : 1;
+    },
+    syncBuilderState() {
+        this.builderState = {
+            enabled: this.builderEnabled,
+            sections: this.sections
+        };
+    },
+    toggleBuilder() {
+        this.builderEnabled = !this.builderEnabled;
+        this.syncBuilderState();
+    },
     addSection() {
         this.sections.push({ id: this.nextSectionId++, blocks: [], sidebar: 'none' });
+        this.syncBuilderState();
     },
     removeSection(sectionId) {
         this.sections = this.sections.filter((section) => section.id !== sectionId);
+        this.syncBuilderState();
     },
     openSectionModal(sectionId = null) {
         const section = this.sections.find((item) => item.id === sectionId);
@@ -50,6 +75,7 @@
             layout: block.layout
         });
         this.showBlockModal = false;
+        this.syncBuilderState();
     },
     removeBlockFromSection(sectionId, blockId) {
         const section = this.sections.find((item) => item.id === sectionId);
@@ -59,6 +85,7 @@
         }
 
         section.blocks = section.blocks.filter((block) => block.id !== blockId);
+        this.syncBuilderState();
     },
     updateSidebarSelection(value) {
         this.selectedSidebar = value;
@@ -69,6 +96,7 @@
         }
 
         section.sidebar = value;
+        this.syncBuilderState();
     }
 }">
     {{-- Breadcrumb --}}
@@ -188,7 +216,7 @@
                             <div class="flex flex-wrap items-center gap-2 text-[11px] mb-2">
                                 <button type="button"
                                         class="inline-flex items-center gap-2 rounded border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-600 dark:text-slate-200 dark:hover:text-sky-300"
-                                        @click="builderEnabled = !builderEnabled">
+                                        @click="toggleBuilder">
                                     <i class="fa-solid fa-layer-group text-[11px]"></i>
                                     <span x-text="builderEnabled ? 'Disable the Builder' : 'Enable the Builder'"></span>
                                 </button>
