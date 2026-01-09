@@ -29,6 +29,7 @@ class PageForm extends Component
     public string $status = 'published';
     public ?string $template = null;
     public ?string $image = null;
+    public array $builderState = [];
 
     // SEO (meta_boxes)
     public ?string $seo_title = null;
@@ -68,6 +69,12 @@ class PageForm extends Component
                 $this->seo_index       = (string) ($meta['index'] ?? 'index');
                 $this->seo_image       = $meta['seo_image'] ?? null;
                 $this->focus_keyword   = (string) ($meta['focus_keyword'] ?? '');
+            }
+
+            if (method_exists($page, 'getMeta')) {
+                $builderMeta = $page->getMeta('builder_state', []);
+                $builderMeta = $builderMeta[0] ?? $builderMeta;
+                $this->builderState = is_array($builderMeta) ? $builderMeta : [];
             }
         }
     }
@@ -179,6 +186,7 @@ class PageForm extends Component
         ];
         if (method_exists($page, 'setMeta')) {
             $page->setMeta('seo_meta', [$overrideMeta]);
+            $page->setMeta('builder_state', [$this->builderState]);
         }
 
         // SEO SCORE
