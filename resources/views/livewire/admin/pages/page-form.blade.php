@@ -4,7 +4,17 @@
 
 <div class="space-y-4" x-data="{
     name: @entangle('name').live,
-    description: @entangle('description').live
+    description: @entangle('description').live,
+    builderEnabled: false,
+    sections: [],
+    nextSectionId: 1,
+    activeSectionId: null,
+    addSection() {
+        this.sections.push({ id: this.nextSectionId++ });
+    },
+    removeSection(sectionId) {
+        this.sections = this.sections.filter((section) => section.id !== sectionId);
+    }
 }">
     {{-- Breadcrumb --}}
     <nav class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
@@ -120,24 +130,91 @@
                                 Content
                             </label>
 
-                            <div class="flex gap-2 text-[11px] mb-2">
+                            <div class="flex flex-wrap items-center gap-2 text-[11px] mb-2">
+                                <button type="button"
+                                        class="inline-flex items-center gap-2 rounded border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-600 dark:text-slate-200 dark:hover:text-sky-300"
+                                        @click="builderEnabled = !builderEnabled">
+                                    <i class="fa-solid fa-layer-group text-[11px]"></i>
+                                    <span x-text="builderEnabled ? 'Disable the Builder' : 'Enable the Builder'"></span>
+                                </button>
                                 <button type="button"
                                         onclick="openCkeditorImagePicker('page_content')"
-                                        class="inline-flex items-center gap-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 dark:border-slate-600 dark:text-slate-200">
+                                        class="inline-flex items-center gap-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 dark:border-slate-600 dark:text-slate-200"
+                                        x-show="!builderEnabled"
+                                        x-cloak>
                                     <i class="fa-regular fa-images"></i>
                                     Add media
                                 </button>
                             </div>
 
-                            <div wire:ignore>
-                                <textarea
-                                    id="page_content"
-                                    rows="14"
-                                    class="block w-full rounded-lg border px-3 py-2 text-sm
-                                           border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
-                                           focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-                                           dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
-                                >{{ $content }}</textarea>
+                            <div x-show="!builderEnabled" x-cloak>
+                                <div wire:ignore>
+                                    <textarea
+                                        id="page_content"
+                                        rows="14"
+                                        class="block w-full rounded-lg border px-3 py-2 text-sm
+                                               border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
+                                               focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+                                               dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
+                                    >{{ $content }}</textarea>
+                                </div>
+                            </div>
+
+                            <div x-show="builderEnabled" x-cloak class="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                                <div class="flex items-center justify-between px-4 py-3 text-xs font-semibold text-white bg-sky-600">
+                                    <span>TieLabs Builder</span>
+                                    <div class="flex items-center gap-3 text-white/80">
+                                        <span class="text-[11px]">The content in the editor above will be ignored.</span>
+                                        <button type="button" class="text-white/80 hover:text-white">
+                                            <i class="fa-solid fa-chevron-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="p-4 space-y-4">
+                                    <template x-for="section in sections" :key="section.id">
+                                        <div class="border border-dashed border-slate-200 dark:border-slate-700">
+                                            <div class="flex items-center justify-between bg-sky-600 px-4 py-2 text-xs font-semibold text-white">
+                                                <span>Section</span>
+                                                <div class="flex items-center gap-2">
+                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 hover:bg-sky-800" @click="removeSection(section.id)">
+                                                        <i class="fa-solid fa-trash text-[11px]"></i>
+                                                    </button>
+                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 hover:bg-sky-800">
+                                                        <i class="fa-solid fa-pen text-[11px]"></i>
+                                                    </button>
+                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 hover:bg-sky-800">
+                                                        <i class="fa-solid fa-chevron-up text-[11px]"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="grid gap-4 p-4 md:grid-cols-[1fr_220px]">
+                                                <div class="flex min-h-[140px] items-center justify-center rounded border border-dashed border-slate-200 dark:border-slate-700">
+                                                    <button type="button" class="rounded bg-sky-600 px-5 py-2 text-xs font-semibold text-white hover:bg-sky-700">
+                                                        Add Block
+                                                    </button>
+                                                </div>
+                                                <div class="rounded border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+                                                    <div class="border-b border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-200">
+                                                        Sidebar
+                                                    </div>
+                                                    <div class="p-3">
+                                                        <button type="button" class="flex w-full items-center justify-center gap-2 rounded border border-dashed border-slate-300 bg-white px-3 py-2 text-xs text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400">
+                                                            <i class="fa-solid fa-gear text-[11px]"></i>
+                                                            Manage Widgets
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <button type="button"
+                                            class="flex w-full items-center justify-center gap-2 rounded border border-dashed border-slate-300 px-3 py-6 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:text-slate-400"
+                                            @click="addSection">
+                                        <i class="fa-solid fa-plus"></i>
+                                        Add Section
+                                    </button>
+                                </div>
                             </div>
 
                             @error('content') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
