@@ -43,15 +43,16 @@
                                 @forelse ($blocks as $block)
                                     @php
                                         $settings = $block['settings'] ?? [];
-                                        $blockTitle = $settings['title'] ?: ($block['name'] ?? 'Block');
+                                        $blockTitle = data_get($settings, 'title') ?: ($block['name'] ?? 'Block');
+                                        $tagsValue = data_get($settings, 'tags');
                                         $posts = $block['posts'] ?? [];
                                     @endphp
                                     <div class="space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
                                         <div class="flex items-center justify-between gap-2">
                                             <div>
                                                 <p class="font-semibold">{{ $blockTitle }}</p>
-                                                @if (!empty($settings['tags']))
-                                                    <p class="text-xs text-slate-500">Tags: {{ $settings['tags'] }}</p>
+                                                @if (!empty($tagsValue))
+                                                    <p class="text-xs text-slate-500">Tags: {{ $tagsValue }}</p>
                                                 @endif
                                             </div>
                                             @if (!empty($settings['url']))
