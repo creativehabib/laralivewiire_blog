@@ -9,12 +9,18 @@ use Livewire\Component;
 class PageShow extends Component
 {
     public Page $page;
+    public array $builderState = [];
 
     public function mount(Page $page): void
     {
         abort_if($page->status !== 'published', 404);
 
         $this->page = $page;
+        if (method_exists($page, 'getMeta')) {
+            $builderMeta = $page->getMeta('builder_state', []);
+            $builderMeta = $builderMeta[0] ?? $builderMeta;
+            $this->builderState = is_array($builderMeta) ? $builderMeta : [];
+        }
     }
 
     public function render()
