@@ -21,14 +21,16 @@
         { id: 5, name: 'Half Width', layout: 'half-width' }
     ],
     addSection() {
-        this.sections.push({ id: this.nextSectionId++, blocks: [] });
+        this.sections.push({ id: this.nextSectionId++, blocks: [], sidebar: 'none' });
     },
     removeSection(sectionId) {
         this.sections = this.sections.filter((section) => section.id !== sectionId);
     },
     openSectionModal(sectionId = null) {
+        const section = this.sections.find((item) => item.id === sectionId);
         this.activeSectionId = sectionId;
         this.sectionTab = 'general';
+        this.selectedSidebar = section?.sidebar ?? 'none';
         this.showSectionModal = true;
     },
     openBlockModal(sectionId = null) {
@@ -57,6 +59,16 @@
         }
 
         section.blocks = section.blocks.filter((block) => block.id !== blockId);
+    },
+    updateSidebarSelection(value) {
+        this.selectedSidebar = value;
+        const section = this.sections.find((item) => item.id === this.activeSectionId);
+
+        if (!section) {
+            return;
+        }
+
+        section.sidebar = value;
     }
 }">
     {{-- Breadcrumb --}}
@@ -260,7 +272,9 @@
                                                         </div>
                                                     </template>
                                                 </div>
-                                                <div class="rounded border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+                                                <div class="rounded border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800"
+                                                     x-show="section.sidebar !== 'none'"
+                                                     x-cloak>
                                                     <div class="border-b border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-200">
                                                         Sidebar
                                                     </div>
@@ -348,13 +362,13 @@
                                             <div class="grid gap-4 sm:grid-cols-3">
                                                 <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                                         :class="selectedSidebar === 'none' ? 'border-sky-600 ring-2 ring-sky-200 dark:ring-sky-600/40' : ''"
-                                                        @click="selectedSidebar = 'none'">
+                                                        @click="updateSidebarSelection('none')">
                                                     <div class="mb-2 h-16 rounded bg-slate-200 dark:bg-slate-700"></div>
                                                     Without Sidebar
                                                 </button>
                                                 <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                                         :class="selectedSidebar === 'right' ? 'border-sky-600 ring-2 ring-sky-200 dark:ring-sky-600/40' : ''"
-                                                        @click="selectedSidebar = 'right'">
+                                                        @click="updateSidebarSelection('right')">
                                                     <div class="mb-2 h-16 rounded bg-slate-200 dark:bg-slate-700">
                                                         <div class="h-full w-4/5 rounded bg-slate-300 dark:bg-slate-600"></div>
                                                     </div>
@@ -362,7 +376,7 @@
                                                 </button>
                                                 <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                                         :class="selectedSidebar === 'left' ? 'border-sky-600 ring-2 ring-sky-200 dark:ring-sky-600/40' : ''"
-                                                        @click="selectedSidebar = 'left'">
+                                                        @click="updateSidebarSelection('left')">
                                                     <div class="mb-2 h-16 rounded bg-slate-200 dark:bg-slate-700">
                                                         <div class="h-full w-1/5 rounded bg-slate-400 dark:bg-slate-600"></div>
                                                     </div>
