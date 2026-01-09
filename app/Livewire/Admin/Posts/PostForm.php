@@ -49,10 +49,11 @@ class PostForm extends Component
     public ?string $seo_image = null;
     public string  $seo_index = 'index';
     public bool $autoSeoTitle = true;
-    public bool $syncSlugWithSeoTitle = true;
 
     public function mount(Post $post = null): void
     {
+        $this->syncSlugWithSeoTitle = true;
+
         // create vs edit
         if ($post && $post->exists) {
             $this->post   = $post;
