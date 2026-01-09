@@ -142,6 +142,7 @@
                                 Name <span class="text-red-500">*</span>
                             </label>
                             <input type="text" wire:model="name"
+                                   wire:keyup.debounce.300ms="syncSlugFromName($event.target.value)"
                                    class="w-full border rounded px-3 py-2 text-sm bg-white text-gray-800 border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 dark:focus:border-blue-400">
                             @error('name')
                             <div class="text-xs text-red-600 mt-1">{{ $message }}</div>

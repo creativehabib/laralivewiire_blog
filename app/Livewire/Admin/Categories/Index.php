@@ -6,9 +6,9 @@ namespace App\Livewire\Admin\Categories;
 
 use App\Models\Category;
 use App\Support\SlugService;
+use App\Livewire\Concerns\HandlesSlug;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -17,13 +17,11 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithFileUploads;
+    use HandlesSlug;
 
     // form fields
     public $categoryId = null;
-    public ?int $slugId = null;
-
     public $name;
-    public $slug;
     public $parent_id = null;
     public $description;
     public $icon;
@@ -89,20 +87,11 @@ class Index extends Component
         }
     }
 
-    public function updatedName($value)
+    public function updatedName($value): void
     {
-        if (empty($this->slug)) {
-            $this->slug = Str::slug($value);
-        }
-
         if (empty($this->seo_title)) {
             $this->seo_title = $value;
         }
-    }
-
-    public function updatedSlug($value)
-    {
-        $this->slug = Str::slug($value);
     }
 
     public function createRootCategory()
