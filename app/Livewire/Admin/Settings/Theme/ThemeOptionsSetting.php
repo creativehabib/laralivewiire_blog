@@ -36,6 +36,22 @@ class ThemeOptionsSetting extends Component
     public bool $homepageBlockTrending = false;
     public string $homepageBlockStyle = 'standard';
     public int $homepageBlockColumns = 3;
+    public bool $homepageBlockAjaxFilters = false;
+    public bool $homepageBlockMoreButton = false;
+    public int $homepageBlockTitleLength = 0;
+    public bool $homepageBlockExcerpt = false;
+    public int $homepageBlockExcerptLength = 0;
+    public bool $homepageBlockReadMoreButton = false;
+    public string $homepageBlockReadMoreText = '';
+    public bool $homepageBlockHideFirstThumbnail = false;
+    public bool $homepageBlockHideSmallThumbnails = false;
+    public bool $homepageBlockPostMeta = true;
+    public bool $homepageBlockMediaIcon = false;
+    public bool $homepageBlockContentOnly = false;
+    public bool $homepageBlockDarkMode = false;
+    public string $homepageBlockPrimaryColor = '';
+    public string $homepageBlockBackgroundColor = '';
+    public string $homepageBlockSecondaryColor = '';
 
     public function mount()
     {
@@ -108,6 +124,22 @@ class ThemeOptionsSetting extends Component
         $this->homepageBlockTrending = filter_var(setting('homepage_block_trending', false), FILTER_VALIDATE_BOOLEAN);
         $this->homepageBlockStyle = (string) setting('homepage_block_style', 'standard');
         $this->homepageBlockColumns = (int) setting('homepage_block_columns', 3);
+        $this->homepageBlockAjaxFilters = filter_var(setting('homepage_block_ajax_filters', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockMoreButton = filter_var(setting('homepage_block_more_button', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockTitleLength = (int) setting('homepage_block_title_length', 0);
+        $this->homepageBlockExcerpt = filter_var(setting('homepage_block_excerpt', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockExcerptLength = (int) setting('homepage_block_excerpt_length', 0);
+        $this->homepageBlockReadMoreButton = filter_var(setting('homepage_block_read_more_button', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockReadMoreText = (string) setting('homepage_block_read_more_text', '');
+        $this->homepageBlockHideFirstThumbnail = filter_var(setting('homepage_block_hide_first_thumbnail', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockHideSmallThumbnails = filter_var(setting('homepage_block_hide_small_thumbnails', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockPostMeta = filter_var(setting('homepage_block_post_meta', true), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockMediaIcon = filter_var(setting('homepage_block_media_icon', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockContentOnly = filter_var(setting('homepage_block_content_only', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockDarkMode = filter_var(setting('homepage_block_dark_mode', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockPrimaryColor = (string) setting('homepage_block_primary_color', '');
+        $this->homepageBlockBackgroundColor = (string) setting('homepage_block_background_color', '');
+        $this->homepageBlockSecondaryColor = (string) setting('homepage_block_secondary_color', '');
         $storedSectionOrder = setting('homepage_section_order', []);
         $storedSectionCounts = setting('homepage_section_post_counts', []);
         foreach ($this->categories as $category) {
@@ -229,6 +261,22 @@ class ThemeOptionsSetting extends Component
         set_setting('homepage_block_trending', $this->homepageBlockTrending, 'theme-options');
         set_setting('homepage_block_style', trim($this->homepageBlockStyle), 'theme-options');
         set_setting('homepage_block_columns', $this->homepageBlockColumns, 'theme-options');
+        set_setting('homepage_block_ajax_filters', $this->homepageBlockAjaxFilters, 'theme-options');
+        set_setting('homepage_block_more_button', $this->homepageBlockMoreButton, 'theme-options');
+        set_setting('homepage_block_title_length', $this->homepageBlockTitleLength, 'theme-options');
+        set_setting('homepage_block_excerpt', $this->homepageBlockExcerpt, 'theme-options');
+        set_setting('homepage_block_excerpt_length', $this->homepageBlockExcerptLength, 'theme-options');
+        set_setting('homepage_block_read_more_button', $this->homepageBlockReadMoreButton, 'theme-options');
+        set_setting('homepage_block_read_more_text', trim($this->homepageBlockReadMoreText), 'theme-options');
+        set_setting('homepage_block_hide_first_thumbnail', $this->homepageBlockHideFirstThumbnail, 'theme-options');
+        set_setting('homepage_block_hide_small_thumbnails', $this->homepageBlockHideSmallThumbnails, 'theme-options');
+        set_setting('homepage_block_post_meta', $this->homepageBlockPostMeta, 'theme-options');
+        set_setting('homepage_block_media_icon', $this->homepageBlockMediaIcon, 'theme-options');
+        set_setting('homepage_block_content_only', $this->homepageBlockContentOnly, 'theme-options');
+        set_setting('homepage_block_dark_mode', $this->homepageBlockDarkMode, 'theme-options');
+        set_setting('homepage_block_primary_color', trim($this->homepageBlockPrimaryColor), 'theme-options');
+        set_setting('homepage_block_background_color', trim($this->homepageBlockBackgroundColor), 'theme-options');
+        set_setting('homepage_block_secondary_color', trim($this->homepageBlockSecondaryColor), 'theme-options');
 
         session()->flash('success', 'Homepage settings updated successfully!');
     }

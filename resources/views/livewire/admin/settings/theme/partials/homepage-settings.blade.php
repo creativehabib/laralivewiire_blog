@@ -39,21 +39,27 @@
     </div>
 
     <div class="rounded-md border border-slate-200 dark:border-slate-700 overflow-hidden">
-        <div class="flex flex-wrap bg-indigo-600 text-white text-sm font-medium">
-            <button type="button" class="px-4 py-3"
-                    :class="activeTab === 'general' ? 'bg-indigo-700' : 'bg-indigo-600 hover:bg-indigo-500'"
+        <div class="flex flex-wrap bg-sky-600 text-white text-sm font-medium">
+            <button type="button" class="relative px-5 py-3"
+                    :class="activeTab === 'general' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'"
                     @click="activeTab = 'general'">
                 {{ __('General') }}
+                <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700"
+                      x-show="activeTab === 'general'"></span>
             </button>
-            <button type="button" class="px-4 py-3"
-                    :class="activeTab === 'styling' ? 'bg-indigo-700' : 'bg-indigo-600 hover:bg-indigo-500'"
+            <button type="button" class="relative px-5 py-3"
+                    :class="activeTab === 'styling' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'"
                     @click="activeTab = 'styling'">
                 {{ __('Styling Settings') }}
+                <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700"
+                      x-show="activeTab === 'styling'"></span>
             </button>
-            <button type="button" class="px-4 py-3"
-                    :class="activeTab === 'advanced' ? 'bg-indigo-700' : 'bg-indigo-600 hover:bg-indigo-500'"
+            <button type="button" class="relative px-5 py-3"
+                    :class="activeTab === 'advanced' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'"
                     @click="activeTab = 'advanced'">
                 {{ __('Advanced Settings') }}
+                <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700"
+                      x-show="activeTab === 'advanced'"></span>
             </button>
         </div>
 
@@ -107,7 +113,7 @@
                 <label class="inline-flex items-center gap-3">
                     <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
                         <input type="checkbox" wire:model.defer="homepageBlockTrending" class="peer sr-only">
-                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-indigo-600"></span>
+                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
                     </span>
                     <span class="text-xs text-slate-500">{{ __('Only show posts marked as trending') }}</span>
                 </label>
@@ -115,27 +121,153 @@
         </div>
 
         <div class="p-6 space-y-6 bg-white dark:bg-slate-900" x-show="activeTab === 'styling'" x-cloak>
-            <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-start">
-                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">{{ __('Block Style') }}</label>
-                <select wire:model.defer="homepageBlockStyle"
-                        class="w-full max-w-xs px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
-                    <option value="standard">{{ __('Standard') }}</option>
-                    <option value="card">{{ __('Card') }}</option>
-                    <option value="overlay">{{ __('Overlay') }}</option>
-                    <option value="split">{{ __('Split') }}</option>
-                </select>
+            <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Show the content only?') }}</label>
+                <label class="inline-flex items-center gap-3">
+                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                        <input type="checkbox" wire:model.defer="homepageBlockContentOnly" class="peer sr-only">
+                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                    </span>
+                    <span class="text-xs text-slate-500">{{ __('Without background, padding nor borders.') }}</span>
+                </label>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-start">
-                <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">{{ __('Columns') }}</label>
-                <input type="number" min="1" max="4" wire:model.defer="homepageBlockColumns"
-                       class="w-full max-w-xs px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+            <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Dark Mode') }}</label>
+                <label class="inline-flex items-center gap-3">
+                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                        <input type="checkbox" wire:model.defer="homepageBlockDarkMode" class="peer sr-only">
+                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                    </span>
+                </label>
             </div>
-            <div class="rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-4 text-xs text-slate-500">
-                {{ __('Use the Layout tab for global typography and color settings.') }}
+            <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Primary Color') }}</label>
+                <input type="color" wire:model.defer="homepageBlockPrimaryColor"
+                       class="h-10 w-14 rounded border border-slate-300 bg-white">
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Background Color') }}</label>
+                <input type="color" wire:model.defer="homepageBlockBackgroundColor"
+                       class="h-10 w-14 rounded border border-slate-300 bg-white">
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Secondary Color') }}</label>
+                <input type="color" wire:model.defer="homepageBlockSecondaryColor"
+                       class="h-10 w-14 rounded border border-slate-300 bg-white">
             </div>
         </div>
 
         <div class="p-6 space-y-6 bg-white dark:bg-slate-900" x-show="activeTab === 'advanced'" x-cloak>
+            <div class="space-y-5">
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Ajax Filters') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockAjaxFilters" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                        <span class="text-xs text-slate-500">{{ __('Will not appear if the numeric pagination is active.') }}</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('More Button') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockMoreButton" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                        <span class="text-xs text-slate-500">{{ __('Will not appear if the Block URL is empty.') }}</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Posts Title Length') }}</label>
+                    <input type="number" min="0" wire:model.defer="homepageBlockTitleLength"
+                           class="w-full max-w-xs px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Posts Excerpt') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockExcerpt" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Posts Excerpt Length') }}</label>
+                    <input type="number" min="0" wire:model.defer="homepageBlockExcerptLength"
+                           class="w-full max-w-xs px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Read More Button') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockReadMoreButton" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-start">
+                    <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">{{ __('Custom Read More Button text') }}</label>
+                    <div>
+                        <input type="text" wire:model.defer="homepageBlockReadMoreText"
+                               class="w-full max-w-md px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                        <p class="text-xs text-slate-500 mt-2">{{ __('Leave it empty to use the default text.') }}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Hide thumbnail for the First post') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockHideFirstThumbnail" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Hide small thumbnails') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockHideSmallThumbnails" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Post Meta') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockPostMeta" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-center">
+                    <label class="text-sm text-slate-600 dark:text-slate-300">{{ __('Media Icon') }}</label>
+                    <label class="inline-flex items-center gap-3">
+                        <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                            <input type="checkbox" wire:model.defer="homepageBlockMediaIcon" class="peer sr-only">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                        </span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-start">
+                    <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">{{ __('Block Style') }}</label>
+                    <select wire:model.defer="homepageBlockStyle"
+                            class="w-full max-w-xs px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                        <option value="standard">{{ __('Standard') }}</option>
+                        <option value="card">{{ __('Card') }}</option>
+                        <option value="overlay">{{ __('Overlay') }}</option>
+                        <option value="split">{{ __('Split') }}</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 items-start">
+                    <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">{{ __('Columns') }}</label>
+                    <input type="number" min="1" max="4" wire:model.defer="homepageBlockColumns"
+                           class="w-full max-w-xs px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                </div>
+            </div>
+
             <div class="rounded-md border border-slate-200 dark:border-slate-700 p-4 space-y-4">
                 <div class="flex items-center justify-between gap-3">
                     <div>
@@ -143,7 +275,7 @@
                         <p class="text-xs text-slate-500">{{ __('Show a hero slider on the homepage.') }}</p>
                     </div>
                     <input type="checkbox" wire:model="homepage.featured_slider_enabled"
-                           class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                           class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Featured Slider Category') }}</label>
