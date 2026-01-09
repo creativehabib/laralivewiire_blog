@@ -1,3 +1,7 @@
+@php
+    $showSaveButton = $showSaveButton ?? true;
+@endphp
+
 <div class="space-y-8">
     @foreach($social_links as $index => $link)
         <div class="relative p-6 border border-slate-200 dark:border-slate-700 rounded-md bg-slate-50 dark:bg-slate-800 transition-all">
@@ -53,10 +57,12 @@
         </button>
     </div>
 
-    {{-- Save Button --}}
-    <div class="mt-6 pt-6 border-t flex justify-end">
-        <button type="button" wire:click="save" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            Save Changes
-        </button>
-    </div>
+    @if($showSaveButton)
+        {{-- Save Button --}}
+        <div class="mt-6 pt-6 border-t flex justify-end">
+            <button type="button" wire:click="save" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                Save Changes
+            </button>
+        </div>
+    @endif
 </div>
