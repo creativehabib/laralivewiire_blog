@@ -242,7 +242,12 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="grid gap-4 p-4 md:grid-cols-[1fr_220px]">
+                                            <div class="grid gap-4 p-4"
+                                                 :class="{
+                                                     'md:grid-cols-[1fr_220px]': section.sidebar === 'right',
+                                                     'md:grid-cols-[220px_1fr]': section.sidebar === 'left',
+                                                     'md:grid-cols-1': section.sidebar === 'none'
+                                                 }">
                                                 <div class="space-y-3 rounded border border-dashed border-slate-200 p-3 dark:border-slate-700">
                                                     <template x-if="section.blocks.length === 0">
                                                         <div class="flex min-h-[120px] items-center justify-center">
@@ -274,7 +279,8 @@
                                                 </div>
                                                 <div class="rounded border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800"
                                                      x-show="section.sidebar !== 'none'"
-                                                     x-cloak>
+                                                     x-cloak
+                                                     :class="section.sidebar === 'left' ? 'md:order-first' : 'md:order-last'">
                                                     <div class="border-b border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-200">
                                                         Sidebar
                                                     </div>
