@@ -48,28 +48,25 @@
                         </div>
 
                         {{-- Permalink / slug --}}
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
-                                Permalink <span class="text-rose-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                wire:model.defer="slug"
-                                class="block w-full rounded-lg border px-3 py-2 text-sm
-                                       border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
-                                       focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-                                       dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
-                                placeholder="my-tag-slug">
-                            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                                Preview:
-                                <span class="text-sky-600 dark:text-sky-400">
-                                    {{ preview_url('tag', $this->slug) }}
-                                </span>
-                            </p>
-                            @error('slug')
-                            <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <x-admin.permalink-field
+                            label="Permalink"
+                            :base-url="$baseUrl"
+                            preview-type="tag"
+                            :slug="$this->slug"
+                            placeholder="slug"
+                            label-class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                            container-class=""
+                            input-wrapper-class="mt-2 flex rounded-md shadow-sm"
+                            prefix-class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs sm:text-sm"
+                            input-class="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm placeholder:text-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out outline-none"
+                            action-wrapper-class="inline-flex items-center border border-l-0 border-gray-300 dark:border-gray-700 rounded-r-md bg-gray-50 dark:bg-gray-900 overflow-hidden"
+                            action-button-class="px-3 py-2 text-gray-400 hover:text-amber-500 cursor-pointer transition-colors"
+                            preview-wrapper-class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                            preview-class="text-blue-500 dark:text-blue-400 underline"
+                            error-class="text-xs text-red-600 mt-1"
+                            generate-action="generateSlug"
+                            wire:model.blur="slug"
+                        />
 
                         {{-- Description --}}
                         <div>

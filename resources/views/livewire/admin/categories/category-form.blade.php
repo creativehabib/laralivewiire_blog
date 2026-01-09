@@ -37,32 +37,21 @@
                 </div>
 
                 {{-- Permalink --}}
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1">
-                        Permalink <span class="text-red-500">*</span>
-                    </label>
-                    <div class="mt-2 flex items-center text-sm">
-                        <span class="px-2 py-2 border border-r-0 rounded-l bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-300 text-xs">
-                            {{ rtrim($baseUrl, '/') }}/
-                        </span>
-                        <input type="text" wire:model="slug"
-                               class="flex-1 border rounded-r px-3 py-2 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                               placeholder="slug">
-                    </div>
-                    @error('slug')
-                    <div class="text-xs text-red-600 mt-1">{{ $message }}</div>
-                    @enderror
-
-
-                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Preview:
-                        <a href="{{ preview_url('category',$this->slug) }}"
-                           target="_blank"
-                           class="text-blue-500 dark:text-blue-400 underline">
-                            {{ preview_url('category', $this->slug) }}
-                        </a>
-                    </div>
-                </div>
+                <x-admin.permalink-field
+                    label="Permalink"
+                    :base-url="$baseUrl"
+                    preview-type="category"
+                    :slug="$this->slug"
+                    placeholder="slug"
+                    label-class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                    input-wrapper-class="mt-2 flex items-center text-sm"
+                    prefix-class="px-2 py-2 border border-r-0 rounded-l bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-300 text-xs"
+                    input-class="flex-1 border rounded-r px-3 py-2 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    preview-wrapper-class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                    preview-class="text-blue-500 dark:text-blue-400 underline"
+                    error-class="text-xs text-red-600 mt-1"
+                    wire:model="slug"
+                />
 
                 {{-- Parent --}}
                 <div>

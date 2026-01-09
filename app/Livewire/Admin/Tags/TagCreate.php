@@ -111,6 +111,8 @@ class TagCreate extends Component
 
     public function render()
     {
-        return view('livewire.admin.tags.tag-create');
+        return view('livewire.admin.tags.tag-create',[
+            'baseUrl'        => config('app.url'),
+        ]);
     }
 }

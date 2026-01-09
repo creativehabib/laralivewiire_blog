@@ -69,28 +69,20 @@
                         </div>
 
                         {{-- Slug --}}
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
-                                Permalink (Slug) <span class="text-rose-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                wire:model.defer="slug"
-                                class="block w-full rounded-lg border px-3 py-2 text-sm
-                                       border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
-                                       focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-                                       dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
-                                placeholder="page-slug">
-
-                            @error('slug') <p class="mt-1 text-xs text-rose-500">{{ $message }}</p> @enderror
-
-                            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                                Preview:
-                                <span class="text-sky-600 dark:text-sky-400">
-                                    {{ preview_url('page', $slug ?: 'your-slug') }}
-                                </span>
-                            </p>
-                        </div>
+                        <x-admin.permalink-field
+                            label="Permalink (Slug)"
+                            preview-type="page"
+                            :slug="$slug"
+                            preview-as-link="false"
+                            placeholder="page-slug"
+                            label-class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1"
+                            input-wrapper-class="mt-2"
+                            input-class="block w-full rounded-lg border px-3 py-2 text-sm border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
+                            preview-wrapper-class="mt-1 text-[11px] text-slate-500 dark:text-slate-400"
+                            preview-class="text-sky-600 dark:text-sky-400"
+                            error-class="mt-1 text-xs text-rose-500"
+                            wire:model.defer="slug"
+                        />
 
                         {{-- Description --}}
                         <div>

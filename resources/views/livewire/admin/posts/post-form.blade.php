@@ -82,49 +82,25 @@
                         </div>
 
                         {{-- Permalink --}}
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1">
-                                Permalink <span class="text-red-500">*</span>
-                            </label>
-                            <div class="mt-2" >
-                                <div class="flex rounded-md shadow-sm">
-                                    {{-- Base URL Prefix --}}
-                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
-                                        {{ rtrim($baseUrl, '/') }}/
-                                    </span>
-
-                                    {{-- Slug Input --}}
-                                    <input type="text"
-                                           wire:model.blur="slug"
-                                           class="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm placeholder:text-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out outline-none"
-                                           placeholder="slug">
-
-                                    {{-- Action Buttons Group --}}
-                                    <div class="inline-flex items-center border border-l-0 border-gray-300 dark:border-gray-700 rounded-r-md bg-gray-50 dark:bg-gray-900 overflow-hidden">
-                                        {{-- Generate Slug (Magic Wand) --}}
-                                        <button type="button"
-                                                wire:click="generateSlug"
-                                                class="px-3 py-2 text-gray-400 hover:text-amber-500 cursor-pointer transition-colors"
-                                                title="Regenerate Slug">
-                                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            @error('slug')
-                            <div class="text-xs text-red-600 mt-1">{{ $message }}</div>
-                            @enderror
-
-
-                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                Preview:
-                                <a href="{{ preview_url('post',$this->slug) }}"
-                                   target="_blank"
-                                   class="text-blue-500 dark:text-blue-400 underline">
-                                    {{ preview_url('post', $this->slug) }}
-                                </a>
-                            </div>
-                        </div>
+                        <x-admin.permalink-field
+                            label="Permalink"
+                            :base-url="$baseUrl"
+                            preview-type="post"
+                            :slug="$this->slug"
+                            placeholder="slug"
+                            label-class="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1"
+                            container-class=""
+                            input-wrapper-class="mt-2 flex rounded-md shadow-sm"
+                            prefix-class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs sm:text-sm"
+                            input-class="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm placeholder:text-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out outline-none"
+                            action-wrapper-class="inline-flex items-center border border-l-0 border-gray-300 dark:border-gray-700 rounded-r-md bg-gray-50 dark:bg-gray-900 overflow-hidden"
+                            action-button-class="px-3 py-2 text-gray-400 hover:text-amber-500 cursor-pointer transition-colors"
+                            preview-wrapper-class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                            preview-class="text-blue-500 dark:text-blue-400 underline"
+                            error-class="text-xs text-red-600 mt-1"
+                            generate-action="generateSlug"
+                            wire:model.blur="slug"
+                        />
 
                         {{-- Short description --}}
                         <div class="mt-4">
