@@ -32,7 +32,6 @@ class CategoryForm extends Component
     public $seo_image;
     public ?string $focus_keyword = null;
     public bool $autoSeoTitle = true;
-    public bool $syncSlugWithSeoTitle = true;
 
     protected function rules()
     {
@@ -70,6 +69,7 @@ class CategoryForm extends Component
         }
 
         $this->categoryId = $categoryId;
+        $this->syncSlugWithSeoTitle = true;
 
         if ($categoryId) {
             // edit
