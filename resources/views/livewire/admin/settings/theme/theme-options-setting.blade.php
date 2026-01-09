@@ -6,26 +6,34 @@
 
     @switch($activeMenu)
         @case('header')
-            @include('livewire.admin.settings.theme.partials.header')
+            @include('livewire.admin.settings.theme.partials.header-navigation')
             @break
 
-        @case('page')
-            @include('livewire.admin.settings.theme.partials.page')
+        @case('layout')
+            @include('livewire.admin.settings.theme.partials.layout-design')
             @break
 
-        @case('logo')
-            @include('livewire.admin.settings.theme.partials.logo')
+        @case('homepage')
+            @include('livewire.admin.settings.theme.partials.homepage-settings')
             @break
 
-        @case('typography')
-            @include('livewire.admin.settings.theme.partials.typography')
+        @case('post')
+            @include('livewire.admin.settings.theme.partials.post-details')
             @break
 
-        @case('social_links')
-            @include('livewire.admin.settings.theme.partials.social_links')
+        @case('ads')
+            @include('livewire.admin.settings.theme.partials.ad-management')
+            @break
+
+        @case('seo')
+            @include('livewire.admin.settings.theme.partials.seo-social')
+            @break
+
+        @case('footer')
+            @include('livewire.admin.settings.theme.partials.footer-settings')
             @break
 
         @default
-            @include('livewire.admin.settings.theme.partials.general')
+            @include('livewire.admin.settings.theme.partials.general-settings')
     @endswitch
 </x-theme.layout>
