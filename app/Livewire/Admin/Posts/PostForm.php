@@ -171,7 +171,9 @@ class PostForm extends Component
     }
     public function updatedName($value): void
     {
-        $this->slug = $this->generateSlugValue((string) $value);
+        if (! $this->postId) {
+            $this->slug = $this->generateSlugValue((string) $value);
+        }
         if ($this->autoSeoTitle) {
             $this->seo_title = $value;
         }
@@ -322,10 +324,6 @@ class PostForm extends Component
             $post = new Post();
             $post->author_id   = $user?->id;
             $post->author_type = $user ? get_class($user) : null;
-        }
-
-        if (! $isNew && $this->slug === $post->slug && $this->name !== $post->name) {
-            $this->slug = $this->generateSlugValue((string) $this->name);
         }
 
         $this->slug = SlugService::create($this->slug ?: $this->name, '-', $this->slugId);
