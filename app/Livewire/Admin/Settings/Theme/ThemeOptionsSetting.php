@@ -28,6 +28,14 @@ class ThemeOptionsSetting extends Component
     public array $categoryColors = [];
     public array $homepageSectionOrder = [];
     public array $homepageSectionPostCounts = [];
+    public string $homepageBlockTitle = '';
+    public string $homepageBlockIcon = '';
+    public string $homepageBlockUrl = '';
+    public array $homepageBlockCategories = [];
+    public string $homepageBlockTags = '';
+    public bool $homepageBlockTrending = false;
+    public string $homepageBlockStyle = 'standard';
+    public int $homepageBlockColumns = 3;
 
     public function mount()
     {
@@ -91,6 +99,15 @@ class ThemeOptionsSetting extends Component
             'featured_slider_enabled' => filter_var(setting('featured_slider_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'featured_slider_category_id' => setting('featured_slider_category_id'),
         ];
+        $this->homepageBlockTitle = (string) setting('homepage_block_title', '');
+        $this->homepageBlockIcon = (string) setting('homepage_block_icon', '');
+        $this->homepageBlockUrl = (string) setting('homepage_block_url', '');
+        $storedHomepageBlockCategories = setting('homepage_block_categories', []);
+        $this->homepageBlockCategories = is_array($storedHomepageBlockCategories) ? $storedHomepageBlockCategories : [];
+        $this->homepageBlockTags = (string) setting('homepage_block_tags', '');
+        $this->homepageBlockTrending = filter_var(setting('homepage_block_trending', false), FILTER_VALIDATE_BOOLEAN);
+        $this->homepageBlockStyle = (string) setting('homepage_block_style', 'standard');
+        $this->homepageBlockColumns = (int) setting('homepage_block_columns', 3);
         $storedSectionOrder = setting('homepage_section_order', []);
         $storedSectionCounts = setting('homepage_section_post_counts', []);
         foreach ($this->categories as $category) {
@@ -204,6 +221,14 @@ class ThemeOptionsSetting extends Component
         set_setting('featured_slider_category_id', $this->homepage['featured_slider_category_id'] ?? null, 'theme-options');
         set_setting('homepage_section_order', $this->homepageSectionOrder, 'theme-options');
         set_setting('homepage_section_post_counts', $this->homepageSectionPostCounts, 'theme-options');
+        set_setting('homepage_block_title', trim($this->homepageBlockTitle), 'theme-options');
+        set_setting('homepage_block_icon', trim($this->homepageBlockIcon), 'theme-options');
+        set_setting('homepage_block_url', trim($this->homepageBlockUrl), 'theme-options');
+        set_setting('homepage_block_categories', $this->homepageBlockCategories, 'theme-options');
+        set_setting('homepage_block_tags', trim($this->homepageBlockTags), 'theme-options');
+        set_setting('homepage_block_trending', $this->homepageBlockTrending, 'theme-options');
+        set_setting('homepage_block_style', trim($this->homepageBlockStyle), 'theme-options');
+        set_setting('homepage_block_columns', $this->homepageBlockColumns, 'theme-options');
 
         session()->flash('success', 'Homepage settings updated successfully!');
     }
