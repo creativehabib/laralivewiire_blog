@@ -77,7 +77,6 @@ class TagEdit extends Component
 
     public function updatedName($value): void
     {
-        $this->slug = $this->generateSlugValue((string) $value);
         if ($this->autoSeoTitle) {
             $this->seo_title = $value;
         }
@@ -85,10 +84,6 @@ class TagEdit extends Component
 
     public function update($redirect = 'stay')
     {
-        if ($this->slug === $this->tag->slug && $this->name !== $this->tag->name) {
-            $this->slug = $this->generateSlugValue((string) $this->name);
-        }
-
         $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
 
         $this->validate();

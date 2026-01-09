@@ -98,7 +98,9 @@ class CategoryForm extends Component
     }
     public function updatedName($value): void
     {
-        $this->slug = $this->generateSlugValue((string) $value);
+        if (! $this->categoryId) {
+            $this->slug = $this->generateSlugValue((string) $value);
+        }
         if ($this->autoSeoTitle) {
             $this->seo_title = $value;
         }
@@ -115,10 +117,6 @@ class CategoryForm extends Component
             $category = new Category();
             $category->author_id   = $user?->id;
             $category->author_type = $user ? get_class($user) : null;
-        }
-
-        if (! $isNew && $this->slug === $category->slug && $this->name !== $category->name) {
-            $this->slug = $this->generateSlugValue((string) $this->name);
         }
 
         $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
