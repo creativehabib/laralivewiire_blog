@@ -142,10 +142,6 @@ class Index extends Component
     /** Save / Update (Save & Save & Exit দুটোর জন্য) */
     public function save($exit = false)
     {
-        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
-
-        $this->validate($this->rules());
-
         $user = Auth::user();
 
         if ($this->categoryId) {
@@ -155,6 +151,14 @@ class Index extends Component
             $category->author_id   = $user?->id;
             $category->author_type = $user ? get_class($user) : null;
         }
+
+        if ($this->categoryId && $this->slug === $category->slug && $this->name !== $category->name) {
+            $this->slug = $this->generateSlugValue((string) $this->name);
+        }
+
+        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+
+        $this->validate($this->rules());
 
         if ($this->is_default) {
             Category::where('is_default', 1)

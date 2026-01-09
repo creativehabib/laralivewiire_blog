@@ -106,10 +106,6 @@ class CategoryForm extends Component
     /** Save / Save & exit */
     public function save($exit = false)
     {
-        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
-
-        $this->validate($this->rules());
-
         $user = Auth::user();
         $isNew = ! $this->categoryId;
 
@@ -120,6 +116,14 @@ class CategoryForm extends Component
             $category->author_id   = $user?->id;
             $category->author_type = $user ? get_class($user) : null;
         }
+
+        if (! $isNew && $this->slug === $category->slug && $this->name !== $category->name) {
+            $this->slug = $this->generateSlugValue((string) $this->name);
+        }
+
+        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+
+        $this->validate($this->rules());
 
         if ($this->is_default) {
             Category::where('is_default', 1)

@@ -313,11 +313,6 @@ class PostForm extends Component
 
     public function save(string $redirect = 'stay')
     {
-        $this->slug = SlugService::create($this->slug ?: $this->name, '-', $this->slugId);
-
-        // validation + error–গুলোকে toast এও দেখাতে চাইলে try/catch করতে পারো (আগে দেখিয়েছি)
-        $this->validate();
-
         $user = Auth::user();
         $isNew = ! $this->postId;
 
@@ -328,6 +323,15 @@ class PostForm extends Component
             $post->author_id   = $user?->id;
             $post->author_type = $user ? get_class($user) : null;
         }
+
+        if (! $isNew && $this->slug === $post->slug && $this->name !== $post->name) {
+            $this->slug = $this->generateSlugValue((string) $this->name);
+        }
+
+        $this->slug = SlugService::create($this->slug ?: $this->name, '-', $this->slugId);
+
+        // validation + error–গুলোকে toast এও দেখাতে চাইলে try/catch করতে পারো (আগে দেখিয়েছি)
+        $this->validate();
 
         $post->name           = $this->name;
         $post->slug           = $this->slug;

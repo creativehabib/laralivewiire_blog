@@ -85,6 +85,10 @@ class TagEdit extends Component
 
     public function update($redirect = 'stay')
     {
+        if ($this->slug === $this->tag->slug && $this->name !== $this->tag->name) {
+            $this->slug = $this->generateSlugValue((string) $this->name);
+        }
+
         $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
 
         $this->validate();
