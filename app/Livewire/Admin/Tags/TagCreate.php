@@ -5,16 +5,17 @@ namespace App\Livewire\Admin\Tags;
 use App\Models\Admin\Tag;
 use App\Support\ActivityLogger;
 use App\Support\SlugService;
+use App\Livewire\Concerns\HandlesSlug;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class TagCreate extends Component
 {
+    use HandlesSlug;
+
     public $tagId = null;
     public $name = '';
-    public $slug = '';
     public $description = '';
     public $status = 'published';
 
@@ -48,14 +49,6 @@ class TagCreate extends Component
         if (auth()->check()) {
             $this->author_id   = auth()->id();
             $this->author_type = get_class(auth()->user()); // যেমন: App\Models\User
-        }
-    }
-
-    public function updatedName($value)
-    {
-        // name থেকে slug অটো জেনারেট (যদি ইউজার আগে থেকে না দেয়)
-        if (! $this->slug) {
-            $this->slug = Str::slug($value);
         }
     }
 

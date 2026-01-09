@@ -5,18 +5,17 @@ namespace App\Livewire\Admin\Tags;
 use App\Models\Admin\Tag;
 use App\Support\ActivityLogger;
 use App\Support\SlugService;
+use App\Livewire\Concerns\HandlesSlug;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class TagEdit extends Component
 {
-    public Tag $tag;
-    public ?int $slugId = null;
+    use HandlesSlug;
 
+    public Tag $tag;
     public $name;
-    public $slug;
     public $description;
     public $status;
 
@@ -75,12 +74,8 @@ class TagEdit extends Component
         ];
     }
 
-    public function updatedName($value)
+    public function updatedName($value): void
     {
-        if (! $this->slug) {
-            $this->slug = Str::slug($value);
-        }
-
         if (! $this->seo_title) {
             $this->seo_title = $value;
         }

@@ -8,6 +8,7 @@ use App\Models\Admin\Tag;
 use App\Support\ActivityLogger;
 use App\Support\SeoAnalyzer;
 use App\Support\SlugService;
+use App\Livewire\Concerns\HandlesSlug;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -16,16 +17,16 @@ use function Livewire\Volt\title;
 
 class PostForm extends Component
 {
+    use HandlesSlug;
+
     public ?Post $post = null;
     public ?int  $postId = null;
-    public ?int $slugId = null;
     public ?string $focus_keyword = null;
     public int $nameMax = 250;
     public int $descMax = 400;
     // posts table fields
     public string $categorySearch = '';
     public string  $name = '';
-    public string  $slug = '';
     public ?string $description = null;
     public ?string $content = null;
 
@@ -48,6 +49,7 @@ class PostForm extends Component
     public ?string $seo_image = null;
     public string  $seo_index = 'index';
     public bool $autoSeoTitle = true;
+    public bool $syncSlugWithSeoTitle = true;
 
     public function mount(Post $post = null): void
     {
@@ -165,31 +167,6 @@ class PostForm extends Component
             return;
         }
         $this->resetErrorBag('category_ids');
-    }
-
-    public function syncSlugFromName($value) : void
-    {
-        $this->name = $value;
-        $this->slug = SlugService::create($value, '-', $this->slugId);
-
-        if ($this->autoSeoTitle) {
-            $this->seo_title = $value;
-        }
-    }
-    public function updatedSlug($value): void
-    {
-        $this->slug = SlugService::create($value, '-', $this->slugId);
-    }
-
-    public function updatedSeoTitle($value): void
-    {
-        $this->slug = SlugService::create($value, '-', $this->slugId);
-        $this->autoSeoTitle = trim((string) $value) === '';
-    }
-
-    public function generateSlug(): void
-    {
-        $this->slug = SlugService::create($this->name, '-', $this->slugId);
     }
 
     public function toggleCategory($categoryId): void

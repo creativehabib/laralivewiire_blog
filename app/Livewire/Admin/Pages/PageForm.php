@@ -10,20 +10,20 @@ use App\Support\ActivityLogger;
 use App\Support\SeoAnalyzer;
 use App\Support\SlugService;
 use App\Support\PermalinkManager;
+use App\Livewire\Concerns\HandlesSlug;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class PageForm extends Component
 {
+    use HandlesSlug;
+
     public ?Page $page = null;
     public ?int $pageId = null;
-    public ?int $slugId = null;
 
     // Fields
     public string $name = '';
-    public string $slug = '';
     public string $description = '';
     public string $content = '';
     public string $status = 'published';
@@ -68,14 +68,6 @@ class PageForm extends Component
                 $this->seo_image       = $meta['seo_image'] ?? null;
                 $this->focus_keyword   = (string) ($meta['focus_keyword'] ?? '');
             }
-        }
-    }
-
-    public function updatedName(): void
-    {
-        // Auto slug (only when creating OR slug empty)
-        if (! $this->pageId && $this->slug === '') {
-            $this->slug = Str::slug($this->name);
         }
     }
 

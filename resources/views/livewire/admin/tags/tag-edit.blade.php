@@ -37,6 +37,7 @@
                             <input
                                 type="text"
                                 wire:model.defer="name"
+                                wire:keyup.debounce.300ms="syncSlugFromName($event.target.value)"
                                 class="block w-full rounded-lg border px-3 py-2 text-sm
                                        border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400
                                        focus:border-sky-500 focus:ring-1 focus:ring-sky-500
@@ -148,4 +149,3 @@
         </div>
     </div>
 </div>
-

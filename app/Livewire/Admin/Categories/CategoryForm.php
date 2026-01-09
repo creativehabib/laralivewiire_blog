@@ -4,23 +4,20 @@
 namespace App\Livewire\Admin\Categories;
 
 use App\Models\Category;
-use App\Models\Slug;
 use App\Support\ActivityLogger;
 use App\Support\SlugService;
+use App\Livewire\Concerns\HandlesSlug;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class CategoryForm extends Component
 {
     use WithFileUploads;
+    use HandlesSlug;
 
     public $categoryId = null;
-    public ?int $slugId = null;
-
     public $name;
-    public $slug;
     public $parent_id = null;
     public $description;
     public $icon;
@@ -35,6 +32,7 @@ class CategoryForm extends Component
     public $seo_image;
     public ?string $focus_keyword = null;
     public bool $autoSeoTitle = true;
+    public bool $syncSlugWithSeoTitle = true;
 
     protected function rules()
     {
@@ -99,26 +97,6 @@ class CategoryForm extends Component
         }
     }
 
-    public function updatedSlug($value): void
-    {
-        $this->slug = Str::slug($value);
-    }
-
-    public function syncSlugFromName($value) : void
-    {
-        $this->name = $value;
-
-        $this->slug = SlugService::create($value, '', $this->slugId);
-
-        if ($this->autoSeoTitle) {
-            $this->seo_title = $value;
-        }
-    }
-    public function updatedSeoTitle($value): void
-    {
-        $this->slug = Str::slug($value);
-        $this->autoSeoTitle = trim((string) $value) === '';
-    }
     /** Save / Save & exit */
     public function save($exit = false)
     {
