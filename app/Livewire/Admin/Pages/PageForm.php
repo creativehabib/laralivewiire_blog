@@ -139,10 +139,6 @@ class PageForm extends Component
 
     public function save(string $redirect = 'stay')
     {
-        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
-
-        $this->validate();
-
         $user = Auth::user();
         $isNew = ! $this->pageId;
 
@@ -153,6 +149,14 @@ class PageForm extends Component
             $page->author_id   = $user?->id;
             $page->author_type = $user ? get_class($user) : null;
         }
+
+        if (! $isNew && $this->slug === $page->slug && $this->name !== $page->name) {
+            $this->slug = $this->generateSlugValue((string) $this->name);
+        }
+
+        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+
+        $this->validate();
 
         $page->name        = $this->name;
         $page->slug        = $this->slug;
