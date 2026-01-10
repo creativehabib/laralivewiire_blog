@@ -6,9 +6,12 @@ use App\Models\Admin\Page;
 use App\Models\Post;
 use App\Support\Seo;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class PageShow extends Component
 {
+    use WithPagination;
+
     public Page $page;
     public array $builderState = [];
 
@@ -107,7 +110,8 @@ class PageShow extends Component
                         $query->skip($offset);
 
                         if ($pagination === 'enable') {
-                            $pageName = 'block_'.$block['id'];
+                            $blockId = (string) ($block['id'] ?? '0');
+                            $pageName = 'block_' . preg_replace('/[^A-Za-z0-9_]/', '_', $blockId);
                             $posts = $query->paginate($count, ['*'], $pageName);
                         } else {
                             $posts = $query->take($count)->get();
