@@ -33,7 +33,7 @@
                             default => 'md:grid-cols-1',
                         };
                     @endphp
-                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                    <div class="">
                         <div class="grid gap-4 {{ $gridClass }}">
                             @if ($sidebar === 'left')
                                 <aside class="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-3 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
