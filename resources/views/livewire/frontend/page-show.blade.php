@@ -63,36 +63,57 @@
                                         $hideSmallThumbnails = data_get($settings, 'hideSmallThumbnails', false);
                                         $postMeta = data_get($settings, 'postMeta', true);
                                         $mediaIcon = data_get($settings, 'mediaIcon', false);
+                                        $blockAccentStyle = $primaryColor ? "border-left-color: {$primaryColor}" : null;
                                         $blockStyles = collect([
                                             $backgroundColor ? "background-color: {$backgroundColor}" : null,
                                             $primaryColor ? "--block-primary: {$primaryColor}" : null,
                                             $secondaryColor ? "--block-secondary: {$secondaryColor}" : null,
+                                            $blockAccentStyle,
                                         ])->filter()->implode('; ');
                                     @endphp
-                                    <div class="{{ $contentOnly ? 'text-sm text-slate-700 dark:text-slate-200' : 'space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }}"
+                                    <div class="{{ $contentOnly ? 'space-y-3 rounded-xl border-l-4 border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200' : 'space-y-4 overflow-hidden rounded-xl border-l-4 border border-slate-200 bg-white text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }}"
                                          style="{{ $blockStyles }}">
-                                        <div class="flex items-center justify-between gap-2" style="color: var(--block-primary, inherit);">
-                                            <div>
-                                                <p class="font-semibold">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</p>
-                                                @if (!empty($tagsValue))
-                                                    <p class="text-xs text-slate-500">Tags: {{ $tagsValue }}</p>
-                                                @endif
+                                        @if (! $contentOnly)
+                                            <div class="border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/60">
+                                                <div class="flex items-center justify-between gap-2" style="color: var(--block-primary, inherit);">
+                                                    <div class="space-y-1">
+                                                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Block</p>
+                                                        <p class="text-sm font-semibold">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</p>
+                                                        @if (!empty($tagsValue))
+                                                            <p class="text-xs text-slate-500">Tags: {{ $tagsValue }}</p>
+                                                        @endif
+                                                    </div>
+                                                    @if (!empty($settings['url']) && $moreButton)
+                                                        <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">View all</a>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            @if (!empty($settings['url']) && $moreButton)
-                                                <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">View all</a>
+                                        @endif
+                                        <div class="{{ $contentOnly ? '' : 'px-4 py-3' }}">
+                                            @if ($contentOnly)
+                                                <div class="flex items-center justify-between gap-2" style="color: var(--block-primary, inherit);">
+                                                    <div>
+                                                        <p class="text-sm font-semibold">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</p>
+                                                        @if (!empty($tagsValue))
+                                                            <p class="text-xs text-slate-500">Tags: {{ $tagsValue }}</p>
+                                                        @endif
+                                                    </div>
+                                                    @if (!empty($settings['url']) && $moreButton)
+                                                        <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">View all</a>
+                                                    @endif
+                                                </div>
                                             @endif
-                                        </div>
                                         @if (count($posts))
                                             <div class="grid gap-3 sm:grid-cols-2">
                                                 @foreach ($posts as $index => $post)
                                                     @php
                                                         $shouldHideThumb = ($hideFirstThumbnail && $index === 0) || ($hideSmallThumbnails && $index > 0);
                                                     @endphp
-                                                    <article class="flex gap-3">
+                                                    <article class="flex gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700 dark:bg-slate-900/60">
                                                         @unless ($shouldHideThumb)
                                                             <div class="relative">
                                                                 <a href="{{ post_permalink($post) }}" class="block">
-                                                                    <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                    <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded-lg object-cover">
                                                                 </a>
                                                                 @if ($mediaIcon)
                                                                     <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
