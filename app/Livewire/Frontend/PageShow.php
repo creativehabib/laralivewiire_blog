@@ -6,13 +6,13 @@ use App\Models\Admin\Page;
 use App\Models\Post;
 use App\Support\Seo;
 use Livewire\Component;
+use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 
 class PageShow extends Component
 {
     use WithPagination;
-
-    protected $queryString = [];
+    use WithoutUrlPagination;
 
     public Page $page;
     public array $builderState = [];
