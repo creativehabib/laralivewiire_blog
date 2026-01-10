@@ -18,7 +18,7 @@
     blockTab: 'general',
     selectedSidebar: 'none',
     blocks: [
-        { id: 1, name: 'List + Sidebar', layout: 'list-sidebar' },
+        { id: 1, name: 'Featured + Sidebar', layout: 'list-sidebar' },
         { id: 2, name: 'Stacked Cards', layout: 'stacked' },
         { id: 3, name: 'Featured + List', layout: 'featured-list' },
         { id: 4, name: 'Hero + List', layout: 'hero-list' },
@@ -307,14 +307,14 @@
 
                             <div class="flex flex-wrap items-center gap-2 text-[11px] mb-2">
                                 <button type="button"
-                                        class="inline-flex items-center gap-2 rounded border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-600 dark:text-slate-200 dark:hover:text-sky-300"
+                                        class="inline-flex items-center gap-2 rounded border cursor-pointer border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-600 dark:text-slate-200 dark:hover:text-sky-300"
                                         @click="toggleBuilder">
                                     <i class="fa-solid fa-layer-group text-[11px]"></i>
                                     <span x-text="builderEnabled ? 'Disable the Builder' : 'Enable the Builder'"></span>
                                 </button>
                                 <button type="button"
                                         onclick="openCkeditorImagePicker('page_content')"
-                                        class="inline-flex items-center gap-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 dark:border-slate-600 dark:text-slate-200"
+                                        class="inline-flex items-center gap-1 rounded border cursor-pointer border-slate-300 px-2 py-1 text-xs text-slate-600 dark:border-slate-600 dark:text-slate-200"
                                         x-show="!builderEnabled"
                                         x-cloak>
                                     <i class="fa-regular fa-images"></i>
@@ -340,7 +340,7 @@
                                     <span>TieLabs Builder</span>
                                     <div class="flex items-center gap-3 text-white/80">
                                         <span class="text-[11px]">The content in the editor above will be ignored.</span>
-                                        <button type="button" class="text-white/80 hover:text-white">
+                                        <button type="button" class="text-white/80 cursor-pointer hover:text-white">
                                             <i class="fa-solid fa-chevron-up"></i>
                                         </button>
                                     </div>
@@ -351,13 +351,13 @@
                                             <div class="flex items-center justify-between bg-sky-600 px-4 py-2 text-xs font-semibold text-white">
                                                 <span>Section</span>
                                                 <div class="flex items-center gap-2">
-                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 hover:bg-sky-800" @click="removeSection(section.id)">
+                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 cursor-pointer hover:bg-sky-800" @click="removeSection(section.id)">
                                                         <i class="fa-solid fa-trash text-[11px]"></i>
                                                     </button>
-                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 hover:bg-sky-800" @click="openSectionModal(section.id)">
+                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 cursor-pointer hover:bg-sky-800" @click="openSectionModal(section.id)">
                                                         <i class="fa-solid fa-pen text-[11px]"></i>
                                                     </button>
-                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 hover:bg-sky-800">
+                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 cursor-pointer hover:bg-sky-800">
                                                         <i class="fa-solid fa-chevron-up text-[11px]"></i>
                                                     </button>
                                                 </div>
@@ -371,7 +371,7 @@
                                                 <div class="space-y-3 rounded border border-dashed border-slate-200 p-3 dark:border-slate-700">
                                                     <template x-if="section.blocks.length === 0">
                                                         <div class="flex min-h-[120px] items-center justify-center">
-                                                            <button type="button" class="rounded bg-sky-600 px-5 py-2 text-xs font-semibold text-white hover:bg-sky-700" @click="openBlockModal(section.id)">
+                                                            <button type="button" class="rounded bg-sky-600 px-5 py-2 text-xs font-semibold text-white hover:bg-sky-700 cursor-pointer" @click="openBlockModal(section.id)">
                                                                 Add Block
                                                             </button>
                                                         </div>
@@ -382,16 +382,16 @@
                                                                 <div class="flex items-center justify-between rounded bg-slate-800 px-3 py-2 text-xs font-semibold text-white">
                                                                     <span x-text="block.name"></span>
                                                                     <div class="flex items-center gap-2">
-                                                                        <button type="button" class="h-7 w-7 rounded bg-slate-700 hover:bg-slate-600" @click="removeBlockFromSection(section.id, block.id)">
+                                                                        <button type="button" class="h-7 w-7 rounded bg-slate-700 cursor-pointer hover:bg-slate-600" @click="removeBlockFromSection(section.id, block.id)">
                                                                             <i class="fa-solid fa-trash text-[11px]"></i>
                                                                         </button>
-                                                                        <button type="button" class="h-7 w-7 rounded bg-slate-700 hover:bg-slate-600" @click="openBlockSettings(section.id, block.id)">
+                                                                        <button type="button" class="h-7 w-7 rounded bg-slate-700 cursor-pointer hover:bg-slate-600" @click="openBlockSettings(section.id, block.id)">
                                                                             <i class="fa-solid fa-pen text-[11px]"></i>
                                                                         </button>
                                                                     </div>
                                                                 </div>
                                                             </template>
-                                                            <button type="button" class="w-full rounded border border-dashed border-slate-300 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:text-slate-400" @click="openBlockModal(section.id)">
+                                                            <button type="button" class="w-full rounded border border-dashed border-slate-300 px-3 py-2 text-xs cursor-pointer font-semibold text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:text-slate-400" @click="openBlockModal(section.id)">
                                                                 Add Block
                                                             </button>
                                                         </div>
@@ -405,7 +405,7 @@
                                                         Sidebar
                                                     </div>
                                                     <div class="p-3">
-                                                        <button type="button" class="flex w-full items-center justify-center gap-2 rounded border border-dashed border-slate-300 bg-white px-3 py-2 text-xs text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400">
+                                                        <button type="button" class="flex w-full items-center justify-center gap-2 cursor-pointer rounded border border-dashed border-slate-300 bg-white px-3 py-2 text-xs text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400">
                                                             <i class="fa-solid fa-gear text-[11px]"></i>
                                                             Manage Widgets
                                                         </button>
@@ -416,7 +416,7 @@
                                     </template>
 
                                     <button type="button"
-                                            class="flex w-full items-center justify-center gap-2 rounded border border-dashed border-slate-300 px-3 py-6 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:text-slate-400"
+                                            class="flex w-full items-center justify-center gap-2 rounded border border-dashed cursor-pointer border-slate-300 px-3 py-6 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:border-slate-600 dark:text-slate-400"
                                             @click="addSection(); openSectionModal()">
                                         <i class="fa-solid fa-plus"></i>
                                         Add Section
@@ -428,20 +428,20 @@
                                 <div class="w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-slate-900">
                                     <div class="flex items-center justify-between border-b border-slate-200 bg-slate-900 px-6 py-4 text-white dark:border-slate-700">
                                         <h3 class="text-base font-semibold">Edit Section</h3>
-                                        <button type="button" class="rounded bg-sky-600 px-4 py-2 text-xs font-semibold hover:bg-sky-500" @click="showSectionModal = false">
+                                        <button type="button" class="rounded bg-sky-600 px-4 py-2 text-xs font-semibold cursor-pointer hover:bg-sky-500" @click="showSectionModal = false">
                                             Done
                                         </button>
                                     </div>
                                     <div class="flex bg-sky-600 text-xs font-semibold text-white">
-                                        <button type="button" class="relative px-5 py-3" :class="sectionTab === 'general' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="sectionTab = 'general'">
+                                        <button type="button" class="relative px-5 py-3 cursor-pointer" :class="sectionTab === 'general' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="sectionTab = 'general'">
                                             General
                                             <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="sectionTab === 'general'"></span>
                                         </button>
-                                        <button type="button" class="relative px-5 py-3" :class="sectionTab === 'background' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="sectionTab = 'background'">
+                                        <button type="button" class="relative px-5 py-3 cursor-pointer" :class="sectionTab === 'background' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="sectionTab = 'background'">
                                             Background
                                             <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="sectionTab === 'background'"></span>
                                         </button>
-                                        <button type="button" class="relative px-5 py-3" :class="sectionTab === 'styling' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="sectionTab = 'styling'">
+                                        <button type="button" class="relative px-5 py-3 cursor-pointer" :class="sectionTab === 'styling' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="sectionTab = 'styling'">
                                             Styling
                                             <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="sectionTab === 'styling'"></span>
                                         </button>
@@ -486,13 +486,13 @@
                                             </div>
                                             <p class="text-xs text-slate-500">Sidebar Position</p>
                                             <div class="grid gap-4 sm:grid-cols-3">
-                                                <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                                <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold cursor-pointer text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                                         :class="selectedSidebar === 'none' ? 'border-sky-600 ring-2 ring-sky-200 dark:ring-sky-600/40' : ''"
                                                         @click="updateSidebarSelection('none')">
                                                     <div class="mb-2 h-16 rounded bg-slate-200 dark:bg-slate-700"></div>
                                                     Without Sidebar
                                                 </button>
-                                                <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                                <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold cursor-pointer text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                                         :class="selectedSidebar === 'right' ? 'border-sky-600 ring-2 ring-sky-200 dark:ring-sky-600/40' : ''"
                                                         @click="updateSidebarSelection('right')">
                                                     <div class="mb-2 h-16 rounded bg-slate-200 dark:bg-slate-700">
@@ -500,7 +500,7 @@
                                                     </div>
                                                     Sidebar Right
                                                 </button>
-                                                <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                                <button type="button" class="rounded border border-slate-200 bg-slate-50 p-3 text-xs font-semibold cursor-pointer text-slate-600 hover:border-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                                         :class="selectedSidebar === 'left' ? 'border-sky-600 ring-2 ring-sky-200 dark:ring-sky-600/40' : ''"
                                                         @click="updateSidebarSelection('left')">
                                                     <div class="mb-2 h-16 rounded bg-slate-200 dark:bg-slate-700">
@@ -515,36 +515,70 @@
                             </div>
 
                             <div x-show="showBlockModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 p-4">
-                                <div class="w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-slate-900">
+                                <div class="w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-slate-900">
                                     <div class="flex items-center justify-between border-b border-slate-200 bg-slate-900 px-6 py-4 text-white dark:border-slate-700">
                                         <h3 class="text-base font-semibold">Add Block</h3>
                                         <button type="button" class="rounded bg-sky-600 px-4 py-2 text-xs font-semibold hover:bg-sky-500" @click="showBlockModal = false; showBlockSettingsModal = false">
                                             Done
                                         </button>
                                     </div>
-                                    <div class="grid gap-4 bg-slate-50 p-6 dark:bg-slate-800 sm:grid-cols-2">
+                                    <div class="grid gap-4 bg-slate-50 p-4 dark:bg-slate-800 sm:grid-cols-3">
                                         <template x-for="block in blocks" :key="block.id">
                                             <button type="button"
-                                                    class="rounded border border-slate-200 bg-white p-4 text-left text-xs font-semibold text-slate-600 hover:border-sky-500 hover:text-sky-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                                    class="rounded border border-slate-200 bg-white text-left text-xs font-semibold text-slate-600 cursor-pointer hover:border-sky-500 hover:text-sky-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                                     @click="addBlockToSection(block)">
-                                                <div class="mb-3 rounded bg-slate-100 p-3 dark:bg-slate-800">
-                                                    <div class="space-y-2" x-show="block.layout === 'list-sidebar'">
-                                                        <div class="flex gap-3">
-                                                            <div class="h-8 w-12 bg-slate-400"></div>
-                                                            <div class="flex-1 space-y-2">
-                                                                <div class="h-2 w-3/4 bg-slate-300"></div>
-                                                                <div class="h-2 w-1/2 bg-slate-200"></div>
+                                                <div class="rounded bg-slate-100 p-3 dark:bg-slate-800">
+                                                    <div class="space-y-4" x-show="block.layout === 'list-sidebar'" x-cloak>
+                                                        <div class="grid grid-cols-2 gap-4">
+                                                            <div class="space-y-2">
+                                                                <div class="h-20 w-full bg-slate-400"></div>
+                                                                <div class="space-y-1.5">
+                                                                    <div class="h-2 w-full bg-slate-300"></div>
+                                                                    <div class="h-2 w-full bg-slate-300"></div>
+                                                                    <div class="h-2 w-2/3 bg-slate-300"></div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="flex gap-3">
-                                                            <div class="h-8 w-12 bg-slate-400"></div>
-                                                            <div class="flex-1 space-y-2">
-                                                                <div class="h-2 w-3/4 bg-slate-300"></div>
-                                                                <div class="h-2 w-1/2 bg-slate-200"></div>
+
+                                                            <div class="space-y-2">
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="space-y-2" x-show="block.layout === 'stacked'" x-cloak>
+                                                        <div class="flex gap-3">
+                                                            <div class="h-10 w-16 bg-slate-400"></div>
+                                                            <div class="flex-1 space-y-2">
+                                                                <div class="h-2 w-3/4 bg-slate-300"></div>
+                                                                <div class="h-2 w-1/2 bg-slate-200"></div>
+                                                            </div>
+                                                        </div>
                                                         <div class="flex gap-3">
                                                             <div class="h-10 w-16 bg-slate-400"></div>
                                                             <div class="flex-1 space-y-2">
@@ -573,24 +607,80 @@
                                                         <div class="flex gap-3">
                                                             <div class="h-16 w-1/2 bg-slate-400"></div>
                                                             <div class="flex-1 space-y-2">
-                                                                <div class="h-2 w-3/4 bg-slate-300"></div>
-                                                                <div class="h-2 w-2/3 bg-slate-200"></div>
-                                                                <div class="h-2 w-1/2 bg-slate-200"></div>
+                                                                <div class="h-2 w-full bg-slate-300"></div>
+                                                                <div class="h-2 w-2/4 bg-slate-200"></div>
+                                                                <div class="h-2 w-2/4 bg-slate-200"></div>
+                                                                <div class="h-2 w-1/3 bg-slate-200"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="grid grid-cols-2 gap-4">
+                                                            <div class="space-y-2">
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="space-y-2">
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="space-y-2" x-show="block.layout === 'half-width'" x-cloak>
-                                                        <div class="flex items-center justify-between">
-                                                            <div class="h-10 w-1/2 bg-slate-400"></div>
-                                                            <div class="text-[10px] font-semibold text-slate-400">50% WIDTH</div>
-                                                        </div>
-                                                        <div class="flex gap-2">
-                                                            <div class="h-6 w-6 bg-slate-300"></div>
-                                                            <div class="h-6 w-6 bg-slate-300"></div>
+                                                    <div class="space-y-4" x-show="block.layout === 'half-width'" x-cloak>
+                                                        <div class="grid grid-cols-2 gap-4">
+                                                            <div class="space-y-2">
+                                                                <div class="h-12 w-full bg-slate-400"></div>
+                                                                <div class="space-y-1.5">
+                                                                    <div class="h-2 w-full bg-slate-300"></div>
+                                                                    <div class="h-2 w-2/3 bg-slate-300"></div>
+                                                                </div>
+
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="flex gap-2">
+                                                                    <div class="h-6 w-10 bg-slate-400 flex-shrink-0"></div>
+                                                                    <div class="flex-1 space-y-1.5">
+                                                                        <div class="h-2 w-full bg-slate-300"></div>
+                                                                        <div class="h-2 w-3/4 bg-slate-200"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="space-y-2">
+                                                                <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">50% WIDTH GRID</div>
+                                                            </div>
+
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <span x-text="block.name"></span>
+                                                <p x-text="block.name" class="p-2"></p>
                                             </button>
                                         </template>
                                     </div>
@@ -852,20 +942,20 @@
                                             <h3 class="text-base font-semibold">Edit Block</h3>
                                             <p class="text-xs text-white/70" x-text="findActiveBlock()?.name ?? ''"></p>
                                         </div>
-                                        <button type="button" class="rounded bg-sky-600 px-4 py-2 text-xs font-semibold hover:bg-sky-500" @click="showBlockSettingsModal = false">
+                                        <button type="button" class="rounded bg-sky-600 px-4 py-2 text-xs font-semibold cursor-pointer hover:bg-sky-500" @click="showBlockSettingsModal = false">
                                             Done
                                         </button>
                                     </div>
                                     <div class="flex bg-sky-600 text-xs font-semibold text-white">
-                                        <button type="button" class="relative px-5 py-3" :class="blockTab === 'general' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'general'">
+                                        <button type="button" class="relative px-5 py-3 cursor-pointer" :class="blockTab === 'general' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'general'">
                                             General
                                             <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="blockTab === 'general'"></span>
                                         </button>
-                                        <button type="button" class="relative px-5 py-3" :class="blockTab === 'styling' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'styling'">
+                                        <button type="button" class="relative px-5 py-3 cursor-pointer" :class="blockTab === 'styling' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'styling'">
                                             Styling Settings
                                             <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="blockTab === 'styling'"></span>
                                         </button>
-                                        <button type="button" class="relative px-5 py-3" :class="blockTab === 'advanced' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'advanced'">
+                                        <button type="button" class="relative px-5 py-3 cursor-pointer" :class="blockTab === 'advanced' ? 'bg-sky-700' : 'bg-sky-600 hover:bg-sky-500'" @click="blockTab = 'advanced'">
                                             Advanced Settings
                                             <span class="absolute left-1/2 -translate-x-1/2 -bottom-2 h-0 w-0 border-x-8 border-x-transparent border-t-8 border-t-sky-700" x-show="blockTab === 'advanced'"></span>
                                         </button>
@@ -1190,7 +1280,7 @@
                                 wire:click="save('stay')"
                                 wire:loading.attr="disabled"
                                 wire:target="save"
-                                class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-xs font-semibold text-white hover:bg-sky-500">
+                                class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg cursor-pointer bg-sky-600 px-3 py-2 text-xs font-semibold text-white hover:bg-sky-500">
                             <span wire:loading.remove wire:target="save"><i class="fa-solid fa-floppy-disk text-xs"></i> Save</span>
                             <span wire:loading.inline wire:target="save" class="inline-flex items-center gap-2">
                                 <svg class="h-3 w-3 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -1206,7 +1296,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="save"
                                 class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50
-                                       dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
+                                       dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                             <i class="fa-solid fa-right-from-bracket text-xs"></i>
                             Save & Exit
                         </button>

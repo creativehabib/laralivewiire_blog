@@ -11,11 +11,7 @@ use Livewire\Component;
 
 class Comments extends Component
 {
-    public int $commentableId;
-
-    public string $commentableType;
-
-    protected ?Model $commentableInstance = null;
+    public Model $commentable;
 
     public string $commentRelation = 'comments';
 
@@ -48,9 +44,7 @@ class Comments extends Component
 
     protected function bootCommentable(Model $commentable, string $commentRelation = 'comments'): void
     {
-        $this->commentableId = (int) $commentable->getKey();
-        $this->commentableType = $commentable::class;
-        $this->commentableInstance = $commentable;
+        $this->commentable = $commentable;
         $this->commentRelation = $commentRelation;
         $this->commentSettings = $this->loadCommentSettings();
         $this->applyCommentVisibilityRules();
@@ -189,8 +183,7 @@ class Comments extends Component
 
     protected function applyCommentVisibilityRules(): void
     {
-        $commentable = $this->resolveCommentable();
-        $this->allowComments = (bool) data_get($commentable, 'allow_comments', true);
+        $this->allowComments = (bool) data_get($this->commentable, 'allow_comments', true);
 
         if ($this->commentSettings['require_login'] && ! Auth::check()) {
             $this->allowComments = false;
@@ -201,8 +194,8 @@ class Comments extends Component
             return;
         }
 
-        if ($this->commentSettings['auto_close'] && $commentable->created_at) {
-            $ageInDays = $commentable->created_at->diffInDays(now());
+        if ($this->commentSettings['auto_close'] && $this->commentable->created_at) {
+            $ageInDays = $this->commentable->created_at->diffInDays(now());
 
             if ($ageInDays >= $this->commentSettings['auto_close_days']) {
                 $this->allowComments = false;
@@ -283,25 +276,12 @@ class Comments extends Component
 
     protected function commentQuery()
     {
-        $relation = $this->resolveCommentable()->{$this->commentRelation}();
+        $relation = $this->commentable->{$this->commentRelation}();
 
         if (! method_exists($relation, 'get')) {
             abort(500, 'Invalid comment relation provided.');
         }
 
         return $relation;
-    }
-
-    protected function resolveCommentable(): Model
-    {
-        if ($this->commentableInstance instanceof Model) {
-            return $this->commentableInstance;
-        }
-
-        $modelClass = $this->commentableType;
-
-        $this->commentableInstance = $modelClass::query()->findOrFail($this->commentableId);
-
-        return $this->commentableInstance;
     }
 }
