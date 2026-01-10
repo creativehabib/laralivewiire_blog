@@ -46,31 +46,80 @@
                                         $blockTitle = data_get($settings, 'title') ?: ($block['name'] ?? 'Block');
                                         $tagsValue = data_get($settings, 'tags');
                                         $posts = $block['posts'] ?? [];
+                                        $showExcerpt = data_get($settings, 'showExcerpt', true);
+                                        $excerptLength = (int) data_get($settings, 'excerptLength', 0);
+                                        $titleLength = (int) data_get($settings, 'titleLength', 0);
+                                        $contentOnly = data_get($settings, 'contentOnly', false);
+                                        $darkMode = data_get($settings, 'darkMode', false);
+                                        $primaryColor = data_get($settings, 'primaryColor');
+                                        $backgroundColor = data_get($settings, 'backgroundColor');
+                                        $secondaryColor = data_get($settings, 'secondaryColor');
+                                        $readMoreButton = data_get($settings, 'readMoreButton', false);
+                                        $moreButton = data_get($settings, 'moreButton', false);
+                                        $hideFirstThumbnail = data_get($settings, 'hideFirstThumbnail', false);
+                                        $hideSmallThumbnails = data_get($settings, 'hideSmallThumbnails', false);
+                                        $postMeta = data_get($settings, 'postMeta', true);
+                                        $mediaIcon = data_get($settings, 'mediaIcon', false);
+                                        $blockStyles = collect([
+                                            $backgroundColor ? "background-color: {$backgroundColor}" : null,
+                                            $primaryColor ? "--block-primary: {$primaryColor}" : null,
+                                            $secondaryColor ? "--block-secondary: {$secondaryColor}" : null,
+                                        ])->filter()->implode('; ');
                                     @endphp
-                                    <div class="space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                                        <div class="flex items-center justify-between gap-2">
+                                    <div class="{{ $contentOnly ? 'text-sm text-slate-700 dark:text-slate-200' : 'space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }}"
+                                         style="{{ $blockStyles }}">
+                                        <div class="flex items-center justify-between gap-2" style="color: var(--block-primary, inherit);">
                                             <div>
-                                                <p class="font-semibold">{{ $blockTitle }}</p>
+                                                <p class="font-semibold">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</p>
                                                 @if (!empty($tagsValue))
                                                     <p class="text-xs text-slate-500">Tags: {{ $tagsValue }}</p>
                                                 @endif
                                             </div>
-                                            @if (!empty($settings['url']))
+                                            @if (!empty($settings['url']) && $moreButton)
                                                 <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">View all</a>
                                             @endif
                                         </div>
                                         @if (count($posts))
                                             <div class="grid gap-3 sm:grid-cols-2">
-                                                @foreach ($posts as $post)
+                                                @foreach ($posts as $index => $post)
+                                                    @php
+                                                        $shouldHideThumb = ($hideFirstThumbnail && $index === 0) || ($hideSmallThumbnails && $index > 0);
+                                                    @endphp
                                                     <article class="flex gap-3">
-                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                        @unless ($shouldHideThumb)
+                                                            <div class="relative">
+                                                                <a href="{{ post_permalink($post) }}" class="block">
+                                                                    <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                </a>
+                                                                @if ($mediaIcon)
+                                                                    <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
+                                                                @endif
+                                                            </div>
+                                                        @endunless
                                                         <div class="space-y-1">
-                                                            <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ $post->name }}</p>
-                                                            <p class="text-xs text-slate-500">{{ $post->excerpt }}</p>
+                                                            <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                            </a>
+                                                            @if ($postMeta)
+                                                                <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                            @endif
+                                                            @if ($showExcerpt)
+                                                                <p class="text-xs text-slate-500">
+                                                                    {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
+                                                                </p>
+                                                            @endif
+                                                            @if ($readMoreButton)
+                                                                <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
+                                                            @endif
                                                         </div>
                                                     </article>
                                                 @endforeach
                                             </div>
+                                            @if (method_exists($posts, 'links'))
+                                                <div class="pt-3">
+                                                    {{ $posts->links() }}
+                                                </div>
+                                            @endif
                                         @else
                                             <p class="text-xs text-slate-500">No posts matched this block settings.</p>
                                         @endif

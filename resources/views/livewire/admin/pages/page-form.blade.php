@@ -24,13 +24,53 @@
         { id: 4, name: 'Hero + List', layout: 'hero-list' },
         { id: 5, name: 'Half Width', layout: 'half-width' }
     ],
+    defaultBlockSettings() {
+        return {
+            title: '',
+            icon: '',
+            url: '',
+            categories: [],
+            tags: '',
+            trending: false,
+            exclude: '',
+            sort: 'recent',
+            order: 'desc',
+            count: 5,
+            offset: 0,
+            days: '',
+            pagination: 'disable',
+            contentOnly: false,
+            darkMode: false,
+            primaryColor: '',
+            backgroundColor: '',
+            secondaryColor: '',
+            ajaxFilters: false,
+            moreButton: false,
+            titleLength: '',
+            showExcerpt: true,
+            excerptLength: '',
+            readMoreButton: false,
+            hideFirstThumbnail: false,
+            hideSmallThumbnails: false,
+            postMeta: true,
+            mediaIcon: false,
+        };
+    },
     init() {
         const storedSections = Array.isArray(this.builderState?.sections) ? this.builderState.sections : [];
         const storedEnabled = this.builderState?.enabled ?? false;
 
         this.sections = storedSections.map((section) => ({
             id: section.id ?? Date.now() + Math.random(),
-            blocks: Array.isArray(section.blocks) ? section.blocks : [],
+            blocks: Array.isArray(section.blocks)
+                ? section.blocks.map((block) => ({
+                    ...block,
+                    settings: {
+                        ...this.defaultBlockSettings(),
+                        ...(block.settings ?? {})
+                    }
+                }))
+                : [],
             sidebar: section.sidebar ?? 'none'
         }));
         this.builderEnabled = storedEnabled;
@@ -91,36 +131,7 @@
             id: Date.now() + Math.random(),
             name: block.name,
             layout: block.layout,
-            settings: {
-                title: '',
-                icon: '',
-                url: '',
-                categories: [],
-                tags: '',
-                trending: false,
-                exclude: '',
-                sort: 'recent',
-                order: 'desc',
-                count: 5,
-                offset: 0,
-                days: '',
-                pagination: 'disable',
-                contentOnly: false,
-                darkMode: false,
-                primaryColor: '',
-                backgroundColor: '',
-                secondaryColor: '',
-                ajaxFilters: false,
-                moreButton: false,
-                titleLength: '',
-                showExcerpt: true,
-                excerptLength: '',
-                readMoreButton: false,
-                hideFirstThumbnail: false,
-                hideSmallThumbnails: false,
-                postMeta: true,
-                mediaIcon: false,
-            }
+            settings: this.defaultBlockSettings()
         };
 
         section.blocks.push(newBlock);

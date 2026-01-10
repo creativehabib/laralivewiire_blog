@@ -69,6 +69,7 @@ class PageShow extends Component
                         $days = (int) ($settings['days'] ?? 0);
                         $order = ($settings['order'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
                         $sort = $settings['sort'] ?? 'recent';
+                        $pagination = $settings['pagination'] ?? 'disable';
 
                         $query = Post::query()
                             ->published()
@@ -104,10 +105,14 @@ class PageShow extends Component
                             $query->orderBy('created_at', $order);
                         }
 
-                        $posts = $query
-                            ->skip($offset)
-                            ->take($count)
-                            ->get();
+                        $query->skip($offset);
+
+                        if ($pagination === 'enable') {
+                            $pageName = 'block_'.$block['id'];
+                            $posts = $query->paginate($count, ['*'], $pageName);
+                        } else {
+                            $posts = $query->take($count)->get();
+                        }
 
                         return array_merge($block, [
                             'settings' => $settings,
