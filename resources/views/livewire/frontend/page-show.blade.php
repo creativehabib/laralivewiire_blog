@@ -49,6 +49,8 @@
                                         $blockTitle = data_get($settings, 'title') ?: ($block['name'] ?? 'Block');
                                         $tagsValue = data_get($settings, 'tags');
                                         $posts = $block['posts'] ?? [];
+                                        $layout = $block['layout'] ?? 'stacked';
+                                        $postItems = collect($posts instanceof \Illuminate\Pagination\AbstractPaginator ? $posts->items() : $posts);
                                         $showExcerpt = data_get($settings, 'showExcerpt', true);
                                         $excerptLength = (int) data_get($settings, 'excerptLength', 0);
                                         $titleLength = (int) data_get($settings, 'titleLength', 0);
@@ -83,41 +85,274 @@
                                             @endif
                                         </div>
                                         @if (count($posts))
-                                            <div class="grid gap-3 sm:grid-cols-2">
-                                                @foreach ($posts as $index => $post)
+                                            @switch($layout)
+                                                @case('list-sidebar')
                                                     @php
-                                                        $shouldHideThumb = ($hideFirstThumbnail && $index === 0) || ($hideSmallThumbnails && $index > 0);
+                                                        $featuredPost = $postItems->first();
+                                                        $sidebarPosts = $postItems->slice(1);
                                                     @endphp
-                                                    <article class="flex gap-3">
-                                                        @unless ($shouldHideThumb)
-                                                            <div class="relative">
-                                                                <a href="{{ post_permalink($post) }}" class="block">
-                                                                    <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                    <div class="grid gap-4 md:grid-cols-[1.3fr_1fr]">
+                                                        @if ($featuredPost)
+                                                            <article class="space-y-2">
+                                                                <a href="{{ post_permalink($featuredPost) }}" class="block">
+                                                                    <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="h-48 w-full rounded-lg object-cover">
                                                                 </a>
-                                                                @if ($mediaIcon)
-                                                                    <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
-                                                                @endif
-                                                            </div>
-                                                        @endunless
-                                                        <div class="space-y-1">
-                                                            <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
-                                                                {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
-                                                            </a>
-                                                            @if ($postMeta)
-                                                                <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
-                                                            @endif
-                                                            @if ($showExcerpt)
-                                                                <p class="text-xs text-slate-500">
-                                                                    {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
-                                                                </p>
-                                                            @endif
-                                                            @if ($readMoreButton)
-                                                                <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
-                                                            @endif
+                                                                <div class="space-y-1">
+                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-100">
+                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
+                                                                    </a>
+                                                                    @if ($postMeta)
+                                                                        <p class="text-[11px] text-slate-400">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
+                                                                    @endif
+                                                                    @if ($showExcerpt)
+                                                                        <p class="text-xs text-slate-500">
+                                                                            {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->excerpt, $excerptLength) : $featuredPost->excerpt }}
+                                                                        </p>
+                                                                    @endif
+                                                                    @if ($readMoreButton)
+                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
+                                                                    @endif
+                                                                </div>
+                                                            </article>
+                                                        @endif
+                                                        <div class="space-y-3">
+                                                            @foreach ($sidebarPosts as $index => $post)
+                                                                @php
+                                                                    $shouldHideThumb = $hideSmallThumbnails && $index >= 0;
+                                                                @endphp
+                                                                <article class="flex gap-3">
+                                                                    @unless ($shouldHideThumb)
+                                                                        <div class="relative">
+                                                                            <a href="{{ post_permalink($post) }}" class="block">
+                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
+                                                                            </a>
+                                                                            @if ($mediaIcon)
+                                                                                <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
+                                                                            @endif
+                                                                        </div>
+                                                                    @endunless
+                                                                    <div class="space-y-1">
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                        </a>
+                                                                        @if ($postMeta)
+                                                                            <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        @endif
+                                                                    </div>
+                                                                </article>
+                                                            @endforeach
                                                         </div>
-                                                    </article>
-                                                @endforeach
-                                            </div>
+                                                    </div>
+                                                    @break
+                                                @case('stacked')
+                                                    <div class="space-y-3">
+                                                        @foreach ($postItems as $index => $post)
+                                                            @php
+                                                                $shouldHideThumb = ($hideFirstThumbnail && $index === 0) || ($hideSmallThumbnails && $index > 0);
+                                                            @endphp
+                                                            <article class="flex gap-3 rounded-lg border border-slate-200 bg-white/60 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
+                                                                @unless ($shouldHideThumb)
+                                                                    <div class="relative">
+                                                                        <a href="{{ post_permalink($post) }}" class="block">
+                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                        </a>
+                                                                        @if ($mediaIcon)
+                                                                            <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
+                                                                        @endif
+                                                                    </div>
+                                                                @endunless
+                                                                <div class="space-y-1">
+                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                    </a>
+                                                                    @if ($postMeta)
+                                                                        <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                    @endif
+                                                                    @if ($showExcerpt)
+                                                                        <p class="text-xs text-slate-500">
+                                                                            {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
+                                                                        </p>
+                                                                    @endif
+                                                                    @if ($readMoreButton)
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
+                                                                    @endif
+                                                                </div>
+                                                            </article>
+                                                        @endforeach
+                                                    </div>
+                                                    @break
+                                                @case('featured-list')
+                                                    @php
+                                                        $featuredPost = $postItems->first();
+                                                        $listPosts = $postItems->slice(1);
+                                                    @endphp
+                                                    <div class="space-y-4">
+                                                        @if ($featuredPost)
+                                                            <article class="grid gap-3 md:grid-cols-[200px_1fr]">
+                                                                <a href="{{ post_permalink($featuredPost) }}" class="block">
+                                                                    <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="h-28 w-full rounded-lg object-cover">
+                                                                </a>
+                                                                <div class="space-y-1">
+                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-100">
+                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
+                                                                    </a>
+                                                                    @if ($postMeta)
+                                                                        <p class="text-[11px] text-slate-400">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
+                                                                    @endif
+                                                                    @if ($showExcerpt)
+                                                                        <p class="text-xs text-slate-500">
+                                                                            {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->excerpt, $excerptLength) : $featuredPost->excerpt }}
+                                                                        </p>
+                                                                    @endif
+                                                                </div>
+                                                            </article>
+                                                        @endif
+                                                        <div class="grid gap-3 sm:grid-cols-2">
+                                                            @foreach ($listPosts as $index => $post)
+                                                                @php
+                                                                    $shouldHideThumb = $hideSmallThumbnails && $index >= 0;
+                                                                @endphp
+                                                                <article class="flex gap-3">
+                                                                    @unless ($shouldHideThumb)
+                                                                        <div class="relative">
+                                                                            <a href="{{ post_permalink($post) }}" class="block">
+                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
+                                                                            </a>
+                                                                            @if ($mediaIcon)
+                                                                                <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
+                                                                            @endif
+                                                                        </div>
+                                                                    @endunless
+                                                                    <div class="space-y-1">
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                        </a>
+                                                                        @if ($postMeta)
+                                                                            <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        @endif
+                                                                    </div>
+                                                                </article>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    @break
+                                                @case('hero-list')
+                                                    @php
+                                                        $heroPost = $postItems->first();
+                                                        $listPosts = $postItems->slice(1);
+                                                    @endphp
+                                                    <div class="space-y-4">
+                                                        @if ($heroPost)
+                                                            <article class="relative overflow-hidden rounded-xl">
+                                                                <a href="{{ post_permalink($heroPost) }}" class="block">
+                                                                    <img src="{{ $heroPost->image_url }}" alt="{{ $heroPost->name }}" class="h-56 w-full object-cover">
+                                                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
+                                                                </a>
+                                                                <div class="absolute bottom-3 left-3 right-3 space-y-1 text-white">
+                                                                    <a href="{{ post_permalink($heroPost) }}" class="text-sm font-semibold">
+                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($heroPost->name, $titleLength) : $heroPost->name }}
+                                                                    </a>
+                                                                    @if ($postMeta)
+                                                                        <p class="text-[11px] text-white/80">{{ $heroPost->created_at?->format('M d, Y') }}</p>
+                                                                    @endif
+                                                                </div>
+                                                            </article>
+                                                        @endif
+                                                        <div class="grid gap-3 sm:grid-cols-2">
+                                                            @foreach ($listPosts as $index => $post)
+                                                                @php
+                                                                    $shouldHideThumb = ($hideSmallThumbnails && $index >= 0);
+                                                                @endphp
+                                                                <article class="flex gap-3">
+                                                                    @unless ($shouldHideThumb)
+                                                                        <div class="relative">
+                                                                            <a href="{{ post_permalink($post) }}" class="block">
+                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
+                                                                            </a>
+                                                                            @if ($mediaIcon)
+                                                                                <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
+                                                                            @endif
+                                                                        </div>
+                                                                    @endunless
+                                                                    <div class="space-y-1">
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                        </a>
+                                                                        @if ($postMeta)
+                                                                            <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        @endif
+                                                                    </div>
+                                                                </article>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    @break
+                                                @case('half-width')
+                                                    <div class="grid gap-3 md:grid-cols-2">
+                                                        @foreach ($postItems as $index => $post)
+                                                            @php
+                                                                $shouldHideThumb = ($hideFirstThumbnail && $index === 0) || ($hideSmallThumbnails && $index > 0);
+                                                            @endphp
+                                                            <article class="rounded-lg border border-slate-200 bg-white/60 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
+                                                                @unless ($shouldHideThumb)
+                                                                    <a href="{{ post_permalink($post) }}" class="block">
+                                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-32 w-full rounded-lg object-cover">
+                                                                    </a>
+                                                                @endunless
+                                                                <div class="mt-2 space-y-1">
+                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                    </a>
+                                                                    @if ($postMeta)
+                                                                        <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                    @endif
+                                                                    @if ($showExcerpt)
+                                                                        <p class="text-xs text-slate-500">
+                                                                            {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
+                                                                        </p>
+                                                                    @endif
+                                                                </div>
+                                                            </article>
+                                                        @endforeach
+                                                    </div>
+                                                    @break
+                                                @default
+                                                    <div class="grid gap-3 sm:grid-cols-2">
+                                                        @foreach ($postItems as $index => $post)
+                                                            @php
+                                                                $shouldHideThumb = ($hideFirstThumbnail && $index === 0) || ($hideSmallThumbnails && $index > 0);
+                                                            @endphp
+                                                            <article class="flex gap-3">
+                                                                @unless ($shouldHideThumb)
+                                                                    <div class="relative">
+                                                                        <a href="{{ post_permalink($post) }}" class="block">
+                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                        </a>
+                                                                        @if ($mediaIcon)
+                                                                            <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
+                                                                        @endif
+                                                                    </div>
+                                                                @endunless
+                                                                <div class="space-y-1">
+                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                    </a>
+                                                                    @if ($postMeta)
+                                                                        <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                    @endif
+                                                                    @if ($showExcerpt)
+                                                                        <p class="text-xs text-slate-500">
+                                                                            {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
+                                                                        </p>
+                                                                    @endif
+                                                                    @if ($readMoreButton)
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
+                                                                    @endif
+                                                                </div>
+                                                            </article>
+                                                        @endforeach
+                                                    </div>
+                                            @endswitch
                                             @if (method_exists($posts, 'links'))
                                                 @php
                                                     $paginationMode = $block['pagination_mode'] ?? 'disable';
