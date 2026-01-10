@@ -29,6 +29,8 @@ class PageForm extends Component
     public string $status = 'published';
     public ?string $template = null;
     public ?string $image = null;
+    public array $builderState = [];
+    public array $categories = [];
 
     // SEO (meta_boxes)
     public ?string $seo_title = null;
@@ -44,6 +46,15 @@ class PageForm extends Component
 
     public function mount(?int $pageId = null): void
     {
+        $this->categories = Category::query()
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Category $category) => [
+                'id' => $category->id,
+                'name' => $category->name,
+            ])
+            ->toArray();
+
         if ($pageId) {
             $page = Page::query()->withTrashed()->findOrFail($pageId);
             $this->page   = $page;
@@ -68,6 +79,12 @@ class PageForm extends Component
                 $this->seo_index       = (string) ($meta['index'] ?? 'index');
                 $this->seo_image       = $meta['seo_image'] ?? null;
                 $this->focus_keyword   = (string) ($meta['focus_keyword'] ?? '');
+            }
+
+            if (method_exists($page, 'getMeta')) {
+                $builderMeta = $page->getMeta('builder_state', []);
+                $builderMeta = $builderMeta[0] ?? $builderMeta;
+                $this->builderState = is_array($builderMeta) ? $builderMeta : [];
             }
         }
     }
@@ -179,6 +196,7 @@ class PageForm extends Component
         ];
         if (method_exists($page, 'setMeta')) {
             $page->setMeta('seo_meta', [$overrideMeta]);
+            $page->setMeta('builder_state', [$this->builderState]);
         }
 
         // SEO SCORE
@@ -209,6 +227,7 @@ class PageForm extends Component
     {
         return view('livewire.admin.pages.page-form',[
             'baseUrl'        => config('app.url'),
+            'categories'     => $this->categories,
         ])->layout('components.layouts.app', [
                 'title' => $this->pageId ? 'Edit Page' : 'Create Page',
             ]);
