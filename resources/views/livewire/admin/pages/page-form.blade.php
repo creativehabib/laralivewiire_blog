@@ -898,7 +898,10 @@
                                                         :value="findActiveBlock()?.settings?.pagination ?? 'disable'"
                                                         @change="updateActiveBlockField('pagination', $event.target.value)">
                                                     <option value="disable">Disable</option>
-                                                    <option value="enable">Enable</option>
+                                                    <option value="numeric">Numeric</option>
+                                                    <option value="ajax-show-more">AJAX - Show More</option>
+                                                    <option value="ajax-load-more">AJAX - Load More</option>
+                                                    <option value="ajax-next-prev">AJAX - Next/Previous Buttons</option>
                                                 </select>
                                             </div>
                                         </div>

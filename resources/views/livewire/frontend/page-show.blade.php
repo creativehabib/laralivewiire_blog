@@ -119,9 +119,39 @@
                                                 @endforeach
                                             </div>
                                             @if (method_exists($posts, 'links'))
-                                                <div class="pt-3">
-                                                    {{ $posts->links() }}
-                                                </div>
+                                                @php
+                                                    $paginationMode = $block['pagination_mode'] ?? 'disable';
+                                                    $pageName = $block['page_name'] ?? 'page';
+                                                @endphp
+                                                @if ($paginationMode === 'numeric')
+                                                    <div class="pt-3">
+                                                        {{ $posts->links() }}
+                                                    </div>
+                                                @elseif ($paginationMode === 'ajax-next-prev')
+                                                    <div class="flex items-center justify-between pt-3 text-xs">
+                                                        <button type="button"
+                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40"
+                                                                wire:click="previousPage('{{ $pageName }}')"
+                                                                @disabled($posts->onFirstPage())>
+                                                            Previous
+                                                        </button>
+                                                        <button type="button"
+                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40"
+                                                                wire:click="nextPage('{{ $pageName }}')"
+                                                                @disabled(! $posts->hasMorePages())>
+                                                            Next
+                                                        </button>
+                                                    </div>
+                                                @elseif (in_array($paginationMode, ['ajax-show-more', 'ajax-load-more'], true))
+                                                    <div class="pt-3 text-center">
+                                                        <button type="button"
+                                                                class="rounded border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 disabled:opacity-40"
+                                                                wire:click="nextPage('{{ $pageName }}')"
+                                                                @disabled(! $posts->hasMorePages())>
+                                                            {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
+                                                        </button>
+                                                    </div>
+                                                @endif
                                             @endif
                                         @else
                                             <p class="text-xs text-slate-500">No posts matched this block settings.</p>

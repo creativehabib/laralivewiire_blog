@@ -72,6 +72,9 @@ class PageShow extends Component
                         $order = ($settings['order'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
                         $sort = $settings['sort'] ?? 'recent';
                         $pagination = $settings['pagination'] ?? 'disable';
+                        if ($pagination === 'enable') {
+                            $pagination = 'numeric';
+                        }
 
                         $query = Post::query()
                             ->published()
@@ -109,7 +112,7 @@ class PageShow extends Component
 
                         $query->skip($offset);
 
-                        if ($pagination === 'enable') {
+                        if ($pagination !== 'disable') {
                             $blockId = (string) ($block['id'] ?? '0');
                             $pageName = 'block_' . preg_replace('/[^A-Za-z0-9_]/', '_', $blockId);
                             $posts = $query->paginate($count, ['*'], $pageName);
@@ -119,6 +122,8 @@ class PageShow extends Component
 
                         return array_merge($block, [
                             'settings' => $settings,
+                            'pagination_mode' => $pagination,
+                            'page_name' => $pageName ?? null,
                             'posts' => $posts,
                         ]);
                     })
