@@ -124,20 +124,35 @@
                                                     $pageName = $block['page_name'] ?? 'page';
                                                 @endphp
                                                 @if ($paginationMode === 'numeric')
-                                                    <div class="pt-3">
-                                                        {{ $posts->links() }}
+                                                    <div class="flex flex-wrap items-center gap-2 pt-3 text-xs">
+                                                        @for ($page = 1; $page <= $posts->lastPage(); $page++)
+                                                            <button type="button"
+                                                                    class="rounded border px-2 py-1 {{ $posts->currentPage() === $page ? 'border-sky-500 bg-sky-50 text-sky-600' : 'border-slate-200 text-slate-600' }}"
+                                                                    wire:click="gotoPage({{ $page }}, '{{ $pageName }}')"
+                                                                    wire:loading.attr="disabled">
+                                                                {{ $page }}
+                                                            </button>
+                                                        @endfor
+                                                        <span class="text-[11px] text-slate-400" wire:loading>
+                                                            Loading...
+                                                        </span>
                                                     </div>
                                                 @elseif ($paginationMode === 'ajax-next-prev')
                                                     <div class="flex items-center justify-between pt-3 text-xs">
                                                         <button type="button"
                                                                 class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40"
                                                                 wire:click="previousPage('{{ $pageName }}')"
+                                                                wire:loading.attr="disabled"
                                                                 @disabled($posts->onFirstPage())>
                                                             Previous
                                                         </button>
+                                                        <span class="text-[11px] text-slate-400" wire:loading>
+                                                            Loading...
+                                                        </span>
                                                         <button type="button"
                                                                 class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40"
                                                                 wire:click="nextPage('{{ $pageName }}')"
+                                                                wire:loading.attr="disabled"
                                                                 @disabled(! $posts->hasMorePages())>
                                                             Next
                                                         </button>
@@ -147,9 +162,13 @@
                                                         <button type="button"
                                                                 class="rounded border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 disabled:opacity-40"
                                                                 wire:click="nextPage('{{ $pageName }}')"
+                                                                wire:loading.attr="disabled"
                                                                 @disabled(! $posts->hasMorePages())>
                                                             {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
                                                         </button>
+                                                        <span class="ml-2 text-[11px] text-slate-400" wire:loading>
+                                                            Loading...
+                                                        </span>
                                                     </div>
                                                 @endif
                                             @endif
