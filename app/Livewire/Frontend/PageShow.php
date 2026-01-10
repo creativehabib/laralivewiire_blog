@@ -11,7 +11,6 @@ class PageShow extends Component
 {
     public Page $page;
     public array $builderState = [];
-    public array $builderSections = [];
 
     public function mount(Page $page): void
     {
@@ -23,13 +22,13 @@ class PageShow extends Component
             $builderMeta = $builderMeta[0] ?? $builderMeta;
             $this->builderState = is_array($builderMeta) ? $builderMeta : [];
         }
-
-        $this->builderSections = $this->buildBuilderSections();
     }
 
     public function render()
     {
-        return view('livewire.frontend.page-show')
+        return view('livewire.frontend.page-show', [
+            'builderSections' => $this->buildBuilderSections(),
+        ])
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->page->name,
                 'seo' => Seo::forPage($this->page),
