@@ -12,6 +12,8 @@ class PageShow extends Component
 {
     use WithPagination;
 
+    protected $queryString = [];
+
     public Page $page;
     public array $builderState = [];
 
