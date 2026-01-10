@@ -365,13 +365,13 @@
                                                 @elseif ($paginationMode === 'ajax-next-prev')
                                                     <div class="flex items-center justify-between pt-3 text-xs">
                                                         <button type="button"
-                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40"
+                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40 cursor-pointer"
                                                                 wire:click="previousPage('{{ $pageName }}')"
                                                             @disabled($posts->onFirstPage())>
                                                             Previous
                                                         </button>
                                                         <button type="button"
-                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40"
+                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40 cursor-pointer"
                                                                 wire:click="nextPage('{{ $pageName }}')"
                                                             @disabled(! $posts->hasMorePages())>
                                                             Next
@@ -380,7 +380,7 @@
                                                 @elseif (in_array($paginationMode, ['ajax-show-more', 'ajax-load-more'], true))
                                                     <div class="pt-3 text-center">
                                                         <button type="button"
-                                                                class="rounded border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 disabled:opacity-40"
+                                                                class="rounded border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 disabled:opacity-40 cursor-pointer"
                                                                 wire:click="nextPage('{{ $pageName }}')"
                                                             @disabled(! $posts->hasMorePages())>
                                                             {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
