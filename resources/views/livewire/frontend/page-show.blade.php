@@ -1,9 +1,9 @@
 <div class="container px-4 py-10 md:py-12 max-w-4xl mx-auto typography">
     <article class="space-y-4">
-        <header class="space-y-1">
-            <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Page</p>
-            <h1 class="text-3xl font-semibold text-slate-900 dark:text-slate-100">{{ $page->name }}</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400">
+        <header class="space-y-1.5">
+            <p class="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Page</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">{{ $page->name }}</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                 Updated {{ optional($page->updated_at ?? $page->created_at)->diffForHumans() }}
             </p>
         </header>
@@ -20,7 +20,7 @@
 
         @if ($builderEnabled)
             <div class="space-y-6">
-                <div class="text-center text-xs text-slate-500" wire:loading>
+                <div class="text-center text-xs text-slate-500 font-medium" wire:loading>
                     Loading...
                 </div>
                 @foreach ($builderSections as $section)
@@ -37,8 +37,8 @@
                         <div class="grid gap-4 {{ $gridClass }}">
                             @if ($sidebar === 'left')
                                 <aside class="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-3 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
-                                    <p class="font-semibold text-slate-600 dark:text-slate-200">Sidebar</p>
-                                    <p>Manage Widgets</p>
+                                    <p class="font-semibold text-slate-600 dark:text-slate-200 mb-1">Sidebar</p>
+                                    <p class="leading-relaxed">Manage Widgets</p>
                                 </aside>
                             @endif
 
@@ -71,17 +71,17 @@
                                             $secondaryColor ? "--block-secondary: {$secondaryColor}" : null,
                                         ])->filter()->implode('; ');
                                     @endphp
-                                    <div class="{{ $contentOnly ? 'text-sm text-slate-700 dark:text-slate-200' : 'space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }}"
+                                    <div class="{{ $contentOnly ? 'text-sm text-slate-700 dark:text-slate-200 leading-relaxed' : 'space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }}"
                                          style="{{ $blockStyles }}">
                                         <div class="flex items-center justify-between gap-2" style="color: var(--block-primary, inherit);">
                                             <div>
-                                                <p class="font-semibold">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</p>
+                                                <p class="font-bold text-base leading-snug">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</p>
                                                 @if (!empty($tagsValue))
-                                                    <p class="text-xs text-slate-500">Tags: {{ $tagsValue }}</p>
+                                                    <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Tags: {{ $tagsValue }}</p>
                                                 @endif
                                             </div>
                                             @if (!empty($settings['url']) && $moreButton)
-                                                <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">View all</a>
+                                                <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 transition-colors">View all</a>
                                             @endif
                                         </div>
                                         @if (count($posts))
@@ -97,20 +97,20 @@
                                                                 <a href="{{ post_permalink($featuredPost) }}" class="block">
                                                                     <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="h-48 w-full rounded-lg object-cover">
                                                                 </a>
-                                                                <div class="space-y-1">
-                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-100">
+                                                                <div class="space-y-1.5">
+                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-bold text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500">
+                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->excerpt, $excerptLength) : $featuredPost->excerpt }}
                                                                         </p>
                                                                     @endif
                                                                     @if ($readMoreButton)
-                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
+                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -122,7 +122,7 @@
                                                                 @endphp
                                                                 <article class="flex gap-3">
                                                                     @unless ($shouldHideThumb)
-                                                                        <div class="relative">
+                                                                        <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" class="block">
                                                                                 <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
                                                                             </a>
@@ -131,12 +131,12 @@
                                                                             @endif
                                                                         </div>
                                                                     @endunless
-                                                                    <div class="space-y-1">
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                    <div class="space-y-1 min-w-0 flex-1">
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -152,7 +152,7 @@
                                                             @endphp
                                                             <article class="flex gap-3 rounded-lg border border-slate-200 bg-white/60 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
                                                                 @unless ($shouldHideThumb)
-                                                                    <div class="relative">
+                                                                    <div class="relative flex-shrink-0">
                                                                         <a href="{{ post_permalink($post) }}" class="block">
                                                                             <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
                                                                         </a>
@@ -161,20 +161,20 @@
                                                                         @endif
                                                                     </div>
                                                                 @endunless
-                                                                <div class="space-y-1">
-                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                <div class="space-y-1.5 min-w-0 flex-1">
+                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500">
+                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
                                                                         </p>
                                                                     @endif
                                                                     @if ($readMoreButton)
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -192,15 +192,15 @@
                                                                 <a href="{{ post_permalink($featuredPost) }}" class="block">
                                                                     <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="h-28 w-full rounded-lg object-cover">
                                                                 </a>
-                                                                <div class="space-y-1">
-                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-100">
+                                                                <div class="space-y-1.5">
+                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-bold text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500">
+                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->excerpt, $excerptLength) : $featuredPost->excerpt }}
                                                                         </p>
                                                                     @endif
@@ -214,7 +214,7 @@
                                                                 @endphp
                                                                 <article class="flex gap-3">
                                                                     @unless ($shouldHideThumb)
-                                                                        <div class="relative">
+                                                                        <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" class="block">
                                                                                 <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
                                                                             </a>
@@ -223,12 +223,12 @@
                                                                             @endif
                                                                         </div>
                                                                     @endunless
-                                                                    <div class="space-y-1">
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                    <div class="space-y-1 min-w-0 flex-1">
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -248,12 +248,12 @@
                                                                     <img src="{{ $heroPost->image_url }}" alt="{{ $heroPost->name }}" class="h-56 w-full object-cover">
                                                                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
                                                                 </a>
-                                                                <div class="absolute bottom-3 left-3 right-3 space-y-1 text-white">
-                                                                    <a href="{{ post_permalink($heroPost) }}" class="text-sm font-semibold">
+                                                                <div class="absolute bottom-3 left-3 right-3 space-y-1.5 text-white">
+                                                                    <a href="{{ post_permalink($heroPost) }}" class="text-sm font-bold leading-snug line-clamp-2 block hover:text-white/90 transition-colors">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($heroPost->name, $titleLength) : $heroPost->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-white/80">{{ $heroPost->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-white/80 font-medium">{{ $heroPost->created_at?->format('M d, Y') }}</p>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -265,7 +265,7 @@
                                                                 @endphp
                                                                 <article class="flex gap-3">
                                                                     @unless ($shouldHideThumb)
-                                                                        <div class="relative">
+                                                                        <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" class="block">
                                                                                 <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
                                                                             </a>
@@ -274,12 +274,12 @@
                                                                             @endif
                                                                         </div>
                                                                     @endunless
-                                                                    <div class="space-y-1">
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                    <div class="space-y-1 min-w-0 flex-1">
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -299,15 +299,15 @@
                                                                         <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-32 w-full rounded-lg object-cover">
                                                                     </a>
                                                                 @endunless
-                                                                <div class="mt-2 space-y-1">
-                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                <div class="mt-2 space-y-1.5">
+                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500">
+                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
                                                                         </p>
                                                                     @endif
@@ -324,7 +324,7 @@
                                                             @endphp
                                                             <article class="flex gap-3">
                                                                 @unless ($shouldHideThumb)
-                                                                    <div class="relative">
+                                                                    <div class="relative flex-shrink-0">
                                                                         <a href="{{ post_permalink($post) }}" class="block">
                                                                             <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
                                                                         </a>
@@ -333,20 +333,20 @@
                                                                         @endif
                                                                     </div>
                                                                 @endunless
-                                                                <div class="space-y-1">
-                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-slate-700 hover:text-sky-600 dark:text-slate-200">
+                                                                <div class="space-y-1.5 min-w-0 flex-1">
+                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500">
+                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
                                                                         </p>
                                                                     @endif
                                                                     @if ($readMoreButton)
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500">Read more</a>
+                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -365,13 +365,13 @@
                                                 @elseif ($paginationMode === 'ajax-next-prev')
                                                     <div class="flex items-center justify-between pt-3 text-xs">
                                                         <button type="button"
-                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40 cursor-pointer"
+                                                                class="rounded border border-slate-200 px-3 py-1.5 text-slate-600 disabled:opacity-40 cursor-pointer font-medium transition-colors hover:bg-slate-50"
                                                                 wire:click="previousPage('{{ $pageName }}')"
                                                             @disabled($posts->onFirstPage())>
                                                             Previous
                                                         </button>
                                                         <button type="button"
-                                                                class="rounded border border-slate-200 px-3 py-1 text-slate-600 disabled:opacity-40 cursor-pointer"
+                                                                class="rounded border border-slate-200 px-3 py-1.5 text-slate-600 disabled:opacity-40 cursor-pointer font-medium transition-colors hover:bg-slate-50"
                                                                 wire:click="nextPage('{{ $pageName }}')"
                                                             @disabled(! $posts->hasMorePages())>
                                                             Next
@@ -380,7 +380,7 @@
                                                 @elseif (in_array($paginationMode, ['ajax-show-more', 'ajax-load-more'], true))
                                                     <div class="pt-3 text-center">
                                                         <button type="button"
-                                                                class="rounded border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 disabled:opacity-40 cursor-pointer"
+                                                                class="rounded border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 disabled:opacity-40 cursor-pointer transition-colors hover:bg-slate-50"
                                                                 wire:click="nextPage('{{ $pageName }}')"
                                                             @disabled(! $posts->hasMorePages())>
                                                             {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
@@ -389,11 +389,11 @@
                                                 @endif
                                             @endif
                                         @else
-                                            <p class="text-xs text-slate-500">No posts matched this block settings.</p>
+                                            <p class="text-xs text-slate-500 leading-relaxed">No posts matched this block settings.</p>
                                         @endif
                                     </div>
                                 @empty
-                                    <div class="rounded-lg border border-dashed border-slate-200 p-4 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                                    <div class="rounded-lg border border-dashed border-slate-200 p-4 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400 leading-relaxed">
                                         No blocks added yet.
                                     </div>
                                 @endforelse
@@ -401,8 +401,8 @@
 
                             @if ($sidebar === 'right')
                                 <aside class="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-3 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
-                                    <p class="font-semibold text-slate-600 dark:text-slate-200">Sidebar</p>
-                                    <p>Manage Widgets</p>
+                                    <p class="font-semibold text-slate-600 dark:text-slate-200 mb-1">Sidebar</p>
+                                    <p class="leading-relaxed">Manage Widgets</p>
                                 </aside>
                             @endif
                         </div>
@@ -410,14 +410,14 @@
                 @endforeach
             </div>
         @else
-            <div class="prose prose-slate max-w-none dark:prose-invert">
+            <div class="prose prose-slate max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:font-bold prose-p:leading-relaxed prose-li:leading-relaxed">
                 {!! $page->content !!}
             </div>
         @endif
     </article>
 
     <section class="mt-8">
-        <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+        <h2 class="text-sm font-bold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700 tracking-tight">
             মন্তব্য করুন
         </h2>
         <x-comments.section :commentable="$page" :canonical-url="request()->url()" />
