@@ -105,6 +105,21 @@
                 offset: 0,
                 days: '',
                 pagination: 'disable',
+                contentOnly: false,
+                darkMode: false,
+                primaryColor: '',
+                backgroundColor: '',
+                secondaryColor: '',
+                ajaxFilters: false,
+                moreButton: false,
+                titleLength: '',
+                showExcerpt: true,
+                excerptLength: '',
+                readMoreButton: false,
+                hideFirstThumbnail: false,
+                hideSmallThumbnails: false,
+                postMeta: true,
+                mediaIcon: false,
             }
         };
 
@@ -666,12 +681,157 @@
                                         </div>
 
                                         <div class="space-y-5" x-show="blockTab === 'styling'" x-cloak>
-                                            <div class="rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
-                                                <p class="text-sm text-slate-600 dark:text-slate-300">Styling options will be available soon.</p>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Show the content only?</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.contentOnly ?? false"
+                                                               @change="updateActiveBlockField('contentOnly', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                    <span class="text-xs text-slate-500">Without background, padding nor borders.</span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Dark Mode</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.darkMode ?? false"
+                                                               @change="updateActiveBlockField('darkMode', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Primary Color</label>
+                                                <input type="color"
+                                                       class="h-10 w-14 rounded border border-slate-300 bg-white"
+                                                       :value="findActiveBlock()?.settings?.primaryColor ?? ''"
+                                                       @input="updateActiveBlockField('primaryColor', $event.target.value)">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Background Color</label>
+                                                <input type="color"
+                                                       class="h-10 w-14 rounded border border-slate-300 bg-white"
+                                                       :value="findActiveBlock()?.settings?.backgroundColor ?? ''"
+                                                       @input="updateActiveBlockField('backgroundColor', $event.target.value)">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Secondary Color</label>
+                                                <input type="color"
+                                                       class="h-10 w-14 rounded border border-slate-300 bg-white"
+                                                       :value="findActiveBlock()?.settings?.secondaryColor ?? ''"
+                                                       @input="updateActiveBlockField('secondaryColor', $event.target.value)">
                                             </div>
                                         </div>
 
                                         <div class="space-y-5" x-show="blockTab === 'advanced'" x-cloak>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Ajax Filters</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.ajaxFilters ?? false"
+                                                               @change="updateActiveBlockField('ajaxFilters', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                    <span class="text-xs text-slate-500">Will not appear if the numeric pagination is active.</span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">More Button</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.moreButton ?? false"
+                                                               @change="updateActiveBlockField('moreButton', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                    <span class="text-xs text-slate-500">Will not appear if the Block URL is empty.</span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Posts Title Length</label>
+                                                <input type="number" min="0"
+                                                       class="w-full max-w-xs rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                       :value="findActiveBlock()?.settings?.titleLength ?? ''"
+                                                       @input="updateActiveBlockField('titleLength', $event.target.value)">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Posts Excerpt</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.showExcerpt ?? true"
+                                                               @change="updateActiveBlockField('showExcerpt', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Posts Excerpt Length</label>
+                                                <input type="number" min="0"
+                                                       class="w-full max-w-xs rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                                       :value="findActiveBlock()?.settings?.excerptLength ?? ''"
+                                                       @input="updateActiveBlockField('excerptLength', $event.target.value)">
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Read More Button</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.readMoreButton ?? false"
+                                                               @change="updateActiveBlockField('readMoreButton', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Hide thumbnail for the First post</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.hideFirstThumbnail ?? false"
+                                                               @change="updateActiveBlockField('hideFirstThumbnail', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Hide small thumbnails</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.hideSmallThumbnails ?? false"
+                                                               @change="updateActiveBlockField('hideSmallThumbnails', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Post Meta</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.postMeta ?? true"
+                                                               @change="updateActiveBlockField('postMeta', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+                                                <label class="text-sm text-slate-600 dark:text-slate-300">Media Icon</label>
+                                                <label class="inline-flex items-center gap-3">
+                                                    <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-200 transition">
+                                                        <input type="checkbox" class="peer sr-only"
+                                                               :checked="findActiveBlock()?.settings?.mediaIcon ?? false"
+                                                               @change="updateActiveBlockField('mediaIcon', $event.target.checked)">
+                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition peer-checked:translate-x-5 peer-checked:bg-sky-600"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
                                             <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-start rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
                                                 <label class="text-sm text-slate-600 dark:text-slate-300 mt-2">Exclude Posts</label>
                                                 <div>
