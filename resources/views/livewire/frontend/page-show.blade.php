@@ -95,12 +95,14 @@
                                                         @if ($featuredPost)
                                                             <article class="space-y-2">
                                                                 <a href="{{ post_permalink($featuredPost) }}" class="block">
-                                                                    <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="h-48 w-full rounded-lg object-cover">
+                                                                    <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="w-full h-56 md:h-72 rounded-lg object-cover">
                                                                 </a>
                                                                 <div class="space-y-1.5">
-                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-bold text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
-                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
-                                                                    </a>
+                                                                    <h2 class="text-xl md:text-2xl font-semibold leading-snug line-clamp-1">
+                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-slate-700 hover:text-sky-600 dark:text-slate-100  transition-colors block">
+                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
+                                                                        </a>
+                                                                    </h2>
                                                                     @if ($postMeta)
                                                                         <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
                                                                     @endif
@@ -124,7 +126,7 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" class="block">
-                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
+                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -132,9 +134,11 @@
                                                                         </div>
                                                                     @endunless
                                                                     <div class="space-y-1 min-w-0 flex-1">
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
-                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
-                                                                        </a>
+                                                                        <h2 class="text-sm font-semibold leading-snug line-clamp-1">
+                                                                            <a href="{{ post_permalink($post) }}" class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-3 transition-colors block">
+                                                                                {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                            </a>
+                                                                        </h2>
                                                                         @if ($postMeta)
                                                                             <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
                                                                         @endif

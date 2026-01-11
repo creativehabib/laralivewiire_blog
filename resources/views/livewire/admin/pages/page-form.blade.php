@@ -149,7 +149,7 @@
 
                             <div x-show="builderEnabled" x-cloak class="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
                                 <div class="flex items-center justify-between px-4 py-3 text-xs font-semibold text-white bg-sky-600">
-                                    <span>TieLabs Builder</span>
+                                    <span>Page Builder</span>
                                     <div class="flex items-center gap-3 text-white/80">
                                         <span class="text-[11px]">The content in the editor above will be ignored.</span>
                                         <button type="button" class="text-white/80 cursor-pointer hover:text-white">
@@ -175,10 +175,14 @@
                                                     <button type="button" class="h-7 w-7 rounded bg-sky-700 cursor-pointer hover:bg-sky-800" @click="openSectionModal(section.id)">
                                                         <i class="fa-solid fa-pen text-[11px]"></i>
                                                     </button>
+                                                    <button type="button" class="h-7 w-7 rounded bg-sky-700 cursor-pointer hover:bg-sky-800" @click="toggleSectionCollapse(section.id)">
+                                                        <i class="fa-solid text-[11px]" :class="section.collapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div class="grid gap-4 p-4"
-                                                 :class="{
+                                                <div x-show="!section.collapsed" x-cloak
+                                                     class="grid gap-4 p-4"
+                                                     :class="{
                                                      'md:grid-cols-[1fr_220px]': section.sidebar === 'right',
                                                      'md:grid-cols-[220px_1fr]': section.sidebar === 'left',
                                                      'md:grid-cols-1': section.sidebar === 'none'
@@ -435,7 +439,8 @@
                                 }
                             }))
                             : [],
-                        sidebar: section.sidebar ?? 'none'
+                        sidebar: section.sidebar ?? 'none',
+                        collapsed: section.collapsed ?? false
                     }));
                     this.builderEnabled = storedEnabled;
                     this.nextSectionId = this.sections.length ? Math.max(...this.sections.map((section) => section.id)) + 1 : 1;
@@ -475,13 +480,23 @@
                 },
 
                 addSection() {
-                    const newSection = { id: this.nextSectionId++, blocks: [], sidebar: 'none' };
+                    const newSection = { id: this.nextSectionId++, blocks: [], sidebar: 'none', collapsed: false };
                     this.sections.push(newSection);
                     this.syncBuilderState();
                     this.openSectionModal(newSection.id);
                     this.refreshBuilderSortables();
                 },
+                toggleSectionCollapse(sectionId) {
+                    const section = this.sections.find((item) => item.id === sectionId);
 
+                    if (!section) {
+                        return;
+                    }
+
+                    section.collapsed = !section.collapsed;
+                    this.syncBuilderState();
+                    this.refreshBuilderSortables();
+                },
                 removeSection(sectionId) {
                     if (!confirm('Are you sure you want to delete this section?')) {
                         return;
