@@ -15,6 +15,7 @@ class PageShow extends Component
     use WithoutUrlPagination;
 
     public Page $page;
+    public bool $ready = false;
     public array $builderState = [];
 
     public function mount(Page $page): void
@@ -28,7 +29,13 @@ class PageShow extends Component
             $this->builderState = is_array($builderMeta) ? $builderMeta : [];
         }
     }
+    public function loadPage(): void
+    {
+        // এখানে চাইলে builderSections / relations fetch করো
+        // $this->page->load(...);
 
+        $this->ready = true;
+    }
     public function render()
     {
         return view('livewire.frontend.page-show', [
