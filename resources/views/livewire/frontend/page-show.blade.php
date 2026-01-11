@@ -28,8 +28,8 @@
                         $sidebar = $section['sidebar'] ?? 'none';
                         $blocks = $section['blocks'] ?? [];
                         $gridClass = match ($sidebar) {
-                            'left' => 'md:grid-cols-[220px_1fr]',
-                            'right' => 'md:grid-cols-[1fr_220px]',
+                            'left' => 'md:grid-cols-[380px_1fr]',
+                            'right' => 'md:grid-cols-[1fr_380px]',
                             default => 'md:grid-cols-1',
                         };
                     @endphp
@@ -81,7 +81,7 @@
                                                 @endif
                                             </div>
                                             @if (!empty($settings['url']) && $moreButton)
-                                                <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 transition-colors">View all</a>
+                                                <a href="{{ $settings['url'] }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 transition-colors" wire:navigate>View all</a>
                                             @endif
                                         </div>
                                         @if (count($posts))
@@ -94,12 +94,12 @@
                                                     <div class="grid gap-4 md:grid-cols-[1.3fr_1fr]">
                                                         @if ($featuredPost)
                                                             <article class="space-y-2">
-                                                                <a href="{{ post_permalink($featuredPost) }}" class="block">
+                                                                <a href="{{ post_permalink($featuredPost) }}" class="block" wire:navigate>
                                                                     <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="w-full h-56 md:h-72 rounded-lg object-cover">
                                                                 </a>
                                                                 <div class="space-y-1.5">
                                                                     <h2 class="text-xl md:text-2xl font-semibold leading-snug line-clamp-1">
-                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-slate-700 hover:text-sky-600 dark:text-slate-100  transition-colors block">
+                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-slate-700 hover:text-sky-600 dark:text-slate-100  transition-colors block" wire:navigate>
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
                                                                         </a>
                                                                     </h2>
@@ -112,7 +112,7 @@
                                                                         </p>
                                                                     @endif
                                                                     @if ($readMoreButton)
-                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
+                                                                        <a href="{{ post_permalink($featuredPost) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors" wire:navigate>Read more</a>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -125,7 +125,7 @@
                                                                 <article class="flex gap-3">
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
-                                                                            <a href="{{ post_permalink($post) }}" class="block">
+                                                                            <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                                                                 <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
@@ -135,7 +135,7 @@
                                                                     @endunless
                                                                     <div class="space-y-1 min-w-0 flex-1">
                                                                         <h2 class="text-sm font-semibold leading-snug line-clamp-1">
-                                                                            <a href="{{ post_permalink($post) }}" class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-3 transition-colors block">
+                                                                            <a href="{{ post_permalink($post) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-3 transition-colors block">
                                                                                 {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                             </a>
                                                                         </h2>
@@ -157,7 +157,7 @@
                                                             <article class="flex gap-3 rounded-lg border border-slate-200 bg-white/60 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
                                                                 @unless ($shouldHideThumb)
                                                                     <div class="relative flex-shrink-0">
-                                                                        <a href="{{ post_permalink($post) }}" class="block">
+                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                                                             <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
                                                                         </a>
                                                                         @if ($mediaIcon)
@@ -166,7 +166,7 @@
                                                                     </div>
                                                                 @endunless
                                                                 <div class="space-y-1.5 min-w-0 flex-1">
-                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
@@ -178,7 +178,7 @@
                                                                         </p>
                                                                     @endif
                                                                     @if ($readMoreButton)
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
+                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -193,11 +193,11 @@
                                                     <div class="space-y-4">
                                                         @if ($featuredPost)
                                                             <article class="grid gap-3 md:grid-cols-[200px_1fr]">
-                                                                <a href="{{ post_permalink($featuredPost) }}" class="block">
+                                                                <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block">
                                                                     <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="h-28 w-full rounded-lg object-cover">
                                                                 </a>
                                                                 <div class="space-y-1.5">
-                                                                    <a href="{{ post_permalink($featuredPost) }}" class="text-sm font-bold text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
+                                                                    <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="text-sm font-bold text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
                                                                     </a>
                                                                     @if ($postMeta)
@@ -219,7 +219,7 @@
                                                                 <article class="flex gap-3">
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
-                                                                            <a href="{{ post_permalink($post) }}" class="block">
+                                                                            <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                                                                 <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
@@ -228,7 +228,7 @@
                                                                         </div>
                                                                     @endunless
                                                                     <div class="space-y-1 min-w-0 flex-1">
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
                                                                         @if ($postMeta)
@@ -248,12 +248,12 @@
                                                     <div class="space-y-4">
                                                         @if ($heroPost)
                                                             <article class="relative overflow-hidden rounded-xl">
-                                                                <a href="{{ post_permalink($heroPost) }}" class="block">
+                                                                <a href="{{ post_permalink($heroPost) }}" wire:navigate class="block">
                                                                     <img src="{{ $heroPost->image_url }}" alt="{{ $heroPost->name }}" class="h-56 w-full object-cover">
                                                                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
                                                                 </a>
                                                                 <div class="absolute bottom-3 left-3 right-3 space-y-1.5 text-white">
-                                                                    <a href="{{ post_permalink($heroPost) }}" class="text-sm font-bold leading-snug line-clamp-2 block hover:text-white/90 transition-colors">
+                                                                    <a href="{{ post_permalink($heroPost) }}" wire:navigate class="text-sm font-bold leading-snug line-clamp-2 block hover:text-white/90 transition-colors">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($heroPost->name, $titleLength) : $heroPost->name }}
                                                                     </a>
                                                                     @if ($postMeta)
@@ -270,7 +270,7 @@
                                                                 <article class="flex gap-3">
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
-                                                                            <a href="{{ post_permalink($post) }}" class="block">
+                                                                            <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                                                                 <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
@@ -279,7 +279,7 @@
                                                                         </div>
                                                                     @endunless
                                                                     <div class="space-y-1 min-w-0 flex-1">
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
                                                                         @if ($postMeta)
@@ -299,12 +299,12 @@
                                                             @endphp
                                                             <article class="rounded-lg border border-slate-200 bg-white/60 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
                                                                 @unless ($shouldHideThumb)
-                                                                    <a href="{{ post_permalink($post) }}" class="block">
+                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                                                         <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-32 w-full rounded-lg object-cover">
                                                                     </a>
                                                                 @endunless
                                                                 <div class="mt-2 space-y-1.5">
-                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
@@ -329,7 +329,7 @@
                                                             <article class="flex gap-3">
                                                                 @unless ($shouldHideThumb)
                                                                     <div class="relative flex-shrink-0">
-                                                                        <a href="{{ post_permalink($post) }}" class="block">
+                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                                                             <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
                                                                         </a>
                                                                         @if ($mediaIcon)
@@ -338,7 +338,7 @@
                                                                     </div>
                                                                 @endunless
                                                                 <div class="space-y-1.5 min-w-0 flex-1">
-                                                                    <a href="{{ post_permalink($post) }}" class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
@@ -350,7 +350,7 @@
                                                                         </p>
                                                                     @endif
                                                                     @if ($readMoreButton)
-                                                                        <a href="{{ post_permalink($post) }}" class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
+                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-semibold text-sky-600 hover:text-sky-500 inline-block transition-colors">Read more</a>
                                                                     @endif
                                                                 </div>
                                                             </article>
