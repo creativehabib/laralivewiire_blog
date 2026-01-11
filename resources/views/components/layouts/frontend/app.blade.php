@@ -9,7 +9,7 @@
         $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'ржмрж╛ржВрж▓рж╛ржжрзЗрж╢рзА ржирж┐ржЙржЬ ржкрзЛрж░рзНржЯрж╛рж▓']);
     @endphp
     <x-seo.meta :seo="$seoData" />
-
+    <link rel="icon" href="{{ setting('site_favicon') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 

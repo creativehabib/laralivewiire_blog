@@ -22,7 +22,7 @@
                     $activeMenuData = collect($menus)->firstWhere('id', $resolvedActiveMenu) ?? ($menus[0] ?? null);
                 @endphp
                 @foreach($menus as $menu)
-                    <a href="{{ route('theme.theme-options', ['as' => $menu['id']]) }}" class="flex items-center px-2 py-1 text-sm font-medium rounded-md {{ $resolvedActiveMenu === $menu['id'] ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
+                    <a href="{{ route('theme.theme-options', ['as' => $menu['id']]) }}" wire:navigate class="flex items-center px-2 py-1 text-sm font-medium rounded-md {{ $resolvedActiveMenu === $menu['id'] ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
                         <span class="mr-3 text-lg opacity-70"><i class="fa fa-{{ $menu['icon'] }}"></i> </span> {{ __($menu['label']) }}
                     </a>
                 @endforeach
