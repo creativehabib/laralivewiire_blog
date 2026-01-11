@@ -20,9 +20,6 @@
 
         @if ($builderEnabled)
             <div class="space-y-6">
-                <div class="text-center text-xs text-slate-500 font-medium" wire:loading>
-                    Loading...
-                </div>
                 @foreach ($builderSections as $section)
                     @php
                         $sidebar = $section['sidebar'] ?? 'none';
