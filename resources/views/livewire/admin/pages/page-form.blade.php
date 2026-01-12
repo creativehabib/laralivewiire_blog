@@ -197,9 +197,11 @@
                                                     </template>
                                                     <template x-if="section.blocks.length > 0">
                                                         <div class="space-y-2">
-                                                            <div class="space-y-2 js-block-sortable" :data-section-id="section.id">
+                                                            <div class="grid grid-cols-1 gap-2 md:grid-cols-2 js-block-sortable" :data-section-id="section.id">
                                                                 <template x-for="block in section.blocks" :key="block.id">
-                                                                    <div class="flex items-center justify-between rounded bg-slate-800 px-3 py-2 text-xs font-semibold text-white" :data-block-id="block.id">
+                                                                    <div class="flex items-center justify-between rounded bg-slate-800 px-3 py-2 text-xs font-semibold text-white"
+                                                                         :class="block.layout === 'half-width' ? 'md:col-span-1' : 'md:col-span-2'"
+                                                                         :data-block-id="block.id">
                                                                         <div class="flex items-center gap-2">
                                                                             <span class="inline-flex h-6 w-6 items-center justify-center rounded bg-slate-700 text-white cursor-move js-block-handle">
                                                                                 <i class="fa-solid fa-grip-vertical text-[10px]"></i>

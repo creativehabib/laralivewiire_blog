@@ -39,7 +39,7 @@
                                 </aside>
                             @endif
 
-                            <div class="space-y-3">
+                            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                                 @forelse ($blocks as $block)
                                     @php
                                         $settings = $block['settings'] ?? [];
@@ -68,7 +68,7 @@
                                             $secondaryColor ? "--block-secondary: {$secondaryColor}" : null,
                                         ])->filter()->implode('; ');
                                     @endphp
-                                    <div class="{{ $contentOnly ? 'text-sm text-slate-700 dark:text-slate-200 leading-relaxed' : 'space-y-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }}"
+                                    <div class="{{ $contentOnly ? 'text-sm text-slate-700 dark:text-slate-200 leading-relaxed' : 'space-y-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }} {{ $layout === 'half-width' ? 'md:col-span-1' : 'md:col-span-2' }}"
                                          style="{{ $blockStyles }}">
                                         <div class="flex items-center justify-between gap-2" style="color: var(--block-primary, inherit);">
                                             <div>
@@ -101,10 +101,10 @@
                                                                         </a>
                                                                     </h2>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->diffForHumans() }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 dark:text-slate-300">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->excerpt, $excerptLength) : $featuredPost->excerpt }}
                                                                         </p>
                                                                     @endif
@@ -137,7 +137,7 @@
                                                                             </a>
                                                                         </h2>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -167,10 +167,10 @@
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 dark:text-slate-300">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
                                                                         </p>
                                                                     @endif
@@ -198,10 +198,10 @@
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->diffForHumans() }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                                                                        <p class="text-xs text-slate-600 leading-relaxed line-clamp-2 dark:text-slate-300">
                                                                             {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->excerpt, $excerptLength) : $featuredPost->excerpt }}
                                                                         </p>
                                                                     @endif
@@ -229,7 +229,7 @@
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -250,11 +250,13 @@
                                                                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
                                                                 </a>
                                                                 <div class="absolute bottom-3 left-3 right-3 space-y-1.5 text-white">
-                                                                    <a href="{{ post_permalink($heroPost) }}" wire:navigate class="text-sm font-bold leading-snug line-clamp-2 block hover:text-white/90 transition-colors">
-                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($heroPost->name, $titleLength) : $heroPost->name }}
-                                                                    </a>
+                                                                    <h2 class="text-white text-lg md:text-xl font-semibold leading-snug">
+                                                                        <a href="{{ post_permalink($heroPost) }}" wire:navigate class="block hover:text-white/90 transition-colors">
+                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($heroPost->name, $titleLength) : $heroPost->name }}
+                                                                        </a>
+                                                                    </h2>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-white/80 font-medium">{{ $heroPost->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-white/80 font-medium">{{ $heroPost->created_at?->diffForHumans() }}</p>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -268,7 +270,7 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
+                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -276,11 +278,13 @@
                                                                         </div>
                                                                     @endunless
                                                                     <div class="space-y-1 min-w-0 flex-1">
-                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
-                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
-                                                                        </a>
+                                                                        <h2 class="font-semibold text-sm mb-1 leading-snug">
+                                                                            <a href="{{ post_permalink($post) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                                {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                            </a>
+                                                                        </h2>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -289,32 +293,62 @@
                                                     </div>
                                                     @break
                                                 @case('half-width')
-                                                    <div class="grid gap-3 md:grid-cols-2">
-                                                        @foreach ($postItems as $index => $post)
-                                                            @php
-                                                                $shouldHideThumb = ($hideFirstThumbnail && $index === 0) || ($hideSmallThumbnails && $index > 0);
-                                                            @endphp
-                                                            <article class="rounded-lg border border-slate-200 bg-white/60 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
-                                                                @unless ($shouldHideThumb)
-                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-32 w-full rounded-lg object-cover">
+                                                    @php
+                                                        $featuredPost = $postItems->first();
+                                                        $listPosts = $postItems->slice(1);
+                                                    @endphp
+                                                    <div class="space-y-3">
+                                                        @if ($featuredPost)
+                                                            <article class="space-y-2">
+                                                                @unless ($hideFirstThumbnail)
+                                                                    <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="hover:text-primary-dark dark:hover:text-primary-light">
+                                                                        <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="w-full h-56 rounded-lg object-cover">
                                                                     </a>
                                                                 @endunless
-                                                                <div class="mt-2 space-y-1.5">
-                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
-                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
-                                                                    </a>
-                                                                    @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
-                                                                    @endif
-                                                                    @if ($showExcerpt)
-                                                                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                                                                            {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($post->excerpt, $excerptLength) : $post->excerpt }}
-                                                                        </p>
-                                                                    @endif
-                                                                </div>
+                                                                    <div class="space-y-1.5">
+                                                                        <h2 class="text-lg md:text-xl mt-3 font-semibold leading-snug">
+                                                                            <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                                {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
+                                                                            </a>
+                                                                        </h2>
+                                                                        @if ($postMeta)
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->diffForHumans() }}</p>
+                                                                        @endif
+                                                                        @if ($showExcerpt)
+                                                                            <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 dark:text-slate-300">
+                                                                                {{ $excerptLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->excerpt, $excerptLength) : $featuredPost->excerpt }}
+                                                                            </p>
+                                                                        @endif
+                                                                    </div>
                                                             </article>
-                                                        @endforeach
+                                                        @endif
+                                                        @if ($listPosts->isNotEmpty())
+                                                            <div class="space-y-2 divide-y divide-slate-200 dark:divide-slate-700">
+                                                                @foreach ($listPosts as $post)
+                                                                    <div class="">
+                                                                        <article class="flex gap-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/70">
+                                                                            @unless ($hideSmallThumbnails)
+                                                                                <div class="flex-shrink-0">
+                                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="block">
+                                                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                                    </a>
+                                                                                </div>
+                                                                            @endunless
+                                                                            <div class="min-w-0 space-y-1">
+                                                                                <h3 class="text-sm font-semibold leading-snug">
+                                                                                <a href="{{ post_permalink($post) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                                    {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                                </a>
+                                                                                </h3>
+                                                                                @if ($postMeta)
+                                                                                    <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
+                                                                                @endif
+                                                                            </div>
+                                                                        </article>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                     @break
                                                 @default
@@ -339,7 +373,7 @@
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->format('M d, Y') }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
                                                                         <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
@@ -364,29 +398,60 @@
                                                         {{ $posts->links() }}
                                                     </div>
                                                 @elseif ($paginationMode === 'ajax-next-prev')
-                                                    <div class="flex items-center justify-between pt-3 text-xs">
-                                                        <button type="button"
-                                                                class="rounded border border-slate-200 px-3 py-1.5 text-slate-600 disabled:opacity-40 cursor-pointer font-medium transition-colors hover:bg-slate-50"
-                                                                wire:click="previousPage('{{ $pageName }}')"
-                                                            @disabled($posts->onFirstPage())>
-                                                            Previous
-                                                        </button>
-                                                        <button type="button"
-                                                                class="rounded border border-slate-200 px-3 py-1.5 text-slate-600 disabled:opacity-40 cursor-pointer font-medium transition-colors hover:bg-slate-50"
-                                                                wire:click="nextPage('{{ $pageName }}')"
-                                                            @disabled(! $posts->hasMorePages())>
-                                                            Next
-                                                        </button>
-                                                    </div>
+                                                        <div class="flex items-center justify-between pt-3 text-xs">
+                                                            <button type="button"
+                                                                    wire:click="previousPage('{{ $pageName }}')"
+                                                                    wire:loading.attr="disabled"
+                                                                    @disabled($posts->onFirstPage())
+                                                                    class="group inline-flex items-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
+
+                                                                <i wire:loading wire:target="previousPage('{{ $pageName }}')"
+                                                                   class="fas fa-circle-notch fa-spin"></i>
+
+                                                                <i wire:loading.remove wire:target="previousPage('{{ $pageName }}')"
+                                                                   class="fas fa-chevron-left text-[10px] transition-transform group-hover:-translate-x-0.5"></i>
+
+                                                                <span>Previous</span>
+                                                            </button>
+
+                                                            <button type="button"
+                                                                    wire:click="nextPage('{{ $pageName }}')"
+                                                                    wire:loading.attr="disabled"
+                                                                    @disabled(! $posts->hasMorePages())
+                                                                    class="group inline-flex items-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
+
+                                                                <span>Next</span>
+
+                                                                <i wire:loading.remove wire:target="nextPage('{{ $pageName }}')"
+                                                                   class="fas fa-chevron-right text-[10px] transition-transform group-hover:translate-x-0.5"></i>
+
+                                                                <i wire:loading wire:target="nextPage('{{ $pageName }}')"
+                                                                   class="fas fa-circle-notch fa-spin"></i>
+                                                            </button>
+                                                        </div>
                                                 @elseif (in_array($paginationMode, ['ajax-show-more', 'ajax-load-more'], true))
-                                                    <div class="pt-3 text-center">
-                                                        <button type="button"
-                                                                class="rounded border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 disabled:opacity-40 cursor-pointer transition-colors hover:bg-slate-50"
-                                                                wire:click="nextPage('{{ $pageName }}')"
-                                                            @disabled(! $posts->hasMorePages())>
-                                                            {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
-                                                        </button>
-                                                    </div>
+                                                        <div class="pt-3 text-center">
+                                                            <button type="button"
+                                                                    wire:click="nextPage('{{ $pageName }}')"
+                                                                    wire:loading.attr="disabled"
+                                                                    @disabled(! $posts->hasMorePages())
+                                                                    class="group relative inline-flex items-center justify-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
+
+                                                                <i wire:loading wire:target="nextPage('{{ $pageName }}')"
+                                                                   class="fas fa-spinner fa-spin text-slate-500 dark:text-slate-400"></i>
+
+                                                                <i wire:loading.remove wire:target="nextPage('{{ $pageName }}')"
+                                                                   class="fas {{ $paginationMode === 'ajax-show-more' ? 'fa-eye' : 'fa-plus-circle' }} opacity-70"></i>
+
+                                                                <span wire:loading.remove wire:target="nextPage('{{ $pageName }}')">
+                                                                    {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
+                                                                </span>
+
+                                                                <span wire:loading wire:target="nextPage('{{ $pageName }}')">
+                                                                    Loading...
+                                                                </span>
+                                                            </button>
+                                                        </div>
                                                 @endif
                                             @endif
                                         @else
