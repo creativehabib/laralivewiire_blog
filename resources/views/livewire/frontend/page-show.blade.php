@@ -114,12 +114,12 @@
                                                                 </div>
                                                             </article>
                                                         @endif
-                                                        <div class="space-y-2 divide-y divide-slate-200 dark:divide-slate-700">
+                                                        <div class="space-y-4">
                                                             @foreach ($sidebarPosts as $index => $post)
                                                                 @php
                                                                     $shouldHideThumb = $hideSmallThumbnails && $index >= 0;
                                                                 @endphp
-                                                                <article class="flex gap-3 py-2">
+                                                                <article class="flex gap-3">
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
