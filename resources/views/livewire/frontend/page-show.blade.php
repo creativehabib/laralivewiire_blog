@@ -114,12 +114,12 @@
                                                                 </div>
                                                             </article>
                                                         @endif
-                                                        <div class="space-y-3">
+                                                        <div class="space-y-2 divide-y divide-slate-200 dark:divide-slate-700">
                                                             @foreach ($sidebarPosts as $index => $post)
                                                                 @php
                                                                     $shouldHideThumb = $hideSmallThumbnails && $index >= 0;
                                                                 @endphp
-                                                                <article class="flex gap-3">
+                                                                <article class="flex gap-3 py-2">
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
@@ -398,60 +398,60 @@
                                                         {{ $posts->links() }}
                                                     </div>
                                                 @elseif ($paginationMode === 'ajax-next-prev')
-                                                        <div class="flex items-center justify-between pt-3 text-xs">
-                                                            <button type="button"
-                                                                    wire:click="previousPage('{{ $pageName }}')"
-                                                                    wire:loading.attr="disabled"
-                                                                    @disabled($posts->onFirstPage())
-                                                                    class="group inline-flex items-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
+                                                    <div class="flex items-center justify-between pt-3 text-xs">
+                                                        <button type="button"
+                                                                wire:click="previousPage('{{ $pageName }}')"
+                                                                wire:loading.attr="disabled"
+                                                                @disabled($posts->onFirstPage())
+                                                                class="group inline-flex items-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
 
-                                                                <i wire:loading wire:target="previousPage('{{ $pageName }}')"
-                                                                   class="fas fa-circle-notch fa-spin"></i>
+                                                            <i wire:loading wire:target="previousPage('{{ $pageName }}')"
+                                                               class="fas fa-circle-notch fa-spin"></i>
 
-                                                                <i wire:loading.remove wire:target="previousPage('{{ $pageName }}')"
-                                                                   class="fas fa-chevron-left text-[10px] transition-transform group-hover:-translate-x-0.5"></i>
+                                                            <i wire:loading.remove wire:target="previousPage('{{ $pageName }}')"
+                                                               class="fas fa-chevron-left text-[10px] transition-transform group-hover:-translate-x-0.5"></i>
 
-                                                                <span>Previous</span>
-                                                            </button>
+                                                            <span>Previous</span>
+                                                        </button>
 
-                                                            <button type="button"
-                                                                    wire:click="nextPage('{{ $pageName }}')"
-                                                                    wire:loading.attr="disabled"
-                                                                    @disabled(! $posts->hasMorePages())
-                                                                    class="group inline-flex items-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
+                                                        <button type="button"
+                                                                wire:click="nextPage('{{ $pageName }}')"
+                                                                wire:loading.attr="disabled"
+                                                                @disabled(! $posts->hasMorePages())
+                                                                class="group inline-flex items-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
 
-                                                                <span>Next</span>
+                                                            <span>Next</span>
 
-                                                                <i wire:loading.remove wire:target="nextPage('{{ $pageName }}')"
-                                                                   class="fas fa-chevron-right text-[10px] transition-transform group-hover:translate-x-0.5"></i>
+                                                            <i wire:loading.remove wire:target="nextPage('{{ $pageName }}')"
+                                                               class="fas fa-chevron-right text-[10px] transition-transform group-hover:translate-x-0.5"></i>
 
-                                                                <i wire:loading wire:target="nextPage('{{ $pageName }}')"
-                                                                   class="fas fa-circle-notch fa-spin"></i>
-                                                            </button>
-                                                        </div>
+                                                            <i wire:loading wire:target="nextPage('{{ $pageName }}')"
+                                                               class="fas fa-circle-notch fa-spin"></i>
+                                                        </button>
+                                                    </div>
                                                 @elseif (in_array($paginationMode, ['ajax-show-more', 'ajax-load-more'], true))
-                                                        <div class="pt-3 text-center">
-                                                            <button type="button"
-                                                                    wire:click="nextPage('{{ $pageName }}')"
-                                                                    wire:loading.attr="disabled"
-                                                                    @disabled(! $posts->hasMorePages())
-                                                                    class="group relative inline-flex items-center justify-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
+                                                    <div class="pt-3 text-center">
+                                                        <button type="button"
+                                                                wire:click="nextPage('{{ $pageName }}')"
+                                                                wire:loading.attr="disabled"
+                                                                @disabled(! $posts->hasMorePages())
+                                                                class="group relative inline-flex items-center justify-center gap-2 cursor-pointer rounded border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200">
 
-                                                                <i wire:loading wire:target="nextPage('{{ $pageName }}')"
-                                                                   class="fas fa-spinner fa-spin text-slate-500 dark:text-slate-400"></i>
+                                                            <i wire:loading wire:target="nextPage('{{ $pageName }}')"
+                                                               class="fas fa-spinner fa-spin text-slate-500 dark:text-slate-400"></i>
 
-                                                                <i wire:loading.remove wire:target="nextPage('{{ $pageName }}')"
-                                                                   class="fas {{ $paginationMode === 'ajax-show-more' ? 'fa-eye' : 'fa-plus-circle' }} opacity-70"></i>
+                                                            <i wire:loading.remove wire:target="nextPage('{{ $pageName }}')"
+                                                               class="fas {{ $paginationMode === 'ajax-show-more' ? 'fa-eye' : 'fa-plus-circle' }} opacity-70"></i>
 
-                                                                <span wire:loading.remove wire:target="nextPage('{{ $pageName }}')">
-                                                                    {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
-                                                                </span>
+                                                            <span wire:loading.remove wire:target="nextPage('{{ $pageName }}')">
+                                                                {{ $paginationMode === 'ajax-show-more' ? 'Show More' : 'Load More' }}
+                                                            </span>
 
-                                                                <span wire:loading wire:target="nextPage('{{ $pageName }}')">
-                                                                    Loading...
-                                                                </span>
-                                                            </button>
-                                                        </div>
+                                                            <span wire:loading wire:target="nextPage('{{ $pageName }}')">
+                                                                Loading...
+                                                            </span>
+                                                        </button>
+                                                    </div>
                                                 @endif
                                             @endif
                                         @else
