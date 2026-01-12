@@ -155,7 +155,7 @@
                                                                 @unless ($shouldHideThumb)
                                                                     <div class="relative flex-shrink-0">
                                                                         <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                         </a>
                                                                         @if ($mediaIcon)
                                                                             <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -270,7 +270,7 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -330,7 +330,7 @@
                                                                             @unless ($hideSmallThumbnails)
                                                                                 <div class="flex-shrink-0">
                                                                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                                     </a>
                                                                                 </div>
                                                                             @endunless
@@ -361,7 +361,7 @@
                                                                 @unless ($shouldHideThumb)
                                                                     <div class="relative flex-shrink-0">
                                                                         <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-16 w-24 rounded object-cover">
+                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                         </a>
                                                                         @if ($mediaIcon)
                                                                             <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
