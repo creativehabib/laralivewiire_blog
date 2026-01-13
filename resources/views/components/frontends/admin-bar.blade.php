@@ -6,6 +6,17 @@
         $postModel = request()->route('post');
         $categoryModel = request()->route('category');
         $tagModel = request()->route('tag');
+        $homePageModel = null;
+
+        if (! ($pageModel instanceof \App\Models\Admin\Page) && request()->routeIs('home')) {
+            $frontPageDisplay = setting('homepage_display', 'latest_posts');
+            if ($frontPageDisplay === 'static_page') {
+                $homePageId = (int) setting('homepage_page_id');
+                if ($homePageId) {
+                    $homePageModel = \App\Models\Admin\Page::query()->published()->find($homePageId);
+                }
+            }
+        }
 
         if ($postModel instanceof \App\Models\Post) {
             $editItemLabel = __('Edit this post');
@@ -19,9 +30,10 @@
             $editItemLabel = __('Edit this tag');
             $editItemUrl = route('blogs.tags.edit', ['tag' => $tagModel->id]);
             $editIcon = 'fa-tags';
-        } elseif ($pageModel instanceof \App\Models\Admin\Page) {
+        } elseif ($pageModel instanceof \App\Models\Admin\Page || $homePageModel instanceof \App\Models\Admin\Page) {
+            $pageToEdit = $pageModel ?: $homePageModel;
             $editItemLabel = __('Edit this page');
-            $editItemUrl = route('admins.pages.edit', ['pageId' => $pageModel->id]);
+            $editItemUrl = route('admins.pages.edit', ['pageId' => $pageToEdit->id]);
             $editIcon = 'fa-file-lines';
         } else {
             $editItemLabel = __('Admin Panel');
