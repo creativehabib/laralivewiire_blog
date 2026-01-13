@@ -262,6 +262,7 @@
                             @change="updateActiveBlockField('sort', $event.target.value)">
                         <option value="recent">Recent Posts</option>
                         <option value="random">Random Posts</option>
+                        <option value="featured">Featured Posts</option>
                         <option value="last_modified">Last Modified Posts</option>
                         <option value="most_commented">Most Commented posts</option>
                         <option value="alphabetical">Alphabetically</option>

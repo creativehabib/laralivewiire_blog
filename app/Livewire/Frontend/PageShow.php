@@ -121,6 +121,10 @@ class PageShow extends Component
                             case 'random':
                                 $query->inRandomOrder();
                                 break;
+                            case 'featured':
+                                $query->where('is_featured', true)
+                                    ->orderBy('created_at', $order);
+                                break;
                             case 'last_modified':
                                 $query->orderBy('updated_at', $order);
                                 break;
