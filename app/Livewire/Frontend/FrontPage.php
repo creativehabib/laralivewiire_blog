@@ -43,13 +43,17 @@ class FrontPage extends Homepage
     public function render()
     {
         if ($this->isStaticPage && $this->page) {
+            $homeUrl = route('home');
             return view('livewire.frontend.page-show', [
                 'builderSections' => $this->buildBuilderSections(),
                 'showPageHeader' => false,
                 'showPageComments' => false,
             ])->layout('components.layouts.frontend.app', [
                 'title' => $this->page->name,
-                'seo' => Seo::forPage($this->page),
+                'seo' => Seo::forPage($this->page, [
+                    'url' => $homeUrl,
+                    'canonical' => $homeUrl,
+                ]),
             ]);
         }
 
