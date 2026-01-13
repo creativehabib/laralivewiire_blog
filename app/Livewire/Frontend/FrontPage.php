@@ -5,9 +5,14 @@ namespace App\Livewire\Frontend;
 use App\Models\Admin\Page;
 use App\Models\Post;
 use App\Support\Seo;
+use Livewire\WithoutUrlPagination;
+use Livewire\WithPagination;
 
 class FrontPage extends Homepage
 {
+    use WithPagination;
+    use WithoutUrlPagination;
+
     public ?Page $page = null;
     public array $builderState = [];
     public bool $isStaticPage = false;
