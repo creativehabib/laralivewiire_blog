@@ -6,7 +6,7 @@
     <meta name="referrer" content="origin-when-cross-origin">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-        $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'ржмрж╛ржВрж▓рж╛ржжрзЗрж╢рзА ржирж┐ржЙржЬ ржкрзЛрж░рзНржЯрж╛рж▓']);
+        $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'বাংলাদেশী নিউজ পোর্টাল']);
     @endphp
     <x-seo.meta :seo="$seoData" />
     <link rel="icon" href="{{ setting('site_favicon') }}" type="image/x-icon">
