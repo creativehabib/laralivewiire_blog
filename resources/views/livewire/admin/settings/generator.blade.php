@@ -193,6 +193,21 @@
                     @elseif($type === 'email')
                         <input type="email" wire:model.defer="data.{{ $key }}"
                                class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-sm">
+                    @elseif($type === 'page_select')
+                        @php
+                            $pages = \App\Models\Admin\Page::query()
+                                ->published()
+                                ->orderBy('name')
+                                ->get(['id', 'name']);
+                            $placeholder = $field['placeholder'] ?? '— Select a page —';
+                        @endphp
+                        <select wire:model.defer="data.{{ $key }}"
+                                class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm">
+                            <option value="">{{ $placeholder }}</option>
+                            @foreach($pages as $pageOption)
+                                <option value="{{ $pageOption->id }}">{{ $pageOption->name }}</option>
+                            @endforeach
+                        </select>
                         {{-- select --}}
                     @elseif($type === 'select')
                         <select wire:model.defer="data.{{ $key }}"

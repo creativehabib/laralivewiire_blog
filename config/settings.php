@@ -105,6 +105,45 @@ return [
                 ],
             ],
         ],
+        'reading' => [
+            'title' => 'Reading',
+            'permission' => 'setting.view',
+            'fields' => [
+                [
+                    'key' => 'homepage_display',
+                    'label' => 'Your homepage displays',
+                    'type' => 'select',
+                    'default' => 'latest_posts',
+                    'options' => [
+                        'latest_posts' => 'Latest posts',
+                        'static_page' => 'A static page',
+                    ],
+                    'rules' => ['required', 'in:latest_posts,static_page'],
+                ],
+                [
+                    'key' => 'homepage_page_id',
+                    'label' => 'Homepage',
+                    'type' => 'page_select',
+                    'default' => null,
+                    'rules' => ['nullable', 'integer', 'exists:pages,id'],
+                    'visible_when' => [
+                        'homepage_display' => 'static_page',
+                    ],
+                    'hint' => 'Select the page you want to show on the front page.',
+                ],
+                [
+                    'key' => 'posts_page_id',
+                    'label' => 'Posts page',
+                    'type' => 'page_select',
+                    'default' => null,
+                    'rules' => ['nullable', 'integer', 'exists:pages,id'],
+                    'visible_when' => [
+                        'homepage_display' => 'static_page',
+                    ],
+                    'hint' => 'Select a page to show your latest posts (optional).',
+                ],
+            ],
+        ],
         'admin-appearance' => [
             'title' => 'Admin appearance',
             'permission' => 'setting.view',

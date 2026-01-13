@@ -31,20 +31,23 @@ use App\Livewire\Admin\Tags\TagCreate;
 use App\Livewire\Admin\Tags\TagEdit;
 use App\Livewire\Admin\Tags\TagsIndex;
 
+use App\Livewire\Frontend\FrontPage;
 use App\Livewire\Frontend\Homepage;
 use App\Livewire\Frontend\AuthorPage;
 use App\Livewire\Frontend\CategoryPage;
 use App\Livewire\Frontend\PageShow;
+use App\Livewire\Frontend\PostsIndex;
 use App\Livewire\Frontend\SinglePost;
 use App\Livewire\Frontend\TagPage;
 
+use App\Models\Admin\Page;
 use App\Support\PermalinkManager;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
-Route::get('/', Homepage::class)->name('home');
+Route::get('/', FrontPage::class)->name('home');
 
 Route::get('dashboard', Dashboard::class)->middleware(['auth', 'verified'])->name('dashboard');
 Route::view('admin/media', 'media')->middleware(['auth', 'verified', 'permission:media.view'])->name('media');
@@ -138,6 +141,17 @@ $pageExtension     = PermalinkManager::pageExtension();
 $pageUri = $pagePrefixEnabled
     ? "/{$pagePrefix}/{page}{$pageExtension}"
     : "/{page}{$pageExtension}";
+
+$frontPageDisplay = setting('homepage_display', 'latest_posts');
+$postsPageId = (int) setting('posts_page_id');
+$postsPage = $frontPageDisplay === 'static_page' && $postsPageId
+    ? Page::query()->published()->find($postsPageId)
+    : null;
+if ($postsPage && $postsPage->slug) {
+    $postsPagePath = ltrim(PermalinkManager::pagePreview($postsPage->slug, false), '/');
+    Route::get($postsPagePath, PostsIndex::class)->name('posts.index');
+}
+
 $pageRoute = Route::get($pageUri, PageShow::class)->name('pages.show');
 
 if (! $pagePrefixEnabled && $permalinkRoute['template'] === '%postname%') {
