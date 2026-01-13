@@ -261,7 +261,13 @@
                             :value="findActiveBlock()?.settings?.sort ?? 'recent'"
                             @change="updateActiveBlockField('sort', $event.target.value)">
                         <option value="recent">Recent Posts</option>
-                        <option value="popular">Popular Posts</option>
+                        <option value="random">Random Posts</option>
+                        <option value="featured">Featured Posts</option>
+                        <option value="last_modified">Last Modified Posts</option>
+                        <option value="most_commented">Most Commented posts</option>
+                        <option value="alphabetical">Alphabetically</option>
+                        <option value="most_viewed">Most Viewed posts</option>
+                        <option value="most_viewed_7_days">Most Viewed for 7 days</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr] items-center rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">

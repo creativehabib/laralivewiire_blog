@@ -122,14 +122,41 @@ class FrontPage extends Homepage
                             $query->whereNotIn('id', $excludeIds);
                         }
 
+                        if ($sort === 'most_viewed_7_days') {
+                            $days = 7;
+                        }
+
                         if ($days > 0) {
                             $query->where('created_at', '>=', now()->subDays($days));
                         }
 
-                        if ($sort === 'popular') {
-                            $query->orderBy('views', $order);
-                        } else {
-                            $query->orderBy('created_at', $order);
+                        switch ($sort) {
+                            case 'random':
+                                $query->inRandomOrder();
+                                break;
+                            case 'featured':
+                                $query->where('is_featured', true)
+                                    ->orderBy('created_at', $order);
+                                break;
+                            case 'last_modified':
+                                $query->orderBy('updated_at', $order);
+                                break;
+                            case 'most_commented':
+                                $query->withCount('comments')
+                                    ->orderBy('comments_count', $order);
+                                break;
+                            case 'alphabetical':
+                                $query->orderBy('name', $order);
+                                break;
+                            case 'popular':
+                            case 'most_viewed':
+                            case 'most_viewed_7_days':
+                                $query->orderBy('views', $order);
+                                break;
+                            case 'recent':
+                            default:
+                                $query->orderBy('created_at', $order);
+                                break;
                         }
 
                         $query->skip($offset);
