@@ -4,7 +4,7 @@
     $meta = \App\Support\Seo::fromArray($seo);
 @endphp
 
-<title>{{ $meta['title'] }}</title>
+<title>{{ $meta['title'] }} | {{ $meta['site_name'] }}</title>
 <meta name="description" content="{{ $meta['description'] }}">
 <meta name="robots" content="{{ $meta['robots'] ?? 'index,follow' }}">
 <link rel="canonical" href="{{ $meta['canonical'] ?? $meta['url'] }}">
