@@ -1,12 +1,14 @@
 <div class="container px-4 py-10 md:py-12 max-w-4xl mx-auto typography">
     <article class="space-y-4">
-        <header class="space-y-1.5">
-            <p class="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Page</p>
-            <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">{{ $page->name }}</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                Updated {{ optional($page->updated_at ?? $page->created_at)->diffForHumans() }}
-            </p>
-        </header>
+        @if ($showPageHeader ?? true)
+            <header class="space-y-1.5">
+                <p class="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Page</p>
+                <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">{{ $page->name }}</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Updated {{ optional($page->updated_at ?? $page->created_at)->diffForHumans() }}
+                </p>
+            </header>
+        @endif
 
         @if ($page->image)
             <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
@@ -482,10 +484,12 @@
         @endif
     </article>
 
-    <section class="mt-8">
-        <h2 class="text-sm font-bold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700 tracking-tight">
-            মন্তব্য করুন
-        </h2>
-        <x-comments.section :commentable="$page" :canonical-url="request()->url()" />
-    </section>
+    @if ($showPageComments ?? true)
+        <section class="mt-8">
+            <h2 class="text-sm font-bold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700 tracking-tight">
+                মন্তব্য করুন
+            </h2>
+            <x-comments.section :commentable="$page" :canonical-url="request()->url()" />
+        </section>
+    @endif
 </div>
