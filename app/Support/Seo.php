@@ -141,14 +141,23 @@ class Seo
         $overrides = array_filter($meta, fn ($value) => ! is_null($value));
 
         $merged = array_merge($defaults, $overrides);
-        $merged['title'] = trim((string) ($merged['title'] ?? $defaults['title']));
+        $merged['site_name'] = $merged['site_name'] ?? setting('site_title', config('app.name'));
+        $baseTitle = trim((string) ($merged['title'] ?? $defaults['title']));
+        if ($baseTitle === '') {
+            $baseTitle = $merged['site_name'];
+        }
+
+        if ($merged['site_name'] && $baseTitle !== $merged['site_name'] && ! Str::contains($baseTitle, $merged['site_name'])) {
+            $merged['title'] = "{$baseTitle} | {$merged['site_name']}";
+        } else {
+            $merged['title'] = $baseTitle;
+        }
         $merged['description'] = trim((string) ($merged['description'] ?? '')) ?: ($defaults['description'] ?? '');
 
         $merged['url'] = $merged['url'] ?? url()->current();
         $merged['canonical'] = $merged['canonical'] ?? $merged['url'];
         $merged['image'] = static::absoluteUrl($merged['image'] ?? $defaults['image']);
         $merged['type'] = $merged['type'] ?? 'website';
-        $merged['site_name'] = $merged['site_name'] ?? setting('site_title', config('app.name'));
 
         $indexSetting = setting('seo_indexing', true) ? 'index' : 'noindex';
         $index = Str::lower((string) ($merged['index'] ?? $indexSetting));
