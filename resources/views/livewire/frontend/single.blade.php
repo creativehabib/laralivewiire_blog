@@ -119,7 +119,7 @@
             <h2 class="text-sm font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
                 মন্তব্য করুন
             </h2>
-            <x-comments.section :commentable="$post" :canonical-url="request()->url()" />
+            <x-comments.section :commentable="$post" :canonical-url="post_permalink($post)" />
         </section>
         @endunless
     </article>
