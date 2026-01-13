@@ -40,6 +40,8 @@ class FrontPage extends Homepage
         if ($this->isStaticPage && $this->page) {
             return view('livewire.frontend.page-show', [
                 'builderSections' => $this->buildBuilderSections(),
+                'showPageHeader' => false,
+                'showPageComments' => false,
             ])->layout('components.layouts.frontend.app', [
                 'title' => $this->page->name,
                 'seo' => Seo::forPage($this->page),
