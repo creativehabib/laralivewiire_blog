@@ -81,7 +81,14 @@ function initDesktopSearchToggle() {
 
     if (!toggleButton || !searchWrapper) return;
 
-    addUniqueListener(toggleButton, 'click', '__desktopSearchHandler', () => {
+    function closeSearch() {
+        if (!searchWrapper.classList.contains('hidden')) {
+            searchWrapper.classList.add('hidden');
+        }
+    }
+
+    addUniqueListener(toggleButton, 'click', '__desktopSearchHandler', (event) => {
+        event.stopPropagation();
         searchWrapper.classList.toggle('hidden');
 
         if (!searchWrapper.classList.contains('hidden')) {
@@ -91,6 +98,24 @@ function initDesktopSearchToggle() {
             }
         }
     });
+
+    addUniqueListener(document, 'click', '__desktopSearchOutsideHandler', (event) => {
+        if (searchWrapper.classList.contains('hidden')) return;
+        if (searchWrapper.contains(event.target) || toggleButton.contains(event.target)) {
+            return;
+        }
+        closeSearch();
+    });
+
+    const input = searchWrapper.querySelector('input[type="search"]');
+    if (input) {
+        addUniqueListener(input, 'keydown', '__desktopSearchEscapeHandler', (event) => {
+            if (event.key === 'Escape') {
+                closeSearch();
+                toggleButton.focus();
+            }
+        });
+    }
 }
 
 
