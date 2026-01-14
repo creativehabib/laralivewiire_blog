@@ -72,6 +72,27 @@ function initMobileMenu() {
     });
 }
 
+// ----------------------
+// ডেস্কটপ সার্চ টগল
+// ----------------------
+function initDesktopSearchToggle() {
+    const toggleButton = document.getElementById('desktopSearchToggle');
+    const searchWrapper = document.getElementById('desktopSearchWrapper');
+
+    if (!toggleButton || !searchWrapper) return;
+
+    addUniqueListener(toggleButton, 'click', '__desktopSearchHandler', () => {
+        searchWrapper.classList.toggle('hidden');
+
+        if (!searchWrapper.classList.contains('hidden')) {
+            const input = searchWrapper.querySelector('input[type="search"]');
+            if (input) {
+                input.focus();
+            }
+        }
+    });
+}
+
 
 
 // ----------------------
@@ -286,6 +307,7 @@ function initPageInteractions() {
     // তাই এখানে আবার কল না করলেও চলে (ডাবল কাজ এড়াতে চাইলে এই লাইনটা কমেন্ট রাখা ভালো)
 
     initMobileMenu();
+    initDesktopSearchToggle();
     initTabs();
     initThemeToggle();
     initVideoCarousel();
