@@ -429,11 +429,30 @@
                 loadBuilderState() {
                     const storedSections = Array.isArray(this.builderState?.sections) ? this.builderState.sections : [];
                     const storedEnabled = this.builderState?.enabled ?? false;
+                    const usedSectionIds = new Set();
+                    let nextSectionId = 1;
+
+                    const normalizeSectionId = (value) => {
+                        const numericId = Number(value);
+
+                        if (Number.isFinite(numericId) && numericId > 0 && !usedSectionIds.has(numericId)) {
+                            usedSectionIds.add(numericId);
+                            return numericId;
+                        }
+
+                        while (usedSectionIds.has(nextSectionId)) {
+                            nextSectionId += 1;
+                        }
+
+                        usedSectionIds.add(nextSectionId);
+                        return nextSectionId++;
+                    };
 
                     this.sections = storedSections.map((section) => ({
-                        id: section.id ?? Date.now() + Math.random(),
+                        id: normalizeSectionId(section?.id),
                         blocks: Array.isArray(section.blocks)
                             ? section.blocks.map((block) => ({
+                                id: block.id ?? Date.now() + Math.random(),
                                 ...block,
                                 settings: {
                                     ...this.defaultBlockSettings(),
@@ -445,7 +464,7 @@
                         collapsed: section.collapsed ?? false
                     }));
                     this.builderEnabled = storedEnabled;
-                    this.nextSectionId = this.sections.length ? Math.max(...this.sections.map((section) => section.id)) + 1 : 1;
+                    this.nextSectionId = this.sections.length ? Math.max(...this.sections.map((section) => section.id)) + 1 : nextSectionId;
                 },
 
                 findActiveBlock() {
