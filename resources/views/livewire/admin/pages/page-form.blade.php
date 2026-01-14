@@ -160,7 +160,7 @@
                                 <div class="p-4 space-y-4">
                                     <div class="space-y-4 js-section-sortable">
                                         <template x-for="section in sections" :key="section.id">
-                                            <div class="border border-dashed border-slate-200 dark:border-slate-700" :data-section-id="section.id">
+                                            <div class="border border-dashed border-slate-200 dark:border-slate-700 js-section-item" :data-section-id="section.id">
                                             <div class="flex items-center justify-between bg-sky-600 px-4 py-2 text-xs font-semibold text-white">
                                                 <div class="flex items-center gap-2">
                                                     <span class="inline-flex h-7 w-7 items-center justify-center rounded bg-sky-700 text-white cursor-move js-section-handle">
@@ -693,7 +693,7 @@
 
                 const updateSectionsOrder = () => {
                     const data = Alpine.$data(builder);
-                    const orderedIds = Array.from(sectionsList.querySelectorAll('[data-section-id]'))
+                    const orderedIds = Array.from(sectionsList.querySelectorAll('.js-section-item'))
                         .map((item) => Number(item.dataset.sectionId));
                     data.sections = orderedIds
                         .map((id) => data.sections.find((section) => section.id === id))
