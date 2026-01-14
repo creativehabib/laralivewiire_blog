@@ -1,14 +1,32 @@
-<div class="relative {{ $wrapperClass }}">
+<div
+    x-data="{ open: false }"
+    class="relative {{ $wrapperClass }}"
+    @click.outside="open = false; $wire.clear()"
+>
     <label class="sr-only" for="{{ $inputId }}">{{ __('Search') }}</label>
-    <div class="relative">
+    <div class="flex items-center justify-end">
+        <button
+            type="button"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 shadow-sm transition hover:bg-slate-100 hover:text-slate-700 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            @click="open = true; $nextTick(() => $refs.searchInput?.focus())"
+            x-show="!open"
+            x-cloak
+            aria-label="{{ __('Search') }}"
+        >
+            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+        </button>
+    </div>
+    <div class="relative" x-show="open" x-transition x-cloak>
         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
             <i class="fa-solid fa-magnifying-glass"></i>
         </span>
         <input
             id="{{ $inputId }}"
+            x-ref="searchInput"
             type="search"
             wire:model.live.debounce.300ms="query"
             wire:keydown.escape="clear"
+            x-on:keydown.escape.stop="open = false"
             autocomplete="off"
             placeholder="{{ $placeholder }}"
             class="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-10 pr-10 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus:border-primary focus:ring-primary/40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 {{ $inputClass }}"
@@ -25,46 +43,48 @@
         @endif
     </div>
 
-    @if($term !== '' && mb_strlen($term) >= 1)
-        <div class="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
-            <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                {{ __('Search results') }}
-            </div>
-            <div wire:loading.flex wire:target="query" class="px-4 pb-2 text-xs text-slate-500">
-                {{ __('Searching...') }}
-            </div>
-            @if($results->isEmpty())
-                <div class="px-4 pb-4 text-sm text-slate-500">
-                    {{ __('No results found for') }} "{{ $term }}"
+    <div x-show="open" x-transition x-cloak>
+        @if($term !== '' && mb_strlen($term) >= 1)
+            <div class="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    {{ __('Search results') }}
                 </div>
-            @else
-                <ul class="max-h-80 overflow-y-auto">
-                    @foreach($results as $post)
-                        <li class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800">
-                            <a href="{{ post_permalink($post) }}" class="flex items-center gap-3">
-                                <img
-                                    src="{{ $post->image_url }}"
-                                    alt="{{ $post->name }}"
-                                    class="h-14 w-20 rounded-lg object-cover"
-                                    loading="lazy"
-                                />
-                                <div class="flex-1">
-                                    <p class="text-sm font-semibold text-slate-800 line-clamp-2 dark:text-slate-100">
-                                        {{ $post->name }}
-                                    </p>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">
-                                        {{ $post->created_at?->diffForHumans() }}
-                                    </p>
-                                </div>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
-    @elseif($term !== '')
-        <div class="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-xl dark:border-slate-700 dark:bg-slate-900">
-            {{ __('Type at least 1 character to search.') }}
-        </div>
-    @endif
+                <div wire:loading.flex wire:target="query" class="px-4 pb-2 text-xs text-slate-500">
+                    {{ __('Searching...') }}
+                </div>
+                @if($results->isEmpty())
+                    <div class="px-4 pb-4 text-sm text-slate-500">
+                        {{ __('No results found for') }} "{{ $term }}"
+                    </div>
+                @else
+                    <ul class="max-h-80 overflow-y-auto">
+                        @foreach($results as $post)
+                            <li class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <a href="{{ post_permalink($post) }}" class="flex items-center gap-3">
+                                    <img
+                                        src="{{ $post->image_url }}"
+                                        alt="{{ $post->name }}"
+                                        class="h-14 w-20 rounded-lg object-cover"
+                                        loading="lazy"
+                                    />
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-800 line-clamp-2 dark:text-slate-100">
+                                            {{ $post->name }}
+                                        </p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">
+                                            {{ $post->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        @elseif($term !== '')
+            <div class="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                {{ __('Type at least 1 character to search.') }}
+            </div>
+        @endif
+    </div>
 </div>
