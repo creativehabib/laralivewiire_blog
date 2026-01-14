@@ -160,7 +160,7 @@
                                 <div class="p-4 space-y-4">
                                     <div class="space-y-4 js-section-sortable">
                                         <template x-for="section in sections" :key="section.id">
-                                            <div class="border border-dashed border-slate-200 dark:border-slate-700" :data-section-id="section.id">
+                                            <div class="border border-dashed border-slate-200 dark:border-slate-700 js-section-item" :data-section-id="section.id">
                                             <div class="flex items-center justify-between bg-sky-600 px-4 py-2 text-xs font-semibold text-white">
                                                 <div class="flex items-center gap-2">
                                                     <span class="inline-flex h-7 w-7 items-center justify-center rounded bg-sky-700 text-white cursor-move js-section-handle">
@@ -429,11 +429,30 @@
                 loadBuilderState() {
                     const storedSections = Array.isArray(this.builderState?.sections) ? this.builderState.sections : [];
                     const storedEnabled = this.builderState?.enabled ?? false;
+                    const usedSectionIds = new Set();
+                    let nextSectionId = 1;
+
+                    const normalizeSectionId = (value) => {
+                        const numericId = Number(value);
+
+                        if (Number.isFinite(numericId) && numericId > 0 && !usedSectionIds.has(numericId)) {
+                            usedSectionIds.add(numericId);
+                            return numericId;
+                        }
+
+                        while (usedSectionIds.has(nextSectionId)) {
+                            nextSectionId += 1;
+                        }
+
+                        usedSectionIds.add(nextSectionId);
+                        return nextSectionId++;
+                    };
 
                     this.sections = storedSections.map((section) => ({
-                        id: section.id ?? Date.now() + Math.random(),
+                        id: normalizeSectionId(section?.id),
                         blocks: Array.isArray(section.blocks)
                             ? section.blocks.map((block) => ({
+                                id: block.id ?? Date.now() + Math.random(),
                                 ...block,
                                 settings: {
                                     ...this.defaultBlockSettings(),
@@ -445,7 +464,7 @@
                         collapsed: section.collapsed ?? false
                     }));
                     this.builderEnabled = storedEnabled;
-                    this.nextSectionId = this.sections.length ? Math.max(...this.sections.map((section) => section.id)) + 1 : 1;
+                    this.nextSectionId = this.sections.length ? Math.max(...this.sections.map((section) => section.id)) + 1 : nextSectionId;
                 },
 
                 findActiveBlock() {
@@ -674,7 +693,7 @@
 
                 const updateSectionsOrder = () => {
                     const data = Alpine.$data(builder);
-                    const orderedIds = Array.from(sectionsList.querySelectorAll('[data-section-id]'))
+                    const orderedIds = Array.from(sectionsList.querySelectorAll('.js-section-item'))
                         .map((item) => Number(item.dataset.sectionId));
                     data.sections = orderedIds
                         .map((id) => data.sections.find((section) => section.id === id))
