@@ -56,10 +56,13 @@
                     @endforeach
                 @endif
             </nav>
-            <livewire:frontend.live-search
-                :wire:key="'live-search-desktop'"
-                wrapper-class="hidden lg:block w-64 xl:w-72"
-            />
+            <div id="desktopSearchWrapper" class="relative hidden lg:block">
+                <livewire:frontend.live-search
+                    :wire:key="'live-search-desktop'"
+                    wrapper-class="w-64 xl:w-72"
+                    input-id="frontend-live-search-desktop"
+                />
+            </div>
             <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
                 <span class="sr-only">Toggle navigation</span>
                 <div class="space-y-1.5">
@@ -84,6 +87,9 @@
             <button id="themeToggle" aria-label="Toggle Dark Mode" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <i id="moonIcon" class="fa-solid fa-moon text-sm"></i>
                 <i id="sunIcon" class="fa-solid fa-sun text-sm hidden"></i>
+            </button>
+            <button id="desktopSearchToggle" aria-label="Toggle Search" class="hidden lg:inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <i class="fa-solid fa-magnifying-glass text-sm"></i>
             </button>
 
         </div>
