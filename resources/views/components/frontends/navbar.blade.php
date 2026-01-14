@@ -56,6 +56,10 @@
                     @endforeach
                 @endif
             </nav>
+            <livewire:frontend.live-search
+                :wire:key="'live-search-desktop'"
+                wrapper-class="hidden lg:block w-64 xl:w-72"
+            />
             <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
                 <span class="sr-only">Toggle navigation</span>
                 <div class="space-y-1.5">
@@ -103,6 +107,12 @@
     <nav id="mobileMenu"
          class="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 px-4 pt-2 pb-4 space-y-1 hidden">
         <div class="container px-0">
+            <livewire:frontend.live-search
+                :wire:key="'live-search-mobile'"
+                wrapper-class="w-full mb-3"
+                input-class="w-full"
+                input-id="frontend-live-search-mobile"
+            />
             <!-- লগইন/ড্যাশবোর্ড বাটন (মোবাইল) -->
             @auth
                 <a href="/dashboard" class="block px-2 py-2 rounded-md text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors duration-150">
