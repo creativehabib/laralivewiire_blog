@@ -72,6 +72,52 @@ function initMobileMenu() {
     });
 }
 
+// ----------------------
+// ডেস্কটপ সার্চ টগল
+// ----------------------
+function initDesktopSearchToggle() {
+    const toggleButton = document.getElementById('desktopSearchToggle');
+    const searchWrapper = document.getElementById('desktopSearchWrapper');
+
+    if (!toggleButton || !searchWrapper) return;
+
+    function closeSearch() {
+        if (!searchWrapper.classList.contains('hidden')) {
+            searchWrapper.classList.add('hidden');
+        }
+    }
+
+    addUniqueListener(toggleButton, 'click', '__desktopSearchHandler', (event) => {
+        event.stopPropagation();
+        searchWrapper.classList.toggle('hidden');
+
+        if (!searchWrapper.classList.contains('hidden')) {
+            const input = searchWrapper.querySelector('input[type="search"]');
+            if (input) {
+                input.focus();
+            }
+        }
+    });
+
+    addUniqueListener(document, 'click', '__desktopSearchOutsideHandler', (event) => {
+        if (searchWrapper.classList.contains('hidden')) return;
+        if (searchWrapper.contains(event.target) || toggleButton.contains(event.target)) {
+            return;
+        }
+        closeSearch();
+    });
+
+    const input = searchWrapper.querySelector('input[type="search"]');
+    if (input) {
+        addUniqueListener(input, 'keydown', '__desktopSearchEscapeHandler', (event) => {
+            if (event.key === 'Escape') {
+                closeSearch();
+                toggleButton.focus();
+            }
+        });
+    }
+}
+
 
 
 // ----------------------
@@ -286,6 +332,7 @@ function initPageInteractions() {
     // তাই এখানে আবার কল না করলেও চলে (ডাবল কাজ এড়াতে চাইলে এই লাইনটা কমেন্ট রাখা ভালো)
 
     initMobileMenu();
+    initDesktopSearchToggle();
     initTabs();
     initThemeToggle();
     initVideoCarousel();
