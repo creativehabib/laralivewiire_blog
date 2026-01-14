@@ -29,7 +29,7 @@ class LiveSearch extends Component
         $term = trim($this->query);
         $results = collect();
 
-        if ($term !== '' && mb_strlen($term) >= 2) {
+        if ($term !== '' && mb_strlen($term) >= 1) {
             $results = Post::query()
                 ->published()
                 ->where('name', 'like', "%{$term}%")

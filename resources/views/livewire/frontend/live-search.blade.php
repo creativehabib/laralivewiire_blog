@@ -7,7 +7,7 @@
         <input
             id="{{ $inputId }}"
             type="search"
-            wire:model.debounce.300ms="query"
+            wire:model.live.debounce.300ms="query"
             wire:keydown.escape="clear"
             autocomplete="off"
             placeholder="{{ $placeholder }}"
@@ -25,7 +25,7 @@
         @endif
     </div>
 
-    @if($term !== '' && mb_strlen($term) >= 2)
+    @if($term !== '' && mb_strlen($term) >= 1)
         <div class="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
             <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
                 {{ __('Search results') }}
@@ -64,7 +64,7 @@
         </div>
     @elseif($term !== '')
         <div class="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-xl dark:border-slate-700 dark:bg-slate-900">
-            {{ __('Type at least 2 characters to search.') }}
+            {{ __('Type at least 1 character to search.') }}
         </div>
     @endif
 </div>
