@@ -116,7 +116,7 @@ class WatermarkService
             return;
         }
 
-        $fontPath = $this->resolveFontPath();
+        $fontPath = $this->resolveFontPath($disk);
         if (! $fontPath) {
             return;
         }
@@ -239,11 +239,38 @@ class WatermarkService
         return is_file($path);
     }
 
-    private function resolveFontPath(): ?string
+    private function resolveFontPath(?string $disk = null): ?string
     {
-        $fontPath = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';
-        if (is_file($fontPath)) {
-            return $fontPath;
+        $customFont = trim((string) setting('watermark_text_font', ''));
+        if ($customFont !== '') {
+            if (Str::startsWith($customFont, ['/'])) {
+                if (is_file($customFont)) {
+                    return $customFont;
+                }
+            } else {
+                $customFont = $this->normalizeRelativePath($customFont, $disk);
+                $fontDisk = $this->resolveDiskWithPath($disk, $customFont)
+                    ?? $this->resolveDiskWithPath('public', $customFont);
+                if ($fontDisk) {
+                    $resolvedPath = Storage::disk($fontDisk)->path($customFont);
+                    if (is_file($resolvedPath)) {
+                        return $resolvedPath;
+                    }
+                }
+            }
+        }
+
+        $fallbacks = [
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+            '/usr/share/fonts/dejavu/DejaVuSans.ttf',
+            '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+            '/usr/share/fonts/truetype/freefont/FreeSans.ttf',
+        ];
+
+        foreach ($fallbacks as $fontPath) {
+            if (is_file($fontPath)) {
+                return $fontPath;
+            }
         }
 
         return null;

@@ -274,6 +274,18 @@ return [
                     ],
                 ],
                 [
+                    'key' => 'watermark_text_font',
+                    'label' => 'Watermark font path',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'hint' => 'Optional absolute path or storage path to a .ttf font file.',
+                    'visible_when' => [
+                        'watermark_enabled' => true,
+                        'watermark_type' => 'text',
+                    ],
+                ],
+                [
                     'key' => 'watermark_size',
                     'label' => 'Size of watermark (%)',
                     'type' => 'number',
