@@ -12,6 +12,8 @@ use App\Support\BanglaFormatter;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 if (! function_exists('frontend_bangla_date')) {
     function frontend_bangla_date(?CarbonInterface $dateTime = null): string
@@ -56,13 +58,82 @@ if (! function_exists('post_permalink')) {
 }
 
 if (! function_exists('the_thumbnail')) {
-    function the_thumbnail(?Post $post, ?int $width = null, ?int $height = null): string
+    function the_thumbnail($model = null, ?int $width = null, ?int $height = null, string $field = 'image'): string
     {
-        if (! $post) {
-            return 'https://placehold.co/800x450?text=News+Image';
+        $placeholder = 'https://placehold.co/800x450?text=News+Image';
+
+        if ($model === null) {
+            return $placeholder;
         }
 
-        return $post->getImageUrl($width, $height);
+        if ($model instanceof Post) {
+            return $model->getImageUrl($width, $height);
+        }
+
+        if (is_string($model)) {
+            return image_optimize_url($model, $width, $height);
+        }
+
+        if (is_object($model) && method_exists($model, 'getImageUrl')) {
+            return image_optimize_url((string) $model->getImageUrl($width, $height), $width, $height);
+        }
+
+        $path = null;
+
+        if (is_object($model) && isset($model->{$field})) {
+            $path = $model->{$field};
+        } elseif (is_array($model) && array_key_exists($field, $model)) {
+            $path = $model[$field];
+        }
+
+        if (! $path) {
+            return $placeholder;
+        }
+
+        if (Str::startsWith((string) $path, ['http://', 'https://'])) {
+            $url = (string) $path;
+        } elseif (Storage::disk('public')->exists((string) $path)) {
+            $url = Storage::disk('public')->url((string) $path);
+        } else {
+            $url = asset('storage/'.ltrim((string) $path, '/'));
+        }
+
+        return image_optimize_url($url, $width, $height);
+    }
+}
+
+if (! function_exists('image_optimize_url')) {
+    function image_optimize_url(string $url, ?int $width = null, ?int $height = null): string
+    {
+        if (! setting('image_optimize_enabled', false)) {
+            return $url;
+        }
+
+        $params = [];
+        $defaultQuery = trim((string) setting('image_optimize_query', ''));
+
+        if ($defaultQuery !== '') {
+            $defaultQuery = ltrim($defaultQuery, '?');
+            if ($defaultQuery !== '') {
+                $params[] = $defaultQuery;
+            }
+        }
+
+        if ($width) {
+            $params[] = 'w='.$width;
+        }
+
+        if ($height) {
+            $params[] = 'h='.$height;
+        }
+
+        if ($params === []) {
+            return $url;
+        }
+
+        $separator = str_contains($url, '?') ? '&' : '?';
+
+        return $url.$separator.implode('&', $params);
     }
 }
 
