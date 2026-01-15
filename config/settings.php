@@ -103,6 +103,15 @@ return [
                     'placeholder' => 'API Key',
                     'rules' => ['nullable', 'string', 'max:190'],
                 ],
+                [
+                    'key' => 'image_optimize_query',
+                    'label' => 'Image optimization query',
+                    'type' => 'text',
+                    'default' => 'rect=0,0,6720,4480&w=1200&auto=format,compress&fmt=avif',
+                    'placeholder' => 'rect=0,0,6720,4480&w=1200&auto=format,compress&fmt=avif',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'hint' => 'Optional query string appended to image URLs for resizing/formatting via a CDN or proxy.',
+                ],
             ],
         ],
         'reading' => [
