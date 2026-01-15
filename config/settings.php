@@ -214,6 +214,20 @@ return [
                     'hint' => 'Show watermark options for newly uploaded images.',
                 ],
                 [
+                    'key' => 'watermark_type',
+                    'label' => 'Watermark type',
+                    'type' => 'select',
+                    'default' => 'image',
+                    'options' => [
+                        'image' => 'Image',
+                        'text' => 'Text',
+                    ],
+                    'rules' => ['nullable', 'string', 'in:image,text'],
+                    'visible_when' => [
+                        'watermark_enabled' => true,
+                    ],
+                ],
+                [
                     'key' => 'watermark_image',
                     'label' => 'Watermark image',
                     'type' => 'image',
@@ -222,6 +236,41 @@ return [
                     'hint' => 'Supports PNG, JPG, and JPEG formats. Recommended max 200×200px and 50KB.',
                     'visible_when' => [
                         'watermark_enabled' => true,
+                        'watermark_type' => 'image',
+                    ],
+                ],
+                [
+                    'key' => 'watermark_text',
+                    'label' => 'Watermark text',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:120'],
+                    'hint' => 'Text watermark uses the server font (DejaVu Sans).',
+                    'visible_when' => [
+                        'watermark_enabled' => true,
+                        'watermark_type' => 'text',
+                    ],
+                ],
+                [
+                    'key' => 'watermark_text_size',
+                    'label' => 'Watermark text size (px)',
+                    'type' => 'number',
+                    'default' => 24,
+                    'rules' => ['nullable', 'numeric', 'min:8', 'max:200'],
+                    'visible_when' => [
+                        'watermark_enabled' => true,
+                        'watermark_type' => 'text',
+                    ],
+                ],
+                [
+                    'key' => 'watermark_text_color',
+                    'label' => 'Watermark text color',
+                    'type' => 'color',
+                    'default' => '#ffffff',
+                    'rules' => ['nullable', 'string', 'max:20'],
+                    'visible_when' => [
+                        'watermark_enabled' => true,
+                        'watermark_type' => 'text',
                     ],
                 ],
                 [

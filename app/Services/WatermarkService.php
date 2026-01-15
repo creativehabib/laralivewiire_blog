@@ -14,11 +14,6 @@ class WatermarkService
             return;
         }
 
-        $watermarkPath = setting('watermark_image');
-        if (! $watermarkPath) {
-            return;
-        }
-
         $disk = data_get($mediaFile, 'disk') ?: setting('storage_disk', config('filesystems.default'));
         $relativePath = $this->firstNonEmpty([
             data_get($mediaFile, 'path'),
@@ -43,6 +38,17 @@ class WatermarkService
             return;
         }
 
+        $watermarkType = (string) setting('watermark_type', 'image');
+        if ($watermarkType === 'text') {
+            $this->applyTextWatermark($diskToUse, $relativePath);
+            return;
+        }
+
+        $watermarkPath = setting('watermark_image');
+        if (! $watermarkPath) {
+            return;
+        }
+
         $watermarkDisk = $this->resolveDiskWithPath($disk, $watermarkPath)
             ?? $this->resolveDiskWithPath('public', $watermarkPath);
 
@@ -63,6 +69,18 @@ class WatermarkService
         $offsetY = max(0, (int) setting('watermark_offset_y', 10));
         $position = $this->mapPosition((string) setting('watermark_position', 'bottom_right'));
 
+        $this->applyImageWatermark($targetPath, $watermarkAbsolutePath, $position, $offsetX, $offsetY, $sizePercent, $opacity);
+    }
+
+    private function applyImageWatermark(
+        string $targetPath,
+        string $watermarkAbsolutePath,
+        string $position,
+        int $offsetX,
+        int $offsetY,
+        int $sizePercent,
+        int $opacity
+    ): void {
         try {
             $manager = ImageManager::gd();
             $image = $manager->read($targetPath);
@@ -81,6 +99,60 @@ class WatermarkService
             }
 
             $image->place($watermark, $position, $offsetX, $offsetY);
+            $image->save($targetPath);
+        } catch (\Throwable $exception) {
+            report($exception);
+        }
+    }
+
+    private function applyTextWatermark(string $disk, string $relativePath): void
+    {
+        $text = trim((string) setting('watermark_text', ''));
+        if ($text === '') {
+            return;
+        }
+
+        $fontPath = $this->resolveFontPath();
+        if (! $fontPath) {
+            return;
+        }
+
+        $targetPath = Storage::disk($disk)->path($relativePath);
+        if (! is_file($targetPath)) {
+            return;
+        }
+
+        $size = max(8, min(200, (int) setting('watermark_text_size', 24)));
+        $opacity = max(0, min(100, (int) setting('watermark_opacity', 70)));
+        $color = $this->colorWithOpacity((string) setting('watermark_text_color', '#ffffff'), $opacity);
+
+        $offsetX = max(0, (int) setting('watermark_offset_x', 10));
+        $offsetY = max(0, (int) setting('watermark_offset_y', 10));
+        $position = $this->mapPosition((string) setting('watermark_position', 'bottom_right'));
+
+        try {
+            $manager = ImageManager::gd();
+            $image = $manager->read($targetPath);
+
+            [$textWidth, $textHeight] = $this->measureText($text, $fontPath, $size);
+            [$x, $y] = $this->resolveTextCoordinates(
+                $position,
+                $image->width(),
+                $image->height(),
+                $textWidth,
+                $textHeight,
+                $offsetX,
+                $offsetY
+            );
+
+            $image->text($text, $x, $y, function ($font) use ($fontPath, $size, $color) {
+                $font->file($fontPath);
+                $font->size($size);
+                $font->color($color);
+                $font->align('left');
+                $font->valign('top');
+            });
+
             $image->save($targetPath);
         } catch (\Throwable $exception) {
             report($exception);
@@ -106,6 +178,67 @@ class WatermarkService
             'center' => 'center',
             'bottom_left' => 'bottom-left',
             default => 'bottom-right',
+        };
+    }
+
+    private function resolveFontPath(): ?string
+    {
+        $fontPath = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';
+        if (is_file($fontPath)) {
+            return $fontPath;
+        }
+
+        return null;
+    }
+
+    private function colorWithOpacity(string $hex, int $opacity): string
+    {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = "{$hex[0]}{$hex[0]}{$hex[1]}{$hex[1]}{$hex[2]}{$hex[2]}";
+        }
+
+        if (strlen($hex) !== 6 || ! ctype_xdigit($hex)) {
+            return "rgba(255,255,255," . number_format($opacity / 100, 2, '.', '') . ")";
+        }
+
+        $red = hexdec(substr($hex, 0, 2));
+        $green = hexdec(substr($hex, 2, 2));
+        $blue = hexdec(substr($hex, 4, 2));
+        $alpha = number_format($opacity / 100, 2, '.', '');
+
+        return "rgba({$red},{$green},{$blue},{$alpha})";
+    }
+
+    private function measureText(string $text, string $fontPath, int $size): array
+    {
+        $box = imagettfbbox($size, 0, $fontPath, $text);
+        $width = abs($box[4] - $box[0]);
+        $height = abs($box[5] - $box[1]);
+
+        return [$width, $height];
+    }
+
+    private function resolveTextCoordinates(
+        string $position,
+        int $imageWidth,
+        int $imageHeight,
+        int $textWidth,
+        int $textHeight,
+        int $offsetX,
+        int $offsetY
+    ): array {
+        $positionKey = str_replace('-', '_', $position);
+
+        return match ($positionKey) {
+            'top_left' => [$offsetX, $offsetY],
+            'top_right' => [$imageWidth - $textWidth - $offsetX, $offsetY],
+            'center' => [
+                (int) round(($imageWidth - $textWidth) / 2),
+                (int) round(($imageHeight - $textHeight) / 2),
+            ],
+            'bottom_left' => [$offsetX, $imageHeight - $textHeight - $offsetY],
+            default => [$imageWidth - $textWidth - $offsetX, $imageHeight - $textHeight - $offsetY],
         };
     }
 
