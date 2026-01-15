@@ -6,6 +6,7 @@ use App\Models\Admin\Page;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Post;
+use App\Observers\MediaFileObserver;
 use App\Support\CacheSettings;
 use App\Support\SlugHelper;
 use Illuminate\Support\Facades\Cache;
@@ -74,6 +75,10 @@ class AppServiceProvider extends ServiceProvider
             $s3Config['use_path_style_endpoint'] = (bool) $usePathStyle;
 
             config(['filesystems.disks.s3' => $s3Config]);
+        }
+
+        if (class_exists(\Habib\MediaManager\Models\MediaFile::class)) {
+            \Habib\MediaManager\Models\MediaFile::observe(MediaFileObserver::class);
         }
 
         $this->registerSlugBindings();
