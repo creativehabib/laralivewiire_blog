@@ -103,6 +103,23 @@ return [
                     'placeholder' => 'API Key',
                     'rules' => ['nullable', 'string', 'max:190'],
                 ],
+                [
+                    'key' => 'image_optimize_enabled',
+                    'label' => 'Enable image optimization query',
+                    'type' => 'switch',
+                    'default' => false,
+                    'rules' => ['boolean'],
+                    'hint' => 'Enable to append a query string (e.g., ImageKit) to image URLs.',
+                ],
+                [
+                    'key' => 'image_optimize_query',
+                    'label' => 'Image optimization query',
+                    'type' => 'text',
+                    'default' => '',
+                    'placeholder' => 'tr=w-1200,fo-auto,pr-true,ot-favif',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'hint' => 'Optional query string appended to image URLs for resizing/formatting (e.g., ImageKit transforms).',
+                ],
             ],
         ],
         'reading' => [

@@ -78,18 +78,41 @@ class Post extends Model
         $placeholder = 'https://placehold.co/800x450?text=News+Image';
 
         if (! $this->image) {
-            return $placeholder;
+            return $this->applyImageOptimizationQuery($placeholder);
         }
 
         if (Str::startsWith($this->image, ['http://', 'https://'])) {
-            return $this->image;
+            return $this->applyImageOptimizationQuery($this->image);
         }
 
         if (Storage::disk('public')->exists($this->image)) {
-            return Storage::disk('public')->url($this->image);
+            return $this->applyImageOptimizationQuery(Storage::disk('public')->url($this->image));
         }
 
-        return asset('storage/'.$this->image);
+        return $this->applyImageOptimizationQuery(asset('storage/'.$this->image));
+    }
+
+    private function applyImageOptimizationQuery(string $url): string
+    {
+        if (! setting('image_optimize_enabled', false)) {
+            return $url;
+        }
+
+        $query = trim((string) setting('image_optimize_query', ''));
+
+        if ($query === '') {
+            return $url;
+        }
+
+        $query = ltrim($query, '?');
+
+        if ($query === '') {
+            return $url;
+        }
+
+        $separator = str_contains($url, '?') ? '&' : '?';
+
+        return $url.$separator.$query;
     }
 
     public function getExcerptAttribute(): ?string
