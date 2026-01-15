@@ -20,12 +20,15 @@ class WatermarkService
             data_get($mediaFile, 'file_path'),
             data_get($mediaFile, 'file'),
             data_get($mediaFile, 'location'),
+            data_get($mediaFile, 'url'),
+            data_get($mediaFile, 'file_name'),
         ]);
 
         if (! $relativePath) {
             return;
         }
 
+        $relativePath = $this->normalizeRelativePath($relativePath, $disk);
         $diskToUse = $this->resolveDiskWithPath($disk, $relativePath);
         if (! $diskToUse) {
             return;
@@ -167,6 +170,12 @@ class WatermarkService
             return $disk;
         }
 
+        foreach (['public', 'local'] as $fallback) {
+            if ($fallback !== $disk && Storage::disk($fallback)->exists($path)) {
+                return $fallback;
+            }
+        }
+
         return null;
     }
 
@@ -179,6 +188,32 @@ class WatermarkService
             'bottom_left' => 'bottom-left',
             default => 'bottom-right',
         };
+    }
+
+    private function normalizeRelativePath(string $path, ?string $disk): string
+    {
+        $path = trim($path);
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            $urlPath = parse_url($path, PHP_URL_PATH);
+            if (is_string($urlPath)) {
+                $path = $urlPath;
+            }
+        }
+
+        if ($disk) {
+            $diskUrl = Storage::disk($disk)->url('');
+            $diskPath = parse_url($diskUrl, PHP_URL_PATH);
+            if (is_string($diskPath) && $diskPath !== '/' && Str::startsWith($path, $diskPath)) {
+                $path = substr($path, strlen($diskPath));
+            }
+        }
+
+        if (Str::startsWith($path, '/storage/')) {
+            $path = substr($path, strlen('/storage/'));
+        }
+
+        return ltrim($path, '/');
     }
 
     private function resolveFontPath(): ?string
