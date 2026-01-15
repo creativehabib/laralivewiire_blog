@@ -75,21 +75,59 @@ class Post extends Model
 
     public function getImageUrlAttribute(): string
     {
+        return $this->getImageUrl();
+    }
+
+    public function getImageUrl(?int $width = null, ?int $height = null): string
+    {
         $placeholder = 'https://placehold.co/800x450?text=News+Image';
 
         if (! $this->image) {
-            return $placeholder;
+            return $this->applyImageOptimization($placeholder, $width, $height);
         }
 
         if (Str::startsWith($this->image, ['http://', 'https://'])) {
-            return $this->image;
+            $url = $this->image;
+        } elseif (Storage::disk('public')->exists($this->image)) {
+            $url = Storage::disk('public')->url($this->image);
+        } else {
+            $url = asset('storage/'.$this->image);
         }
 
-        if (Storage::disk('public')->exists($this->image)) {
-            return Storage::disk('public')->url($this->image);
+        return $this->applyImageOptimization($url, $width, $height);
+    }
+
+    private function applyImageOptimization(string $url, ?int $width, ?int $height): string
+    {
+        if (! setting('image_optimize_enabled', false)) {
+            return $url;
         }
 
-        return asset('storage/'.$this->image);
+        $params = [];
+        $defaultQuery = trim((string) setting('image_optimize_query', ''));
+
+        if ($defaultQuery !== '') {
+            $defaultQuery = ltrim($defaultQuery, '?');
+            if ($defaultQuery !== '') {
+                $params[] = $defaultQuery;
+            }
+        }
+
+        if ($width) {
+            $params[] = 'w='.$width;
+        }
+
+        if ($height) {
+            $params[] = 'h='.$height;
+        }
+
+        if ($params === []) {
+            return $url;
+        }
+
+        $separator = str_contains($url, '?') ? '&' : '?';
+
+        return $url.$separator.implode('&', $params);
     }
 
     public function getExcerptAttribute(): ?string
