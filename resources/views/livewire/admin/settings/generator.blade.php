@@ -278,10 +278,7 @@
                     class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">
                 <span wire:loading.remove wire:target="save">Save</span>
                 <span wire:loading wire:target="save" class="inline-flex items-center gap-2">
-                    <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity=".25"/>
-                        <path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" opacity=".75"/>
-                    </svg>
+                    <i class="fas fa-spinner fa-spin text-sm"></i>
                     Saving...
                 </span>
             </button>
