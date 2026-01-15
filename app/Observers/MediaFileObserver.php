@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Services\WatermarkService;
 use Habib\MediaManager\Models\MediaFile;
+use Illuminate\Support\Facades\DB;
 
 class MediaFileObserver
 {
@@ -13,6 +14,8 @@ class MediaFileObserver
             return;
         }
 
-        app(WatermarkService::class)->applyToMediaFile($mediaFile);
+        DB::afterCommit(function () use ($mediaFile) {
+            app(WatermarkService::class)->applyToMediaFile($mediaFile);
+        });
     }
 }

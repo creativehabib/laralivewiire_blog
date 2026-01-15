@@ -227,13 +227,13 @@ class WatermarkService
 
     private function waitForFile(string $path): bool
     {
-        $attempts = 5;
+        $attempts = 10;
         for ($i = 0; $i < $attempts; $i++) {
             clearstatcache(true, $path);
             if (is_file($path)) {
                 return true;
             }
-            usleep(200000);
+            usleep(300000);
         }
 
         return is_file($path);
