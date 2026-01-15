@@ -55,6 +55,17 @@ if (! function_exists('post_permalink')) {
     }
 }
 
+if (! function_exists('the_thumbnail')) {
+    function the_thumbnail(?Post $post, ?int $width = null, ?int $height = null): string
+    {
+        if (! $post) {
+            return 'https://placehold.co/800x450?text=News+Image';
+        }
+
+        return $post->getImageUrl($width, $height);
+    }
+}
+
 if (! function_exists('page_permalink')) {
     function page_permalink(Page $page, bool $absolute = true): string
     {
