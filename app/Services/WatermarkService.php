@@ -52,6 +52,7 @@ class WatermarkService
             return;
         }
 
+        $watermarkPath = $this->normalizeRelativePath((string) $watermarkPath, $disk);
         $watermarkDisk = $this->resolveDiskWithPath($disk, $watermarkPath)
             ?? $this->resolveDiskWithPath('public', $watermarkPath);
 
@@ -62,7 +63,7 @@ class WatermarkService
         $targetPath = Storage::disk($diskToUse)->path($relativePath);
         $watermarkAbsolutePath = Storage::disk($watermarkDisk)->path($watermarkPath);
 
-        if (! is_file($targetPath) || ! is_file($watermarkAbsolutePath)) {
+        if (! $this->waitForFile($targetPath) || ! $this->waitForFile($watermarkAbsolutePath)) {
             return;
         }
 
@@ -121,7 +122,7 @@ class WatermarkService
         }
 
         $targetPath = Storage::disk($disk)->path($relativePath);
-        if (! is_file($targetPath)) {
+        if (! $this->waitForFile($targetPath)) {
             return;
         }
 
@@ -222,6 +223,20 @@ class WatermarkService
         }
 
         return $path;
+    }
+
+    private function waitForFile(string $path): bool
+    {
+        $attempts = 5;
+        for ($i = 0; $i < $attempts; $i++) {
+            clearstatcache(true, $path);
+            if (is_file($path)) {
+                return true;
+            }
+            usleep(200000);
+        }
+
+        return is_file($path);
     }
 
     private function resolveFontPath(): ?string
