@@ -94,6 +94,10 @@ class Post extends Model
 
     private function applyImageOptimizationQuery(string $url): string
     {
+        if (! setting('image_optimize_enabled', false)) {
+            return $url;
+        }
+
         $query = trim((string) setting('image_optimize_query', ''));
 
         if ($query === '') {
