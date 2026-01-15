@@ -96,6 +96,91 @@ return [
                     'hint' => 'This site is currently in maintenance mode.',
                 ],
                 [
+                    'key' => 'storage_disk',
+                    'label' => 'Storage disk',
+                    'type' => 'select',
+                    'default' => 'public',
+                    'options' => [
+                        'public' => 'Local (public)',
+                        'local' => 'Local (private)',
+                        's3' => 'S3 / Cloud',
+                    ],
+                    'rules' => ['required', 'in:public,local,s3'],
+                    'hint' => 'Choose where uploaded media should be stored. Configure disk credentials in .env.',
+                ],
+                [
+                    'key' => 's3_access_key_id',
+                    'label' => 'S3 access key ID',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'storage_disk' => 's3',
+                    ],
+                ],
+                [
+                    'key' => 's3_secret_access_key',
+                    'label' => 'S3 secret access key',
+                    'type' => 'password',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'storage_disk' => 's3',
+                    ],
+                ],
+                [
+                    'key' => 's3_region',
+                    'label' => 'S3 region',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:100'],
+                    'visible_when' => [
+                        'storage_disk' => 's3',
+                    ],
+                ],
+                [
+                    'key' => 's3_bucket',
+                    'label' => 'S3 bucket',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'storage_disk' => 's3',
+                    ],
+                ],
+                [
+                    'key' => 's3_url',
+                    'label' => 'S3 URL',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'storage_disk' => 's3',
+                    ],
+                    'hint' => 'Optional custom domain or CDN URL for S3.',
+                ],
+                [
+                    'key' => 's3_endpoint',
+                    'label' => 'S3 endpoint',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'storage_disk' => 's3',
+                    ],
+                    'hint' => 'Optional endpoint for S3-compatible storage (e.g., Wasabi, DigitalOcean).',
+                ],
+                [
+                    'key' => 's3_use_path_style_endpoint',
+                    'label' => 'S3 path-style endpoint',
+                    'type' => 'switch',
+                    'default' => false,
+                    'rules' => ['boolean'],
+                    'visible_when' => [
+                        'storage_disk' => 's3',
+                    ],
+                ],
+                [
                     'key' => 'hippo_api_key',
                     'label' => 'Image hippo API Key',
                     'type' => 'text',
