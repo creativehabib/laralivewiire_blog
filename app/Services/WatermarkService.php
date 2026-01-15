@@ -248,6 +248,15 @@ class WatermarkService
                     return $customFont;
                 }
             } else {
+                $publicCandidate = $customFont;
+                if (Str::startsWith($publicCandidate, 'public/')) {
+                    $publicCandidate = substr($publicCandidate, strlen('public/'));
+                }
+                $publicPath = public_path($publicCandidate);
+                if (is_file($publicPath)) {
+                    return $publicPath;
+                }
+
                 $customFont = $this->normalizeRelativePath($customFont, $disk);
                 $fontDisk = $this->resolveDiskWithPath($disk, $customFont)
                     ?? $this->resolveDiskWithPath('public', $customFont);

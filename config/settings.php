@@ -279,7 +279,7 @@ return [
                     'type' => 'text',
                     'default' => '',
                     'rules' => ['nullable', 'string', 'max:255'],
-                    'hint' => 'Optional absolute path or storage path to a .ttf font file.',
+                    'hint' => 'Optional public path, storage path, or absolute path to a .ttf font file (e.g. public/assets/fonts/MyFont.ttf).',
                     'visible_when' => [
                         'watermark_enabled' => true,
                         'watermark_type' => 'text',
