@@ -33,6 +33,49 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        $storageDisk = setting('storage_disk', config('filesystems.default'));
+
+        config(['filesystems.default' => $storageDisk]);
+
+        if ($storageDisk === 's3') {
+            $s3Config = config('filesystems.disks.s3');
+            $accessKey = setting('s3_access_key_id');
+            $secretKey = setting('s3_secret_access_key');
+            $region = setting('s3_region');
+            $bucket = setting('s3_bucket');
+            $url = setting('s3_url');
+            $endpoint = setting('s3_endpoint');
+            $usePathStyle = setting('s3_use_path_style_endpoint', $s3Config['use_path_style_endpoint'] ?? false);
+
+            if ($accessKey) {
+                $s3Config['key'] = $accessKey;
+            }
+
+            if ($secretKey) {
+                $s3Config['secret'] = $secretKey;
+            }
+
+            if ($region) {
+                $s3Config['region'] = $region;
+            }
+
+            if ($bucket) {
+                $s3Config['bucket'] = $bucket;
+            }
+
+            if ($url) {
+                $s3Config['url'] = $url;
+            }
+
+            if ($endpoint) {
+                $s3Config['endpoint'] = $endpoint;
+            }
+
+            $s3Config['use_path_style_endpoint'] = (bool) $usePathStyle;
+
+            config(['filesystems.disks.s3' => $s3Config]);
+        }
+
         $this->registerSlugBindings();
         $this->registerCacheResetHooks();
     }
