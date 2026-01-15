@@ -7,8 +7,12 @@ use Habib\MediaManager\Models\MediaFile;
 
 class MediaFileObserver
 {
-    public function created(MediaFile $mediaFile): void
+    public function saved(MediaFile $mediaFile): void
     {
+        if (! $mediaFile->wasRecentlyCreated) {
+            return;
+        }
+
         app(WatermarkService::class)->applyToMediaFile($mediaFile);
     }
 }

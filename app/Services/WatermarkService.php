@@ -213,7 +213,15 @@ class WatermarkService
             $path = substr($path, strlen('/storage/'));
         }
 
-        return ltrim($path, '/');
+        $path = ltrim($path, '/');
+
+        foreach (['storage/', 'public/', 'app/public/'] as $prefix) {
+            if (Str::startsWith($path, $prefix)) {
+                $path = substr($path, strlen($prefix));
+            }
+        }
+
+        return $path;
     }
 
     private function resolveFontPath(): ?string
