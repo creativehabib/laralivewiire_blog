@@ -36,11 +36,13 @@ class PostViewCounter
     {
         $request = request();
 
+        $sessionId = $request->hasSession() ? $request->session()->getId() : null;
+
         $parts = [
             optional($request->user())->getAuthIdentifier(),
             $request->ip(),
             $request->userAgent(),
-            $request->session()->getId(),
+            $sessionId,
         ];
 
         return sha1(implode('|', $parts));
