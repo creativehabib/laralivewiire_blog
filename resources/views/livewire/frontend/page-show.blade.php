@@ -176,9 +176,11 @@
                                                                     </div>
                                                                 @endunless
                                                                 <div class="space-y-1.5 min-w-0 flex-1">
-                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                    <h2 class="text-sm font-semibold leading-snug line-clamp-1">
+                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class=" text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
+                                                                    </h2>
                                                                     @if ($postMeta)
                                                                         <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                     @endif
@@ -204,12 +206,14 @@
                                                         @if ($featuredPost)
                                                             <article class="grid gap-3 md:grid-cols-[200px_1fr]">
                                                                 <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block">
-                                                                    <img src="{{ the_thumbnail($featuredPost) }}" alt="{{ $featuredPost->name }}" class="h-28 w-full rounded-lg object-cover">
+                                                                    <img src="{{ the_thumbnail($featuredPost) }}" alt="{{ $featuredPost->name }}" class="h-32 w-full rounded-lg object-cover">
                                                                 </a>
                                                                 <div class="space-y-1.5">
-                                                                    <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="text-sm font-bold text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
-                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
-                                                                    </a>
+                                                                    <h2 class="text-white text-lg md:text-xl font-semibold leading-snug">
+                                                                        <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
+                                                                            {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
+                                                                        </a>
+                                                                    </h2>
                                                                     @if ($postMeta)
                                                                         <p class="text-[11px] text-slate-400 font-medium">{{ the_date($featuredPost, 'diff') }}</p>
                                                                     @endif
@@ -230,7 +234,7 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
+                                                                                <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -238,9 +242,11 @@
                                                                         </div>
                                                                     @endunless
                                                                     <div class="space-y-1 min-w-0 flex-1">
-                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="text-xs font-bold text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                        <h2 class="text-white text-sm font-semibold leading-snug">
+                                                                        <a href="{{ post_permalink($post) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
+                                                                        </h2>
                                                                         @if ($postMeta)
                                                                             <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                         @endif
@@ -349,9 +355,9 @@
                                                                             @endunless
                                                                             <div class="min-w-0 space-y-1">
                                                                                 <h3 class="text-sm font-semibold leading-snug">
-                                                                                <a href="{{ post_permalink($post) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
-                                                                                    {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
-                                                                                </a>
+                                                                                    <a href="{{ post_permalink($post) }}" wire:navigate class="text-slate-700 hover:text-sky-600 dark:text-slate-200 leading-snug line-clamp-2 transition-colors block">
+                                                                                        {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
+                                                                                    </a>
                                                                                 </h3>
                                                                                 @if ($postMeta)
                                                                                     <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
