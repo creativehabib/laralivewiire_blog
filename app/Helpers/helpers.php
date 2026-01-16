@@ -53,7 +53,7 @@ if (! function_exists('frontend_bangla_day')) {
 }
 
 if (! function_exists('the_date')) {
-    function the_date($format = '', string $before = '', string $after = '', bool $display = true): string|void
+    function the_date($format = '', string $before = '', string $after = '', bool $display = true): string
     {
         $model = null;
 
@@ -82,7 +82,6 @@ if (! function_exists('the_date')) {
         if (! $dateValue) {
             if ($display) {
                 echo '';
-                return;
             }
 
             return '';
@@ -97,7 +96,6 @@ if (! function_exists('the_date')) {
 
         if ($display) {
             echo $output;
-            return;
         }
 
         return $output;
