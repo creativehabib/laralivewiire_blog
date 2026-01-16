@@ -5,7 +5,7 @@
                 <p class="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Page</p>
                 <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">{{ $page->name }}</h1>
                 <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Updated {{ optional($page->updated_at ?? $page->created_at)->diffForHumans() }}
+                    Updated {{ optional(the_date($page, 'diff', 'updated_at') ?? the_date($page, 'diff', 'created_at') )}}
                 </p>
             </header>
         @endif
@@ -150,7 +150,7 @@
                                                                             </a>
                                                                         </h2>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -180,7 +180,7 @@
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
                                                                         <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 dark:text-slate-300">
@@ -211,7 +211,7 @@
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($featuredPost->name, $titleLength) : $featuredPost->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->diffForHumans() }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ the_date($featuredPost, 'diff') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
                                                                         <p class="text-xs text-slate-600 leading-relaxed line-clamp-2 dark:text-slate-300">
@@ -242,7 +242,7 @@
                                                                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                         </a>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -269,7 +269,7 @@
                                                                         </a>
                                                                     </h2>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-white/80 font-medium">{{ $heroPost->created_at?->diffForHumans() }}</p>
+                                                                        <p class="text-[11px] text-white/80 font-medium">{{ the_date($heroPost, 'diff') }}</p>
                                                                     @endif
                                                                 </div>
                                                             </article>
@@ -297,7 +297,7 @@
                                                                             </a>
                                                                         </h2>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                         @endif
                                                                     </div>
                                                                 </article>
@@ -325,7 +325,7 @@
                                                                             </a>
                                                                         </h2>
                                                                         @if ($postMeta)
-                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->diffForHumans() }}</p>
+                                                                            <p class="text-[11px] text-slate-400 font-medium">{{ the_date($featuredPost, 'diff') }}</p>
                                                                         @endif
                                                                         @if ($showExcerpt)
                                                                             <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 dark:text-slate-300">
@@ -354,7 +354,7 @@
                                                                                 </a>
                                                                                 </h3>
                                                                                 @if ($postMeta)
-                                                                                    <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
+                                                                                    <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                                 @endif
                                                                             </div>
                                                                         </article>
@@ -386,7 +386,7 @@
                                                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                                                     </a>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $post->created_at?->diffForHumans() }}</p>
+                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
                                                                     @endif
                                                                     @if ($showExcerpt)
                                                                         <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
