@@ -53,7 +53,13 @@ if (! function_exists('frontend_bangla_day')) {
 }
 
 if (! function_exists('the_date')) {
-    function the_date($format = '', string $before = '', string $after = '', bool $display = false): string
+    function the_date(
+        $format = '',
+        string $before = '',
+        string $after = '',
+        bool $display = false,
+        ?string $source = null
+    ): string
     {
         $model = null;
 
@@ -65,7 +71,9 @@ if (! function_exists('the_date')) {
         $dateValue = null;
 
         if (is_object($model)) {
-            if (isset($model->published_at)) {
+            if ($source && isset($model->{$source})) {
+                $dateValue = $model->{$source};
+            } elseif (isset($model->published_at)) {
                 $dateValue = $model->published_at;
             } elseif (isset($model->created_at)) {
                 $dateValue = $model->created_at;
@@ -73,10 +81,14 @@ if (! function_exists('the_date')) {
                 $dateValue = $model->updated_at;
             }
         } elseif (is_array($model)) {
-            $dateValue = $model['published_at']
-                ?? $model['created_at']
-                ?? $model['updated_at']
-                ?? null;
+            if ($source && array_key_exists($source, $model)) {
+                $dateValue = $model[$source];
+            } else {
+                $dateValue = $model['published_at']
+                    ?? $model['created_at']
+                    ?? $model['updated_at']
+                    ?? null;
+            }
         }
 
         if (! $dateValue) {
