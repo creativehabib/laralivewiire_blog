@@ -109,6 +109,10 @@
                                                                             {!! the_author($featuredPost, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
                                                                             <span>•</span>
                                                                             {!! the_category($featuredPost) !!}
+                                                                            <span>•</span>
+                                                                            <span><i class="fa-regular fa-eye"></i>
+                                                                            {{ the_view_count($featuredPost, 'ভিউ') }}
+                                                                            </span>
                                                                         </div>
                                                                     @endif
                                                                     @if ($showExcerpt)

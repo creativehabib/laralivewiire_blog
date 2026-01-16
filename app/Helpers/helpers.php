@@ -3,9 +3,7 @@
 use App\Models\Admin\Page;
 use App\Models\Admin\Tag;
 use App\Models\Category;
-use App\Models\GeneralSetting;
 use App\Models\Post;
-use App\Models\Setting;
 use App\Models\User;
 use App\Support\PermalinkManager;
 use App\Support\SettingManager;
@@ -13,7 +11,6 @@ use App\Support\BanglaCalendar;
 use App\Support\BanglaFormatter;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -126,8 +123,8 @@ if (! function_exists('post_permalink')) {
     }
 }
 
-if (! function_exists('view_count')) {
-    function view_count($modelOrValue = null, string $suffix = ''): string
+if (! function_exists('the_view_count')) {
+    function the_view_count($modelOrValue = null, string $suffix = ''): string
     {
         $views = 0;
 
