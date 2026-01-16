@@ -103,7 +103,13 @@
                                                                         </a>
                                                                     </h2>
                                                                     @if ($postMeta)
-                                                                        <p class="text-[11px] text-slate-400 font-medium">{{ $featuredPost->created_at?->diffForHumans() }}</p>
+                                                                        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-slate-400 mb-3">
+                                                                            <span>প্রকাশিত: {{ the_date($featuredPost, 'diff') }}</span>
+                                                                            <span>•</span>
+                                                                            {!! the_author($featuredPost, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
+                                                                            <span>•</span>
+                                                                            {!! the_category($featuredPost) !!}
+                                                                        </div>
                                                                     @endif
                                                                     @if ($showExcerpt)
                                                                         <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 dark:text-slate-300">
