@@ -126,6 +126,29 @@ if (! function_exists('post_permalink')) {
     }
 }
 
+if (! function_exists('view_count')) {
+    function view_count($modelOrValue = null, string $suffix = ''): string
+    {
+        $views = 0;
+
+        if (is_numeric($modelOrValue)) {
+            $views = (int) $modelOrValue;
+        } elseif (is_object($modelOrValue) && isset($modelOrValue->views)) {
+            $views = (int) $modelOrValue->views;
+        } elseif (is_array($modelOrValue) && array_key_exists('views', $modelOrValue)) {
+            $views = (int) $modelOrValue['views'];
+        }
+
+        $formatted = number_format(max(0, $views));
+
+        if ($suffix === '') {
+            return $formatted;
+        }
+
+        return trim($formatted.' '.$suffix);
+    }
+}
+
 if (! function_exists('the_thumbnail')) {
     function the_thumbnail($model = null, ?int $width = null, ?int $height = null, string $field = 'image'): string
     {
