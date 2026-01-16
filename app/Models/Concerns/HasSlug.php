@@ -40,6 +40,11 @@ trait HasSlug
             ? $this->slugRecord
             : $this->slugRecord()->first();
 
+        if (! $record && $this->exists) {
+            $this->syncSlug();
+            $record = $this->slugRecord()->first();
+        }
+
         return $record?->key;
     }
 
