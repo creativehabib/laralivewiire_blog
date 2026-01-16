@@ -16,6 +16,7 @@ class FrontPage extends Homepage
     public ?Page $page = null;
     public array $builderState = [];
     public bool $isStaticPage = false;
+    public bool $ready = false;
 
     public function mount(): void
     {
@@ -40,6 +41,10 @@ class FrontPage extends Homepage
         parent::mount();
     }
 
+    public function loadReady(): void
+    {
+        $this->ready = true;
+    }
     public function render()
     {
         if ($this->isStaticPage && $this->page) {
@@ -48,6 +53,7 @@ class FrontPage extends Homepage
                 'builderSections' => $this->buildBuilderSections(),
                 'showPageHeader' => false,
                 'showPageComments' => false,
+                'ready' => $this->ready,
             ])->layout('components.layouts.frontend.app', [
                 'title' => $this->page->name,
                 'seo' => Seo::forPage($this->page, [
