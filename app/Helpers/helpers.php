@@ -52,6 +52,58 @@ if (! function_exists('frontend_bangla_day')) {
     }
 }
 
+if (! function_exists('the_date')) {
+    function the_date($format = '', string $before = '', string $after = '', bool $display = true): string|void
+    {
+        $model = null;
+
+        if (is_object($format) || is_array($format)) {
+            $model = $format;
+            $format = '';
+        }
+
+        $dateValue = null;
+
+        if (is_object($model)) {
+            if (isset($model->published_at)) {
+                $dateValue = $model->published_at;
+            } elseif (isset($model->created_at)) {
+                $dateValue = $model->created_at;
+            } elseif (isset($model->updated_at)) {
+                $dateValue = $model->updated_at;
+            }
+        } elseif (is_array($model)) {
+            $dateValue = $model['published_at']
+                ?? $model['created_at']
+                ?? $model['updated_at']
+                ?? null;
+        }
+
+        if (! $dateValue) {
+            if ($display) {
+                echo '';
+                return;
+            }
+
+            return '';
+        }
+
+        $date = Carbon::parse($dateValue)
+            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
+
+        $format = $format !== '' ? (string) $format : 'F j, Y';
+        $formattedDate = $date->translatedFormat($format);
+        $output = $before.$formattedDate.$after;
+
+        if ($display) {
+            echo $output;
+            return;
+        }
+
+        return $output;
+    }
+}
+
 if (! function_exists('post_permalink')) {
     function post_permalink(Post $post, bool $absolute = true): string
     {
