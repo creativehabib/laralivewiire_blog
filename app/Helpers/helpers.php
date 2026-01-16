@@ -91,7 +91,12 @@ if (! function_exists('the_date')) {
             ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
 
         $format = $format !== '' ? (string) $format : 'F j, Y';
-        $formattedDate = $date->translatedFormat($format);
+
+        if (in_array($format, ['diff', 'diffForHumans', 'human'], true)) {
+            $formattedDate = $date->diffForHumans();
+        } else {
+            $formattedDate = $date->translatedFormat($format);
+        }
         $output = $before.$formattedDate.$after;
 
         if ($display) {
