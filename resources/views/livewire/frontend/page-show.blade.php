@@ -612,7 +612,7 @@
                             </div>
 
                             @if ($sidebar === 'right')
-                                <aside class="rounded-lg lg:sticky lg:top-40 self-start space-y-6 border-slate-200 bg-slate-50 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
+                                <aside class="rounded-lg lg:sticky lg:top-32 self-start space-y-6 border-slate-200 bg-slate-50 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800">
                                     <!-- Newsletter -->
                                     <section class="bg-primary-light/70 dark:bg-slate-800 rounded-xl p-4 border border-primary/20 dark:border-slate-700
                             transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
