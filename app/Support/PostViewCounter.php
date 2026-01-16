@@ -12,6 +12,10 @@ class PostViewCounter
      */
     public static function record(Post $post): bool
     {
+        if (! static::shouldCount()) {
+            return false;
+        }
+
         $fingerprint = static::fingerprint();
         $cacheKey = sprintf('post:viewed:%s:%s', $post->getKey(), $fingerprint);
 
@@ -32,12 +36,28 @@ class PostViewCounter
     {
         $request = request();
 
+        $sessionId = $request->hasSession() ? $request->session()->getId() : null;
+
         $parts = [
+            optional($request->user())->getAuthIdentifier(),
             $request->ip(),
             $request->userAgent(),
-            $request->session()->getId(),
+            $sessionId,
         ];
 
         return sha1(implode('|', $parts));
+    }
+
+    protected static function shouldCount(): bool
+    {
+        $request = request();
+
+        $userAgent = (string) $request->userAgent();
+
+        if ($userAgent === '') {
+            return false;
+        }
+
+        return ! preg_match('/bot|crawler|spider|crawling|slurp|bingpreview|facebookexternalhit/i', $userAgent);
     }
 }
