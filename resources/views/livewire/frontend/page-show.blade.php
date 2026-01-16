@@ -105,11 +105,12 @@
                                                                     @if ($postMeta)
                                                                         <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-slate-400 mb-3">
                                                                             <span>প্রকাশিত: {{ the_date($featuredPost, 'diff') }}</span>
-                                                                            <span>•</span>
+                                                                            <span> <i class="fa-regular fa-user"></i>
                                                                             {!! the_author($featuredPost, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
-                                                                            <span>•</span>
-                                                                            {!! the_category($featuredPost) !!}
-                                                                            <span>•</span>
+                                                                            </span>
+                                                                            <span><i class="fa-solid fa-tags"></i>
+                                                                                {!! the_category($featuredPost) !!}
+                                                                            </span>
                                                                             <span><i class="fa-regular fa-eye"></i>
                                                                             {{ the_view_count($featuredPost, 'ভিউ') }}
                                                                             </span>
