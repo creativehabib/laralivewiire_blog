@@ -2,6 +2,7 @@
 
 use App\Models\Admin\Page;
 use App\Models\Admin\Tag;
+use App\Models\Category;
 use App\Models\GeneralSetting;
 use App\Models\Post;
 use App\Models\Setting;
@@ -138,6 +139,61 @@ if (! function_exists('the_author')) {
             $attributeString,
             e($author->name)
         );
+    }
+}
+
+if (! function_exists('the_category')) {
+    function the_category($model = null, string $separator = ', ', string $class = '', bool $navigate = true): string
+    {
+        $categories = null;
+
+        if ($model instanceof Post) {
+            $categories = $model->relationLoaded('categories')
+                ? $model->categories
+                : $model->categories()->get();
+        } elseif (is_object($model) && isset($model->categories)) {
+            $categories = $model->categories;
+        } elseif (is_array($model) && array_key_exists('categories', $model)) {
+            $categories = $model['categories'];
+        }
+
+        if (! $categories) {
+            return '';
+        }
+
+        $categoryLinks = [];
+        $attributes = [];
+
+        if ($class !== '') {
+            $attributes[] = 'class="'.e($class).'"';
+        }
+
+        if ($navigate) {
+            $attributes[] = 'wire:navigate';
+        }
+
+        $attributeString = $attributes ? ' '.implode(' ', $attributes) : '';
+
+        foreach ($categories as $category) {
+            if (! $category instanceof Category) {
+                continue;
+            }
+
+            $slug = $category->slug ?? $category->slugRecord?->slug;
+
+            if (! $slug) {
+                continue;
+            }
+
+            $categoryLinks[] = sprintf(
+                '<a href="%s"%s>%s</a>',
+                e(route('categories.show', ['category' => $slug])),
+                $attributeString,
+                e($category->name)
+            );
+        }
+
+        return implode($separator, $categoryLinks);
     }
 }
 
