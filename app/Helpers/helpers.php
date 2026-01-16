@@ -5,6 +5,7 @@ use App\Models\Admin\Tag;
 use App\Models\GeneralSetting;
 use App\Models\Post;
 use App\Models\Setting;
+use App\Models\User;
 use App\Support\PermalinkManager;
 use App\Support\SettingManager;
 use App\Support\BanglaCalendar;
@@ -99,6 +100,44 @@ if (! function_exists('the_thumbnail')) {
         }
 
         return image_optimize_url($url, $width, $height);
+    }
+}
+
+if (! function_exists('the_author')) {
+    function the_author($model = null, string $class = '', bool $navigate = true): string
+    {
+        if ($model instanceof User) {
+            $author = $model;
+        } elseif (is_object($model) && isset($model->author)) {
+            $author = $model->author;
+        } elseif (is_array($model) && array_key_exists('author', $model)) {
+            $author = $model['author'];
+        } else {
+            $author = null;
+        }
+
+        if (! $author || ! $author->name) {
+            return '';
+        }
+
+        $attributes = [];
+
+        if ($class !== '') {
+            $attributes[] = 'class="'.e($class).'"';
+        }
+
+        if ($navigate) {
+            $attributes[] = 'wire:navigate';
+        }
+
+        $attributeString = $attributes ? ' '.implode(' ', $attributes) : '';
+
+        return sprintf(
+            '<a href="%s"%s>%s</a>',
+            e(route('authors.show', $author)),
+            $attributeString,
+            e($author->name)
+        );
     }
 }
 

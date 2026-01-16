@@ -31,7 +31,7 @@
         <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-slate-400 mb-3">
             <span>প্রকাশিত: {{ $post?->created_at?->format('d F, Y') }}</span>
             <span>•</span>
-            @if($post?->author)<a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->author->name }}</a>@endif
+            {!! the_author($post, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
             <span>•</span>
             @if($post?->primaryCategory())
                 <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]" wire:navigate>
@@ -105,7 +105,7 @@
             <img src="https://placehold.co/80x80" alt="Author" class="w-14 h-14 rounded-full object-cover">
             <div>
                 <h3 class="text-sm font-semibold">
-                    <a href="{{ route('authors.show', $post->author) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>{{ $post->author->name }}</a>
+                    {!! the_author($post, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
                 </h3>
                 <p class="text-xs text-gray-600 dark:text-slate-400 mt-1">
                     ঘটনার ভেতরের খবর তুলে ধরতে আমরা সবসময় মাঠে থাকি। নির্ভুল তথ্য দেওয়ার চেষ্টা আমাদের অব্যাহত…
