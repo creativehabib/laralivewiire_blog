@@ -53,7 +53,6 @@ if (! function_exists('the_date')) {
     function the_date(
         $modelOrFormat = '',
         string $format = '',
-        bool $display = false,
         ?string $source = null
     ): string
     {
@@ -106,13 +105,7 @@ if (! function_exists('the_date')) {
         } else {
             $formattedDate = $date->translatedFormat($format);
         }
-        $output = $formattedDate;
-
-        if ($display) {
-            echo $output;
-        }
-
-        return $output;
+        return $formattedDate;
     }
 }
 

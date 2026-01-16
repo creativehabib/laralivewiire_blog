@@ -5,7 +5,7 @@
                 <p class="text-xs uppercase tracking-[0.2em] font-medium text-slate-500 dark:text-slate-400">Page</p>
                 <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">{{ $page->name }}</h1>
                 <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Updated {{ optional(the_date($page, 'diff', 'updated_at') ?? the_date($page, 'diff', 'created_at') )}}
+                    Updated : {{ the_date($page, 'diff', 'updated_at') }}
                 </p>
             </header>
         @endif
@@ -94,7 +94,7 @@
                                                         @if ($featuredPost)
                                                             <article class="space-y-2">
                                                                 <a href="{{ post_permalink($featuredPost) }}" class="block" wire:navigate>
-                                                                    <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="w-full h-56 md:h-72 rounded-lg object-cover">
+                                                                    <img src="{{ the_thumbnail($featuredPost) }}" alt="{{ $featuredPost->name }}" class="w-full h-56 md:h-72 rounded-lg object-cover">
                                                                 </a>
                                                                 <div class="space-y-1.5">
                                                                     <h2 class="text-xl md:text-2xl font-semibold leading-snug line-clamp-1">
@@ -136,7 +136,7 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
+                                                                                <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -168,7 +168,7 @@
                                                                 @unless ($shouldHideThumb)
                                                                     <div class="relative flex-shrink-0">
                                                                         <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
+                                                                            <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                         </a>
                                                                         @if ($mediaIcon)
                                                                             <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -204,7 +204,7 @@
                                                         @if ($featuredPost)
                                                             <article class="grid gap-3 md:grid-cols-[200px_1fr]">
                                                                 <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block">
-                                                                    <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="h-28 w-full rounded-lg object-cover">
+                                                                    <img src="{{ the_thumbnail($featuredPost) }}" alt="{{ $featuredPost->name }}" class="h-28 w-full rounded-lg object-cover">
                                                                 </a>
                                                                 <div class="space-y-1.5">
                                                                     <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="text-sm font-bold text-slate-700 hover:text-sky-600 dark:text-slate-100 leading-snug line-clamp-2 transition-colors block">
@@ -230,7 +230,7 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
+                                                                                <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-14 w-20 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -259,7 +259,7 @@
                                                         @if ($heroPost)
                                                             <article class="relative overflow-hidden rounded-xl">
                                                                 <a href="{{ post_permalink($heroPost) }}" wire:navigate class="block">
-                                                                    <img src="{{ $heroPost->image_url }}" alt="{{ $heroPost->name }}" class="h-56 w-full object-cover">
+                                                                    <img src="{{ the_thumbnail($heroPost) }}" alt="{{ $heroPost->name }}" class="h-56 w-full object-cover">
                                                                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent"></div>
                                                                 </a>
                                                                 <div class="absolute bottom-3 left-3 right-3 space-y-1.5 text-white">
@@ -283,7 +283,7 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
+                                                                                <img src="{{ the_thumbnail($post)}}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -315,7 +315,7 @@
                                                             <article class="space-y-2">
                                                                 @unless ($hideFirstThumbnail)
                                                                     <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="hover:text-primary-dark dark:hover:text-primary-light">
-                                                                        <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" class="w-full h-56 rounded-lg object-cover">
+                                                                        <img src="{{ the_thumbnail($featuredPost) }}" alt="{{ $featuredPost->name }}" class="w-full h-56 rounded-lg object-cover">
                                                                     </a>
                                                                 @endunless
                                                                     <div class="space-y-1.5">
@@ -343,7 +343,7 @@
                                                                             @unless ($hideSmallThumbnails)
                                                                                 <div class="flex-shrink-0">
                                                                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                        <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
+                                                                                        <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                                     </a>
                                                                                 </div>
                                                                             @endunless
@@ -374,7 +374,7 @@
                                                                 @unless ($shouldHideThumb)
                                                                     <div class="relative flex-shrink-0">
                                                                         <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                            <img src="{{ $post->image_url }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
+                                                                            <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
                                                                         </a>
                                                                         @if ($mediaIcon)
                                                                             <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>

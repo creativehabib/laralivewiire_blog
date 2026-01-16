@@ -41,7 +41,7 @@
         </div>
 
         <!-- Feature Image -->
-        <img src="{{ $post?->image_url }}" alt="{{ $post?->name }}" class="w-full rounded-lg mb-4 object-cover">
+        <img src="{{ the_thumbnail($post) }}" alt="{{ $post?->name }}" class="w-full rounded-lg mb-4 object-cover">
 
         <!-- Social Share -->
         <div class="flex flex-wrap items-center gap-2 mb-4 text-xs">
