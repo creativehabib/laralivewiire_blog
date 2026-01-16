@@ -54,18 +54,16 @@ if (! function_exists('frontend_bangla_day')) {
 
 if (! function_exists('the_date')) {
     function the_date(
-        $format = '',
-        string $before = '',
-        string $after = '',
+        $modelOrFormat = '',
+        string $format = '',
         bool $display = false,
         ?string $source = null
     ): string
     {
         $model = null;
 
-        if (is_object($format) || is_array($format)) {
-            $model = $format;
-            $format = '';
+        if (is_object($modelOrFormat) || is_array($modelOrFormat)) {
+            $model = $modelOrFormat;
         }
 
         $dateValue = null;
@@ -98,6 +96,12 @@ if (! function_exists('the_date')) {
         $date = Carbon::parse($dateValue)
             ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
 
+        if ($model) {
+            $format = $format !== '' ? $format : '';
+        } else {
+            $format = $modelOrFormat !== '' ? (string) $modelOrFormat : '';
+        }
+
         $format = $format !== '' ? (string) $format : 'F j, Y';
 
         if (in_array($format, ['diff', 'diffForHumans', 'human'], true)) {
@@ -105,7 +109,7 @@ if (! function_exists('the_date')) {
         } else {
             $formattedDate = $date->translatedFormat($format);
         }
-        $output = $before.$formattedDate.$after;
+        $output = $formattedDate;
 
         if ($display) {
             echo $output;
