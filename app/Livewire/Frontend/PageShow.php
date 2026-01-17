@@ -17,6 +17,7 @@ class PageShow extends Component
     public Page $page;
     public bool $ready = false;
     public array $builderState = [];
+    public $sidebarLatest;
 
     public function mount(Page $page): void
     {
@@ -31,15 +32,18 @@ class PageShow extends Component
     }
     public function loadReady(): void
     {
-        // এখানে চাইলে builderSections / relations fetch করো
-        // $this->page->load(...);
-
+        $this->sidebarLatest = Post::query()
+            ->published()
+            ->latest()
+            ->take(5)
+            ->get();
         $this->ready = true;
     }
     public function render()
     {
         return view('livewire.frontend.page-show', [
             'builderSections' => $this->buildBuilderSections(),
+            'sidebarLatest' => $this->sidebarLatest ?? collect(),
         ])
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->page->name,

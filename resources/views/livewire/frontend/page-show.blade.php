@@ -1,4 +1,4 @@
-<div class="container px-4 py-10 md:py-12 max-w-4xl mx-auto typography" wire:init="loadReady">
+<div class="container px-4 py-10 md:py-12 max-w-6xl mx-auto typography" wire:init="loadReady">
 
     {{-- ======================================================================== --}}
     {{-- 1. SKELETON STATE (লোডিং এর সময় এটি দেখাবে) --}}
@@ -757,8 +757,60 @@
                     @endforeach
                 </div>
             @else
-                <div class="prose prose-slate max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:font-bold prose-p:leading-relaxed prose-li:leading-relaxed">
-                    {!! $page->content !!}
+                    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+                        <div class="lg:col-span-8">
+                            <div class="prose prose-slate max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:font-bold prose-p:leading-relaxed prose-li:leading-relaxed">
+                                {!! $page->content !!}
+                            </div>
+                        </div>
+                        <aside class="lg:col-span-4 lg:sticky lg:top-32 self-start space-y-6">
+                            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                                <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
+                                    সর্বশেষ খবর
+                                </h2>
+                                <div class="space-y-3 text-sm">
+                                    @forelse ($sidebarLatest as $post)
+                                        <article class="flex gap-3">
+                                            <a href="{{ post_permalink($post) }}" class="shrink-0 block" wire:navigate>
+                                                <img src="{{ the_thumbnail($post) }}"
+                                                     alt="{{ $post->name }}"
+                                                     class="w-20 h-14 object-cover rounded-md">
+                                            </a>
+                                            <div class="flex-1">
+                                                <a href="{{ post_permalink($post) }}" class="font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light line-clamp-2" wire:navigate>
+                                                    {{ $post->name }}
+                                                </a>
+                                                <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                                                    {{ the_date($post, 'diff') }}
+                                                </div>
+                                            </div>
+                                        </article>
+                                    @empty
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">কোনো খবর পাওয়া যায়নি।</p>
+                                    @endforelse
+                                </div>
+                            </section>
+
+                            <section class="bg-primary-light/70 dark:bg-slate-800 rounded-xl p-4 border border-primary/20 dark:border-slate-700 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                                <h2 class="text-base font-semibold mb-1 text-primary-dark dark:text-primary-light">
+                                    নিউজলেটার সাবস্ক্রাইব করুন
+                                </h2>
+                                <p class="text-xs text-slate-700 dark:text-slate-300 mb-3">
+                                    দিনের গুরুত্বপূর্ণ খবর সরাসরি পেতে ইমেইল দিন।
+                                </p>
+                                <form class="space-y-2">
+                                    <input type="email" placeholder="আপনার ইমেইল"
+                                           class="w-full px-3 py-2 text-sm rounded-md border border-primary/40 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary" />
+                                    <button type="submit" class="w-full bg-primary-dark text-white text-sm font-semibold py-2 rounded-md hover:bg-primary">
+                                        সাবস্ক্রাইব
+                                    </button>
+                                </form>
+                            </section>
+
+                            <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                                বিজ্ঞাপনের স্থান
+                            </section>
+                        </aside>
                 </div>
             @endif
         </article>
