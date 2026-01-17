@@ -1,3 +1,18 @@
+@php
+    $layout = $layout ?? 'stacked';
+    $postItems = $postItems ?? collect();
+    $posts = $posts ?? null;
+    $block = $block ?? [];
+    $hideSmallThumbnails = $hideSmallThumbnails ?? false;
+    $hideFirstThumbnail = $hideFirstThumbnail ?? false;
+    $postMeta = $postMeta ?? true;
+    $showExcerpt = $showExcerpt ?? true;
+    $excerptLength = $excerptLength ?? 0;
+    $titleLength = $titleLength ?? 0;
+    $readMoreButton = $readMoreButton ?? false;
+    $mediaIcon = $mediaIcon ?? false;
+@endphp
+
 @switch($layout)
     @case('list-sidebar')
         @php
