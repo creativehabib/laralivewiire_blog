@@ -16,6 +16,8 @@ class FrontPage extends Homepage
     public ?Page $page = null;
     public array $builderState = [];
     public bool $isStaticPage = false;
+
+    // ১. ডিফল্ট ফলস থাকবে
     public bool $ready = false;
 
     public function mount(): void
@@ -23,6 +25,7 @@ class FrontPage extends Homepage
         $display = setting('homepage_display', 'latest_posts');
         if ($display === 'static_page') {
             $pageId = (int) setting('homepage_page_id');
+            // এই কুয়েরিটি হালকা, তাই mount এ রাখা ঠিক আছে
             $page = $pageId ? Page::query()->published()->find($pageId) : null;
             if ($page) {
                 $this->page = $page;
@@ -41,19 +44,22 @@ class FrontPage extends Homepage
         parent::mount();
     }
 
-    public function loadReady(): void
+    public function loadReady()
     {
         $this->ready = true;
     }
+
     public function render()
     {
         if ($this->isStaticPage && $this->page) {
             $homeUrl = route('home');
+
+            // ৩. buildBuilderSections কল হবে, কিন্তু ভেতরে ready চেক থাকায় ভারী কুয়েরি রান হবে না
             return view('livewire.frontend.page-show', [
                 'builderSections' => $this->buildBuilderSections(),
                 'showPageHeader' => false,
                 'showPageComments' => false,
-                'ready' => $this->ready,
+                'ready' => $this->ready, // ভিউ ফাইলে ready ভেরিয়েবল পাঠানো
             ])->layout('components.layouts.frontend.app', [
                 'title' => $this->page->name,
                 'seo' => Seo::forPage($this->page, [
@@ -68,6 +74,10 @@ class FrontPage extends Homepage
 
     protected function buildBuilderSections(): array
     {
+        if (! $this->ready) {
+            return [];
+        }
+
         $sections = $this->builderState['sections'] ?? [];
 
         if (! is_array($sections)) {
@@ -80,20 +90,12 @@ class FrontPage extends Homepage
                     ->map(function (array $block) {
                         $settings = $block['settings'] ?? [];
                         $categoryIds = collect($settings['categories'] ?? [])
-                            ->map(fn ($id) => (int) $id)
-                            ->filter()
-                            ->values()
-                            ->all();
+                            ->map(fn ($id) => (int) $id)->filter()->values()->all();
                         $tagNames = collect(explode(',', (string) ($settings['tags'] ?? '')))
-                            ->map(fn (string $tag) => trim($tag))
-                            ->filter()
-                            ->values()
-                            ->all();
+                            ->map(fn (string $tag) => trim($tag))->filter()->values()->all();
                         $excludeIds = collect(explode(',', (string) ($settings['exclude'] ?? '')))
-                            ->map(fn (string $id) => (int) trim($id))
-                            ->filter()
-                            ->values()
-                            ->all();
+                            ->map(fn (string $id) => (int) trim($id))->filter()->values()->all();
+
                         $count = max(1, (int) ($settings['count'] ?? 5));
                         $offset = max(0, (int) ($settings['offset'] ?? 0));
                         $days = (int) ($settings['days'] ?? 0);
@@ -104,6 +106,7 @@ class FrontPage extends Homepage
                             $pagination = 'numeric';
                         }
 
+                        // কুয়েরি বিল্ডার শুরু
                         $query = Post::query()
                             ->published()
                             ->with(['categories', 'tags']);
@@ -141,15 +144,13 @@ class FrontPage extends Homepage
                                 $query->inRandomOrder();
                                 break;
                             case 'featured':
-                                $query->where('is_featured', true)
-                                    ->orderBy('created_at', $order);
+                                $query->where('is_featured', true)->orderBy('created_at', $order);
                                 break;
                             case 'last_modified':
                                 $query->orderBy('updated_at', $order);
                                 break;
                             case 'most_commented':
-                                $query->withCount('comments')
-                                    ->orderBy('comments_count', $order);
+                                $query->withCount('comments')->orderBy('comments_count', $order);
                                 break;
                             case 'alphabetical':
                                 $query->orderBy('name', $order);
