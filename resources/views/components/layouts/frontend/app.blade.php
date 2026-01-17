@@ -10,8 +10,10 @@
     @endphp
     <x-seo.meta :seo="$seoData" />
     <link rel="icon" href="{{ setting('site_favicon') }}" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 
     @if($primaryFont = setting('primary_font'))
         @php
@@ -25,8 +27,9 @@
         @endphp
 
         @if($googleFontHref)
-            <link rel="preload" as="style" href="{{ $googleFontHref }}">
+            <link rel="preload" as="style" href="{{ $googleFontHref }}" fetchpriority="high">
             <link href="{{ $googleFontHref }}" rel="stylesheet" media="print" onload="this.media='all'">
+            <noscript><link href="{{ $googleFontHref }}" rel="stylesheet"></noscript>
         @endif
 
         <style>
