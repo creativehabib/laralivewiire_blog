@@ -812,7 +812,7 @@
             @else
                     <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
                         <div class="lg:col-span-8">
-                            <div class="prose prose-slate max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:font-bold prose-p:leading-relaxed prose-li:leading-relaxed">
+                            <div class="prose prose-slate prose-lg md:prose-xl max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:font-bold prose-p:leading-relaxed prose-li:leading-relaxed">
                                 {!! $page->content !!}
                             </div>
                         </div>
