@@ -29,7 +29,7 @@ class PageShow extends Component
             $this->builderState = is_array($builderMeta) ? $builderMeta : [];
         }
     }
-    public function loadPage(): void
+    public function loadReady(): void
     {
         // এখানে চাইলে builderSections / relations fetch করো
         // $this->page->load(...);
@@ -49,6 +49,10 @@ class PageShow extends Component
 
     protected function buildBuilderSections(): array
     {
+        if (! $this->ready) {
+            return [];
+        }
+
         $sections = $this->builderState['sections'] ?? [];
 
         if (! is_array($sections)) {
