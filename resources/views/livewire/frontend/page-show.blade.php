@@ -82,7 +82,14 @@
 
             @if ($page->image)
                 <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                    <img src="{{ $page->image }}" alt="{{ $page->name }}" class="w-full h-auto">
+                    <img src="{{ image_optimize_url($page->image, 1200, 675) }}"
+                         alt="{{ $page->name }}"
+                         loading="eager"
+                         fetchpriority="high"
+                         decoding="async"
+                         width="1200"
+                         height="675"
+                         class="w-full h-auto">
                 </div>
             @endif
 
@@ -168,8 +175,13 @@
                                                                 <article class="group relative flex flex-col gap-4">
                                                                     {{-- Image Container with Zoom Effect --}}
                                                                     <a href="{{ post_permalink($featuredPost) }}" class="block w-full overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50" wire:navigate>
-                                                                        <img src="{{ the_thumbnail($featuredPost) }}"
+                                                                        <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}"
                                                                              alt="{{ $featuredPost->name }}"
+                                                                             loading="eager"
+                                                                             fetchpriority="high"
+                                                                             decoding="async"
+                                                                             width="1200"
+                                                                             height="675"
                                                                              class="w-full aspect-video object-cover transform transition-transform duration-700 group-hover:scale-105">
                                                                     </a>
 
@@ -227,8 +239,12 @@
                                                                         @unless ($shouldHideThumb)
                                                                             <div class="shrink-0 relative w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50">
                                                                                 <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
-                                                                                    <img src="{{ the_thumbnail($post) }}"
+                                                                                    <img src="{{ the_thumbnail($post, 280, 200) }}"
                                                                                          alt="{{ $post->name }}"
+                                                                                         loading="lazy"
+                                                                                         decoding="async"
+                                                                                         width="280"
+                                                                                         height="200"
                                                                                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                                                                 </a>
                                                                                 @if ($mediaIcon)
@@ -283,8 +299,12 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative shrink-0 w-28 h-20 sm:w-32 sm:h-24 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
-                                                                                <img src="{{ the_thumbnail($post) }}"
+                                                                                <img src="{{ the_thumbnail($post, 320, 240) }}"
                                                                                      alt="{{ $post->name }}"
+                                                                                     loading="lazy"
+                                                                                     decoding="async"
+                                                                                     width="320"
+                                                                                     height="240"
                                                                                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                                                             </a>
                                                                             @if ($mediaIcon)
@@ -355,8 +375,13 @@
                                                                         <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block w-full h-full">
                                                                             {{-- Fix: Added min-h-[220px] to prevent image collapse on desktop if text is short --}}
                                                                             <div class="relative w-full aspect-video md:aspect-auto md:h-full min-h-[220px] overflow-hidden bg-slate-100 dark:bg-slate-700 rounded-xl">
-                                                                                <img src="{{ the_thumbnail($featuredPost) }}"
+                                                                                <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}"
                                                                                      alt="{{ $featuredPost->name }}"
+                                                                                     loading="eager"
+                                                                                     fetchpriority="high"
+                                                                                     decoding="async"
+                                                                                     width="1200"
+                                                                                     height="675"
                                                                                      class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                                                                             </div>
                                                                         </a>
@@ -419,8 +444,12 @@
                                                                             @unless ($shouldHideThumb)
                                                                                 <div class="relative shrink-0 w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shadow-sm border border-slate-100 dark:border-slate-700/50">
                                                                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
-                                                                                        <img src="{{ the_thumbnail($post) }}"
+                                                                                        <img src="{{ the_thumbnail($post, 280, 200) }}"
                                                                                              alt="{{ $post->name }}"
+                                                                                             loading="lazy"
+                                                                                             decoding="async"
+                                                                                             width="280"
+                                                                                             height="200"
                                                                                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                                                                     </a>
                                                                                     @if ($mediaIcon)
@@ -463,8 +492,13 @@
                                                                 <article class="group relative overflow-hidden rounded-2xl shadow-sm">
                                                                     <a href="{{ post_permalink($heroPost) }}" wire:navigate class="block w-full h-64 md:h-72 relative">
                                                                         {{-- Image with Zoom --}}
-                                                                        <img src="{{ the_thumbnail($heroPost) }}"
+                                                                        <img src="{{ the_thumbnail($heroPost, 1200, 675) }}"
                                                                              alt="{{ $heroPost->name }}"
+                                                                             loading="eager"
+                                                                             fetchpriority="high"
+                                                                             decoding="async"
+                                                                             width="1200"
+                                                                             height="675"
                                                                              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
 
                                                                         {{-- Improved Gradient Overlay --}}
@@ -498,8 +532,12 @@
                                                                         @unless ($shouldHideThumb)
                                                                             <div class="relative shrink-0 w-24 h-16 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700">
                                                                                 <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
-                                                                                    <img src="{{ the_thumbnail($post)}}"
+                                                                                    <img src="{{ the_thumbnail($post, 240, 160)}}"
                                                                                          alt="{{ $post->name }}"
+                                                                                         loading="lazy"
+                                                                                         decoding="async"
+                                                                                         width="240"
+                                                                                         height="160"
                                                                                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                                                                 </a>
                                                                                 @if ($mediaIcon)
@@ -541,8 +579,13 @@
                                                                 <article class="group space-y-3">
                                                                     @unless ($hideFirstThumbnail)
                                                                         <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
-                                                                            <img src="{{ the_thumbnail($featuredPost) }}"
+                                                                            <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}"
                                                                                  alt="{{ $featuredPost->name }}"
+                                                                                 loading="eager"
+                                                                                 fetchpriority="high"
+                                                                                 decoding="async"
+                                                                                 width="1200"
+                                                                                 height="675"
                                                                                  class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105">
                                                                         </a>
                                                                     @endunless
@@ -578,8 +621,12 @@
                                                                             @unless ($hideSmallThumbnails)
                                                                                 <div class="shrink-0 relative w-28 h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700">
                                                                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
-                                                                                        <img src="{{ the_thumbnail($post) }}"
+                                                                                        <img src="{{ the_thumbnail($post, 280, 200) }}"
                                                                                              alt="{{ $post->name }}"
+                                                                                             loading="lazy"
+                                                                                             decoding="async"
+                                                                                             width="280"
+                                                                                             height="200"
                                                                                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                                                                     </a>
                                                                                 </div>
@@ -611,7 +658,13 @@
                                                                     @unless ($shouldHideThumb)
                                                                         <div class="relative flex-shrink-0">
                                                                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
-                                                                                <img src="{{ the_thumbnail($post) }}" alt="{{ $post->name }}" class="h-20 w-28 rounded object-cover">
+                                                                                <img src="{{ the_thumbnail($post, 280, 200) }}"
+                                                                                     alt="{{ $post->name }}"
+                                                                                     loading="lazy"
+                                                                                     decoding="async"
+                                                                                     width="280"
+                                                                                     height="200"
+                                                                                     class="h-20 w-28 rounded object-cover">
                                                                             </a>
                                                                             @if ($mediaIcon)
                                                                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
@@ -772,8 +825,12 @@
                                     @forelse ($sidebarLatest as $post)
                                         <article class="flex gap-3">
                                             <a href="{{ post_permalink($post) }}" class="shrink-0 block" wire:navigate>
-                                                <img src="{{ the_thumbnail($post) }}"
+                                                <img src="{{ the_thumbnail($post, 200, 140) }}"
                                                      alt="{{ $post->name }}"
+                                                     loading="lazy"
+                                                     decoding="async"
+                                                     width="200"
+                                                     height="140"
                                                      class="w-20 h-14 object-cover rounded-md">
                                             </a>
                                             <div class="flex-1">
