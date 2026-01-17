@@ -161,7 +161,20 @@
                                                 @endif
                                             </div>
                                             @if (count($posts))
-                                                @include('livewire.frontend.partials.page-show.articles')
+                                                @include('livewire.frontend.partials.page-show.articles', [
+                                                    'layout' => $layout,
+                                                    'postItems' => $postItems,
+                                                    'posts' => $posts,
+                                                    'block' => $block,
+                                                    'hideSmallThumbnails' => $hideSmallThumbnails,
+                                                    'hideFirstThumbnail' => $hideFirstThumbnail,
+                                                    'postMeta' => $postMeta,
+                                                    'showExcerpt' => $showExcerpt,
+                                                    'excerptLength' => $excerptLength,
+                                                    'titleLength' => $titleLength,
+                                                    'readMoreButton' => $readMoreButton,
+                                                    'mediaIcon' => $mediaIcon,
+                                                ])
                                             @else
                                                 <p class="text-xs text-slate-500 leading-relaxed">No posts matched this block settings.</p>
                                             @endif
