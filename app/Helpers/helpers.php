@@ -142,45 +142,49 @@ if (! function_exists('the_view_count')) {
 if (! function_exists('the_thumbnail')) {
     function the_thumbnail($model = null, ?int $width = null, ?int $height = null, string $field = 'image'): string
     {
-        $placeholder = 'https://placehold.co/800x450?text=News+Image';
+        // ১. ডিফল্ট প্লেসহোল্ডার (কনফিগ থেকে নেওয়া ভালো, না থাকলে হার্ডকোড)
+        $placeholder = setting('default_placeholder_image') ?? 'https://placehold.co/800x450?text=No+Image';
 
-        if ($model === null) {
+        // ২. যদি ইনপুট একদম ফাঁকা হয়
+        if (blank($model)) {
             return $placeholder;
         }
 
-        if ($model instanceof Post) {
+        // ৩. যদি সরাসরি মডেলের মেথড থাকে (Post বা অন্য মডেল)
+        // 'instanceof Post' চেক করার দরকার নেই, মেথড থাকলেই কল হবে। এতে কোড রিইউজেবল হয়।
+        if (is_object($model) && method_exists($model, 'getImageUrl')) {
             return $model->getImageUrl($width, $height);
         }
 
+        // ৪. যদি ইনপুট স্ট্রিং হয় (সরাসরি পাথ বা URL)
         if (is_string($model)) {
-            return image_optimize_url($model, $width, $height);
+            $path = $model;
+        } else {
+            // ৫. অবজেক্ট বা অ্যারে থেকে ডেটা বের করা (data_get লারাভেলের পাওয়ারফুল হেল্পার)
+            $path = data_get($model, $field);
         }
 
-        if (is_object($model) && method_exists($model, 'getImageUrl')) {
-            return image_optimize_url((string) $model->getImageUrl($width, $height), $width, $height);
-        }
-
-        $path = null;
-
-        if (is_object($model) && isset($model->{$field})) {
-            $path = $model->{$field};
-        } elseif (is_array($model) && array_key_exists($field, $model)) {
-            $path = $model[$field];
-        }
-
-        if (! $path) {
+        // ৬. পাথ যদি না পাওয়া যায়
+        if (blank($path)) {
             return $placeholder;
         }
 
-        if (Str::startsWith((string) $path, ['http://', 'https://'])) {
+        // ৭. URL জেনারেশন লজিক
+        if (Str::startsWith((string) $path, ['http://', 'https://', '//'])) {
             $url = (string) $path;
-        } elseif (Storage::disk('public')->exists((string) $path)) {
-            $url = Storage::disk('public')->url((string) $path);
         } else {
-            $url = asset('storage/'.ltrim((string) $path, '/'));
+            // পারফরম্যান্স টিপস: Storage::exists() চেক বাদ দেওয়া হয়েছে।
+            // কারণ প্রতিটি ইমেজ লোডে ডিস্ক চেক করলে সাইট স্লো হয়ে যায়।
+            // সরাসরি URL জেনারেট করা অনেক ফাস্ট।
+            $url = Storage::disk('public')->url(ltrim((string) $path, '/'));
         }
 
-        return image_optimize_url($url, $width, $height);
+        // ৮. ইমেজ অপ্টিমাইজেশন (যদি ফাংশনটি থাকে)
+        if (function_exists('image_optimize_url')) {
+            return image_optimize_url($url, $width, $height);
+        }
+
+        return $url;
     }
 }
 

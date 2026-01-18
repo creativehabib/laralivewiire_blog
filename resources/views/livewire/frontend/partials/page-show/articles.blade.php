@@ -252,10 +252,10 @@
                         {{-- Meta --}}
                         @if ($postMeta)
                             <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-medium">
-            <span class="flex items-center gap-1.5">
-                <i class="fa-regular fa-calendar opacity-70"></i>
-                {{ the_date($featuredPost, 'diff') }}
-            </span>
+                                <span class="flex items-center gap-1.5">
+                                    <i class="fa-regular fa-calendar opacity-70"></i>
+                                    {{ the_date($featuredPost, 'diff') }}
+                                </span>
                             </div>
                         @endif
 
@@ -306,9 +306,9 @@
                                     </a>
                                     @if ($mediaIcon)
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span class="bg-black/50 backdrop-blur-sm rounded-full p-1">
-                    <svg class="w-2.5 h-2.5 text-white pl-0.5" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
-                </span>
+                                            <span class="bg-black/50 backdrop-blur-sm rounded-full p-1">
+                                                <svg class="w-2.5 h-2.5 text-white pl-0.5" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
+                                            </span>
                                         </div>
                                     @endif
                                 </div>
