@@ -22,7 +22,7 @@ class BanglaCalendar
 
     protected static function convertToBanglaDate(CarbonInterface $dateTime): array
     {
-        $date = $dateTime->copy()->setTimezone(config('app.timezone'));
+        $date = $dateTime->copy()->setTimezone(setting('timezone') ?? config('app.timezone'));
 
         // বর্তমান ইংরেজি তারিখ থেকে বছর, মাস, দিন নেওয়া
         $engDay = (int)$date->format('j');
