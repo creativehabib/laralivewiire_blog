@@ -60,8 +60,19 @@
     @if($showSaveButton)
         {{-- Save Button --}}
         <div class="mt-6 pt-6 border-t flex justify-end">
-            <button type="button" wire:click="save" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                Save Changes
+            <button type="button"
+                    wire:click="save"
+                    wire:loading.attr="disabled"
+                    wire:target="save"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed inline-flex items-center gap-2">
+                <span wire:loading.remove wire:target="save" class="inline-flex items-center gap-2">
+                    <i class="fas fa-save"></i>
+                    {{ __('Save Changes') }}
+                </span>
+                <span wire:loading wire:target="save" class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('Saving...') }}
+                </span>
             </button>
         </div>
     @endif
