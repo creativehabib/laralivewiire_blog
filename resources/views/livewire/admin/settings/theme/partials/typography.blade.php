@@ -34,8 +34,18 @@
     </div>
     {{-- Footer Action --}}
     <div class="pt-6 border-t border-slate-200 dark:border-slate-700 flex justify-end">
-        <button type="submit" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow-sm transition-all">
-            {{ __('Save Changes') }}
+        <button type="submit"
+                wire:loading.attr="disabled"
+                wire:target="saveTypography"
+                class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed text-white font-medium rounded-md shadow-sm transition-all inline-flex items-center gap-2">
+            <span wire:loading.remove wire:target="saveTypography" class="inline-flex items-center gap-2">
+                <i class="fas fa-save"></i>
+                {{ __('Save Changes') }}
+            </span>
+            <span wire:loading wire:target="saveTypography" class="inline-flex items-center gap-2">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                {{ __('Saving...') }}
+            </span>
         </button>
     </div>
 </form>
