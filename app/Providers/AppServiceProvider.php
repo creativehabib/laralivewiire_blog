@@ -34,6 +34,13 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        $timezone = setting('timezone', config('app.timezone', 'UTC'));
+        if (blank($timezone)) {
+            $timezone = config('app.timezone', 'UTC');
+        }
+        config(['app.timezone' => $timezone]);
+        date_default_timezone_set($timezone);
+
         $storageDisk = setting('storage_disk', config('filesystems.default'));
 
         config(['filesystems.default' => $storageDisk]);
