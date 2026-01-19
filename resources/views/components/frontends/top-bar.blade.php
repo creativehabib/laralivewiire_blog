@@ -1,10 +1,8 @@
 <div class="bg-secondary-light text-white text-sm">
     <div class="container flex items-center justify-between px-4 py-2">
         <div class="flex items-center gap-2">
-            <span aria-hidden="true" class="inline-flex h-8 w-8 items-center justify-center rounded bg-white/10 text-sm font-semibold text-white">
-                {{ frontend_bangla_day() }}
-            </span>
-            <span>{{ frontend_bangla_date() }}</span>
+            <i class="fa fa-calendar"></i>
+            <span>{{ frontend_bangla_date() }}</span> | Live Time
         </div>
         <div class="flex items-center gap-4">
             @if(setting('site_email') || setting('site_phone'))
