@@ -4,7 +4,12 @@
             <i class="fa fa-calendar"></i>
             <span>{{ frontend_bangla_date() }}</span>
             <span aria-hidden="true">|</span>
-            <span id="live-time" class="font-medium" aria-live="polite">Live Time</span>
+            <span
+                id="live-time"
+                class="font-medium"
+                aria-live="polite"
+                data-timezone="{{ setting('timezone', config('app.timezone', 'Asia/Dhaka')) }}"
+            >Live Time</span>
         </div>
         <div class="flex items-center gap-4">
             @if(setting('site_email') || setting('site_phone'))
@@ -29,10 +34,12 @@
             return;
         }
 
+        const timeZone = liveTimeElement.dataset.timezone;
         const formatter = new Intl.DateTimeFormat('bn-BD', {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
+            timeZone: timeZone || undefined,
         });
 
         const updateTime = () => {
