@@ -13,10 +13,6 @@
             @include('livewire.admin.settings.theme.partials.layout-design')
             @break
 
-        @case('homepage')
-            @include('livewire.admin.settings.theme.partials.homepage-settings')
-            @break
-
         @case('post')
             @include('livewire.admin.settings.theme.partials.post-details')
             @break

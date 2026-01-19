@@ -53,6 +53,22 @@ class ThemeOptionsSetting extends Component
     public string $homepageBlockBackgroundColor = '';
     public string $homepageBlockSecondaryColor = '';
 
+    // নতুন ফিচার: ডাইনামিক সোশ্যাল প্ল্যাটফর্ম লিস্ট
+    // এটি ব্লেড ফাইলে লুপ চালানোর জন্য এবং সেভ করার সময় ব্যবহার হবে
+    public function getSocialPlatformsProperty()
+    {
+        return [
+            'facebook' => ['label' => 'Facebook', 'icon' => 'fab fa-facebook', 'color' => 'text-blue-600'],
+            'whatsapp' => ['label' => 'WhatsApp', 'icon' => 'fab fa-whatsapp', 'color' => 'text-green-500'],
+            'twitter'  => ['label' => 'Twitter / X', 'icon' => 'fab fa-x-twitter', 'color' => 'text-slate-900 dark:text-slate-200'],
+            'telegram' => ['label' => 'Telegram', 'icon' => 'fab fa-telegram', 'color' => 'text-sky-500'],
+            'linkedin' => ['label' => 'LinkedIn', 'icon' => 'fab fa-linkedin', 'color' => 'text-blue-700'],
+            'pinterest'=> ['label' => 'Pinterest', 'icon' => 'fab fa-pinterest', 'color' => 'text-red-600'],
+            'reddit'   => ['label' => 'Reddit', 'icon' => 'fab fa-reddit', 'color' => 'text-orange-600'],
+            'email'    => ['label' => 'Email', 'icon' => 'fas fa-envelope', 'color' => 'text-gray-500'],
+        ];
+    }
+
     public function mount()
     {
         $menus = config('theme-options.menus', []);
@@ -67,6 +83,7 @@ class ThemeOptionsSetting extends Component
         $this->body_font_size = (string) setting('body_font_size', '16px');
         $this->google_fonts = $this->loadGoogleFonts();
         $this->timezoneOptions = \DateTimeZone::listIdentifiers();
+
         $this->categories = Category::query()
             ->orderBy('name')
             ->get(['id', 'name'])
@@ -75,6 +92,7 @@ class ThemeOptionsSetting extends Component
                 'name' => $category->name,
             ])
             ->all();
+
         $this->pages = Page::query()
             ->orderBy('name')
             ->get(['id', 'name'])
@@ -83,6 +101,8 @@ class ThemeOptionsSetting extends Component
                 'title' => $page->title,
             ])
             ->all();
+
+        // General Settings
         $this->general = [
             'site_title' => (string) setting('site_title', ''),
             'site_tagline' => (string) setting('site_tagline', ''),
@@ -95,6 +115,8 @@ class ThemeOptionsSetting extends Component
             'site_email' => (string) setting('site_email', ''),
             'site_phone' => (string) setting('site_phone', ''),
         ];
+
+        // Header Settings
         $this->header = [
             'sticky_header' => filter_var(setting('sticky_header', true), FILTER_VALIDATE_BOOLEAN),
             'breaking_news_enabled' => filter_var(setting('breaking_news_enabled', true), FILTER_VALIDATE_BOOLEAN),
@@ -102,19 +124,26 @@ class ThemeOptionsSetting extends Component
             'breaking_news_speed' => (int) setting('breaking_news_speed', 60),
             'search_toggle' => filter_var(setting('search_toggle', true), FILTER_VALIDATE_BOOLEAN),
         ];
+
+        // Layout Settings
         $this->layout = [
             'primary_theme_color' => (string) setting('primary_theme_color', '#2563eb'),
             'dark_mode_enabled' => filter_var(setting('dark_mode_enabled', true), FILTER_VALIDATE_BOOLEAN),
         ];
+
         $storedCategoryColors = setting('category_colors', []);
         foreach ($this->categories as $category) {
             $categoryId = $category['id'];
             $this->categoryColors[$categoryId] = $storedCategoryColors[$categoryId] ?? '#94a3b8';
         }
+
+        // Homepage Settings
         $this->homepage = [
             'featured_slider_enabled' => filter_var(setting('featured_slider_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'featured_slider_category_id' => setting('featured_slider_category_id'),
         ];
+
+        // Homepage Block Variables Initialization
         $this->homepageBlockTitle = (string) setting('homepage_block_title', '');
         $this->homepageBlockIcon = (string) setting('homepage_block_icon', '');
         $this->homepageBlockUrl = (string) setting('homepage_block_url', '');
@@ -140,6 +169,7 @@ class ThemeOptionsSetting extends Component
         $this->homepageBlockPrimaryColor = (string) setting('homepage_block_primary_color', '');
         $this->homepageBlockBackgroundColor = (string) setting('homepage_block_background_color', '');
         $this->homepageBlockSecondaryColor = (string) setting('homepage_block_secondary_color', '');
+
         $storedSectionOrder = setting('homepage_section_order', []);
         $storedSectionCounts = setting('homepage_section_post_counts', []);
         foreach ($this->categories as $category) {
@@ -147,20 +177,40 @@ class ThemeOptionsSetting extends Component
             $this->homepageSectionOrder[$categoryId] = $storedSectionOrder[$categoryId] ?? null;
             $this->homepageSectionPostCounts[$categoryId] = $storedSectionCounts[$categoryId] ?? 6;
         }
+
+        // ==========================================
+        // UPDATE START: Post Settings (Dynamic & Layout)
+        // ==========================================
         $this->post = [
-            'share_facebook' => filter_var(setting('share_facebook', true), FILTER_VALIDATE_BOOLEAN),
-            'share_whatsapp' => filter_var(setting('share_whatsapp', true), FILTER_VALIDATE_BOOLEAN),
-            'share_telegram' => filter_var(setting('share_telegram', true), FILTER_VALIDATE_BOOLEAN),
+            'sidebar_position'    => (string) setting('sidebar_position', 'right'),
+            'show_featured_image' => filter_var(setting('show_featured_image', true), FILTER_VALIDATE_BOOLEAN), // NEW
+            'show_date'           => filter_var(setting('show_date', true), FILTER_VALIDATE_BOOLEAN),
+            'show_views'          => filter_var(setting('show_views', true), FILTER_VALIDATE_BOOLEAN),
+            // Engagement & Interaction
             'author_box_enabled' => filter_var(setting('author_box_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'related_news_count' => (int) setting('related_news_count', 4),
-            'comments_system' => (string) setting('comments_system', 'livewire'),
+            'related_news_enabled' => filter_var(setting('related_news_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'related_news_count' => (int) setting('related_news_count', 2),
         ];
+
+        // Dynamic Social Share Buttons Loop
+        foreach ($this->socialPlatforms as $key => $platform) {
+            // Default active: Facebook and WhatsApp
+            $defaultActive = in_array($key, ['facebook', 'whatsapp']);
+            $this->post['share_' . $key] = filter_var(setting('share_' . $key, $defaultActive), FILTER_VALIDATE_BOOLEAN);
+        }
+        // ==========================================
+        // UPDATE END
+        // ==========================================
+
+        // Ads Settings
         $this->ads = [
             'header_ad_code' => (string) setting('header_ad_code', ''),
             'sidebar_ad_code' => (string) setting('sidebar_ad_code', ''),
             'in_article_ad_code' => (string) setting('in_article_ad_code', ''),
             'in_article_ad_paragraph' => (int) setting('in_article_ad_paragraph', 3),
         ];
+
+        // SEO Settings
         $this->seo = [
             'meta_description' => (string) setting('meta_description', ''),
             'facebook_url' => (string) setting('facebook_url', ''),
@@ -170,6 +220,8 @@ class ThemeOptionsSetting extends Component
             'google_analytics_code' => (string) setting('google_analytics_code', ''),
             'facebook_pixel_code' => (string) setting('facebook_pixel_code', ''),
         ];
+
+        // Footer Settings
         $footerLinks = setting('footer_useful_links', []);
         $this->footer = [
             'copyright_text' => (string) setting('footer_copyright_text', ''),
@@ -177,13 +229,11 @@ class ThemeOptionsSetting extends Component
             'useful_links' => is_array($footerLinks) ? $footerLinks : [],
         ];
 
-        // পেজ লোড হওয়ার সময় ডিফল্ট একটি খালি অপশন রাখতে পারেন
         if (empty($this->social_links)) {
             $this->addSocialLink();
         }
     }
 
-    // নতুন সোশ্যাল লিঙ্ক অপশন যোগ করার ফাংশন
     public function addSocialLink(): void
     {
         $this->social_links[] = [
@@ -195,11 +245,10 @@ class ThemeOptionsSetting extends Component
         ];
     }
 
-    // কোনো অপশন মুছে ফেলার ফাংশন (প্রয়োজন হলে)
     public function removeSocialLink($index): void
     {
         unset($this->social_links[$index]);
-        $this->social_links = array_values($this->social_links); // ইন্ডেক্স ঠিক করার জন্য
+        $this->social_links = array_values($this->social_links);
     }
 
     public function save(): void
@@ -281,17 +330,30 @@ class ThemeOptionsSetting extends Component
         session()->flash('success', 'Homepage settings updated successfully!');
     }
 
+    // ==========================================
+    // UPDATE START: Updated savePost Method
+    // ==========================================
     public function savePost(): void
     {
-        set_setting('share_facebook', filter_var($this->post['share_facebook'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
-        set_setting('share_whatsapp', filter_var($this->post['share_whatsapp'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
-        set_setting('share_telegram', filter_var($this->post['share_telegram'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
+        set_setting('sidebar_position', $this->post['sidebar_position'] ?? 'right', 'theme-options');
+        set_setting('show_featured_image', filter_var($this->post['show_featured_image'] ?? true, FILTER_VALIDATE_BOOLEAN), 'theme-options'); // NEW
+        set_setting('show_date', filter_var($this->post['show_date'] ?? true, FILTER_VALIDATE_BOOLEAN), 'theme-options');
+        set_setting('show_views', filter_var($this->post['show_views'] ?? true, FILTER_VALIDATE_BOOLEAN), 'theme-options');
+        // 2. Engagement & Interaction
         set_setting('author_box_enabled', filter_var($this->post['author_box_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
-        set_setting('related_news_count', (int) ($this->post['related_news_count'] ?? 4), 'theme-options');
-        set_setting('comments_system', $this->post['comments_system'] ?? 'livewire', 'theme-options');
+        set_setting('related_news_enabled', filter_var($this->post['related_news_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
+        set_setting('related_news_count', (int) ($this->post['related_news_count'] ?? 2), 'theme-options');
+
+        // 3. Dynamic Social Share Buttons (Loop Saving)
+        foreach ($this->socialPlatforms as $key => $platform) {
+            set_setting('share_' . $key, filter_var($this->post['share_' . $key] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
+        }
 
         session()->flash('success', 'Post settings updated successfully!');
     }
+    // ==========================================
+    // UPDATE END
+    // ==========================================
 
     public function saveAds(): void
     {
@@ -448,6 +510,7 @@ class ThemeOptionsSetting extends Component
 
         return $normalized;
     }
+
     public function render()
     {
         return view('livewire.admin.settings.theme.theme-options-setting', [

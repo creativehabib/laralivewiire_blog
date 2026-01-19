@@ -118,19 +118,22 @@
         @endif
 
         <!-- Author Box -->
-        @if($post?->author)
-        <section class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-4 flex gap-3 items-start">
-            <img src="https://placehold.co/80x80" alt="Author" class="w-14 h-14 rounded-full object-cover">
-            <div>
-                <h3 class="text-sm font-semibold">
-                    {!! the_author($post, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
-                </h3>
-                <p class="text-xs text-gray-600 dark:text-slate-400 mt-1">
-                    ঘটনার ভেতরের খবর তুলে ধরতে আমরা সবসময় মাঠে থাকি। নির্ভুল তথ্য দেওয়ার চেষ্টা আমাদের অব্যাহত…
-                </p>
-            </div>
-        </section>
+        @if(setting('author_box_enabled'))
+            @if($post?->author)
+                <section class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-4 flex gap-3 items-start">
+                    <img src="https://placehold.co/80x80" alt="Author" class="w-14 h-14 rounded-full object-cover">
+                    <div>
+                        <h3 class="text-sm font-semibold">
+                            {!! the_author($post, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
+                        </h3>
+                        <p class="text-xs text-gray-600 dark:text-slate-400 mt-1">
+                            ঘটনার ভেতরের খবর তুলে ধরতে আমরা সবসময় মাঠে থাকি। নির্ভুল তথ্য দেওয়ার চেষ্টা আমাদের অব্যাহত…
+                        </p>
+                    </div>
+                </section>
+            @endif
         @endif
+
 
         <!-- Comments -->
         <section class="mt-6">

@@ -21,12 +21,6 @@ return [
             'description' => 'Primary colors, category colors, typography, and dark mode.',
         ],
         [
-            'id' => 'homepage',
-            'icon' => 'home',
-            'label' => 'Homepage',
-            'description' => 'Configure featured slider and homepage sections.',
-        ],
-        [
             'id' => 'post',
             'icon' => 'newspaper',
             'label' => 'Post Details',
