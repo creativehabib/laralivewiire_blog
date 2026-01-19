@@ -524,19 +524,34 @@
         permissionCheckboxes.forEach(permissionCheckbox => {
             permissionCheckbox.addEventListener('change', function () {
                 const container = this.closest('.group-permissions-container');
-                const group = container.getAttribute('data-group-container');
-                const groupCheckbox = document.querySelector(`.group-checkbox[data-group="${group}"]`);
-                const allInGroup = container.querySelectorAll('.permission-checkbox');
-                const allChecked = container.querySelectorAll('.permission-checkbox:checked');
-
-                groupCheckbox.checked = allInGroup.length === allChecked.length;
+                updateGroupState(container);
                 updateCheckAllState();
             });
         });
 
-        function updateCheckAllState() {
-            checkAll.checked = permissionCheckboxes.length === document.querySelectorAll('.permission-checkbox:checked').length;
+        function updateGroupState(container) {
+            if (!container) return;
+            const group = container.getAttribute('data-group-container');
+            if (!group) return;
+            const groupCheckbox = document.querySelector(`.group-checkbox[data-group="${group}"]`);
+            if (!groupCheckbox) return;
+            const allInGroup = container.querySelectorAll('.permission-checkbox');
+            const allChecked = container.querySelectorAll('.permission-checkbox:checked');
+
+            groupCheckbox.checked = allInGroup.length > 0 && allInGroup.length === allChecked.length;
+            groupCheckbox.indeterminate = allChecked.length > 0 && allChecked.length < allInGroup.length;
         }
+
+        function updateCheckAllState() {
+            const checkedCount = document.querySelectorAll('.permission-checkbox:checked').length;
+            checkAll.checked = permissionCheckboxes.length > 0 && permissionCheckboxes.length === checkedCount;
+            checkAll.indeterminate = checkedCount > 0 && checkedCount < permissionCheckboxes.length;
+        }
+
+        document.querySelectorAll('.group-permissions-container').forEach(container => {
+            updateGroupState(container);
+        });
+        updateCheckAllState();
     });
 </script>
 @stack('scripts')
