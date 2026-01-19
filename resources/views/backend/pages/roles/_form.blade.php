@@ -79,7 +79,7 @@
                     </div>
 
                     {{-- Permissions Items --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3"
+                    <div class="group-permissions-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3"
                          data-group-container="{{ Str::slug($groupName) }}">
 
                         @foreach($permissions->sortBy('name') as $permission)
