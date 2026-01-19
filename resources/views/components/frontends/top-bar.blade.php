@@ -4,12 +4,16 @@
             <i class="fa fa-calendar"></i>
             <span>{{ frontend_bangla_date() }}</span>
             <span aria-hidden="true">|</span>
+            @php
+                $displayTimezone = setting('timezone', config('app.timezone', 'Asia/Dhaka'));
+            @endphp
             <span
                 id="live-time"
                 class="font-medium"
                 aria-live="polite"
-                data-timezone="{{ setting('timezone', config('app.timezone', 'Asia/Dhaka')) }}"
+                data-timezone="{{ $displayTimezone }}"
             >Live Time</span>
+            <span class="text-xs text-slate-100/80" aria-hidden="true">({{ $displayTimezone }})</span>
         </div>
         <div class="flex items-center gap-4">
             @if(setting('site_email') || setting('site_phone'))
