@@ -11,7 +11,7 @@
     };
 @endphp
 
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $adminLocale) }}" dir="{{ $adminDirection }}" class="dark admin-appearance">
 <head>
     @include('partials.head')
@@ -163,226 +163,226 @@
             @endcan
 
 
-        {{--Appearance--}}
-        @canany(['menu.view', 'setting.view'])
-            <flux:sidebar.group
-                heading="{{ __('Appearance') }}"
-                icon="swatch"
-                expandable
-                class="grid"
-                :expanded="request()->routeIs('appearance.*')"
-            >
-                @can('setting.view')
-                    <flux:sidebar.item
-                        icon="paint-brush"
-                        :href="route('appearance.admin-appearance')"
-                        :current="request()->routeIs('appearance.admin-appearance')"
-                        tooltip="{{ __('Admin appearance') }}"
-                        wire:navigate
-                    >
-                        {{ __('Admin appearance') }}
-                    </flux:sidebar.item>
-                @endcan
+            {{--Appearance--}}
+            @canany(['menu.view', 'setting.view'])
+                <flux:sidebar.group
+                    heading="{{ __('Appearance') }}"
+                    icon="swatch"
+                    expandable
+                    class="grid"
+                    :expanded="request()->routeIs('appearance.*')"
+                >
+                    @can('setting.view')
+                        <flux:sidebar.item
+                            icon="paint-brush"
+                            :href="route('appearance.admin-appearance')"
+                            :current="request()->routeIs('appearance.admin-appearance')"
+                            tooltip="{{ __('Admin appearance') }}"
+                            wire:navigate
+                        >
+                            {{ __('Admin appearance') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-                @can('menu.view')
-                    <flux:sidebar.item
-                        icon="bars-3"
-                        :href="route('appearance.menus.index')"
-                        :current="request()->routeIs('appearance.menus.*')"
-                        tooltip="{{ __('Menus') }}"
-                        wire:navigate
-                    >
-                        {{ __('Menus') }}
-                    </flux:sidebar.item>
-                @endcan
+                    @can('menu.view')
+                        <flux:sidebar.item
+                            icon="bars-3"
+                            :href="route('appearance.menus.index')"
+                            :current="request()->routeIs('appearance.menus.*')"
+                            tooltip="{{ __('Menus') }}"
+                            wire:navigate
+                        >
+                            {{ __('Menus') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-                @can('setting.view')
-                    <flux:sidebar.item
-                        icon="megaphone"
-                        :href="route('appearance.ads-settings')"
-                        :current="request()->routeIs('appearance.ads-settings')"
-                        tooltip="{{ __('Ads Settings') }}"
-                        wire:navigate
-                    >
-                        {{ __('Ads Settings') }}
-                    </flux:sidebar.item>
+                    @can('setting.view')
+                        <flux:sidebar.item
+                            icon="megaphone"
+                            :href="route('appearance.ads-settings')"
+                            :current="request()->routeIs('appearance.ads-settings')"
+                            tooltip="{{ __('Ads Settings') }}"
+                            wire:navigate
+                        >
+                            {{ __('Ads Settings') }}
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item
-                        icon="paint-brush"
-                        :href="route('appearance.custom-css')"
-                        :current="request()->routeIs('appearance.custom-css')"
-                        tooltip="{{ __('Customs CSS') }}"
-                        wire:navigate
-                    >
-                        {{ __('Customs CSS') }}
-                    </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon="paint-brush"
+                            :href="route('appearance.custom-css')"
+                            :current="request()->routeIs('appearance.custom-css')"
+                            tooltip="{{ __('Customs CSS') }}"
+                            wire:navigate
+                        >
+                            {{ __('Customs CSS') }}
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item
-                        icon="code-bracket"
-                        :href="route('appearance.custom-js')"
-                        :current="request()->routeIs('appearance.custom-js')"
-                        tooltip="{{ __('Customs JS') }}"
-                        wire:navigate
-                    >
-                        {{ __('Customs JS') }}
-                    </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon="code-bracket"
+                            :href="route('appearance.custom-js')"
+                            :current="request()->routeIs('appearance.custom-js')"
+                            tooltip="{{ __('Customs JS') }}"
+                            wire:navigate
+                        >
+                            {{ __('Customs JS') }}
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item
-                        icon="command-line"
-                        :href="route('appearance.custom-html')"
-                        :current="request()->routeIs('appearance.custom-html')"
-                        tooltip="{{ __('Customs HTML') }}"
-                        wire:navigate
-                    >
-                        {{ __('Customs HTML') }}
-                    </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon="command-line"
+                            :href="route('appearance.custom-html')"
+                            :current="request()->routeIs('appearance.custom-html')"
+                            tooltip="{{ __('Customs HTML') }}"
+                            wire:navigate
+                        >
+                            {{ __('Customs HTML') }}
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item
-                        icon="document-magnifying-glass"
-                        :href="route('appearance.robots')"
-                        :current="request()->routeIs('appearance.robots')"
-                        tooltip="{{ __('Robots.txt') }}"
-                        wire:navigate
-                    >
-                        {{ __('Robots.txt') }}
-                    </flux:sidebar.item>
-                @endcan
+                        <flux:sidebar.item
+                            icon="document-magnifying-glass"
+                            :href="route('appearance.robots')"
+                            :current="request()->routeIs('appearance.robots')"
+                            tooltip="{{ __('Robots.txt') }}"
+                            wire:navigate
+                        >
+                            {{ __('Robots.txt') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-            </flux:sidebar.group>
-        @endcanany
-        {{--Theme Option--}}
-        @can('setting.view')
-            <flux:sidebar.item
-                icon="adjustments-horizontal"
-                :href="route('theme.theme-options', ['as' => 'general'])"
-                :current="request()->routeIs('theme.theme-options')"
-                tooltip="{{ __('Theme Options') }}"
-                wire:navigate
-            >
-                {{ __('Theme Options') }}
-            </flux:sidebar.item>
-        @endcan
-        {{-- Settings Group --}}
-        @can('setting.view')
-            <flux:sidebar.group
-                heading="{{ __('Settings') }}"
-                icon="cog-6-tooth"
-                expandable
-                class="grid"
-                :expanded="request()->routeIs('settings.*')"
-            >
+                </flux:sidebar.group>
+            @endcanany
+            {{--Theme Option--}}
+            @can('setting.view')
                 <flux:sidebar.item
                     icon="adjustments-horizontal"
-                    :href="route('settings.dynamic', 'general')"
-                    :current="request()->routeIs('settings.dynamic', 'general')"
-                    tooltip="{{ __('General Setting') }}"
+                    :href="route('theme.theme-options', ['as' => 'general'])"
+                    :current="request()->routeIs('theme.theme-options')"
+                    tooltip="{{ __('Theme Options') }}"
                     wire:navigate
                 >
-                    {{ __('General Setting') }}
+                    {{ __('Theme Options') }}
                 </flux:sidebar.item>
-
-                <flux:sidebar.item
-                    icon="map"
-                    :href="route('settings.sitemap')"
-                    :current="request()->routeIs('settings.sitemap')"
-                    tooltip="{{ __('Sitemap Setting') }}"
-                    wire:navigate
+            @endcan
+            {{-- Settings Group --}}
+            @can('setting.view')
+                <flux:sidebar.group
+                    heading="{{ __('Settings') }}"
+                    icon="cog-6-tooth"
+                    expandable
+                    class="grid"
+                    :expanded="request()->routeIs('settings.*')"
                 >
-                    {{ __('Sitemap Setting') }}
-                </flux:sidebar.item>
+                    <flux:sidebar.item
+                        icon="adjustments-horizontal"
+                        :href="route('settings.dynamic', 'general')"
+                        :current="request()->routeIs('settings.dynamic', 'general')"
+                        tooltip="{{ __('General Setting') }}"
+                        wire:navigate
+                    >
+                        {{ __('General Setting') }}
+                    </flux:sidebar.item>
 
-                <flux:sidebar.item
-                    icon="server"
-                    :href="route('settings.htaccess')"
-                    :current="request()->routeIs('settings.htaccess')"
-                    tooltip="{{ __('Htaccess') }}"
-                    wire:navigate
+                    <flux:sidebar.item
+                        icon="map"
+                        :href="route('settings.sitemap')"
+                        :current="request()->routeIs('settings.sitemap')"
+                        tooltip="{{ __('Sitemap Setting') }}"
+                        wire:navigate
+                    >
+                        {{ __('Sitemap Setting') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item
+                        icon="server"
+                        :href="route('settings.htaccess')"
+                        :current="request()->routeIs('settings.htaccess')"
+                        tooltip="{{ __('Htaccess') }}"
+                        wire:navigate
+                    >
+                        {{ __('Htaccess') }}
+                    </flux:sidebar.item>
+
+                    {{-- UPDATED ICONS BELOW --}}
+                    <flux:sidebar.item
+                        icon="chat-bubble-left-right"
+                        :href="route('settings.comments')"
+                        :current="request()->routeIs('settings.comments')"
+                        tooltip="{{ __('Comments') }}"
+                        wire:navigate
+                    >
+                        {{ __('Comments') }}
+                    </flux:sidebar.item>
+
+                </flux:sidebar.group>
+            @endcan
+
+            {{--System Settings--}}
+            @canany(['setting.view', 'role.view', 'permission.view', 'user.view'])
+                <flux:sidebar.group
+                    heading="{{ __('System Settings') }}"
+                    icon="cpu-chip"
+                    expandable
+                    class="grid"
+                    :expanded="request()->routeIs('system.*')"
                 >
-                    {{ __('Htaccess') }}
-                </flux:sidebar.item>
+                    @can('setting.view')
+                        <flux:sidebar.item
+                            icon="circle-stack"
+                            :href="route('system.cacheManagement')"
+                            :current="request()->routeIs('system.cacheManagement')"
+                            tooltip="{{ __('Cache Management') }}"
+                            wire:navigate
+                        >
+                            {{ __('Cache Management') }}
+                        </flux:sidebar.item>
 
-                {{-- UPDATED ICONS BELOW --}}
-                <flux:sidebar.item
-                    icon="chat-bubble-left-right"
-                    :href="route('settings.comments')"
-                    :current="request()->routeIs('settings.comments')"
-                    tooltip="{{ __('Comments') }}"
-                    wire:navigate
-                >
-                    {{ __('Comments') }}
-                </flux:sidebar.item>
+                        <flux:sidebar.item
+                            icon="list-bullet"
+                            :href="route('system.activity-logs')"
+                            :current="request()->routeIs('system.activity-logs')"
+                            tooltip="{{ __('Activity Logs') }}"
+                            wire:navigate
+                        >
+                            {{ __('Activity Logs') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-            </flux:sidebar.group>
-        @endcan
+                    @can('role.view')
+                        <flux:sidebar.item
+                            icon="lock-closed"
+                            :href="route('system.roles.index')"
+                            :current="request()->routeIs('system.roles.*')"
+                            tooltip="{{ __('Role & Permissions') }}"
+                            wire:navigate
+                        >
+                            {{ __('Role & Permissions') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-        {{--System Settings--}}
-        @canany(['setting.view', 'role.view', 'permission.view', 'user.view'])
-            <flux:sidebar.group
-                heading="{{ __('System Settings') }}"
-                icon="cpu-chip"
-                expandable
-                class="grid"
-                :expanded="request()->routeIs('system.*')"
-            >
-                @can('setting.view')
-                    <flux:sidebar.item
-                        icon="circle-stack"
-                        :href="route('system.cacheManagement')"
-                        :current="request()->routeIs('system.cacheManagement')"
-                        tooltip="{{ __('Cache Management') }}"
-                        wire:navigate
-                    >
-                        {{ __('Cache Management') }}
-                    </flux:sidebar.item>
+                    @can('permission.view')
+                        <flux:sidebar.item
+                            icon="key"
+                            :href="route('system.permissions.index')"
+                            :current="request()->routeIs('system.permissions.*')"
+                            tooltip="{{ __('Permissions') }}"
+                            wire:navigate
+                        >
+                            {{ __('Permissions') }}
+                        </flux:sidebar.item>
+                    @endcan
 
-                    <flux:sidebar.item
-                        icon="list-bullet"
-                        :href="route('system.activity-logs')"
-                        :current="request()->routeIs('system.activity-logs')"
-                        tooltip="{{ __('Activity Logs') }}"
-                        wire:navigate
-                    >
-                        {{ __('Activity Logs') }}
-                    </flux:sidebar.item>
-                @endcan
-
-                @can('role.view')
-                    <flux:sidebar.item
-                        icon="lock-closed"
-                        :href="route('system.roles.index')"
-                        :current="request()->routeIs('system.roles.*')"
-                        tooltip="{{ __('Role & Permissions') }}"
-                        wire:navigate
-                    >
-                        {{ __('Role & Permissions') }}
-                    </flux:sidebar.item>
-                @endcan
-
-                @can('permission.view')
-                    <flux:sidebar.item
-                        icon="key"
-                        :href="route('system.permissions.index')"
-                        :current="request()->routeIs('system.permissions.*')"
-                        tooltip="{{ __('Permissions') }}"
-                        wire:navigate
-                    >
-                        {{ __('Permissions') }}
-                    </flux:sidebar.item>
-                @endcan
-
-                @can('user.view')
-                    <flux:sidebar.item
-                        icon="users"
-                        :href="route('system.users.index')"
-                        :current="request()->routeIs('system.users.*')"
-                        tooltip="{{ __('Users') }}"
-                        wire:navigate
-                    >
-                        {{ __('Users') }}
-                    </flux:sidebar.item>
-                @endcan
-            </flux:sidebar.group>
-        @endcanany
+                    @can('user.view')
+                        <flux:sidebar.item
+                            icon="users"
+                            :href="route('system.users.index')"
+                            :current="request()->routeIs('system.users.*')"
+                            tooltip="{{ __('Users') }}"
+                            wire:navigate
+                        >
+                            {{ __('Users') }}
+                        </flux:sidebar.item>
+                    @endcan
+                </flux:sidebar.group>
+            @endcanany
 
         </flux:sidebar.nav>
 
