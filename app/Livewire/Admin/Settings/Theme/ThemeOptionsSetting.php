@@ -125,58 +125,6 @@ class ThemeOptionsSetting extends Component
             'search_toggle' => filter_var(setting('search_toggle', true), FILTER_VALIDATE_BOOLEAN),
         ];
 
-        // Layout Settings
-        $this->layout = [
-            'primary_theme_color' => (string) setting('primary_theme_color', '#2563eb'),
-            'dark_mode_enabled' => filter_var(setting('dark_mode_enabled', true), FILTER_VALIDATE_BOOLEAN),
-        ];
-
-        $storedCategoryColors = setting('category_colors', []);
-        foreach ($this->categories as $category) {
-            $categoryId = $category['id'];
-            $this->categoryColors[$categoryId] = $storedCategoryColors[$categoryId] ?? '#94a3b8';
-        }
-
-        // Homepage Settings
-        $this->homepage = [
-            'featured_slider_enabled' => filter_var(setting('featured_slider_enabled', true), FILTER_VALIDATE_BOOLEAN),
-            'featured_slider_category_id' => setting('featured_slider_category_id'),
-        ];
-
-        // Homepage Block Variables Initialization
-        $this->homepageBlockTitle = (string) setting('homepage_block_title', '');
-        $this->homepageBlockIcon = (string) setting('homepage_block_icon', '');
-        $this->homepageBlockUrl = (string) setting('homepage_block_url', '');
-        $storedHomepageBlockCategories = setting('homepage_block_categories', []);
-        $this->homepageBlockCategories = is_array($storedHomepageBlockCategories) ? $storedHomepageBlockCategories : [];
-        $this->homepageBlockTags = (string) setting('homepage_block_tags', '');
-        $this->homepageBlockTrending = filter_var(setting('homepage_block_trending', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockStyle = (string) setting('homepage_block_style', 'standard');
-        $this->homepageBlockColumns = (int) setting('homepage_block_columns', 3);
-        $this->homepageBlockAjaxFilters = filter_var(setting('homepage_block_ajax_filters', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockMoreButton = filter_var(setting('homepage_block_more_button', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockTitleLength = (int) setting('homepage_block_title_length', 0);
-        $this->homepageBlockExcerpt = filter_var(setting('homepage_block_excerpt', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockExcerptLength = (int) setting('homepage_block_excerpt_length', 0);
-        $this->homepageBlockReadMoreButton = filter_var(setting('homepage_block_read_more_button', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockReadMoreText = (string) setting('homepage_block_read_more_text', '');
-        $this->homepageBlockHideFirstThumbnail = filter_var(setting('homepage_block_hide_first_thumbnail', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockHideSmallThumbnails = filter_var(setting('homepage_block_hide_small_thumbnails', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockPostMeta = filter_var(setting('homepage_block_post_meta', true), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockMediaIcon = filter_var(setting('homepage_block_media_icon', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockContentOnly = filter_var(setting('homepage_block_content_only', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockDarkMode = filter_var(setting('homepage_block_dark_mode', false), FILTER_VALIDATE_BOOLEAN);
-        $this->homepageBlockPrimaryColor = (string) setting('homepage_block_primary_color', '');
-        $this->homepageBlockBackgroundColor = (string) setting('homepage_block_background_color', '');
-        $this->homepageBlockSecondaryColor = (string) setting('homepage_block_secondary_color', '');
-
-        $storedSectionOrder = setting('homepage_section_order', []);
-        $storedSectionCounts = setting('homepage_section_post_counts', []);
-        foreach ($this->categories as $category) {
-            $categoryId = $category['id'];
-            $this->homepageSectionOrder[$categoryId] = $storedSectionOrder[$categoryId] ?? null;
-            $this->homepageSectionPostCounts[$categoryId] = $storedSectionCounts[$categoryId] ?? 6;
-        }
 
         // ==========================================
         // UPDATE START: Post Settings (Dynamic & Layout)
@@ -270,7 +218,7 @@ class ThemeOptionsSetting extends Component
         set_setting('site_email', trim((string) ($this->general['site_email'] ?? '')), 'general');
         set_setting('site_phone', trim((string) ($this->general['site_phone'] ?? '')), 'general');
 
-        session()->flash('success', 'General settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'System log files cleared successfully');
     }
 
     public function saveHeader(): void
@@ -281,7 +229,7 @@ class ThemeOptionsSetting extends Component
         set_setting('breaking_news_speed', (int) ($this->header['breaking_news_speed'] ?? 60), 'theme-options');
         set_setting('search_toggle', filter_var($this->header['search_toggle'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
 
-        session()->flash('success', 'Header settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'Header settings updated successfully!');
     }
 
     public function saveLayout(): void
@@ -293,7 +241,7 @@ class ThemeOptionsSetting extends Component
         set_setting('primary_font_weights', trim($this->primary_font_weights), 'theme-options');
         set_setting('body_font_size', trim($this->body_font_size), 'theme-options');
 
-        session()->flash('success', 'Layout settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'Layout settings updated successfully!');
     }
 
     public function saveHomepage(): void
@@ -327,7 +275,7 @@ class ThemeOptionsSetting extends Component
         set_setting('homepage_block_background_color', trim($this->homepageBlockBackgroundColor), 'theme-options');
         set_setting('homepage_block_secondary_color', trim($this->homepageBlockSecondaryColor), 'theme-options');
 
-        session()->flash('success', 'Homepage settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'Homepage settings updated successfully!');
     }
 
     // ==========================================
@@ -349,7 +297,7 @@ class ThemeOptionsSetting extends Component
             set_setting('share_' . $key, filter_var($this->post['share_' . $key] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
         }
 
-        session()->flash('success', 'Post settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'Posts settings updated successfully!');
     }
     // ==========================================
     // UPDATE END
@@ -362,7 +310,7 @@ class ThemeOptionsSetting extends Component
         set_setting('in_article_ad_code', $this->ads['in_article_ad_code'] ?? '', 'theme-options');
         set_setting('in_article_ad_paragraph', (int) ($this->ads['in_article_ad_paragraph'] ?? 3), 'theme-options');
 
-        session()->flash('success', 'Ad settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'Posts settings updated successfully!');
     }
 
     public function saveSeo(): void
@@ -376,7 +324,7 @@ class ThemeOptionsSetting extends Component
         set_setting('facebook_pixel_code', $this->seo['facebook_pixel_code'] ?? '', 'theme-options');
         set_setting('social_links', $this->formatSocialLinksForStorage($this->social_links), 'theme-options');
 
-        session()->flash('success', 'SEO settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'SEO settings updated successfully!');
     }
 
     public function saveFooter(): void
@@ -385,7 +333,7 @@ class ThemeOptionsSetting extends Component
         set_setting('footer_about_summary', $this->footer['about_summary'] ?? '', 'theme-options');
         set_setting('footer_useful_links', $this->footer['useful_links'] ?? [], 'theme-options');
 
-        session()->flash('success', 'Footer settings updated successfully!');
+        $this->dispatch('media-toast', type: 'success', message: 'Footer settings updated successfully!');
     }
 
     public function saveTypography(): void
@@ -393,7 +341,8 @@ class ThemeOptionsSetting extends Component
         set_setting('primary_font', trim($this->primary_font), 'theme-options');
         set_setting('primary_font_weights', trim($this->primary_font_weights), 'theme-options');
         set_setting('body_font_size', trim($this->body_font_size), 'theme-options');
-        session()->flash('success', 'Typography settings updated successfully!');
+
+        $this->dispatch('media-toast', type: 'success', message: 'Typography settings updated successfully!');
     }
 
     public function updatedPrimaryFont(string $value): void

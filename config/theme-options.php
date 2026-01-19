@@ -17,7 +17,7 @@ return [
         [
             'id' => 'layout',
             'icon' => 'palette',
-            'label' => 'Layout & Design',
+            'label' => 'Typography',
             'description' => 'Primary colors, category colors, typography, and dark mode.',
         ],
         [
