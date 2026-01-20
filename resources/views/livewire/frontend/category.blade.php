@@ -98,14 +98,17 @@
                 <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">
                     ক্যাটাগরি
                 </h2>
-                <ul class="text-sm space-y-1">
-                    <li><a href="#" class="text-primary-dark dark:text-primary-light font-semibold">{{ $category->name }}</a></li>
-                    <li><a href="#" class="hover:text-primary-dark dark:hover:text-primary-light">আন্তর্জাতিক</a></li>
-                    <li><a href="#" class="hover:text-primary-dark dark:hover:text-primary-light">খেলা</a></li>
-                    <li><a href="#" class="hover:text-primary-dark dark:hover:text-primary-light">বিনোদন</a></li>
-                    <li><a href="#" class="hover:text-primary-dark dark:hover:text-primary-light">তথ্যপ্রযুক্তি</a></li>
-                    <li><a href="#" class="hover:text-primary-dark dark:hover:text-primary-light">বাণিজ্য</a></li>
-                </ul>
+                {!! get_the_category_list(
+                     null,
+                     ', ',
+                     true,
+                     'text-sm text-primary-dark dark:text-slate-50 hover:text-primary-dark dark:hover:text-primary-light transition duration-300',
+                     true,
+                     true,
+                     'space-y-1',
+                     ''
+                 )
+             !!}
             </section>
 
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
