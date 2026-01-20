@@ -287,7 +287,10 @@ if (! function_exists('get_the_category_list')) {
         string $separator = ', ',
         bool $showCount = false,
         string $class = '',
-        bool $navigate = true
+        bool $navigate = true,
+        bool $asList = false,
+        string $listClass = '',
+        string $itemClass = ''
     ): string {
         if ($categories instanceof Category) {
             $categories = collect([$categories]);
@@ -321,6 +324,7 @@ if (! function_exists('get_the_category_list')) {
         }
 
         $attributeString = $attributes ? ' '.implode(' ', $attributes) : '';
+        $itemAttributeString = $itemClass !== '' ? ' class="'.e($itemClass).'"' : '';
 
         foreach ($categories as $category) {
             if (! $category instanceof Category) {
@@ -346,6 +350,16 @@ if (! function_exists('get_the_category_list')) {
                 $attributeString,
                 e($label)
             );
+        }
+
+        if ($asList) {
+            $listAttributeString = $listClass !== '' ? ' class="'.e($listClass).'"' : '';
+            $items = array_map(
+                fn ($link) => '<li'.$itemAttributeString.'>'.$link.'</li>',
+                $categoryLinks
+            );
+
+            return sprintf('<ul%s>%s</ul>', $listAttributeString, implode('', $items));
         }
 
         return implode($separator, $categoryLinks);
