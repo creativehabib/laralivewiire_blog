@@ -281,6 +281,91 @@ if (! function_exists('the_category')) {
     }
 }
 
+if (! function_exists('get_the_category_list')) {
+    function get_the_category_list(
+        $categories = null,
+        string $separator = ', ',
+        bool $showCount = false,
+        string $class = '',
+        bool $navigate = true,
+        bool $asList = false,
+        string $listClass = '',
+        string $itemClass = ''
+    ): string {
+        if ($categories instanceof Category) {
+            $categories = collect([$categories]);
+        } elseif ($categories === null) {
+            $query = Category::query()->orderBy('name');
+
+            if ($showCount) {
+                $query->withCount(['posts' => fn ($query) => $query->published()]);
+            }
+
+            $categories = $query->get();
+        }
+
+        if (! $categories || ! is_iterable($categories)) {
+            return '';
+        }
+
+        if ($showCount && $categories instanceof \Illuminate\Database\Eloquent\Collection) {
+            $categories->loadCount(['posts' => fn ($query) => $query->published()]);
+        }
+
+        $categoryLinks = [];
+        $attributes = [];
+
+        if ($class !== '') {
+            $attributes[] = 'class="'.e($class).'"';
+        }
+
+        if ($navigate) {
+            $attributes[] = 'wire:navigate';
+        }
+
+        $attributeString = $attributes ? ' '.implode(' ', $attributes) : '';
+        $itemAttributeString = $itemClass !== '' ? ' class="'.e($itemClass).'"' : '';
+
+        foreach ($categories as $category) {
+            if (! $category instanceof Category) {
+                continue;
+            }
+
+            $slug = $category->slug ?? $category->slugRecord?->slug;
+
+            if (! $slug) {
+                continue;
+            }
+
+            $label = $category->name;
+
+            if ($showCount) {
+                $count = (int) ($category->posts_count ?? 0);
+                $label .= ' ('.number_format(max(0, $count)).')';
+            }
+
+            $categoryLinks[] = sprintf(
+                '<a href="%s"%s>%s</a>',
+                e(route('categories.show', ['category' => $slug])),
+                $attributeString,
+                e($label)
+            );
+        }
+
+        if ($asList) {
+            $listAttributeString = $listClass !== '' ? ' class="'.e($listClass).'"' : '';
+            $items = array_map(
+                fn ($link) => '<li'.$itemAttributeString.'>'.$link.'</li>',
+                $categoryLinks
+            );
+
+            return sprintf('<ul%s>%s</ul>', $listAttributeString, implode('', $items));
+        }
+
+        return implode($separator, $categoryLinks);
+    }
+}
+
 if (! function_exists('image_optimize_url')) {
     function image_optimize_url(string $url, ?int $width = null, ?int $height = null): string
     {
