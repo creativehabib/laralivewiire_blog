@@ -122,7 +122,7 @@
                                     @forelse ($blocks as $block)
                                         @php
                                             $settings = $block['settings'] ?? [];
-                                            $blockTitle = data_get($settings, 'title') ?: ($block['name'] ?? 'Block');
+                                            $blockTitle = data_get($settings, 'title') ?: '';
                                             $tagsValue = data_get($settings, 'tags');
                                             $posts = $block['posts'] ?? [];
                                             $layout = $block['layout'] ?? 'stacked';
