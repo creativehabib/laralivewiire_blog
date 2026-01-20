@@ -46,9 +46,13 @@ class CategoryPage extends Component
                 ->latest('created_at');
 
             $featurePosts = (clone $baseQuery)->take(4)->get();
+            $featurePostIds = $featurePosts->pluck('id')->all();
 
             $latestPosts = (clone $baseQuery)
-                ->skip(4)
+                ->when(
+                    $featurePostIds,
+                    fn ($query) => $query->whereNotIn('posts.id', $featurePostIds)
+                )
                 ->paginate($this->perPage);
         }
 
