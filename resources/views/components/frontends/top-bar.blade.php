@@ -1,5 +1,10 @@
 @php
     $displayTimezone = setting('timezone', config('app.timezone', 'Asia/Dhaka'));
+    $dateDisplayFormat = setting('date_display_format', 'gregorian_and_bangla');
+    $gregorianDate = frontend_bangla_gregorian_date();
+    $banglaCalendarDate = $dateDisplayFormat === 'gregorian_only'
+        ? null
+        : frontend_bangla_calendar_date();
 
     $rawSocialLinks = setting('social_links', []);
     $socialLinks = collect(is_array($rawSocialLinks) ? $rawSocialLinks : [])
@@ -61,7 +66,12 @@
     <div class="container flex items-center justify-between px-4 py-2">
         <div class="flex items-center gap-2">
             <i class="fa fa-calendar"></i>
-            <span>{{ frontend_bangla_date() }}</span>
+            <span>{{ $gregorianDate }}</span>
+
+            @if ($banglaCalendarDate)
+                <span class="hidden sm:inline" aria-hidden="true">|</span>
+                <span class="hidden sm:inline">{{ $banglaCalendarDate }}</span>
+            @endif
 
             <span class="hidden sm:inline" aria-hidden="true">|</span>
 
