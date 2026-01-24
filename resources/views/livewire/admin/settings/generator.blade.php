@@ -210,12 +210,24 @@
                         </select>
                         {{-- select --}}
                     @elseif($type === 'select')
-                        <select wire:model.defer="data.{{ $key }}"
-                                class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm">
-                            @foreach(($field['options'] ?? []) as $val => $label)
-                                <option value="{{ $val }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
+                        @if($key === 'admin_primary_font')
+                            <input id="admin-primary-font-value" type="hidden" wire:model.defer="data.{{ $key }}">
+                            <div wire:ignore>
+                                <select id="admin-primary-font-select"
+                                        class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm">
+                                    @foreach(($field['options'] ?? []) as $val => $label)
+                                        <option value="{{ $val }}" @selected(($data[$key] ?? null) === $val)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <select wire:model.defer="data.{{ $key }}"
+                                    class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm">
+                                @foreach(($field['options'] ?? []) as $val => $label)
+                                    <option value="{{ $val }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        @endif
 
                         {{-- switch (boolean stable) --}}
                     @elseif($type === 'switch')
@@ -375,6 +387,38 @@
                 });
             });
         }
+
+        function initAdminPrimaryFontChoices() {
+            const select = document.getElementById('admin-primary-font-select');
+            const hiddenInput = document.getElementById('admin-primary-font-value');
+
+            if (!select || !hiddenInput || !window.Choices) {
+                return;
+            }
+
+            if (select._choicesInstance) {
+                select._choicesInstance.destroy();
+            }
+
+            const choices = new window.Choices(select, {
+                searchEnabled: true,
+                shouldSort: false,
+                itemSelectText: '',
+                allowHTML: false,
+            });
+
+            const syncValue = () => {
+                hiddenInput.value = select.value;
+                hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+
+            select.addEventListener('change', syncValue);
+            select._choicesInstance = choices;
+        }
+
+        document.addEventListener('livewire:init', () => initAdminPrimaryFontChoices());
+        document.addEventListener('livewire:navigated', () => initAdminPrimaryFontChoices());
+
 
         document.addEventListener('livewire:init', () => initDynamicSettingsEditors());
         document.addEventListener('livewire:navigated', () => initDynamicSettingsEditors());
