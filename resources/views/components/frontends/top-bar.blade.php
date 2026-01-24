@@ -62,14 +62,17 @@
         <div class="flex items-center gap-2">
             <i class="fa fa-calendar"></i>
             <span>{{ frontend_bangla_date() }}</span>
-            <span aria-hidden="true">|</span>
+
+            <span class="hidden sm:inline" aria-hidden="true">|</span>
+
             <span
                 id="live-time"
-                class="font-medium"
+                class="font-medium hidden sm:inline"
                 aria-live="polite"
                 data-timezone="{{ $displayTimezone }}"
             >Live Time</span>
-            <span class="text-xs text-slate-100/80" aria-hidden="true">({{ $displayTimezone }})</span>
+
+            <span class="text-xs text-slate-100/80 hidden sm:inline" aria-hidden="true">({{ $displayTimezone }})</span>
         </div>
 
         @if ($socialLinks->isNotEmpty())
@@ -78,7 +81,7 @@
                     @foreach ($socialLinks as $link)
                         <a
                             href="{{ $link['url'] }}"
-                            class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 transition hover:border-primary-light/60 hover:text-primary-light"
+                            class="inline-flex h-7 w-7 items-center justify-center rounded border border-white/20 transition hover:border-primary-light/60 hover:text-primary-light"
                             style="color: {{ $link['color'] }}; background-color: {{ $link['bg_color'] }};"
                             target="_blank"
                             rel="noopener noreferrer"
