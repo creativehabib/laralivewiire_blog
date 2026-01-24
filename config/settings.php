@@ -442,12 +442,50 @@ return [
                     'label' => 'Primary font',
                     'type' => 'select',
                     'default' => 'Inter',
-                    'options' => [
-                        'Inter' => 'Inter',
-                        'Roboto' => 'Roboto',
-                        'Poppins' => 'Poppins',
-                        'Open Sans' => 'Open Sans',
-                    ],
+                    'options' => (function () {
+                        $path = base_path('resources/data/google-fonts.json');
+
+                        if (! file_exists($path)) {
+                            return [
+                                'Inter' => 'Inter',
+                                'Roboto' => 'Roboto',
+                                'Poppins' => 'Poppins',
+                                'Open Sans' => 'Open Sans',
+                            ];
+                        }
+
+                        $fonts = json_decode(file_get_contents($path), true);
+
+                        if (! is_array($fonts)) {
+                            return [
+                                'Inter' => 'Inter',
+                                'Roboto' => 'Roboto',
+                                'Poppins' => 'Poppins',
+                                'Open Sans' => 'Open Sans',
+                            ];
+                        }
+
+                        $options = [];
+
+                        foreach ($fonts as $font) {
+                            $family = is_array($font)
+                                ? ($font['family'] ?? null)
+                                : (is_string($font) ? $font : null);
+
+                            if (! is_string($family) || $family === '') {
+                                continue;
+                            }
+
+                            $options[$family] = $family;
+                        }
+
+                        return $options ?: [
+                            'Inter' => 'Inter',
+                            'Roboto' => 'Roboto',
+                            'Poppins' => 'Poppins',
+                            'Open Sans' => 'Open Sans',
+                        ];
+                    })(),
                     'rules' => ['nullable','string','max:80'],
                 ],
                 [

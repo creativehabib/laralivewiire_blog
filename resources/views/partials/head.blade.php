@@ -3,26 +3,40 @@
     $pageTitle = isset($title) ? "{$title} | {$adminTitle}" : $adminTitle;
     $adminFavicon = setting('admin_favicon');
     $adminFaviconType = setting('admin_favicon_type', 'ico');
-    $adminFont = setting('admin_primary_font', 'Inter');
-    $adminFontMap = [
-        'Inter' => [
-            'family' => 'Inter',
-            'url' => 'https://fonts.bunny.net/css?family=inter:400,500,600,700',
-        ],
-        'Roboto' => [
-            'family' => 'Roboto',
-            'url' => 'https://fonts.bunny.net/css?family=roboto:400,500,700',
-        ],
-        'Poppins' => [
-            'family' => 'Poppins',
-            'url' => 'https://fonts.bunny.net/css?family=poppins:400,500,600,700',
-        ],
-        'Open Sans' => [
-            'family' => 'Open Sans',
-            'url' => 'https://fonts.bunny.net/css?family=open-sans:400,600,700',
-        ],
-    ];
-    $adminFontData = $adminFontMap[$adminFont] ?? $adminFontMap['Inter'];
+    $adminFont = trim((string) setting('admin_primary_font', 'Inter'));
+    $adminFontWeights = '400;500;600;700';
+    $adminGoogleFontHref = null;
+
+    if ($adminFont !== '' && ! str_contains($adminFont, ',')) {
+        $fontsPath = base_path('resources/data/google-fonts.json');
+        $fonts = [];
+
+        if (file_exists($fontsPath)) {
+            $decodedFonts = json_decode(file_get_contents($fontsPath), true);
+            $fonts = is_array($decodedFonts) ? $decodedFonts : [];
+        }
+
+        $matchedFont = collect($fonts)->first(function ($font) use ($adminFont) {
+            if (is_array($font)) {
+                return ($font['family'] ?? null) === $adminFont;
+            }
+
+            return is_string($font) && $font === $adminFont;
+        });
+
+        if (is_array($matchedFont)) {
+            $variants = collect($matchedFont['variants'] ?? [])
+                ->filter(fn ($variant) => is_numeric($variant))
+                ->map(fn ($variant) => (string) $variant)
+                ->values();
+
+            if ($variants->isNotEmpty()) {
+                $adminFontWeights = $variants->implode(';');
+            }
+        }
+
+        $adminGoogleFontHref = 'https://fonts.googleapis.com/css2?family=' . urlencode($adminFont) . ':wght@' . $adminFontWeights . '&display=swap';
+    }
     $adminPrimaryColor = setting('admin_primary_color', '#2563eb');
     $adminSecondaryColor = setting('admin_secondary_color', '#475569');
     $adminHeadingColor = setting('admin_heading_color', '#0f172a');
@@ -59,12 +73,19 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 @endif
 
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="{{ $adminFontData['url'] }}" rel="stylesheet" />
+@if($adminGoogleFontHref)
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="preload" as="style" href="{{ $adminGoogleFontHref }}">
+    <link href="{{ $adminGoogleFontHref }}" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="{{ $adminGoogleFontHref }}" rel="stylesheet"></noscript>
+@endif
 
 <style>
     :root {
-        --font-sans: "{{ $adminFontData['family'] }}", system-ui, -apple-system, BlinkMacSystemFont,
+        --font-sans: "{{ $adminFont }}", system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         --color-primary: {{ $adminPrimaryColor }};
         --color-primary-dark: {{ $adminLinkHoverColor }};
