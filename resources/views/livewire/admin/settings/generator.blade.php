@@ -29,7 +29,7 @@
                     $type = $field['type'] ?? 'text';
                     $visibleWhen = $field['visible_when'] ?? null;
 
-                    // visible_when expression build: (cond1 && cond2 && ...)
+                    // visible_when expression builds: (cond1 && cond2 && ...)
                     $visibleExpr = null;
                     if (is_array($visibleWhen) && count($visibleWhen)) {
                         $visibleExpr = collect($visibleWhen)->map(function ($depVal, $depKey) {

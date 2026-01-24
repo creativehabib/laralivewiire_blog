@@ -15,12 +15,7 @@
             >Live Time</span>
             <span class="text-xs text-slate-100/80" aria-hidden="true">({{ $displayTimezone }})</span>
         </div>
-        <div class="flex items-center gap-4">
-            @if(setting('site_email') || setting('site_phone'))
-                <span class="hidden sm:inline text-slate-100/90">
-                    যোগাযোগ: {{ setting('site_email') ?? setting('site_phone') }}
-                </span>
-            @endif
+        <div class="social_link">
             <div class="flex items-center gap-2 text-xs sm:text-sm">
                 <a href="#" class="hover:text-primary-light">Facebook</a>
                 <span>|</span>

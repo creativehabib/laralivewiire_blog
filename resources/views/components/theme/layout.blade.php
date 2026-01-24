@@ -7,9 +7,6 @@
             <h1 class="text-xl font-bold text-slate-900 dark:text-white">{{ __('Theme Options') }}</h1>
             <p class="text-sm text-slate-500">{{ __('Manage your website appearance and general settings') }}</p>
         </div>
-        <button type="button" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md shadow-sm transition-colors">
-            {{ __('Save Changes') }}
-        </button>
     </div>
 
     <div class="flex flex-col md:flex-row">
