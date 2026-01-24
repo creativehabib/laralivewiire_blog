@@ -29,6 +29,8 @@ class Dashboard extends Component
 
     public array $visitVsVisitor = [];
 
+    public array $siteAnalytics = [];
+
     public Collection $topCategories;
 
     public Collection $popularTags;
@@ -57,6 +59,7 @@ class Dashboard extends Component
         $this->prepareStats();
         $this->prepareVisitorSeries();
         $this->prepareVisitVsVisitor();
+        $this->prepareSiteAnalytics();
         $this->prepareStatusChart();
         $this->preparePieCharts();
 
@@ -200,6 +203,53 @@ class Dashboard extends Component
                 'totalVisits' => $monthlyVisits,
                 'totalVisitors' => $monthlyVisitors,
                 'year' => $now->year,
+            ],
+        ];
+    }
+
+    private function prepareSiteAnalytics(): void
+    {
+        $hours = collect(range(1, 23))->map(fn ($hour) => $hour . 'h')->toArray();
+
+        $this->siteAnalytics = [
+            'hours' => $hours,
+            'series' => [
+                [
+                    'name' => __('Sessions'),
+                    'data' => [480, 460, 540, 470, 410, 420, 360, 330, 420, 480, 490, 480, 690, 660, 600, 530, 610, 420, 500, 470, 230, 140, 30],
+                    'color' => '#60a5fa',
+                ],
+                [
+                    'name' => __('Visitors'),
+                    'data' => [180, 175, 190, 170, 160, 165, 150, 140, 160, 175, 180, 180, 210, 200, 185, 175, 200, 170, 175, 180, 120, 60, 10],
+                    'color' => '#fb7185',
+                ],
+            ],
+            'summary' => [
+                [
+                    'label' => __('Sessions'),
+                    'value' => '3,772',
+                    'icon' => 'eye',
+                    'color' => 'bg-rose-500',
+                ],
+                [
+                    'label' => __('Visitors'),
+                    'value' => '3,647',
+                    'icon' => 'users',
+                    'color' => 'bg-emerald-500',
+                ],
+                [
+                    'label' => __('Pageviews'),
+                    'value' => '6,233',
+                    'icon' => 'layers',
+                    'color' => 'bg-sky-500',
+                ],
+                [
+                    'label' => __('Bounce Rate'),
+                    'value' => '84%',
+                    'icon' => 'bolt',
+                    'color' => 'bg-amber-500',
+                ],
             ],
         ];
     }
