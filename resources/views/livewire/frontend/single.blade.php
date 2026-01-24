@@ -43,13 +43,90 @@
         <!-- Feature Image -->
         <img src="{{ the_thumbnail($post) }}" alt="{{ $post?->name }}" class="max-h-80 w-full rounded-lg mb-4 object-cover">
 
-        <!-- Social Share -->
-        <div class="flex flex-wrap items-center gap-2 mb-4 text-xs">
-            <span class="font-semibold text-gray-700 dark:text-slate-200">শেয়ার করুন:</span>
-            <button class="px-3 py-1 rounded-md bg-blue-600 text-white text-xs">Facebook</button>
-            <button class="px-3 py-1 rounded-md bg-sky-500 text-white text-xs">Twitter</button>
-            <button class="px-3 py-1 rounded-md bg-green-600 text-white text-xs">WhatsApp</button>
-        </div>
+        @php
+            $shareUrl = $post ? post_permalink($post) : url()->current();
+            $shareTitle = $post?->name ?? config('app.name');
+            $encodedShareUrl = urlencode($shareUrl);
+            $encodedShareTitle = urlencode($shareTitle);
+
+            $sharePlatforms = [
+                'facebook' => [
+                    'enabled' => filter_var(setting('share_facebook', true), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'Facebook',
+                    'icon' => 'fab fa-facebook-f',
+                    'classes' => 'bg-[#1877F2] hover:bg-[#166fe5] text-white',
+                    'href' => "https://www.facebook.com/sharer/sharer.php?u={$encodedShareUrl}",
+                ],
+                'twitter' => [
+                    'enabled' => filter_var(setting('share_twitter', false), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'Twitter / X',
+                    'icon' => 'fab fa-x-twitter',
+                    'classes' => 'bg-black hover:bg-slate-800 text-white',
+                    'href' => "https://twitter.com/intent/tweet?url={$encodedShareUrl}&text={$encodedShareTitle}",
+                ],
+                'whatsapp' => [
+                    'enabled' => filter_var(setting('share_whatsapp', true), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'WhatsApp',
+                    'icon' => 'fab fa-whatsapp',
+                    'classes' => 'bg-[#25D366] hover:bg-[#20ba5a] text-white',
+                    'href' => "https://api.whatsapp.com/send?text={$encodedShareTitle}%20{$encodedShareUrl}",
+                ],
+                'telegram' => [
+                    'enabled' => filter_var(setting('share_telegram', false), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'Telegram',
+                    'icon' => 'fab fa-telegram-plane',
+                    'classes' => 'bg-[#229ED9] hover:bg-[#1b8ec3] text-white',
+                    'href' => "https://t.me/share/url?url={$encodedShareUrl}&text={$encodedShareTitle}",
+                ],
+                'linkedin' => [
+                    'enabled' => filter_var(setting('share_linkedin', false), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'LinkedIn',
+                    'icon' => 'fab fa-linkedin-in',
+                    'classes' => 'bg-[#0A66C2] hover:bg-[#095aa8] text-white',
+                    'href' => "https://www.linkedin.com/sharing/share-offsite/?url={$encodedShareUrl}",
+                ],
+                'pinterest' => [
+                    'enabled' => filter_var(setting('share_pinterest', false), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'Pinterest',
+                    'icon' => 'fab fa-pinterest-p',
+                    'classes' => 'bg-[#E60023] hover:bg-[#cc001f] text-white',
+                    'href' => "https://pinterest.com/pin/create/button/?url={$encodedShareUrl}&description={$encodedShareTitle}",
+                ],
+                'reddit' => [
+                    'enabled' => filter_var(setting('share_reddit', false), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'Reddit',
+                    'icon' => 'fab fa-reddit-alien',
+                    'classes' => 'bg-[#FF4500] hover:bg-[#e03d00] text-white',
+                    'href' => "https://www.reddit.com/submit?url={$encodedShareUrl}&title={$encodedShareTitle}",
+                ],
+                'email' => [
+                    'enabled' => filter_var(setting('share_email', false), FILTER_VALIDATE_BOOLEAN),
+                    'label' => 'Email',
+                    'icon' => 'fas fa-envelope',
+                    'classes' => 'bg-slate-600 hover:bg-slate-700 text-white',
+                    'href' => "mailto:?subject={$encodedShareTitle}&body={$encodedShareUrl}",
+                ],
+            ];
+
+            $activeSharePlatforms = array_filter($sharePlatforms, fn ($platform) => $platform['enabled']);
+        @endphp
+
+        @if(! empty($activeSharePlatforms))
+            <!-- Social Share -->
+            <div class="flex flex-wrap items-center gap-2 mb-4 text-xs">
+                <span class="font-semibold text-gray-700 dark:text-slate-200">শেয়ার করুন:</span>
+                @foreach($activeSharePlatforms as $platform)
+                    <a href="{{ $platform['href'] }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="Share on {{ $platform['label'] }}"
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors {{ $platform['classes'] }}">
+                        <i class="{{ $platform['icon'] }}"></i>
+                        <span>{{ $platform['label'] }}</span>
+                    </a>
+                @endforeach
+            </div>
+        @endif
 
         <!-- Post Body -->
         <div class="typography prose-article text-slate-800 dark:text-slate-100 ck-content">
