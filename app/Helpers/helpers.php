@@ -14,18 +14,35 @@ use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-if (! function_exists('frontend_bangla_date')) {
-    function frontend_bangla_date(?CarbonInterface $dateTime = null): string
+if (! function_exists('frontend_bangla_gregorian_date')) {
+    function frontend_bangla_gregorian_date(?CarbonInterface $dateTime = null): string
     {
         $date = ($dateTime ? Carbon::parse($dateTime) : Carbon::now())
             ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
 
-        $gregorianDate = BanglaFormatter::digits(
+        return BanglaFormatter::digits(
             $date
                 ->copy()
                 ->locale('bn')
                 ->translatedFormat('l, d F Y')
         );
+    }
+}
+
+if (! function_exists('frontend_bangla_calendar_date')) {
+    function frontend_bangla_calendar_date(?CarbonInterface $dateTime = null): string
+    {
+        $date = ($dateTime ? Carbon::parse($dateTime) : Carbon::now())
+            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
+
+        return BanglaCalendar::format($date);
+    }
+}
+
+if (! function_exists('frontend_bangla_date')) {
+    function frontend_bangla_date(?CarbonInterface $dateTime = null): string
+    {
+        $gregorianDate = frontend_bangla_gregorian_date($dateTime);
 
         $format = setting('date_display_format', 'gregorian_and_bangla');
 
@@ -33,7 +50,7 @@ if (! function_exists('frontend_bangla_date')) {
             return $gregorianDate;
         }
 
-        $banglaCalendarDate = BanglaCalendar::format($date);
+        $banglaCalendarDate = frontend_bangla_calendar_date($dateTime);
 
         return sprintf('%s, %s', $gregorianDate, $banglaCalendarDate);
     }
