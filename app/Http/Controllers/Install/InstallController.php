@@ -3,10 +3,16 @@
 namespace App\Http\Controllers\Install;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Database\Seeders\MenuSeeder;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class InstallController extends Controller
 {
@@ -102,9 +108,52 @@ class InstallController extends Controller
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('migrate', ['--force' => true]);
-        Artisan::call('db:seed', ['--force' => true]);
+
+        Artisan::call('db:seed', [
+            '--class' => RolePermissionSeeder::class,
+            '--force' => true,
+        ]);
+
+        Artisan::call('db:seed', [
+            '--class' => MenuSeeder::class,
+            '--force' => true,
+        ]);
+
+        return redirect()->route('install.account');
+    }
+
+    public function account()
+    {
+        return view('install.account', [
+            'step' => 'account',
+        ]);
+    }
+
+    public function storeAccount(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $role = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'type' => 'admin',
+            'status' => 'active',
+        ]);
+
+        $user->assignRole($role);
 
         File::put(storage_path('installed'), now()->toDateTimeString());
+
+        Auth::login($user);
 
         return view('install.final', [
             'step' => 'final',

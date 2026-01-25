@@ -30,6 +30,7 @@
                     'requirements' => ['label' => 'Requirements', 'icon' => 'fa-list-check'],
                     'permissions' => ['label' => 'Permissions', 'icon' => 'fa-shield-halved'],
                     'environment' => ['label' => 'Environment', 'icon' => 'fa-gear'],
+                    'account' => ['label' => 'Account', 'icon' => 'fa-user-shield'],
                     'final' => ['label' => 'Finish', 'icon' => 'fa-circle-check'],
                 ];
             @endphp
