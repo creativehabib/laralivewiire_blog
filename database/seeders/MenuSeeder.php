@@ -53,7 +53,7 @@ class MenuSeeder extends Seeder
             MenuItem::create([
                 'menu_id' => $primaryMenu->id,
                 'title' => 'আরএসএস ফিড',
-                'url' => route('feed'),
+                'url' => '',
                 'target' => '_self',
                 'order' => $order,
             ]);
