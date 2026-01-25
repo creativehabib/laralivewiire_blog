@@ -56,6 +56,8 @@ Route::group(['prefix' => 'install', 'as' => 'install.'], function () {
     Route::get('environment', [InstallController::class, 'environment'])->name('environment');
     Route::post('environment/save', [InstallController::class, 'saveEnvironment'])->name('environment.save');
     Route::get('run-install', [InstallController::class, 'runInstall'])->name('run');
+    Route::get('account', [InstallController::class, 'account'])->name('account');
+    Route::post('account', [InstallController::class, 'storeAccount'])->name('account.store');
 
 //    Route::resource('accounts', AccountController::class)->only(['index', 'store']);
 //    Route::resource('licenses', LicenseController::class)->only(['index', 'store']);

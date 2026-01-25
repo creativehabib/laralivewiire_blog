@@ -1,0 +1,253 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background: #f5f6fa;
+    color: #2f3640;
+}
+
+.installer {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+}
+
+.installer__panel {
+    width: min(960px, 100%);
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 25px 60px rgba(31, 36, 54, 0.15);
+    overflow: hidden;
+}
+
+.installer__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 40px;
+    background: linear-gradient(135deg, #2f7df4, #1b4fd1);
+    color: #ffffff;
+}
+
+.installer__label {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 12px;
+    margin: 0 0 8px;
+}
+
+.installer__title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.installer__step-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.installer__steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    padding: 24px 40px;
+    list-style: none;
+    margin: 0;
+    background: #f9faff;
+    border-bottom: 1px solid #eef0f6;
+}
+
+.installer__step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #eef0f6;
+    font-size: 14px;
+    font-weight: 500;
+    color: #8890a0;
+}
+
+.installer__step.is-active {
+    border-color: #2f7df4;
+    color: #1b4fd1;
+    box-shadow: 0 8px 20px rgba(47, 125, 244, 0.15);
+}
+
+.installer__step.is-done {
+    color: #2f3640;
+}
+
+.installer__step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #eef3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f7df4;
+}
+
+.installer__body {
+    padding: 32px 40px 40px;
+}
+
+.installer__content h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #1f2430;
+}
+
+.installer__content p {
+    color: #6f7c91;
+    margin-bottom: 24px;
+}
+
+.installer__card {
+    background: #f9faff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #eef0f6;
+    margin-bottom: 24px;
+}
+
+.checklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.checklist li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e6e9f0;
+    font-size: 14px;
+}
+
+.checklist li:last-child {
+    border-bottom: none;
+}
+
+.checklist li.is-ok .status {
+    color: #2ecc71;
+}
+
+.checklist li.is-fail .status {
+    color: #e74c3c;
+}
+
+.installer__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #2f7df4;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #1b4fd1;
+}
+
+.btn-light {
+    background: #ffffff;
+    border-color: #e6e9f0;
+    color: #2f3640;
+}
+
+.btn-light:hover {
+    border-color: #cfd6e6;
+    color: #1f2430;
+}
+
+.installer__form .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d9deea;
+    background: #ffffff;
+    font-size: 14px;
+}
+
+.error {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #e74c3c;
+}
+
+.installer__success {
+    text-align: center;
+    padding: 20px;
+    border-radius: 16px;
+    background: #f0f9f5;
+    color: #1f7a4a;
+    margin-bottom: 24px;
+}
+
+.installer__success i {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 640px) {
+    .installer__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .installer__body,
+    .installer__steps {
+        padding: 24px;
+    }
+}
