@@ -45,7 +45,7 @@ class MenuSeeder extends Seeder
             MenuItem::create([
                 'menu_id' => $primaryMenu->id,
                 'title' => 'মতামত জরিপ',
-                'url' => route('polls.index'),
+                'url' => '',
                 'target' => '_self',
                 'order' => $order++,
             ]);
@@ -88,7 +88,7 @@ class MenuSeeder extends Seeder
             MenuItem::create([
                 'menu_id' => $footerMenu->id,
                 'title' => 'মতামত জরিপ',
-                'url' => route('polls.index'),
+                'url' => '',
                 'target' => '_self',
                 'order' => $order++,
             ]);
