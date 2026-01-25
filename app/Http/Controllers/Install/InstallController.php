@@ -100,6 +100,8 @@ class InstallController extends Controller
 
         $this->updateEnvironmentFile($updates);
 
+        $request->session()->put('install.environment_saved', true);
+
         return redirect()->route('install.run');
     }
 
@@ -124,6 +126,10 @@ class InstallController extends Controller
 
     public function account()
     {
+        if (! session()->get('install.environment_saved')) {
+            return redirect()->route('install.environment');
+        }
+
         return view('install.account', [
             'step' => 'account',
         ]);
@@ -131,6 +137,10 @@ class InstallController extends Controller
 
     public function storeAccount(Request $request)
     {
+        if (! $request->session()->get('install.environment_saved')) {
+            return redirect()->route('install.environment');
+        }
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
