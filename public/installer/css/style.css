@@ -7,7 +7,7 @@
 body {
     margin: 0;
     font-family: "Inter", sans-serif;
-    background: #f5f6fb;
+    background: #f5f6fa;
     color: #2f3640;
 }
 
@@ -27,16 +27,37 @@ body {
     overflow: hidden;
 }
 
-.installer__layout {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    min-height: 520px;
-    background: #ffffff;
+.installer__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 40px;
+    background: linear-gradient(135deg, #2f7df4, #1b4fd1);
+    color: #ffffff;
 }
 
-.installer__sidebar {
-    background: #efe5f4;
-    padding: 28px 22px;
+.installer__label {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 12px;
+    margin: 0 0 8px;
+}
+
+.installer__title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.installer__step-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .installer__steps {
@@ -60,38 +81,28 @@ body {
     border: 1px solid #eef0f6;
     font-size: 14px;
     font-weight: 500;
-    color: #8a8ea3;
+    color: #8890a0;
 }
 
 .installer__step.is-active {
-    background: #ffffff;
-    border-color: #e1d4f0;
-    color: #2f3640;
+    border-color: #2f7df4;
+    color: #1b4fd1;
+    box-shadow: 0 8px 20px rgba(47, 125, 244, 0.15);
 }
 
 .installer__step.is-done {
-    color: #6a7085;
+    color: #2f3640;
 }
 
 .installer__step-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
-    background: #d1d5e2;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #eef3ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.installer__step.is-active .installer__step-icon {
-    background: #2b6bd9;
-}
-
-.installer__step.is-done .installer__step-icon {
-    background: #c7c9d6;
+    color: #2f7df4;
 }
 
 .installer__body {
@@ -198,8 +209,7 @@ body {
     margin-bottom: 8px;
 }
 
-.form-group input,
-.form-group select {
+.form-group input {
     width: 100%;
     padding: 10px 12px;
     border-radius: 10px;
@@ -230,7 +240,14 @@ body {
 }
 
 @media (max-width: 640px) {
-    .installer__body {
+    .installer__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .installer__body,
+    .installer__steps {
         padding: 24px;
     }
 }
