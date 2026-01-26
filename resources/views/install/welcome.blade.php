@@ -4,14 +4,20 @@
 
 @section('content')
     <div class="installer__content">
-        <h2>Welcome to the installer</h2>
+        <h2>Welcome</h2>
         <p>
-            This wizard will guide you through the installation process, check server requirements,
-            verify folder permissions, and help you configure your environment.
+            Before getting started, we need some information on the database. You will need to know the
+            following items before proceeding.
         </p>
+        <div class="form-group">
+            <label for="language">Language</label>
+            <select id="language" name="language">
+                <option value="en">English - en</option>
+            </select>
+        </div>
         <div class="installer__actions">
             <a class="btn btn-primary" href="{{ route('install.requirements') }}">
-                Start Installation
+                Let's go
             </a>
         </div>
     </div>
