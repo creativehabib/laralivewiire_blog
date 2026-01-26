@@ -34,16 +34,14 @@
                 @endphp
                 <li class="installer__step {{ $isActive ? 'is-active' : '' }} {{ $isDone ? 'is-done' : '' }}">
                     <span class="installer__step-icon">
-                        {{ $loop->iteration }}
+                        <i class="fa-solid {{ $config['icon'] }}"></i>
                     </span>
                     <span class="installer__step-text">{{ $config['label'] }}</span>
                 </li>
             @endforeach
-                </ul>
-            </aside>
-            <div class="installer__body">
-                @yield('content')
-            </div>
+        </ul>
+        <div class="installer__body">
+            @yield('content')
         </div>
     </div>
 </div>
