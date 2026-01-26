@@ -47,10 +47,18 @@ class InstallController extends Controller
 
     public function permissions()
     {
-        $paths = [
-            storage_path() => is_writable(storage_path()),
-            base_path('bootstrap/cache') => is_writable(base_path('bootstrap/cache')),
+        $permissionTargets = [
+            '.env' => base_path('.env'),
+            'storage/framework' => storage_path('framework'),
+            'storage/logs' => storage_path('logs'),
+            'bootstrap/cache' => base_path('bootstrap/cache'),
         ];
+
+        $paths = [];
+
+        foreach ($permissionTargets as $label => $path) {
+            $paths[$label] = is_writable($path);
+        }
 
         return view('install.permissions', [
             'step' => 'permissions',
