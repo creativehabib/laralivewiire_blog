@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <form class="space-y-6 rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm" method="post" action="{{ route('install.account.store') }}">
+        <form class="space-y-6 rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm" method="post" action="{{ route('install.account.store') }}" data-install-loading>
             @csrf
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="flex flex-wrap gap-3">
-                <a class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900" href="{{ route('install.environment') }}">Back</a>
+                <a class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900" href="{{ route('install.environment') }}" data-install-loading>Back</a>
                 <button class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700" type="submit">Create Account</button>
             </div>
         </form>

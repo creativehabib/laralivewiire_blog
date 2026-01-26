@@ -12,8 +12,8 @@
             <p class="mt-2 text-sm text-emerald-700">Your application has been installed successfully. You're now signed in.</p>
         </div>
         <div class="flex flex-wrap justify-center gap-3">
-            <a class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700" href="{{ route('dashboard') }}">Go to Dashboard</a>
-            <a class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900" href="{{ route('home') }}">Go to Homepage</a>
+            <a class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700" href="{{ route('dashboard') }}" data-install-loading>Go to Dashboard</a>
+            <a class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900" href="{{ route('home') }}" data-install-loading>Go to Homepage</a>
         </div>
     </div>
 @endsection

@@ -58,5 +58,42 @@
         </main>
     </div>
 </div>
+<div id="install-loading" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm" aria-hidden="true">
+    <div class="flex items-center gap-3 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-lg">
+        <svg class="h-5 w-5 animate-spin text-blue-600" viewBox="0 0 24 24" aria-hidden="true">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+        </svg>
+        <span>Loading, please wait...</span>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('install-loading');
+        if (!overlay) {
+            return;
+        }
+
+        const showLoading = () => {
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            overlay.setAttribute('aria-hidden', 'false');
+        };
+
+        document.querySelectorAll('[data-install-loading]').forEach((element) => {
+            const isForm = element.tagName === 'FORM';
+            const eventName = isForm ? 'submit' : 'click';
+            element.addEventListener(eventName, () => {
+                if (!isForm) {
+                    const href = element.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        return;
+                    }
+                }
+                showLoading();
+            });
+        });
+    });
+</script>
 </body>
 </html>
