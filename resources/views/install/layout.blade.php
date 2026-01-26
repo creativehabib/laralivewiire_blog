@@ -10,9 +10,9 @@
     @yield('style')
 </head>
 <body class="bg-gray-100 font-sans antialiased text-gray-800">
-<div class="mx-auto max-w-7াxl mt-6 bg-gray-100 font-sans antialiased">
+<div class="mx-auto max-w-7xl mt-6 bg-gray-100 font-sans antialiased">
     <div class="flex">
-        <aside class="relative bg-[#f0ebf8] p-10">
+        <aside class="relative bg-[#f0ebf8] p-6">
             @php
                 $steps = [
                     'welcome' => 'Welcome',
