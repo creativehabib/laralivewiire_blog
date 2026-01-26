@@ -25,7 +25,7 @@
 
 @section('footer')
     <div class="flex justify-end">
-        <a class="rounded-md bg-[#2b64b9] px-8 py-2.5 font-semibold text-white shadow-sm transition hover:bg-blue-800" href="{{ route('install.requirements') }}">
+        <a class="rounded-md bg-[#2b64b9] px-8 py-2.5 font-semibold text-white shadow-sm transition hover:bg-blue-800" href="{{ route('install.requirements') }}" data-install-loading>
             Let's go
         </a>
     </div>
