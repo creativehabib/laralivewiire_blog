@@ -6,6 +6,7 @@
     <div class="space-y-6">
         <div>
             <h2 class="text-2xl font-semibold text-slate-900">Folder Permissions</h2>
+            <p class="mt-2 text-sm font-medium text-slate-700">Installation system required permissions.</p>
             <p class="mt-2 text-sm text-slate-600">Make sure the following folders are writable by your web server.</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
