@@ -7,7 +7,7 @@
 body {
     margin: 0;
     font-family: "Inter", sans-serif;
-    background: #f2f4fb;
+    background: #f5f6fb;
     color: #2f3640;
 }
 
@@ -27,30 +27,16 @@ body {
     overflow: hidden;
 }
 
-.installer__top-bar {
-    padding: 20px 32px;
-    background: linear-gradient(135deg, #9b59d1, #d6507a);
-    color: #ffffff;
-    text-align: center;
-}
-
-.installer__heading {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-}
-
 .installer__layout {
     display: grid;
     grid-template-columns: 240px 1fr;
     min-height: 520px;
-    background: #fdfdff;
+    background: #ffffff;
 }
 
 .installer__sidebar {
-    background: #efe6f7;
-    padding: 24px 20px;
+    background: #efe5f4;
+    padding: 28px 22px;
 }
 
 .installer__steps {
@@ -70,24 +56,24 @@ body {
     border: 1px solid transparent;
     font-size: 14px;
     font-weight: 500;
-    color: #8a8ca3;
+    color: #8a8ea3;
 }
 
 .installer__step.is-active {
     background: #ffffff;
-    border-color: #e6d7f0;
+    border-color: #e1d4f0;
     color: #2f3640;
 }
 
 .installer__step.is-done {
-    color: #5f6777;
+    color: #6a7085;
 }
 
 .installer__step-icon {
     width: 28px;
     height: 28px;
     border-radius: 999px;
-    background: #d8dbe3;
+    background: #d1d5e2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -97,7 +83,7 @@ body {
 }
 
 .installer__step.is-active .installer__step-icon {
-    background: #1f6fd6;
+    background: #2b6bd9;
 }
 
 .installer__step.is-done .installer__step-icon {
@@ -210,7 +196,8 @@ body {
     margin-bottom: 8px;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     width: 100%;
     padding: 10px 12px;
     border-radius: 10px;
@@ -251,10 +238,6 @@ body {
 }
 
 @media (max-width: 640px) {
-    .installer__top-bar {
-        padding: 18px 20px;
-    }
-
     .installer__body {
         padding: 24px;
     }

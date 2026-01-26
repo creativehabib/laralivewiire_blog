@@ -13,20 +13,18 @@
 <body>
 <div class="installer">
     <div class="installer__panel">
-        <div class="installer__top-bar">
-            <h1 class="installer__heading">Installation</h1>
-        </div>
         <div class="installer__layout">
             <aside class="installer__sidebar">
                 <ul class="installer__steps">
             @php
                 $steps = [
                     'welcome' => ['label' => 'Welcome', 'icon' => 'fa-flag-checkered'],
-                    'requirements' => ['label' => 'Requirements', 'icon' => 'fa-list-check'],
+                    'requirements' => ['label' => 'Server Requirements', 'icon' => 'fa-list-check'],
                     'permissions' => ['label' => 'Permissions', 'icon' => 'fa-shield-halved'],
-                    'environment' => ['label' => 'Environment', 'icon' => 'fa-gear'],
-                    'account' => ['label' => 'Account', 'icon' => 'fa-user-shield'],
-                    'final' => ['label' => 'Finish', 'icon' => 'fa-circle-check'],
+                    'environment' => ['label' => 'Environment Settings', 'icon' => 'fa-gear'],
+                    'account' => ['label' => 'Create account', 'icon' => 'fa-user-shield'],
+                    'license' => ['label' => 'Activate License', 'icon' => 'fa-key'],
+                    'final' => ['label' => 'Done', 'icon' => 'fa-circle-check'],
                 ];
             @endphp
             @foreach ($steps as $key => $config)
