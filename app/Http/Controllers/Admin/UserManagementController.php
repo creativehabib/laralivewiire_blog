@@ -88,6 +88,6 @@ class UserManagementController extends Controller implements HasMiddleware
             return back()->with('error', 'You cannot delete your own account.');
         }
         $user->delete();
-        return redirect()->route('backend.pages.users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('system.users.index')->with('success', 'User deleted successfully.');
     }
 }
