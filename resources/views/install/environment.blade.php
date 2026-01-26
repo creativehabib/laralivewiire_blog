@@ -148,6 +148,11 @@
             }
         };
 
+        const appUrlInput = document.getElementById('app_url');
+        if (appUrlInput && !appUrlInput.value) {
+            appUrlInput.value = window.location.origin;
+        }
+
         const passwordToggle = document.querySelector('[data-password-toggle]');
         const passwordInput = document.getElementById('db_password');
         if (passwordToggle && passwordInput) {
