@@ -66,13 +66,21 @@ class InstallController extends Controller
         ]);
     }
 
-    public function environment()
+    public function environment(Request $request)
     {
+        $configuredUrl = config('app.url');
+        $host = $configuredUrl ? parse_url($configuredUrl, PHP_URL_HOST) : null;
+        $defaultAppUrl = $configuredUrl;
+
+        if (! $defaultAppUrl || in_array($host, ['localhost', '127.0.0.1'], true)) {
+            $defaultAppUrl = $request->getSchemeAndHttpHost();
+        }
+
         return view('install.environment', [
             'step' => 'environment',
             'defaults' => [
                 'app_name' => config('app.name'),
-                'app_url' => config('app.url'),
+                'app_url' => $defaultAppUrl,
                 'db_connection' => config('database.default'),
                 'db_host' => config('database.connections.mysql.host'),
                 'db_port' => config('database.connections.mysql.port'),
