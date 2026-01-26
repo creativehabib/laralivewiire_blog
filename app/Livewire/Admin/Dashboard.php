@@ -210,6 +210,18 @@ class Dashboard extends Component
     private function prepareSiteAnalytics(): void
     {
         $hours = collect(range(1, 23))->map(fn ($hour) => $hour . 'h')->toArray();
+        $regionData = VisitorLog::select('country', DB::raw('count(*) as total'))
+            ->whereNotNull('country')
+            ->where('country', '!=', '')
+            ->groupBy('country')
+            ->orderByDesc('total')
+            ->get();
+
+        $mapValues = [];
+        foreach ($regionData as $region) {
+            $code = str($region->country)->upper()->value();
+            $mapValues[$code] = (int) $region->total;
+        }
 
         $this->siteAnalytics = [
             'hours' => $hours,
@@ -225,6 +237,14 @@ class Dashboard extends Component
                     'color' => '#fb7185',
                 ],
             ],
+            'map' => [
+                'values' => $mapValues,
+                'max' => $regionData->max('total') ?? 0,
+            ],
+            'topRegions' => $regionData->take(5)->map(fn ($region) => [
+                'name' => $region->country,
+                'value' => (int) $region->total,
+            ])->values()->toArray(),
             'summary' => [
                 [
                     'label' => __('Sessions'),

@@ -50,19 +50,18 @@
                         <span>{{ __('Top Regions') }}</span>
                         <span class="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-300">{{ __('Live') }}</span>
                     </div>
-                    <div class="mt-4 flex items-center justify-center">
-                        <svg viewBox="0 0 400 200" class="h-48 w-full text-slate-200 dark:text-slate-700" fill="none">
-                            <path d="M24 46 L86 28 L140 44 L128 76 L70 92 L30 78 Z" fill="currentColor" stroke="currentColor" stroke-width="2"/>
-                            <path d="M112 112 L148 124 L140 168 L112 158 L98 134 Z" fill="currentColor" stroke="currentColor" stroke-width="2"/>
-                            <path d="M196 42 L238 30 L272 50 L260 78 L214 90 L198 70 Z" fill="currentColor" stroke="currentColor" stroke-width="2"/>
-                            <path d="M224 92 L260 98 L274 138 L242 168 L210 134 Z" fill="currentColor" stroke="currentColor" stroke-width="2"/>
-                            <path d="M258 54 L334 42 L382 82 L352 112 L300 104 L276 84 Z" fill="#2563eb" stroke="#2563eb" stroke-width="2"/>
-                            <path d="M318 142 L360 152 L350 176 L310 170 Z" fill="currentColor" stroke="currentColor" stroke-width="2"/>
-                        </svg>
+                    <div class="mt-4 rounded-xl border border-slate-100 bg-slate-50/60 p-2 dark:border-slate-800 dark:bg-slate-900/40">
+                        <div id="siteAnalyticsMap" class="h-48 w-full"></div>
                     </div>
-                    <div class="mt-2 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="inline-flex size-2.5 rounded-full bg-blue-600"></span>
-                        {{ __('Highest activity') }}
+                    <div class="mt-4 space-y-2 text-xs text-slate-500 dark:text-slate-400">
+                        @forelse ($siteAnalytics['topRegions'] as $region)
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-slate-600 dark:text-slate-300">{{ $region['name'] }}</span>
+                                <span>{{ number_format($region['value']) }}</span>
+                            </div>
+                        @empty
+                            <p class="text-center text-slate-400">{{ __('No region data found') }}</p>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -366,8 +365,14 @@
         </div>
     </div>
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css">
+@endpush
+
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const visitVsVisitor = @json($visitVsVisitor);
@@ -461,6 +466,39 @@
                     legend: { show: false },
                     tooltip: { shared: true },
                 }).render();
+            }
+
+            const siteAnalyticsMapEl = document.getElementById('siteAnalyticsMap');
+            if (siteAnalyticsMapEl) {
+                const mapValues = siteAnalytics.map?.values ?? {};
+                new jsVectorMap({
+                    selector: '#siteAnalyticsMap',
+                    map: 'world',
+                    zoomButtons: true,
+                    regionStyle: {
+                        initial: {
+                            fill: '#e2e8f0',
+                            stroke: '#cbd5f5',
+                            strokeWidth: 0.5,
+                        },
+                        hover: {
+                            fill: '#93c5fd',
+                        },
+                    },
+                    series: {
+                        regions: [
+                            {
+                                values: mapValues,
+                                scale: ['#bfdbfe', '#1d4ed8'],
+                                normalizeFunction: 'polynomial',
+                            },
+                        ],
+                    },
+                    onRegionTooltipShow: (_event, tooltip, code) => {
+                        const value = mapValues[code] || 0;
+                        tooltip.text(`${tooltip.text()} (${value.toLocaleString()})`);
+                    },
+                });
             }
 
             const visitorChartEl = document.querySelector('#visitorsChart');
