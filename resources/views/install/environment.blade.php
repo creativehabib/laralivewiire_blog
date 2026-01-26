@@ -131,7 +131,7 @@
         const sqliteHint = document.getElementById('sqlite_hint');
         const toggleFields = () => {
             const isSqlite = dbConnection.value === 'sqlite';
-            const fields = ['db_host', 'db_port', 'db_username', 'db_password'];
+            const fields = ['db_host', 'db_port', 'db_username'];
             fields.forEach((fieldId) => {
                 const field = document.getElementById(fieldId);
                 if (!field) {
