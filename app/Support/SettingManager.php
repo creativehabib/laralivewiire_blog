@@ -15,6 +15,10 @@ class SettingManager
             return self::$runtime[$key];
         }
 
+        if (! self::isInstalled()) {
+            return $default;
+        }
+
         $settings = Cache::rememberForever('settings.autoload', function () {
             return Setting::where('autoload', true)->pluck('value', 'key')->toArray();
         });
@@ -46,6 +50,10 @@ class SettingManager
 
     public static function group(string $group): array
     {
+        if (! self::isInstalled()) {
+            return [];
+        }
+
         return Setting::where('group', $group)
             ->pluck('value', 'key')
             ->map(fn ($v) => self::decode($v))
@@ -66,5 +74,10 @@ class SettingManager
 
         $json = json_decode($value, true);
         return json_last_error() === JSON_ERROR_NONE ? $json : $value;
+    }
+
+    protected static function isInstalled(): bool
+    {
+        return file_exists(storage_path('installed'));
     }
 }
