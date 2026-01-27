@@ -15,7 +15,7 @@ class VisitorTracker
      */
     public static function record(Request $request): void
     {
-        if (! file_exists(storage_path('installed'))) {
+        if (! is_installed()) {
             return;
         }
 

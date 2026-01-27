@@ -447,6 +447,13 @@ if (! function_exists('setting')) {
     }
 }
 
+if (! function_exists('is_installed')) {
+    function is_installed(): bool
+    {
+        return file_exists(storage_path('installed'));
+    }
+}
+
 if(! function_exists('set_setting')) {
     function set_setting(string $key, $value, string $group = 'general'): void
     {
