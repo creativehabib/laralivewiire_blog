@@ -30,40 +30,40 @@
             <div class="grid gap-6 sm:grid-cols-2">
                 <div>
                     <label class="text-sm font-semibold text-slate-700" for="name">Full name</label>
-                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="name" name="name" type="text" value="{{ old('name') }}" placeholder="Enter full name" required>
+                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="name" name="name" type="text" value="{{ old('name') }}" placeholder="Enter full name" required>
                     @error('name')
                         <span class="mt-2 block text-sm text-rose-600">{{ $message }}</span>
                     @enderror
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-slate-700" for="username">Username</label>
-                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="username" name="username" type="text" value="{{ old('username') }}" placeholder="Exa. admin" required>
+                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="username" name="username" type="text" value="{{ old('username') }}" placeholder="Exa. admin" required>
                     @error('username')
                         <span class="mt-2 block text-sm text-rose-600">{{ $message }}</span>
                     @enderror
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-slate-700" for="email">Email address</label>
-                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="email" name="email" type="email" value="{{ old('email') }}" placeholder="example@gmail.com" required>
+                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="email" name="email" type="email" value="{{ old('email') }}" placeholder="example@gmail.com" required>
                     @error('email')
                         <span class="mt-2 block text-sm text-rose-600">{{ $message }}</span>
                     @enderror
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-slate-700" for="password">Password</label>
-                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="password" name="password" type="password" placeholder="******" required>
+                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="password" name="password" type="password" placeholder="******" required>
                     @error('password')
                         <span class="mt-2 block text-sm text-rose-600">{{ $message }}</span>
                     @enderror
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-slate-700" for="password_confirmation">Confirm password</label>
-                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="password_confirmation" name="password_confirmation" type="password" placeholder="******" required>
+                    <input class="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="password_confirmation" name="password_confirmation" type="password" placeholder="******" required>
                 </div>
             </div>
             <div class="flex flex-wrap gap-3">
-                <a class="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900" href="{{ route('install.environment') }}" data-install-loading>Back</a>
-                <button class="inline-flex items-center justify-center rounded-md bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700" type="submit">Create Account</button>
+                <a class="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-5 py-1.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900" href="{{ route('install.environment') }}" data-install-loading>Back</a>
+                <button class="inline-flex items-center justify-center rounded-md bg-blue-600 px-5 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700" type="submit">Create Account</button>
             </div>
         </form>
     </div>
