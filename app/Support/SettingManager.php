@@ -15,7 +15,7 @@ class SettingManager
             return self::$runtime[$key];
         }
 
-        if (! self::isInstalled()) {
+        if (! is_installed()) {
             return $default;
         }
 
@@ -50,7 +50,7 @@ class SettingManager
 
     public static function group(string $group): array
     {
-        if (! self::isInstalled()) {
+        if (! is_installed()) {
             return [];
         }
 
@@ -76,8 +76,4 @@ class SettingManager
         return json_last_error() === JSON_ERROR_NONE ? $json : $value;
     }
 
-    protected static function isInstalled(): bool
-    {
-        return file_exists(storage_path('installed'));
-    }
 }
