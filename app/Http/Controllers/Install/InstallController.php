@@ -82,6 +82,7 @@ class InstallController extends Controller
             'defaults' => [
                 'app_name' => config('app.name'),
                 'app_env' => config('app.env'),
+                'app_debug' => config('app.debug') ? '1' : '0',
                 'app_url' => $defaultAppUrl,
                 'db_connection' => config('database.default'),
                 'db_host' => config('database.connections.mysql.host'),
@@ -98,6 +99,7 @@ class InstallController extends Controller
         $data = $request->validate([
             'app_name' => ['required', 'string', 'max:255'],
             'app_env' => ['required', 'string', 'in:production,development,local'],
+            'app_debug' => ['required', 'string', 'in:0,1'],
             'app_url' => ['required', 'url'],
             'db_connection' => ['required', 'string', 'max:50'],
             'db_host' => ['required', 'string', 'max:255'],
@@ -110,6 +112,7 @@ class InstallController extends Controller
         $updates = [
             'APP_NAME' => '"' . $data['app_name'] . '"',
             'APP_ENV' => $data['app_env'],
+            'APP_DEBUG' => $data['app_debug'],
             'APP_URL' => $data['app_url'],
             'DB_CONNECTION' => $data['db_connection'],
             'DB_HOST' => $data['db_host'],

@@ -33,10 +33,6 @@ class CheckIfInstalled
             return redirect()->route('install.index');
         }
 
-        if (is_installed() && ! $request->is('install*') && ! $this->databaseIsAvailable()) {
-            return redirect()->route('install.index');
-        }
-
         return $next($request);
     }
 
