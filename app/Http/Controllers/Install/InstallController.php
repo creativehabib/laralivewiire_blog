@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Install;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Database\Seeders\DefaultContentSeeder;
 use Database\Seeders\MenuSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Http\Request;
@@ -134,6 +135,11 @@ class InstallController extends Controller
 
         Artisan::call('db:seed', [
             '--class' => RolePermissionSeeder::class,
+            '--force' => true,
+        ]);
+
+        Artisan::call('db:seed', [
+            '--class' => DefaultContentSeeder::class,
             '--force' => true,
         ]);
 
