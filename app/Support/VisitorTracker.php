@@ -15,6 +15,10 @@ class VisitorTracker
      */
     public static function record(Request $request): void
     {
+        if (! is_installed()) {
+            return;
+        }
+
         if (! $request->isMethod('GET')) {
             return;
         }

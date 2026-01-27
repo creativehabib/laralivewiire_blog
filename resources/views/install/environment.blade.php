@@ -39,6 +39,18 @@
                         @enderror
                     </div>
                     <div>
+                        <label class="text-sm font-semibold text-slate-700" for="app_env">Environment</label>
+                        <select class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="app_env" name="app_env" required>
+                            @foreach (['production' => 'Production', 'development' => 'Development', 'local' => 'Local'] as $env => $label)
+                                <option value="{{ $env }}" @selected(old('app_env', $defaults['app_env']) === $env)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        <p class="mt-2 text-xs text-slate-500">Select how this installation should behave.</p>
+                        @error('app_env')
+                            <span class="mt-2 block text-sm text-rose-600">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
                         <label class="text-sm font-semibold text-slate-700" for="app_url">Application URL</label>
                         <input class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="app_url" name="app_url" type="url" value="{{ old('app_url', $defaults['app_url']) }}" required>
                         <p class="mt-2 text-xs text-slate-500">Include the full protocol (https://).</p>
