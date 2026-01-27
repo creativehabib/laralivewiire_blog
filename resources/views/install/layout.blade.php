@@ -9,9 +9,10 @@
     @vite(['resources/css/app.css'])
     @yield('style')
 </head>
-<body class="bg-gray-100 font-sans antialiased text-gray-800">
-<div class="mx-auto max-w-7xl mt-6 bg-gray-100 font-sans antialiased">
-    <div class="flex">
+<body class="h-screen w-screen bg-gray-100 font-sans antialiased text-gray-800">
+<div class="mx-auto max-w-6xl mt-6 bg-gray-100 font-sans antialiased">
+    <h1 class="text-center items-center font-bold text-2xl mb-5">Installation</h1>
+    <div class="md:flex">
         <aside class="relative bg-[#f0ebf8] p-6">
             @php
                 $steps = [
@@ -24,7 +25,7 @@
                 ];
                 $activeStep = $step === 'permissions' ? 'requirements' : $step;
             @endphp
-            <div class="relative z-10 flex flex-col space-y-8">
+            <div class="relative z-10 flex flex-col space-y-5">
                 @foreach ($steps as $key => $label)
                     @php
                         $isActive = $activeStep === $key;
@@ -37,17 +38,17 @@
                             : ($isDone ? 'text-gray-700 font-medium' : 'text-gray-400 font-medium');
                     @endphp
                     <div class="flex items-center space-x-4 {{ $isActive ? '' : 'opacity-80' }}">
-                        <div class="z-20 flex h-10 w-10 items-center justify-center rounded-full {{ $circleClasses }} font-bold">
+                        <div class="z-20 flex h-9 w-9 items-center justify-center rounded-full {{ $circleClasses }} font-bold">
                             {{ array_search($key, array_keys($steps), true) + 1 }}
                         </div>
                         <span class="text-lg {{ $labelClasses }}">{{ $label }}</span>
                     </div>
                 @endforeach
-                <div class="absolute left-5 top-4 -z-10 h-[85%] w-0.5 bg-gray-300"></div>
+                <div class="absolute left-4 top-4 -z-10 h-[85%] w-0.5 bg-gray-300"></div>
             </div>
         </aside>
         <main class="flex flex-1 flex-col bg-white">
-            <div class="flex-1 p-12">
+            <div class="flex-1 p-8">
                 @yield('content')
             </div>
             @hasSection('footer')

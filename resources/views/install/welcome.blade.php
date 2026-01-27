@@ -4,7 +4,7 @@
 
 @section('content')
     <div>
-        <h1 class="text-2xl font-bold text-gray-800">Welcome</h1>
+        <h4 class="text-xl font-bold text-gray-800">Welcome</h4>
         <p class="mt-2 max-w-2xl leading-relaxed text-gray-500">
             Before getting started, we need some information on the database. You will need to know the following items before proceeding.
         </p>
