@@ -4,7 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class CheckIfInstalled
 {
@@ -16,15 +18,30 @@ class CheckIfInstalled
     public function handle(Request $request, Closure $next)
     {
         // যদি 'installed' ফাইলটি না থাকে এবং ইউজার ইনস্টল পেজে না থাকে
-        if (!file_exists(storage_path('installed')) && !$request->is('install*')) {
+        if (! is_installed() && ! $request->is('install*')) {
             return redirect()->route('install.index');
         }
 
         // যদি ইনস্টল করা থাকে কিন্তু ইউজার আবার ইনস্টল পেজে যেতে চায়
-        if (file_exists(storage_path('installed')) && $request->is('install*')) {
+        if (is_installed() && $request->is('install*')) {
             return redirect('/');
         }
 
+        if (is_installed() && ! $request->is('install*') && ! $this->databaseIsAvailable()) {
+            return redirect()->route('install.index');
+        }
+
         return $next($request);
+    }
+
+    private function databaseIsAvailable(): bool
+    {
+        try {
+            DB::connection()->getPdo();
+        } catch (Throwable $exception) {
+            return false;
+        }
+
+        return true;
     }
 }

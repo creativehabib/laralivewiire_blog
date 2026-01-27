@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Install;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Database\Seeders\DefaultContentSeeder;
 use Database\Seeders\MenuSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Http\Request;
@@ -80,6 +81,7 @@ class InstallController extends Controller
             'step' => 'environment',
             'defaults' => [
                 'app_name' => config('app.name'),
+                'app_env' => config('app.env'),
                 'app_url' => $defaultAppUrl,
                 'db_connection' => config('database.default'),
                 'db_host' => config('database.connections.mysql.host'),
@@ -95,6 +97,7 @@ class InstallController extends Controller
     {
         $data = $request->validate([
             'app_name' => ['required', 'string', 'max:255'],
+            'app_env' => ['required', 'string', 'in:production,development,local'],
             'app_url' => ['required', 'url'],
             'db_connection' => ['required', 'string', 'max:50'],
             'db_host' => ['required', 'string', 'max:255'],
@@ -106,6 +109,7 @@ class InstallController extends Controller
 
         $updates = [
             'APP_NAME' => '"' . $data['app_name'] . '"',
+            'APP_ENV' => $data['app_env'],
             'APP_URL' => $data['app_url'],
             'DB_CONNECTION' => $data['db_connection'],
             'DB_HOST' => $data['db_host'],
@@ -116,6 +120,7 @@ class InstallController extends Controller
         ];
 
         $this->updateEnvironmentFile($updates);
+        $this->ensureAppKey();
 
         $request->session()->put('install.environment_saved', true);
 
@@ -130,6 +135,11 @@ class InstallController extends Controller
 
         Artisan::call('db:seed', [
             '--class' => RolePermissionSeeder::class,
+            '--force' => true,
+        ]);
+
+        Artisan::call('db:seed', [
+            '--class' => DefaultContentSeeder::class,
             '--force' => true,
         ]);
 
@@ -215,5 +225,32 @@ class InstallController extends Controller
             $cleanValue = Str::of($value)->replace('"', '')->toString();
             putenv($key . '=' . $cleanValue);
         }
+    }
+
+    private function ensureAppKey(): void
+    {
+        if ($this->hasEnvironmentKey()) {
+            return;
+        }
+
+        Artisan::call('key:generate', ['--force' => true]);
+    }
+
+    private function hasEnvironmentKey(): bool
+    {
+        $envPath = base_path('.env');
+
+        if (! File::exists($envPath)) {
+            return false;
+        }
+
+        $envContents = File::get($envPath);
+        $pattern = '/^APP_KEY=(.+)$/m';
+
+        if (preg_match($pattern, $envContents, $matches) !== 1) {
+            return false;
+        }
+
+        return trim($matches[1]) !== '';
     }
 }
