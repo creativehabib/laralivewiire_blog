@@ -22,9 +22,15 @@ class CheckIfInstalled
             return redirect()->route('install.index');
         }
 
-        // যদি ইনস্টল করা থাকে কিন্তু ইউজার আবার ইনস্টল পেজে যেতে চায়
+        // ইনস্টল করা থাকলে সাধারণত ইনস্টল পেজে যেতে দেওয়া হবে না
         if (is_installed() && $request->is('install*')) {
-            return redirect('/');
+            if ($this->databaseIsAvailable()) {
+                return redirect('/');
+            }
+        }
+
+        if (is_installed() && ! $request->is('install*') && ! $this->databaseIsAvailable()) {
+            return redirect()->route('install.index');
         }
 
         if (is_installed() && ! $request->is('install*') && ! $this->databaseIsAvailable()) {
