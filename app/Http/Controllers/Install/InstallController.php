@@ -116,6 +116,7 @@ class InstallController extends Controller
         ];
 
         $this->updateEnvironmentFile($updates);
+        $this->ensureAppKey();
 
         $request->session()->put('install.environment_saved', true);
 
@@ -215,5 +216,32 @@ class InstallController extends Controller
             $cleanValue = Str::of($value)->replace('"', '')->toString();
             putenv($key . '=' . $cleanValue);
         }
+    }
+
+    private function ensureAppKey(): void
+    {
+        if ($this->hasEnvironmentKey()) {
+            return;
+        }
+
+        Artisan::call('key:generate', ['--force' => true]);
+    }
+
+    private function hasEnvironmentKey(): bool
+    {
+        $envPath = base_path('.env');
+
+        if (! File::exists($envPath)) {
+            return false;
+        }
+
+        $envContents = File::get($envPath);
+        $pattern = '/^APP_KEY=(.+)$/m';
+
+        if (preg_match($pattern, $envContents, $matches) !== 1) {
+            return false;
+        }
+
+        return trim($matches[1]) !== '';
     }
 }
