@@ -45,7 +45,7 @@
             <select wire:model.defer="general.timezone" id="select_time_zone"
                     class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
                 @foreach($timezoneOptions as $timezone)
-                    <option value="{{ $timezone }}">{{ $timezone }}</option>
+                    <option value="{{ $timezone }}" @selected(($general['timezone'] ?? '') === $timezone)>{{ $timezone }}</option>
                 @endforeach
             </select>
         </div>
