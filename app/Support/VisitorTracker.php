@@ -6,7 +6,9 @@ use App\Models\VisitorLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Throwable;
 
 class VisitorTracker
 {
@@ -24,6 +26,10 @@ class VisitorTracker
         }
 
         if (str_starts_with($request->path(), 'admin')) {
+            return;
+        }
+
+        if (! static::visitorLogsTableAvailable()) {
             return;
         }
 
@@ -105,5 +111,14 @@ class VisitorTracker
         }
 
         return 'Desktop';
+    }
+
+    protected static function visitorLogsTableAvailable(): bool
+    {
+        try {
+            return Schema::hasTable('visitor_logs');
+        } catch (Throwable $exception) {
+            return false;
+        }
     }
 }
