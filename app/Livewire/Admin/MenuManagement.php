@@ -178,7 +178,11 @@ class MenuManagement extends Component
         ]);
         $posts = Post::whereIn('id', $this->selectedPosts)->get();
         foreach ($posts as $post) {
-            $this->createMenuItem($post->title, post_permalink($post));
+            $title = $post->title ?? $post->name ?? $post->slug ?? null;
+            if (! filled($title)) {
+                $title = 'Post ' . $post->id;
+            }
+            $this->createMenuItem((string) $title, post_permalink($post));
         }
         $this->selectedPosts = [];
         $this->afterMenuItemsMutated('Selected posts added to the menu.');
