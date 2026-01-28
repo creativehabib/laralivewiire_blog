@@ -53,7 +53,7 @@
                     <div>
                         <label class="text-sm font-semibold text-slate-700" for="app_debug">Debug mode</label>
                         <select class="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="app_debug" name="app_debug" required>
-                            @foreach (['0' => 'Off', '1' => 'On'] as $value => $label)
+                            @foreach (['false' => 'Off', 'true' => 'On'] as $value => $label)
                                 <option value="{{ $value }}" @selected(old('app_debug', $defaults['app_debug']) === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
