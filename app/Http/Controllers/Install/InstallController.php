@@ -28,7 +28,7 @@ class InstallController extends Controller
     public function requirements()
     {
         $requirements = [
-            'PHP version (current: ' . PHP_VERSION . ') requires 8.4.0+' => version_compare(PHP_VERSION, '8.2.0', '>='),
+            'PHP version (current: ' . PHP_VERSION . ') requires 8.2.0+' => version_compare(PHP_VERSION, '8.2.0', '>='),
             'Ctype' => extension_loaded('ctype'),
             'CURL' => extension_loaded('curl'),
             'Fileinfo' => extension_loaded('fileinfo'),
