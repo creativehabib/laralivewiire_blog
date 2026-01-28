@@ -83,6 +83,10 @@ class ThemeOptionsSetting extends Component
         $this->body_font_size = (string) setting('body_font_size', '16px');
         $this->google_fonts = $this->loadGoogleFonts();
         $this->timezoneOptions = \DateTimeZone::listIdentifiers();
+        $timezoneSetting = $this->normalizeTimezone(
+            setting('timezone', config('app.timezone', 'Asia/Dhaka')),
+            $this->timezoneOptions
+        );
 
         $this->categories = Category::query()
             ->orderBy('name')
@@ -109,7 +113,7 @@ class ThemeOptionsSetting extends Component
             'site_logo_light' => (string) setting('site_logo_light', ''),
             'site_logo_dark' => (string) setting('site_logo_dark', ''),
             'site_favicon' => (string) setting('site_favicon', ''),
-            'timezone' => (string) setting('timezone', config('app.timezone', 'Asia/Dhaka')),
+            'timezone' => $timezoneSetting,
             'date_display_format' => (string) setting('date_display_format', 'gregorian_and_bangla'),
             'contact_address' => (string) setting('contact_address', ''),
             'site_email' => (string) setting('site_email', ''),
@@ -212,7 +216,14 @@ class ThemeOptionsSetting extends Component
         set_setting('site_logo_light', $this->general['site_logo_light'] ?? '', 'theme-options');
         set_setting('site_logo_dark', $this->general['site_logo_dark'] ?? '', 'theme-options');
         set_setting('site_favicon', $this->general['site_favicon'] ?? '', 'general');
-        set_setting('timezone', $this->general['timezone'] ?? config('app.timezone', 'Asia/Dhaka'), 'general');
+        set_setting(
+            'timezone',
+            $this->normalizeTimezone(
+                $this->general['timezone'] ?? config('app.timezone', 'Asia/Dhaka'),
+                $this->timezoneOptions
+            ),
+            'general'
+        );
         set_setting('date_display_format', $this->general['date_display_format'] ?? 'gregorian_and_bangla', 'general');
         set_setting('contact_address', trim((string) ($this->general['contact_address'] ?? '')), 'theme-options');
         set_setting('site_email', trim((string) ($this->general['site_email'] ?? '')), 'general');
@@ -458,6 +469,30 @@ class ThemeOptionsSetting extends Component
         }
 
         return $normalized;
+    }
+
+    protected function normalizeTimezone($timezone, array $options = []): string
+    {
+        if (is_array($timezone)) {
+            $timezone = $timezone[0] ?? null;
+        }
+
+        if (blank($timezone) || ! is_string($timezone)) {
+            $timezone = config('app.timezone', 'Asia/Dhaka');
+        }
+
+        $timezone = trim((string) $timezone);
+
+        if ($options !== [] && ! in_array($timezone, $options, true)) {
+            $fallback = (string) config('app.timezone', 'Asia/Dhaka');
+            if (in_array($fallback, $options, true)) {
+                return $fallback;
+            }
+
+            return $options[0] ?? $fallback;
+        }
+
+        return $timezone;
     }
 
     public function render()

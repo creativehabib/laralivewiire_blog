@@ -35,7 +35,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $timezone = setting('timezone', config('app.timezone', 'UTC'));
-        if (blank($timezone)) {
+        if (is_array($timezone)) {
+            $timezone = $timezone[0] ?? null;
+        }
+        if (blank($timezone) || ! is_string($timezone)) {
             $timezone = config('app.timezone', 'UTC');
         }
         config(['app.timezone' => $timezone]);
