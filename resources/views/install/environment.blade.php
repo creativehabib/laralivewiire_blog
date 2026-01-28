@@ -70,6 +70,18 @@
                             <span class="mt-2 block text-sm text-rose-600">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div>
+                        <label class="text-sm font-semibold text-slate-700" for="app_timezone">Time zone</label>
+                        <select class="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200" id="app_timezone" name="app_timezone" required>
+                            @foreach ($timezoneOptions as $timezone)
+                                <option value="{{ $timezone }}" @selected(old('app_timezone', $defaults['app_timezone']) === $timezone)>{{ $timezone }}</option>
+                            @endforeach
+                        </select>
+                        <p class="mt-2 text-xs text-slate-500">Choose the default time zone for dates and times.</p>
+                        @error('app_timezone')
+                            <span class="mt-2 block text-sm text-rose-600">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
             </div>
 

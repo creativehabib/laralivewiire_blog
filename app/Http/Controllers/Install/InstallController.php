@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use DateTimeZone;
 
 class InstallController extends Controller
 {
@@ -84,6 +85,7 @@ class InstallController extends Controller
                 'app_env' => config('app.env'),
                 'app_debug' => config('app.debug') ? '1' : '0',
                 'app_url' => $defaultAppUrl,
+                'app_timezone' => config('app.timezone'),
                 'db_connection' => config('database.default'),
                 'db_host' => config('database.connections.mysql.host'),
                 'db_port' => config('database.connections.mysql.port'),
@@ -91,6 +93,7 @@ class InstallController extends Controller
                 'db_username' => config('database.connections.mysql.username'),
                 'db_password' => config('database.connections.mysql.password'),
             ],
+            'timezoneOptions' => DateTimeZone::listIdentifiers(),
         ]);
     }
 
@@ -101,6 +104,7 @@ class InstallController extends Controller
             'app_env' => ['required', 'string', 'in:production,development,local'],
             'app_debug' => ['required', 'string', 'in:0,1'],
             'app_url' => ['required', 'url'],
+            'app_timezone' => ['required', 'string', 'timezone'],
             'db_connection' => ['required', 'string', 'max:50'],
             'db_host' => ['required', 'string', 'max:255'],
             'db_port' => ['required', 'string', 'max:10'],
@@ -114,6 +118,7 @@ class InstallController extends Controller
             'APP_ENV' => $data['app_env'],
             'APP_DEBUG' => $data['app_debug'],
             'APP_URL' => $data['app_url'],
+            'APP_TIMEZONE' => $data['app_timezone'],
             'DB_CONNECTION' => $data['db_connection'],
             'DB_HOST' => $data['db_host'],
             'DB_PORT' => $data['db_port'],
