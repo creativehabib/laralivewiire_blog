@@ -207,10 +207,10 @@
         const initTimezoneChoices = () => {
             const timezoneSelect = document.getElementById('app_timezone');
             if (!timezoneSelect || timezoneSelect.dataset.choicesInitialized === 'true' || !window.Choices) {
-                return;
+                return false;
             }
 
-            const choices = new window.Choices(timezoneSelect, {
+            new window.Choices(timezoneSelect, {
                 searchEnabled: true,
                 shouldSort: false,
                 itemSelectText: '',
@@ -219,9 +219,11 @@
 
             timezoneSelect.dataset.choicesInitialized = 'true';
 
-            return choices;
+            return true;
         };
 
-        initTimezoneChoices();
+        if (!initTimezoneChoices()) {
+            window.addEventListener('load', initTimezoneChoices, { once: true });
+        }
     </script>
 @endsection
