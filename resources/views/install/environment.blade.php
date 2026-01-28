@@ -203,5 +203,25 @@
             dbConnection.addEventListener('change', toggleFields);
             toggleFields();
         }
+
+        const initTimezoneChoices = () => {
+            const timezoneSelect = document.getElementById('app_timezone');
+            if (!timezoneSelect || timezoneSelect.dataset.choicesInitialized === 'true' || !window.Choices) {
+                return;
+            }
+
+            const choices = new window.Choices(timezoneSelect, {
+                searchEnabled: true,
+                shouldSort: false,
+                itemSelectText: '',
+                placeholderValue: 'Select a time zone',
+            });
+
+            timezoneSelect.dataset.choicesInitialized = 'true';
+
+            return choices;
+        };
+
+        initTimezoneChoices();
     </script>
 @endsection

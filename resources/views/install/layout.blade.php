@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Install') | {{ config('app.name') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}"/>
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('style')
 </head>
 <body class="h-screen w-screen bg-gray-100 font-sans antialiased text-gray-800">
