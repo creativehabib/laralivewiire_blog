@@ -216,7 +216,14 @@ class ThemeOptionsSetting extends Component
         set_setting('site_logo_light', $this->general['site_logo_light'] ?? '', 'theme-options');
         set_setting('site_logo_dark', $this->general['site_logo_dark'] ?? '', 'theme-options');
         set_setting('site_favicon', $this->general['site_favicon'] ?? '', 'general');
-        set_setting('timezone', $this->general['timezone'] ?? config('app.timezone', 'Asia/Dhaka'), 'general');
+        set_setting(
+            'timezone',
+            $this->normalizeTimezone(
+                $this->general['timezone'] ?? config('app.timezone', 'Asia/Dhaka'),
+                $this->timezoneOptions
+            ),
+            'general'
+        );
         set_setting('date_display_format', $this->general['date_display_format'] ?? 'gregorian_and_bangla', 'general');
         set_setting('contact_address', trim((string) ($this->general['contact_address'] ?? '')), 'theme-options');
         set_setting('site_email', trim((string) ($this->general['site_email'] ?? '')), 'general');
@@ -474,7 +481,7 @@ class ThemeOptionsSetting extends Component
             $timezone = config('app.timezone', 'Asia/Dhaka');
         }
 
-        $timezone = (string) $timezone;
+        $timezone = trim((string) $timezone);
 
         if ($options !== [] && ! in_array($timezone, $options, true)) {
             $fallback = (string) config('app.timezone', 'Asia/Dhaka');
