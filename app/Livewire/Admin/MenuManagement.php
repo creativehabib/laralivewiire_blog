@@ -199,7 +199,7 @@ class MenuManagement extends Component
         ]);
         $tags = Tag::whereIn('id', $this->selectedTags)->get();
         foreach ($tags as $tag) {
-            $this->createMenuItem($tag->name, route('tags.show', ['tag' => $tag->slug]));
+            $this->createMenuItem($tag->name, tag_permalink($tag));
         }
         $this->selectedTags = [];
         $this->afterMenuItemsMutated('Selected tags added to the menu.');
