@@ -22,10 +22,9 @@ class BanglaCalendar
 
     protected static function convertToBanglaDate(CarbonInterface $dateTime): array
     {
-        $timezone = setting('timezone', config('app.timezone', 'Asia/Dhaka'));
-        if (blank($timezone)) {
-            $timezone = config('app.timezone', 'Asia/Dhaka');
-        }
+        $timezone = function_exists('app_timezone_setting')
+            ? app_timezone_setting()
+            : (string) config('app.timezone', 'Asia/Dhaka');
 
         $date = $dateTime->copy()->setTimezone($timezone);
 
