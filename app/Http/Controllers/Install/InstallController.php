@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Install;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\SettingManager;
 use Database\Seeders\DefaultContentSeeder;
 use Database\Seeders\MenuSeeder;
 use Database\Seeders\RolePermissionSeeder;
@@ -140,6 +141,8 @@ class InstallController extends Controller
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('migrate', ['--force' => true]);
+
+        SettingManager::set('timezone', config('app.timezone', 'Asia/Dhaka'), 'general');
 
         Artisan::call('db:seed', [
             '--class' => RolePermissionSeeder::class,
