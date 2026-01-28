@@ -430,6 +430,12 @@ if (! function_exists('tag_permalink')) {
         return route('tags.show', ['tag' => $tag->slug], $absolute);
     }
 }
+if (! function_exists('the_category_permalink')) {
+    function the_category_permalink(Category $category, bool $absolute = true): string
+    {
+        return route('categories.show', ['category' => $category->slug], $absolute);
+    }
+}
 if (! function_exists('preview_url')) {
     function preview_url(string $type, ?string $slug = null): string
     {

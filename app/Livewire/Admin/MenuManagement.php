@@ -161,7 +161,7 @@ class MenuManagement extends Component
         ]);
         $categories = Category::whereIn('id', $this->selectedCategories)->get();
         foreach ($categories as $category) {
-            $this->createMenuItem($category->name, route('categories.show', $category));
+            $this->createMenuItem($category->name, the_category_permalink($category));
         }
         $this->selectedCategories = [];
         $this->afterMenuItemsMutated('Selected categories added to the menu.');
