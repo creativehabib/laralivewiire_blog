@@ -83,7 +83,7 @@ class InstallController extends Controller
             'defaults' => [
                 'app_name' => config('app.name'),
                 'app_env' => config('app.env'),
-                'app_debug' => config('app.debug') ? '1' : '0',
+                'app_debug' => config('app.debug') ? 'true' : 'false',
                 'app_url' => $defaultAppUrl,
                 'app_timezone' => config('app.timezone'),
                 'db_connection' => config('database.default'),
@@ -102,7 +102,7 @@ class InstallController extends Controller
         $data = $request->validate([
             'app_name' => ['required', 'string', 'max:255'],
             'app_env' => ['required', 'string', 'in:production,development,local'],
-            'app_debug' => ['required', 'string', 'in:0,1'],
+            'app_debug' => ['required', 'string', 'in:true,false'],
             'app_url' => ['required', 'url'],
             'app_timezone' => ['required', 'string', 'timezone'],
             'db_connection' => ['required', 'string', 'max:50'],
@@ -216,7 +216,7 @@ class InstallController extends Controller
         $envContents = File::get($envPath);
 
         foreach ($updates as $key => $value) {
-            $pattern = "/^{$key}=.*$/m";
+            $pattern = "/^\\s*(?:export\\s+)?{$key}\\s*=.*$/m";
             $line = $key . '=' . $value;
 
             if (preg_match($pattern, $envContents)) {
