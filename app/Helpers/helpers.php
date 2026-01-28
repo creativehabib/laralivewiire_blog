@@ -14,11 +14,28 @@ use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+if (! function_exists('app_timezone_setting')) {
+    function app_timezone_setting(): string
+    {
+        $timezone = setting('timezone', config('app.timezone', 'Asia/Dhaka'));
+
+        if (is_array($timezone)) {
+            $timezone = $timezone[0] ?? null;
+        }
+
+        if (blank($timezone) || ! is_string($timezone)) {
+            $timezone = config('app.timezone', 'Asia/Dhaka');
+        }
+
+        return trim((string) $timezone);
+    }
+}
+
 if (! function_exists('frontend_bangla_gregorian_date')) {
     function frontend_bangla_gregorian_date(?CarbonInterface $dateTime = null): string
     {
         $date = ($dateTime ? Carbon::parse($dateTime) : Carbon::now())
-            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
+            ->setTimezone(app_timezone_setting());
 
         return BanglaFormatter::digits(
             $date
@@ -33,7 +50,7 @@ if (! function_exists('frontend_bangla_calendar_date')) {
     function frontend_bangla_calendar_date(?CarbonInterface $dateTime = null): string
     {
         $date = ($dateTime ? Carbon::parse($dateTime) : Carbon::now())
-            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
+            ->setTimezone(app_timezone_setting());
 
         return BanglaCalendar::format($date);
     }
@@ -60,7 +77,7 @@ if (! function_exists('frontend_bangla_day')) {
     function frontend_bangla_day(?CarbonInterface $dateTime = null): string
     {
         $date = ($dateTime ? Carbon::parse($dateTime) : Carbon::now())
-            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
+            ->setTimezone(app_timezone_setting());
 
         return BanglaFormatter::digits($date->format('d'));
     }
@@ -107,7 +124,7 @@ if (! function_exists('the_date')) {
         }
 
         $date = Carbon::parse($dateValue)
-            ->setTimezone(setting('timezone', config('app.timezone', 'Asia/Dhaka')));
+            ->setTimezone(app_timezone_setting());
 
         if ($model) {
             $format = $format !== '' ? $format : '';
