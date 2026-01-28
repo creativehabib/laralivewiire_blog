@@ -4,6 +4,8 @@ namespace App\Support;
 
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 class SettingManager
 {
@@ -16,6 +18,10 @@ class SettingManager
         }
 
         if (! is_installed()) {
+            return $default;
+        }
+
+        if (! self::settingsTableAvailable()) {
             return $default;
         }
 
@@ -54,6 +60,10 @@ class SettingManager
             return [];
         }
 
+        if (! self::settingsTableAvailable()) {
+            return [];
+        }
+
         return Setting::where('group', $group)
             ->pluck('value', 'key')
             ->map(fn ($v) => self::decode($v))
@@ -74,6 +84,15 @@ class SettingManager
 
         $json = json_decode($value, true);
         return json_last_error() === JSON_ERROR_NONE ? $json : $value;
+    }
+
+    private static function settingsTableAvailable(): bool
+    {
+        try {
+            return Schema::hasTable('settings');
+        } catch (Throwable $exception) {
+            return false;
+        }
     }
 
 }
