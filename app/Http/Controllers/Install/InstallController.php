@@ -132,6 +132,7 @@ class InstallController extends Controller
         $this->ensureAppKey();
 
         $request->session()->put('install.environment_saved', true);
+        File::put(storage_path('install_environment_saved'), now()->toDateTimeString());
 
         return redirect()->route('install.run');
     }
@@ -164,7 +165,7 @@ class InstallController extends Controller
 
     public function account()
     {
-        if (! session()->get('install.environment_saved')) {
+        if (! $this->environmentIsSaved(request())) {
             return redirect()->route('install.environment');
         }
 
@@ -175,7 +176,7 @@ class InstallController extends Controller
 
     public function storeAccount(Request $request)
     {
-        if (! $request->session()->get('install.environment_saved')) {
+        if (! $this->environmentIsSaved($request)) {
             return redirect()->route('install.environment');
         }
 
@@ -200,6 +201,7 @@ class InstallController extends Controller
         $user->assignRole($role);
 
         File::put(storage_path('installed'), now()->toDateTimeString());
+        File::delete(storage_path('install_environment_saved'));
 
         Auth::login($user);
 
@@ -263,5 +265,14 @@ class InstallController extends Controller
         }
 
         return trim($matches[1]) !== '';
+    }
+
+    private function environmentIsSaved(Request $request): bool
+    {
+        if ($request->session()->get('install.environment_saved')) {
+            return true;
+        }
+
+        return File::exists(storage_path('install_environment_saved'));
     }
 }
