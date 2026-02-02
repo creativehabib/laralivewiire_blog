@@ -280,6 +280,21 @@ const initDeleteConfirmModal = () => {
     }, true);
 };
 
+const observeDeleteConfirmModal = () => {
+    if (window.__deleteConfirmObserver || !document.body) {
+        return;
+    }
+
+    window.__deleteConfirmObserver = new MutationObserver(() => {
+        initDeleteConfirmModal();
+    });
+
+    window.__deleteConfirmObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+};
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initDeleteConfirmModal);
 } else {
@@ -287,3 +302,13 @@ if (document.readyState === 'loading') {
 }
 
 document.addEventListener('livewire:navigated', initDeleteConfirmModal);
+document.addEventListener('livewire:initialized', initDeleteConfirmModal);
+document.addEventListener('livewire:load', initDeleteConfirmModal);
+document.addEventListener('livewire:init', () => {
+    if (window.Livewire?.hook) {
+        window.Livewire.hook('message.processed', () => {
+            initDeleteConfirmModal();
+        });
+    }
+});
+observeDeleteConfirmModal();
