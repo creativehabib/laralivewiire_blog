@@ -149,7 +149,7 @@
                                                 action="{{ route('system.permissions.destroy', $permission) }}"
                                                 method="POST"
                                                 class="inline-flex"
-                                                onsubmit="return confirm('Are you sure you want to delete this permission?');"
+                                                data-confirm="Are you sure you want to delete this permission?"
                                             >
                                                 @csrf
                                                 @method('DELETE')

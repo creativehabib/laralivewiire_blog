@@ -59,7 +59,7 @@
                         <div x-show="open" @click.outside="open = false"
                              class="absolute z-20 mt-1 w-36 rounded-md border border-slate-200 bg-white shadow dark:border-slate-700 dark:bg-slate-900">
                             <button type="button"
-                                    onclick="confirm('Delete selected tags?') || event.stopImmediatePropagation()"
+                                    data-confirm="Delete selected tags?"
                                     wire:click="bulkDelete"
                                     class="block w-full px-3 py-2 text-left text-xs text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-900/20">
                                 Delete selected
@@ -170,7 +170,7 @@
                                     </a>
 
                                     {{-- Delete --}}
-                                    <button wire:click="delete({{ $tag->id }})" onclick="return confirm('Delete this tag?')" class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white hover:bg-rose-500 dark:bg-rose-500 dark:hover:bg-rose-400">
+                                    <button wire:click="delete({{ $tag->id }})" data-confirm="Delete this tag?" class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white hover:bg-rose-500 dark:bg-rose-500 dark:hover:bg-rose-400">
                                         <i class="fa-solid fa-trash text-[11px]"></i>
                                     </button>
                                 </div>

@@ -152,12 +152,12 @@
                                                 action="{{ route('system.roles.destroy', $role) }}"
                                                 method="POST"
                                                 class="inline-flex"
+                                                data-confirm="Are you sure you want to delete this role?"
                                             >
                                                 @csrf
                                                 @method('DELETE')
                                                 <button
                                                     type="submit"
-                                                    onclick="return confirm('Are you sure you want to delete this role?')"
                                                     {{ $role->name === 'admin' ? 'disabled' : '' }}
                                                     class="inline-flex items-center rounded-lg border border-red-500/80
                                                                bg-white dark:bg-slate-900
