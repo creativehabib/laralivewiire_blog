@@ -312,6 +312,16 @@
                     {{ __('Comments') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="circle-stack"
+                    :href="route('settings.backups')"
+                    :current="request()->routeIs('settings.backups')"
+                    tooltip="{{ __('Backups') }}"
+                    wire:navigate
+                >
+                    {{ __('Backups') }}
+                </flux:sidebar.item>
+
             </flux:sidebar.group>
         @endcan
 
