@@ -188,6 +188,10 @@ class Backups extends Component
         $driver = $config['driver'] ?? '';
 
         if ($driver === 'mysql') {
+            if (! $this->ensureBinaryAvailable('mysqldump', 'MySQL dump')) {
+                return null;
+            }
+
             $process = new Process([
                 'mysqldump',
                 '--user=' . ($config['username'] ?? ''),
@@ -206,6 +210,10 @@ class Backups extends Component
         }
 
         if ($driver === 'pgsql') {
+            if (! $this->ensureBinaryAvailable('pg_dump', 'PostgreSQL dump')) {
+                return null;
+            }
+
             $process = new Process([
                 'pg_dump',
                 '--file',
@@ -228,6 +236,10 @@ class Backups extends Component
         }
 
         if ($driver === 'sqlite') {
+            if (! $this->ensureBinaryAvailable('sqlite3', 'SQLite dump')) {
+                return null;
+            }
+
             $database = $config['database'] ?? '';
 
             if ($database === ':memory:' || empty($database)) {
@@ -248,6 +260,10 @@ class Backups extends Component
         $driver = $config['driver'] ?? '';
 
         if ($driver === 'mysql') {
+            if (! $this->ensureBinaryAvailable('mysql', 'MySQL restore')) {
+                return null;
+            }
+
             $process = new Process([
                 'mysql',
                 '--user=' . ($config['username'] ?? ''),
@@ -265,6 +281,10 @@ class Backups extends Component
         }
 
         if ($driver === 'pgsql') {
+            if (! $this->ensureBinaryAvailable('psql', 'PostgreSQL restore')) {
+                return null;
+            }
+
             $process = new Process([
                 'psql',
                 '--dbname',
@@ -286,6 +306,10 @@ class Backups extends Component
         }
 
         if ($driver === 'sqlite') {
+            if (! $this->ensureBinaryAvailable('sqlite3', 'SQLite restore')) {
+                return null;
+            }
+
             $database = $config['database'] ?? '';
 
             if ($database === ':memory:' || empty($database)) {
@@ -301,5 +325,23 @@ class Backups extends Component
         $this->dispatch('media-toast', type: 'error', message: 'Unsupported database driver for restore.');
 
         return null;
+    }
+
+    private function ensureBinaryAvailable(string $binary, string $label): bool
+    {
+        $process = new Process(['which', $binary]);
+        $process->run();
+
+        if ($process->isSuccessful()) {
+            return true;
+        }
+
+        $this->dispatch(
+            'media-toast',
+            type: 'error',
+            message: "{$label} command is not available on this server."
+        );
+
+        return false;
     }
 }
