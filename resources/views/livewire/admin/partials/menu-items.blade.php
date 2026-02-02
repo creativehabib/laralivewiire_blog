@@ -129,7 +129,7 @@
                                                focus:outline-none focus:ring-2 focus:ring-red-500"
                                         wire:click="deleteMenuItem({{ $item['id'] }})"
                                         wire:loading.attr="disabled"
-                                        onclick="confirm('Are you sure you want to remove this item?') || event.stopImmediatePropagation()"
+                                        data-confirm="Are you sure you want to remove this item?"
                                     >
                                         Remove
                                     </button>
