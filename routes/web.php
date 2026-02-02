@@ -18,6 +18,7 @@ use App\Livewire\Admin\Posts\PostForm;
 use App\Livewire\Admin\Posts\PostTable;
 use App\Livewire\Admin\Settings\ActivityLogs;
 use App\Livewire\Admin\Settings\AdsSettings;
+use App\Livewire\Admin\Settings\Backups;
 use App\Livewire\Admin\Settings\CommentsSettings;
 use App\Livewire\Admin\Settings\CustomCssSettings;
 use App\Livewire\Admin\Settings\CustomHtmlSettings;
@@ -214,6 +215,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::get('/sitemap', SitemapSettings::class)->name('sitemap')->middleware('permission:setting.view');
         Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
         Route::get('/comments', CommentsSettings::class)->name('comments')->middleware('permission:setting.view');
+        Route::get('/backups', Backups::class)->name('backups')->middleware('permission:setting.view');
     });
 
     Route::prefix('admin')->name('blogs.')->group(function () {
