@@ -107,9 +107,15 @@ window.setupCkeditorBase = function(hippoApiKey) {
     }
 };
 
-const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
+const initDeleteConfirmModal = () => {
+    const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
 
-if (deleteConfirmModal) {
+    if (!deleteConfirmModal || deleteConfirmModal.dataset.deleteConfirmInitialized === 'true') {
+        return;
+    }
+
+    deleteConfirmModal.dataset.deleteConfirmInitialized = 'true';
+
     const titleEl = deleteConfirmModal.querySelector('[data-confirm-title]');
     const messageEl = deleteConfirmModal.querySelector('[data-confirm-message]');
     const confirmButton = deleteConfirmModal.querySelector('[data-confirm-accept]');
@@ -205,6 +211,7 @@ if (deleteConfirmModal) {
 
         event.preventDefault();
         event.stopImmediatePropagation();
+        event.stopPropagation();
 
         const message = trigger.dataset.confirm || defaultConfig.message;
         const title = trigger.dataset.confirmTitle || defaultConfig.title;
@@ -237,7 +244,7 @@ if (deleteConfirmModal) {
                 trigger.click();
             }
         });
-    });
+    }, true);
 
     document.addEventListener('submit', (event) => {
         const form = event.target.closest('form[data-confirm]');
@@ -249,6 +256,8 @@ if (deleteConfirmModal) {
         }
 
         event.preventDefault();
+        event.stopImmediatePropagation();
+        event.stopPropagation();
         const message = form.dataset.confirm || defaultConfig.message;
         const title = form.dataset.confirmTitle || defaultConfig.title;
         const confirmText = form.dataset.confirmText || defaultConfig.confirmText;
@@ -268,5 +277,13 @@ if (deleteConfirmModal) {
                 }
             }
         });
-    });
+    }, true);
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDeleteConfirmModal);
+} else {
+    initDeleteConfirmModal();
 }
+
+document.addEventListener('livewire:navigated', initDeleteConfirmModal);
