@@ -4,14 +4,12 @@ namespace App\Livewire\Admin\Settings;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Symfony\Component\Process\Process;
 
 class Backups extends Component
 {
-    private string $disk = 'local';
     private string $backupFolder = 'backups/database';
 
     public function generateBackup(): void
@@ -139,22 +137,20 @@ class Backups extends Component
 
     private function listBackups(): array
     {
-        if (! Storage::disk($this->disk)->exists($this->backupFolder)) {
+        if (! File::exists($this->backupDirectory())) {
             return [];
         }
 
-        $files = Storage::disk($this->disk)->files($this->backupFolder);
+        $files = File::files($this->backupDirectory());
 
         return collect($files)
-            ->filter(fn (string $file) => str_ends_with($file, '.sql'))
-            ->map(function (string $file) {
-                $timestamp = Storage::disk($this->disk)->lastModified($file);
-
+            ->filter(fn (\SplFileInfo $file) => $file->isFile() && str_ends_with($file->getFilename(), '.sql'))
+            ->map(function (\SplFileInfo $file) {
                 return [
-                    'name' => basename($file),
+                    'name' => $file->getFilename(),
                     'description' => 'Database dump',
-                    'size' => $this->readableSize(Storage::disk($this->disk)->size($file)),
-                    'created_at' => Carbon::createFromTimestamp($timestamp)->format('Y-m-d H:i:s'),
+                    'size' => $this->readableSize($file->getSize()),
+                    'created_at' => Carbon::createFromTimestamp($file->getMTime())->format('Y-m-d H:i:s'),
                 ];
             })
             ->sortByDesc('created_at')
