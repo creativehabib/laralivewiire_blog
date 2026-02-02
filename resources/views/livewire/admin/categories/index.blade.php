@@ -126,7 +126,7 @@
                         @if($categoryId)
                             <button type="button"
                                     wire:click="deleteCategory({{ $categoryId }})"
-                                    onclick="return confirm('Delete this category?')"
+                                    data-confirm="Delete this category?"
                                     class="text-xs px-3 py-1.5 border border-red-200 text-red-600 rounded hover:bg-red-50">
                                 Delete
                             </button>

@@ -46,7 +46,7 @@
                     </button>
 
                     <button type="button"
-                            onclick="confirm('Delete permanently selected posts?') || event.stopImmediatePropagation()"
+                            data-confirm="Delete permanently selected posts?"
                             wire:click="bulkForceDelete"
                             class="block w-full px-3 py-2 text-left text-xs text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-900/20">
                         Delete forever
@@ -381,7 +381,7 @@
 
                                     <button
                                         type="button"
-                                        onclick="confirm('Delete permanently?') || event.stopImmediatePropagation()"
+                                        data-confirm="Delete permanently?"
                                         wire:click="forceDelete({{ $post->id }})"
                                         class="inline-flex items-center gap-1 rounded-md bg-rose-700 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-600 dark:bg-rose-800 dark:hover:bg-rose-700">
                                         <i class="fa-solid fa-skull-crossbones text-[11px] mr-1"></i>
@@ -396,7 +396,7 @@
 
                                     <button
                                         type="button"
-                                        onclick="confirm('Delete this post?') || event.stopImmediatePropagation()"
+                                        data-confirm="Delete this post?"
                                         wire:click="delete({{ $post->id }})"
                                         class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-500 dark:bg-rose-700 dark:hover:bg-rose-600">
                                         <i class="fa-solid fa-trash text-[11px]"></i>
