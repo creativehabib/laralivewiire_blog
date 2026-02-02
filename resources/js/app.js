@@ -107,97 +107,120 @@ window.setupCkeditorBase = function(hippoApiKey) {
     }
 };
 
-const initDeleteConfirmModal = () => {
-    const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
-
-    if (!deleteConfirmModal || deleteConfirmModal.dataset.deleteConfirmInitialized === 'true') {
-        return;
-    }
-
-    deleteConfirmModal.dataset.deleteConfirmInitialized = 'true';
-
-    const titleEl = deleteConfirmModal.querySelector('[data-confirm-title]');
-    const messageEl = deleteConfirmModal.querySelector('[data-confirm-message]');
-    const confirmButton = deleteConfirmModal.querySelector('[data-confirm-accept]');
-    const cancelButtons = deleteConfirmModal.querySelectorAll('[data-confirm-cancel]');
-
-    const defaultConfig = {
+const deleteConfirmState = {
+    modal: null,
+    titleEl: null,
+    messageEl: null,
+    confirmButton: null,
+    cancelButtons: [],
+    confirmAction: null,
+    cancelAction: null,
+    defaultConfig: {
         title: 'Confirm delete',
         message: 'Do you really want to delete this record?',
         confirmText: 'Delete',
         cancelText: 'Close'
-    };
+    }
+};
 
-    let confirmAction = null;
-    let cancelAction = null;
+const setDeleteConfirmModal = () => {
+    const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
+    if (!deleteConfirmModal) {
+        return false;
+    }
 
-    const openModal = ({
-        title = defaultConfig.title,
-        message = defaultConfig.message,
-        confirmText = defaultConfig.confirmText,
-        cancelText = defaultConfig.cancelText,
-        onConfirm = null,
-        onCancel = null
-    } = {}) => {
-        if (titleEl) titleEl.textContent = title;
-        if (messageEl) messageEl.textContent = message;
-        if (confirmButton) confirmButton.textContent = confirmText;
-        cancelButtons.forEach((button) => {
-            button.textContent = cancelText;
-        });
+    deleteConfirmState.modal = deleteConfirmModal;
+    deleteConfirmState.titleEl = deleteConfirmModal.querySelector('[data-confirm-title]');
+    deleteConfirmState.messageEl = deleteConfirmModal.querySelector('[data-confirm-message]');
+    deleteConfirmState.confirmButton = deleteConfirmModal.querySelector('[data-confirm-accept]');
+    deleteConfirmState.cancelButtons = Array.from(deleteConfirmModal.querySelectorAll('[data-confirm-cancel]'));
+    return true;
+};
 
-        confirmAction = onConfirm;
-        cancelAction = onCancel;
-        deleteConfirmModal.classList.remove('hidden');
-        deleteConfirmModal.classList.add('flex');
-        deleteConfirmModal.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('overflow-hidden');
-    };
+const openDeleteConfirm = ({
+    title = deleteConfirmState.defaultConfig.title,
+    message = deleteConfirmState.defaultConfig.message,
+    confirmText = deleteConfirmState.defaultConfig.confirmText,
+    cancelText = deleteConfirmState.defaultConfig.cancelText,
+    onConfirm = null,
+    onCancel = null
+} = {}) => {
+    if (!deleteConfirmState.modal) {
+        return false;
+    }
 
-    const closeModal = (triggerCancel = false) => {
-        deleteConfirmModal.classList.add('hidden');
-        deleteConfirmModal.classList.remove('flex');
-        deleteConfirmModal.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('overflow-hidden');
-
-        if (triggerCancel && typeof cancelAction === 'function') {
-            cancelAction();
-        }
-
-        confirmAction = null;
-        cancelAction = null;
-    };
-
-    confirmButton?.addEventListener('click', () => {
-        const action = confirmAction;
-        closeModal();
-        if (typeof action === 'function') {
-            action();
-        }
+    if (deleteConfirmState.titleEl) deleteConfirmState.titleEl.textContent = title;
+    if (deleteConfirmState.messageEl) deleteConfirmState.messageEl.textContent = message;
+    if (deleteConfirmState.confirmButton) deleteConfirmState.confirmButton.textContent = confirmText;
+    deleteConfirmState.cancelButtons.forEach((button) => {
+        button.textContent = cancelText;
     });
 
-    cancelButtons.forEach((button) => {
-        button.addEventListener('click', () => closeModal(true));
-    });
+    deleteConfirmState.confirmAction = onConfirm;
+    deleteConfirmState.cancelAction = onCancel;
+    deleteConfirmState.modal.classList.remove('hidden');
+    deleteConfirmState.modal.classList.add('flex');
+    deleteConfirmState.modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('overflow-hidden');
+    return true;
+};
 
-    deleteConfirmModal.addEventListener('click', (event) => {
-        if (event.target === deleteConfirmModal) {
-            closeModal(true);
+const closeDeleteConfirm = (triggerCancel = false) => {
+    if (!deleteConfirmState.modal) {
+        return;
+    }
+
+    deleteConfirmState.modal.classList.add('hidden');
+    deleteConfirmState.modal.classList.remove('flex');
+    deleteConfirmState.modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overflow-hidden');
+
+    if (triggerCancel && typeof deleteConfirmState.cancelAction === 'function') {
+        deleteConfirmState.cancelAction();
+    }
+
+    deleteConfirmState.confirmAction = null;
+    deleteConfirmState.cancelAction = null;
+};
+
+const bindDeleteConfirmListeners = () => {
+    if (window.__deleteConfirmListenersBound) {
+        return;
+    }
+
+    window.__deleteConfirmListenersBound = true;
+
+    document.addEventListener('click', (event) => {
+        const confirmButton = event.target.closest('[data-confirm-accept]');
+        const cancelButton = event.target.closest('[data-confirm-cancel]');
+
+        if (confirmButton && deleteConfirmState.modal?.contains(confirmButton)) {
+            event.preventDefault();
+            const action = deleteConfirmState.confirmAction;
+            closeDeleteConfirm();
+            if (typeof action === 'function') {
+                action();
+            }
+            return;
         }
-    });
+
+        if (cancelButton && deleteConfirmState.modal?.contains(cancelButton)) {
+            event.preventDefault();
+            closeDeleteConfirm(true);
+        }
+    }, true);
+
+    document.addEventListener('click', (event) => {
+        if (deleteConfirmState.modal && event.target === deleteConfirmState.modal) {
+            event.preventDefault();
+            closeDeleteConfirm(true);
+        }
+    }, true);
 
     window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && !deleteConfirmModal.classList.contains('hidden')) {
-            closeModal(true);
+        if (event.key === 'Escape' && deleteConfirmState.modal && !deleteConfirmState.modal.classList.contains('hidden')) {
+            closeDeleteConfirm(true);
         }
-    });
-
-    window.showDeleteConfirm = (options = {}) => new Promise((resolve) => {
-        openModal({
-            ...options,
-            onConfirm: () => resolve(true),
-            onCancel: () => resolve(false)
-        });
     });
 
     document.addEventListener('click', (event) => {
@@ -213,37 +236,37 @@ const initDeleteConfirmModal = () => {
         event.stopImmediatePropagation();
         event.stopPropagation();
 
-        const message = trigger.dataset.confirm || defaultConfig.message;
-        const title = trigger.dataset.confirmTitle || defaultConfig.title;
-        const confirmText = trigger.dataset.confirmText || defaultConfig.confirmText;
-        const cancelText = trigger.dataset.confirmCancel || defaultConfig.cancelText;
+        const message = trigger.dataset.confirm || deleteConfirmState.defaultConfig.message;
+        const title = trigger.dataset.confirmTitle || deleteConfirmState.defaultConfig.title;
+        const confirmText = trigger.dataset.confirmText || deleteConfirmState.defaultConfig.confirmText;
+        const cancelText = trigger.dataset.confirmCancel || deleteConfirmState.defaultConfig.cancelText;
 
-        openModal({
-            title,
-            message,
-            confirmText,
-            cancelText,
-            onConfirm: () => {
-                trigger.dataset.confirmed = 'true';
-                const form = trigger.closest('form');
+        const proceed = () => {
+            trigger.dataset.confirmed = 'true';
+            const form = trigger.closest('form');
 
-                if (trigger.tagName === 'A' && trigger.getAttribute('href')) {
-                    window.location.href = trigger.href;
-                    return;
-                }
-
-                if (form && trigger.type === 'submit') {
-                    if (typeof form.requestSubmit === 'function') {
-                        form.requestSubmit(trigger);
-                    } else {
-                        form.submit();
-                    }
-                    return;
-                }
-
-                trigger.click();
+            if (trigger.tagName === 'A' && trigger.getAttribute('href')) {
+                window.location.href = trigger.href;
+                return;
             }
-        });
+
+            if (form && trigger.type === 'submit') {
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit(trigger);
+                } else {
+                    form.submit();
+                }
+                return;
+            }
+
+            trigger.click();
+        };
+
+        if (!openDeleteConfirm({ title, message, confirmText, cancelText, onConfirm: proceed })) {
+            if (window.confirm(message)) {
+                proceed();
+            }
+        }
     }, true);
 
     document.addEventListener('submit', (event) => {
@@ -258,26 +281,41 @@ const initDeleteConfirmModal = () => {
         event.preventDefault();
         event.stopImmediatePropagation();
         event.stopPropagation();
-        const message = form.dataset.confirm || defaultConfig.message;
-        const title = form.dataset.confirmTitle || defaultConfig.title;
-        const confirmText = form.dataset.confirmText || defaultConfig.confirmText;
-        const cancelText = form.dataset.confirmCancel || defaultConfig.cancelText;
 
-        openModal({
-            title,
-            message,
-            confirmText,
-            cancelText,
-            onConfirm: () => {
-                form.dataset.confirmed = 'true';
-                if (typeof form.requestSubmit === 'function') {
-                    form.requestSubmit();
-                } else {
-                    form.submit();
-                }
+        const message = form.dataset.confirm || deleteConfirmState.defaultConfig.message;
+        const title = form.dataset.confirmTitle || deleteConfirmState.defaultConfig.title;
+        const confirmText = form.dataset.confirmText || deleteConfirmState.defaultConfig.confirmText;
+        const cancelText = form.dataset.confirmCancel || deleteConfirmState.defaultConfig.cancelText;
+
+        const proceed = () => {
+            form.dataset.confirmed = 'true';
+            if (typeof form.requestSubmit === 'function') {
+                form.requestSubmit();
+            } else {
+                form.submit();
             }
-        });
+        };
+
+        if (!openDeleteConfirm({ title, message, confirmText, cancelText, onConfirm: proceed })) {
+            if (window.confirm(message)) {
+                proceed();
+            }
+        }
     }, true);
+};
+
+const initDeleteConfirmModal = () => {
+    setDeleteConfirmModal();
+    bindDeleteConfirmListeners();
+    window.showDeleteConfirm = (options = {}) => new Promise((resolve) => {
+        if (!openDeleteConfirm({
+            ...options,
+            onConfirm: () => resolve(true),
+            onCancel: () => resolve(false)
+        })) {
+            resolve(window.confirm(options?.message || deleteConfirmState.defaultConfig.message));
+        }
+    });
 };
 
 const observeDeleteConfirmModal = () => {
