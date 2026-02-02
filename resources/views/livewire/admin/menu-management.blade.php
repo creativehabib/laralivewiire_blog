@@ -126,7 +126,7 @@
                                     type="button"
                                     class="inline-flex items-center rounded-lg border border-red-500 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 focus:outline-none focus:ring-2 focus:ring-red-500"
                                     wire:click="deleteMenu({{ $selectedMenuId }})"
-                                    onclick="confirm('This will delete the menu and all of its items. Continue?') || event.stopImmediatePropagation()"
+                                    data-confirm="This will delete the menu and all of its items. Continue?"
                                 >
                                     Delete menu
                                 </button>

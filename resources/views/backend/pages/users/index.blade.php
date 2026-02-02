@@ -120,7 +120,7 @@
                                                     action="{{ route('system.users.destroy', $user) }}"
                                                     method="POST"
                                                     class="inline-flex"
-                                                    onsubmit="return confirm('Are you sure you want to delete this user?');"
+                                                    data-confirm="Are you sure you want to delete this user?"
                                                 >
                                                     @csrf
                                                     @method('DELETE')
