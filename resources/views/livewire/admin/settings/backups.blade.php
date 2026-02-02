@@ -3,7 +3,7 @@
     <div class="mb-6 flex items-center text-sm text-slate-500 uppercase font-semibold tracking-wider">
         <span class="text-blue-600">Dashboard</span>
         <span class="mx-2">/</span>
-        <span class="text-slate-500">Platform Administration</span>
+        <span class="text-slate-500">Settings</span>
         <span class="mx-2">/</span>
         <span class="text-slate-800">Backups</span>
     </div>

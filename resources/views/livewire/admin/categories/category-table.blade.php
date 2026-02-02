@@ -288,14 +288,14 @@
                                 <a href="{{ route('blogs.categories.edit', $category->id) }}"
                                    class="inline-flex items-center rounded-md bg-sky-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-sky-500 dark:bg-sky-500 dark:hover:bg-sky-400"
                                    title="Edit">
-                                    <i class="fa-solid fa-pen text-[11px]"></i>
+                                    <i class="fa-solid fa-pen text-[11px] text-white"></i>
                                 </a>
 
                                 <button
                                     type="button"
                                     data-confirm="Delete this category?"
                                     wire:click="deleteCategory({{ $category->id }})"
-                                    class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-500 dark:bg-rose-700 dark:hover:bg-rose-600"
+                                    class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow cursor-pointer hover:bg-rose-500 dark:bg-rose-700 dark:hover:bg-rose-600"
                                     title="Delete">
                                     <i class="fa-solid fa-trash text-[11px]"></i>
                                 </button>

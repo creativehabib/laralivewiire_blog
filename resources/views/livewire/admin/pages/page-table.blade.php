@@ -343,7 +343,7 @@
                                     <a href="{{ route('admins.pages.edit', ['pageId' => $page->id]) }}"
                                        class="inline-flex items-center rounded-md bg-sky-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-sky-500
                                               dark:bg-sky-500 dark:hover:bg-sky-400">
-                                        <i class="fa-solid fa-pen text-[11px]"></i>
+                                        <i class="fa-solid fa-pen text-[11px] text-white"></i>
                                     </a>
 
                                     <button type="button"

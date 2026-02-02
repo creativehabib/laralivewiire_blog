@@ -4,7 +4,7 @@
     aria-hidden="true"
 >
     <div
-        class="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700"
+        class="relative w-full max-w-md overflow-hidden rounded-md bg-white shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700"
         role="dialog"
         aria-modal="true"
         aria-labelledby="delete-confirm-title"

@@ -166,11 +166,11 @@
                                 <div class="flex justify-end gap-2">
                                     {{-- Edit --}}
                                     <a href="{{ route('blogs.tags.edit', $tag) }}" class="inline-flex items-center rounded-md bg-sky-600 px-2.5 py-1.5 text-xs text-white hover:bg-sky-500 dark:bg-sky-500 dark:hover:bg-sky-400">
-                                        <i class="fa-solid fa-pen text-[11px]"></i>
+                                        <i class="fa-solid fa-pen text-[11px] text-white"></i>
                                     </a>
 
                                     {{-- Delete --}}
-                                    <button wire:click="delete({{ $tag->id }})" data-confirm="Delete this tag?" class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white hover:bg-rose-500 dark:bg-rose-500 dark:hover:bg-rose-400">
+                                    <button wire:click="delete({{ $tag->id }})" data-confirm="Delete this tag?" class="inline-flex items-center rounded-md cursor-pointer bg-rose-600 px-2.5 py-1.5 text-xs text-white hover:bg-rose-500 dark:bg-rose-500 dark:hover:bg-rose-400">
                                         <i class="fa-solid fa-trash text-[11px]"></i>
                                     </button>
                                 </div>

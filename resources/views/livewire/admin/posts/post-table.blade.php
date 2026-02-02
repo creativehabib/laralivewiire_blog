@@ -391,14 +391,14 @@
                                     {{-- normal: edit + soft delete --}}
                                     <a href="{{ route('blogs.posts.edit', $post->id) }}"
                                        class="inline-flex items-center rounded-md bg-sky-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-sky-500 dark:bg-sky-500 dark:hover:bg-sky-400">
-                                        <i class="fa-solid fa-pen text-[11px]"></i>
+                                        <i class="fa-solid fa-pen text-[11px] text-white"></i>
                                     </a>
 
                                     <button
                                         type="button"
                                         data-confirm="Move to trash this post?"
                                         wire:click="delete({{ $post->id }})"
-                                        class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-500 dark:bg-rose-700 dark:hover:bg-rose-600">
+                                        class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow cursor-pointer hover:bg-rose-500 dark:bg-rose-700 dark:hover:bg-rose-600">
                                         <i class="fa-solid fa-trash text-[11px]"></i>
                                     </button>
                                 @endif

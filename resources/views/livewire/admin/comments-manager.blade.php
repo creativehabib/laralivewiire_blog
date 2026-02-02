@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <button wire:click="$refresh" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 rounded text-sm font-medium hover:bg-slate-50 flex items-center gap-2 shadow-sm transition-colors">
+            <button wire:click="$refresh" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 rounded text-sm font-medium cursor-pointer hover:bg-slate-50 flex items-center gap-2 shadow-sm transition-colors">
                 <i class="fas fa-sync-alt"></i> Reload
             </button>
         </div>
@@ -157,24 +157,24 @@
                         <td class="p-4 text-center">
                             <div class="flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <a href="{{ route('admin.comments.edit', $comment) }}" title="Edit" class="w-8 h-8 rounded bg-indigo-500 text-white hover:bg-indigo-600 transition-colors flex items-center justify-center shadow-sm">
-                                    <i class="fas fa-pen text-xs"></i>
+                                    <i class="fas fa-pen text-xs text-white"></i>
                                 </a>
-                                <button wire:click="openReplyModal({{ $comment->id }})" title="Reply" class="w-8 h-8 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center justify-center shadow-sm">
+                                <button wire:click="openReplyModal({{ $comment->id }})" title="Reply" class="w-8 h-8 rounded bg-blue-500 text-white cursor-pointer hover:bg-blue-600 transition-colors flex items-center justify-center shadow-sm">
                                     <i class="fas fa-reply text-xs"></i>
                                 </button>
 
                                 {{-- Status Toggle Button --}}
                                 @if($comment->status === 'approved')
-                                    <button wire:click="updateStatus({{ $comment->id }}, 'pending')" title="Mark Pending" class="w-8 h-8 rounded bg-amber-500 text-white hover:bg-amber-600 transition-colors flex items-center justify-center shadow-sm">
+                                    <button wire:click="updateStatus({{ $comment->id }}, 'pending')" title="Mark Pending" class="w-8 h-8 rounded bg-amber-500 text-white cursor-pointer hover:bg-amber-600 transition-colors flex items-center justify-center shadow-sm">
                                         <i class="fas fa-clock text-xs"></i>
                                     </button>
                                 @else
-                                    <button wire:click="updateStatus({{ $comment->id }}, 'approved')" title="Approve" class="w-8 h-8 rounded bg-emerald-500 text-white hover:bg-emerald-600 transition-colors flex items-center justify-center shadow-sm">
+                                    <button wire:click="updateStatus({{ $comment->id }}, 'approved')" title="Approve" class="w-8 h-8 rounded bg-emerald-500 text-white cursor-pointer hover:bg-emerald-600 transition-colors flex items-center justify-center shadow-sm">
                                         <i class="fas fa-check text-xs"></i>
                                     </button>
                                 @endif
 
-                                <button wire:click="delete({{ $comment->id }})" data-confirm="Delete this comment?" title="Delete" class="w-8 h-8 rounded bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center justify-center shadow-sm">
+                                <button wire:click="delete({{ $comment->id }})" data-confirm="Delete this comment?" title="Delete" class="w-8 h-8 rounded bg-rose-500 text-white cursor-pointer hover:bg-rose-600 transition-colors flex items-center justify-center shadow-sm">
                                     <i class="fas fa-trash-alt text-xs"></i>
                                 </button>
                             </div>

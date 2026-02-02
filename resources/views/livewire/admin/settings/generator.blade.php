@@ -12,7 +12,7 @@
                    wire:navigate
                    class="text-xs px-3 py-1.5 rounded-lg border
                         {{ $group === $key
-                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            ? 'text-white border-indigo-600'
                             : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700' }}">
                     {{ $g['title'] }}
                 </a>
@@ -56,7 +56,7 @@
                         {{ $field['label'] ?? $key }}
                     </label>
 
-                    {{-- ✅ PERMALINK STRUCTURE --}}
+                    {{-- PERMALINK STRUCTURE --}}
                     @if($type === 'permalink_structure')
                         @php
                             $options = PermalinkManager::availableStructures();
@@ -240,11 +240,12 @@
                         {{-- ✅ CKEDITOR FOR DYNAMIC SETTINGS --}}
                     @elseif($type === 'richtext')
                         <div wire:ignore class="ck-editor-container">
-        <textarea
-            id="editor-{{ $key }}"
-            class="ck-editor-instance"
-            data-key="{{ $key }}"
-        >{{ $data[$key] ?? '' }}</textarea>
+                            <textarea
+                                id="editor-{{ $key }}"
+                                class="ck-editor-instance"
+                                data-key="{{ $key }}"
+                            >{{ $data[$key] ?? '' }}
+                            </textarea>
                         </div>
                         {{-- image --}}
                     @elseif($type === 'image')
@@ -280,7 +281,7 @@
                 type="button"
                 onclick="return confirm('Reset these settings back to their defaults?')"
                 wire:click="resetToDefaults"
-                class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
+                class="inline-flex items-center gap-2 rounded-lg cursor-pointer border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
             >
                 Reset to defaults
             </button>
