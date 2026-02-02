@@ -1,4 +1,4 @@
-<div class="max-w-5xl mx-auto antialiased text-slate-900 dark:text-slate-100">
+<div class="text-slate-900 dark:text-slate-100">
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
          x-data="{ open: @entangle('sitemap_enabled') }">
 

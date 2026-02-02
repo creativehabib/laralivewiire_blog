@@ -5,7 +5,7 @@
         .dark .CodeMirror { border-color: #334155; }
     </style>
 
-    <div class="max-w-5xl mx-auto">
+    <div>
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
              x-data="{
                 mode: @entangle('mode'),

@@ -1,4 +1,4 @@
-<div class="max-w-5xl mx-auto antialiased text-slate-900 dark:text-slate-100">
+<div class="text-slate-900 dark:text-slate-100">
     {{-- Header Section --}}
     <div class="flex items-center justify-between mb-4">
         <div>

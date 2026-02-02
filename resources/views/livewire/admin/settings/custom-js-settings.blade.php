@@ -4,7 +4,7 @@
         .dark .CodeMirror { border-color: #334155; }
     </style>
 
-    <div class="max-w-5xl mx-auto">
+    <div>
         {{-- ১. x-data মেইন কার্ডে নিয়ে আসা হয়েছে (Scope Fix) --}}
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
              x-data="{

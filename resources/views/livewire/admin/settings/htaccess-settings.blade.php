@@ -17,7 +17,7 @@
         .dark .CodeMirror-cursor { border-left: 2px solid #fff !important; }
     </style>
 
-    <div class="max-w-6xl mx-auto">
+    <div>
 
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
              x-data="{
