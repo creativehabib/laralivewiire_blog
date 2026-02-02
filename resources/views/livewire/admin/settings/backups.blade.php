@@ -66,7 +66,7 @@
                                 <button wire:click="generateBackup" title="Refresh" class="w-8 h-8 rounded bg-slate-500 text-white hover:bg-slate-400 transition-colors flex items-center justify-center shadow-sm">
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
-                                <button wire:click="deleteBackup('{{ $backup['name'] }}')" wire:confirm="Delete this backup?" title="Delete" class="w-8 h-8 rounded bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center justify-center shadow-sm">
+                                <button wire:click="deleteBackup('{{ $backup['name'] }}')" data-confirm="Delete this backup?" title="Delete" class="w-8 h-8 rounded bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center justify-center shadow-sm">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>

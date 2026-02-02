@@ -53,7 +53,7 @@
 
                     {{-- trash bulk delete forever --}}
                     <button type="button"
-                            onclick="confirm('Delete permanently selected pages?') || event.stopImmediatePropagation()"
+                            data-confirm="Delete permanently selected pages?"
                             wire:click="bulkForceDelete"
                             class="block w-full px-3 py-2 text-left text-xs text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-900/20">
                         Delete forever
@@ -332,7 +332,7 @@
                                     </button>
 
                                     <button type="button"
-                                            onclick="confirm('Delete permanently?') || event.stopImmediatePropagation()"
+                                            data-confirm="Delete permanently?"
                                             wire:click="forceDelete({{ $page->id }})"
                                             class="inline-flex items-center gap-1 rounded-md bg-rose-700 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-600
                                                    dark:bg-rose-800 dark:hover:bg-rose-700">
@@ -347,7 +347,7 @@
                                     </a>
 
                                     <button type="button"
-                                            onclick="confirm('Move to trash?') || event.stopImmediatePropagation()"
+                                            data-confirm="Move to trash?"
                                             wire:click="delete({{ $page->id }})"
                                             class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-500
                                                    dark:bg-rose-700 dark:hover:bg-rose-600">
