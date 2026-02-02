@@ -107,9 +107,15 @@ window.setupCkeditorBase = function(hippoApiKey) {
     }
 };
 
-const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
+const initDeleteConfirmModal = () => {
+    const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
 
-if (deleteConfirmModal) {
+    if (!deleteConfirmModal || deleteConfirmModal.dataset.deleteConfirmInitialized === 'true') {
+        return;
+    }
+
+    deleteConfirmModal.dataset.deleteConfirmInitialized = 'true';
+
     const titleEl = deleteConfirmModal.querySelector('[data-confirm-title]');
     const messageEl = deleteConfirmModal.querySelector('[data-confirm-message]');
     const confirmButton = deleteConfirmModal.querySelector('[data-confirm-accept]');
@@ -269,4 +275,12 @@ if (deleteConfirmModal) {
             }
         });
     });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDeleteConfirmModal);
+} else {
+    initDeleteConfirmModal();
 }
+
+document.addEventListener('livewire:navigated', initDeleteConfirmModal);
