@@ -19,7 +19,7 @@
                         Bulk Actions <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div x-show="open" @click.away="open = false" class="absolute z-10 mt-1 w-48 bg-white rounded shadow-lg border border-slate-200 py-1" style="display: none;">
-                        <button wire:click="deleteSelected" wire:confirm="Are you sure?" class="block w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-slate-50">
+                        <button wire:click="deleteSelected" data-confirm="Are you sure?" class="block w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-slate-50">
                             Delete Selected
                         </button>
                     </div>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="flex gap-2">
-                <button wire:click="deleteAll" wire:confirm="Are you sure you want to delete ALL records?" class="px-4 py-2 bg-white border border-rose-300 text-rose-600 rounded text-sm font-medium hover:bg-rose-50 flex items-center gap-2">
+                <button wire:click="deleteAll" data-confirm="Are you sure you want to delete ALL records?" class="px-4 py-2 bg-white border border-rose-300 text-rose-600 rounded text-sm font-medium hover:bg-rose-50 flex items-center gap-2">
                     <i class="fas fa-trash-alt"></i> Delete all records
                 </button>
                 <button wire:click="$refresh" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 rounded text-sm font-medium hover:bg-slate-50 flex items-center gap-2">
@@ -98,7 +98,7 @@
                             </div>
                         </td>
                         <td class="p-4 text-right">
-                            <button wire:click="delete({{ $log->id }})" wire:confirm="Delete this log?" class="w-8 h-8 rounded bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center ml-auto">
+                            <button wire:click="delete({{ $log->id }})" data-confirm="Delete this log?" class="w-8 h-8 rounded bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center ml-auto">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>

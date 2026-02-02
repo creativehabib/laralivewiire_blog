@@ -22,7 +22,7 @@
                         <button wire:click="updateStatusSelected('pending')" class="block w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700">Mark as Pending</button>
                         <button wire:click="updateStatusSelected('spam')" class="block w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700">Mark as Spam</button>
                         <div class="border-t border-slate-100 dark:border-slate-700 my-1"></div>
-                        <button wire:click="deleteSelected" wire:confirm="Are you sure?" class="block w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">Move to Trash</button>
+                        <button wire:click="deleteSelected" data-confirm="Are you sure?" class="block w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20">Move to Trash</button>
                     </div>
                 </div>
 
@@ -174,7 +174,7 @@
                                     </button>
                                 @endif
 
-                                <button wire:click="delete({{ $comment->id }})" wire:confirm="Delete this comment?" title="Delete" class="w-8 h-8 rounded bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center justify-center shadow-sm">
+                                <button wire:click="delete({{ $comment->id }})" data-confirm="Delete this comment?" title="Delete" class="w-8 h-8 rounded bg-rose-500 text-white hover:bg-rose-600 transition-colors flex items-center justify-center shadow-sm">
                                     <i class="fas fa-trash-alt text-xs"></i>
                                 </button>
                             </div>

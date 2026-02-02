@@ -34,7 +34,7 @@
                 <div x-show="open" @click.outside="open = false"
                      class="absolute z-20 mt-1 w-44 rounded-md border border-slate-200 bg-white shadow dark:border-slate-700 dark:bg-slate-900">
                     <button type="button"
-                            onclick="confirm('Delete selected categories?') || event.stopImmediatePropagation()"
+                            data-confirm="Delete selected categories?"
                             wire:click="bulkDelete"
                             class="block w-full px-3 py-2 text-left text-xs text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/20">
                         Delete selected
@@ -293,7 +293,7 @@
 
                                 <button
                                     type="button"
-                                    onclick="confirm('Delete this category?') || event.stopImmediatePropagation()"
+                                    data-confirm="Delete this category?"
                                     wire:click="deleteCategory({{ $category->id }})"
                                     class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs text-white shadow hover:bg-rose-500 dark:bg-rose-700 dark:hover:bg-rose-600"
                                     title="Delete">
