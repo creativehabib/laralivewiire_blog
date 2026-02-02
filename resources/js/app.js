@@ -106,3 +106,247 @@ window.setupCkeditorBase = function(hippoApiKey) {
         });
     }
 };
+
+const deleteConfirmState = {
+    modal: null,
+    titleEl: null,
+    messageEl: null,
+    confirmButton: null,
+    cancelButtons: [],
+    confirmAction: null,
+    cancelAction: null,
+    defaultConfig: {
+        title: 'Confirm delete',
+        message: 'Do you really want to delete this record?',
+        confirmText: 'Delete',
+        cancelText: 'Close'
+    }
+};
+
+const setDeleteConfirmModal = () => {
+    const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
+    if (!deleteConfirmModal) {
+        return false;
+    }
+
+    deleteConfirmState.modal = deleteConfirmModal;
+    deleteConfirmState.titleEl = deleteConfirmModal.querySelector('[data-confirm-title]');
+    deleteConfirmState.messageEl = deleteConfirmModal.querySelector('[data-confirm-message]');
+    deleteConfirmState.confirmButton = deleteConfirmModal.querySelector('[data-confirm-accept]');
+    deleteConfirmState.cancelButtons = Array.from(deleteConfirmModal.querySelectorAll('[data-confirm-cancel]'));
+    return true;
+};
+
+const openDeleteConfirm = ({
+    title = deleteConfirmState.defaultConfig.title,
+    message = deleteConfirmState.defaultConfig.message,
+    confirmText = deleteConfirmState.defaultConfig.confirmText,
+    cancelText = deleteConfirmState.defaultConfig.cancelText,
+    onConfirm = null,
+    onCancel = null
+} = {}) => {
+    if (!deleteConfirmState.modal) {
+        return false;
+    }
+
+    if (deleteConfirmState.titleEl) deleteConfirmState.titleEl.textContent = title;
+    if (deleteConfirmState.messageEl) deleteConfirmState.messageEl.textContent = message;
+    if (deleteConfirmState.confirmButton) deleteConfirmState.confirmButton.textContent = confirmText;
+    deleteConfirmState.cancelButtons.forEach((button) => {
+        button.textContent = cancelText;
+    });
+
+    deleteConfirmState.confirmAction = onConfirm;
+    deleteConfirmState.cancelAction = onCancel;
+    deleteConfirmState.modal.classList.remove('hidden');
+    deleteConfirmState.modal.classList.add('flex');
+    deleteConfirmState.modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('overflow-hidden');
+    return true;
+};
+
+const closeDeleteConfirm = (triggerCancel = false) => {
+    if (!deleteConfirmState.modal) {
+        return;
+    }
+
+    deleteConfirmState.modal.classList.add('hidden');
+    deleteConfirmState.modal.classList.remove('flex');
+    deleteConfirmState.modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overflow-hidden');
+
+    if (triggerCancel && typeof deleteConfirmState.cancelAction === 'function') {
+        deleteConfirmState.cancelAction();
+    }
+
+    deleteConfirmState.confirmAction = null;
+    deleteConfirmState.cancelAction = null;
+};
+
+const bindDeleteConfirmListeners = () => {
+    if (window.__deleteConfirmListenersBound) {
+        return;
+    }
+
+    window.__deleteConfirmListenersBound = true;
+
+    document.addEventListener('click', (event) => {
+        const confirmButton = event.target.closest('[data-confirm-accept]');
+        const cancelButton = event.target.closest('[data-confirm-cancel]');
+
+        if (confirmButton && deleteConfirmState.modal?.contains(confirmButton)) {
+            event.preventDefault();
+            const action = deleteConfirmState.confirmAction;
+            closeDeleteConfirm();
+            if (typeof action === 'function') {
+                action();
+            }
+            return;
+        }
+
+        if (cancelButton && deleteConfirmState.modal?.contains(cancelButton)) {
+            event.preventDefault();
+            closeDeleteConfirm(true);
+        }
+    }, true);
+
+    document.addEventListener('click', (event) => {
+        if (deleteConfirmState.modal && event.target === deleteConfirmState.modal) {
+            event.preventDefault();
+            closeDeleteConfirm(true);
+        }
+    }, true);
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && deleteConfirmState.modal && !deleteConfirmState.modal.classList.contains('hidden')) {
+            closeDeleteConfirm(true);
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        const trigger = event.target.closest('[data-confirm]');
+        if (!trigger) return;
+
+        if (trigger.dataset.confirmed === 'true') {
+            delete trigger.dataset.confirmed;
+            return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        event.stopPropagation();
+
+        const message = trigger.dataset.confirm || deleteConfirmState.defaultConfig.message;
+        const title = trigger.dataset.confirmTitle || deleteConfirmState.defaultConfig.title;
+        const confirmText = trigger.dataset.confirmText || deleteConfirmState.defaultConfig.confirmText;
+        const cancelText = trigger.dataset.confirmCancel || deleteConfirmState.defaultConfig.cancelText;
+
+        const proceed = () => {
+            trigger.dataset.confirmed = 'true';
+            const form = trigger.closest('form');
+
+            if (trigger.tagName === 'A' && trigger.getAttribute('href')) {
+                window.location.href = trigger.href;
+                return;
+            }
+
+            if (form && trigger.type === 'submit') {
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit(trigger);
+                } else {
+                    form.submit();
+                }
+                return;
+            }
+
+            trigger.click();
+        };
+
+        if (!openDeleteConfirm({ title, message, confirmText, cancelText, onConfirm: proceed })) {
+            if (window.confirm(message)) {
+                proceed();
+            }
+        }
+    }, true);
+
+    document.addEventListener('submit', (event) => {
+        const form = event.target.closest('form[data-confirm]');
+        if (!form) return;
+
+        if (form.dataset.confirmed === 'true') {
+            delete form.dataset.confirmed;
+            return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        event.stopPropagation();
+
+        const message = form.dataset.confirm || deleteConfirmState.defaultConfig.message;
+        const title = form.dataset.confirmTitle || deleteConfirmState.defaultConfig.title;
+        const confirmText = form.dataset.confirmText || deleteConfirmState.defaultConfig.confirmText;
+        const cancelText = form.dataset.confirmCancel || deleteConfirmState.defaultConfig.cancelText;
+
+        const proceed = () => {
+            form.dataset.confirmed = 'true';
+            if (typeof form.requestSubmit === 'function') {
+                form.requestSubmit();
+            } else {
+                form.submit();
+            }
+        };
+
+        if (!openDeleteConfirm({ title, message, confirmText, cancelText, onConfirm: proceed })) {
+            if (window.confirm(message)) {
+                proceed();
+            }
+        }
+    }, true);
+};
+
+const initDeleteConfirmModal = () => {
+    setDeleteConfirmModal();
+    bindDeleteConfirmListeners();
+    window.showDeleteConfirm = (options = {}) => new Promise((resolve) => {
+        if (!openDeleteConfirm({
+            ...options,
+            onConfirm: () => resolve(true),
+            onCancel: () => resolve(false)
+        })) {
+            resolve(window.confirm(options?.message || deleteConfirmState.defaultConfig.message));
+        }
+    });
+};
+
+const observeDeleteConfirmModal = () => {
+    if (window.__deleteConfirmObserver || !document.body) {
+        return;
+    }
+
+    window.__deleteConfirmObserver = new MutationObserver(() => {
+        initDeleteConfirmModal();
+    });
+
+    window.__deleteConfirmObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDeleteConfirmModal);
+} else {
+    initDeleteConfirmModal();
+}
+
+document.addEventListener('livewire:navigated', initDeleteConfirmModal);
+document.addEventListener('livewire:initialized', initDeleteConfirmModal);
+document.addEventListener('livewire:load', initDeleteConfirmModal);
+document.addEventListener('livewire:init', () => {
+    if (window.Livewire?.hook) {
+        window.Livewire.hook('message.processed', () => {
+            initDeleteConfirmModal();
+        });
+    }
+});
+observeDeleteConfirmModal();
