@@ -569,5 +569,6 @@
 @if($adminFooterJs = setting('admin_footer_js'))
     {!! $adminFooterJs !!}
 @endif
+@include('partials.delete-confirm-modal')
 </body>
 </html>

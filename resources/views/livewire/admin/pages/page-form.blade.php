@@ -518,8 +518,12 @@
                     this.syncBuilderState();
                     this.refreshBuilderSortables();
                 },
-                removeSection(sectionId) {
-                    if (!confirm('Are you sure you want to delete this section?')) {
+                async removeSection(sectionId) {
+                    const confirmed = typeof window.showDeleteConfirm === 'function'
+                        ? await window.showDeleteConfirm({ message: 'Are you sure you want to delete this section?' })
+                        : confirm('Are you sure you want to delete this section?');
+
+                    if (!confirmed) {
                         return;
                     }
 
@@ -569,8 +573,12 @@
                     this.refreshBuilderSortables();
                 },
 
-                removeBlockFromSection(sectionId, blockId) {
-                    if (!confirm('Are you sure you want to delete this block?')) {
+                async removeBlockFromSection(sectionId, blockId) {
+                    const confirmed = typeof window.showDeleteConfirm === 'function'
+                        ? await window.showDeleteConfirm({ message: 'Are you sure you want to delete this block?' })
+                        : confirm('Are you sure you want to delete this block?');
+
+                    if (!confirmed) {
                         return;
                     }
 
