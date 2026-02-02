@@ -119,7 +119,7 @@ const deleteConfirmState = {
         title: 'Confirm delete',
         message: 'Do you really want to delete this record?',
         confirmText: 'Delete',
-        cancelText: 'Close'
+        cancelText: 'Cancel'
     }
 };
 
