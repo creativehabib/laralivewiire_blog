@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-cache-v1';
+const CACHE_NAME = 'pwa-cache-v2';
 const PRECACHE_URLS = [
     '/',
     '/manifest.webmanifest',
@@ -35,14 +35,14 @@ self.addEventListener('fetch', (event) => {
 
     if (event.request.mode === 'navigate') {
         event.respondWith(
-            fetch(event.request)
-                .then((response) => {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put('/', responseClone));
-                    return response;
-                })
+            fetch(event.request, { cache: 'no-store' })
                 .catch(() => caches.match('/'))
         );
+        return;
+    }
+
+    const cacheableDestinations = new Set(['style', 'script', 'image', 'font']);
+    if (!cacheableDestinations.has(event.request.destination)) {
         return;
     }
 
