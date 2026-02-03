@@ -1,7 +1,7 @@
 {
-  "_code-copy-D7bu9d3k.js": {
-    "file": "assets/code-copy-D7bu9d3k.js",
-    "name": "code-copy"
+  "_pwa-a5C50KsZ.js": {
+    "file": "assets/pwa-a5C50KsZ.js",
+    "name": "pwa"
   },
   "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
     "file": "assets/fa-brands-400-BfBXV7Mm.woff2",
@@ -29,24 +29,24 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Dspvggq6.js",
+    "file": "assets/app-10p8Hhfy.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_code-copy-D7bu9d3k.js"
+      "_pwa-a5C50KsZ.js"
     ],
     "css": [
       "assets/app-Bpy9Heud.css"
     ]
   },
   "resources/js/frontend.js": {
-    "file": "assets/frontend-DQmCwX1C.js",
+    "file": "assets/frontend-ot9iyOHZ.js",
     "name": "frontend",
     "src": "resources/js/frontend.js",
     "isEntry": true,
     "imports": [
-      "_code-copy-D7bu9d3k.js"
+      "_pwa-a5C50KsZ.js"
     ]
   }
 }
