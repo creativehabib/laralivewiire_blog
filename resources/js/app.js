@@ -2,6 +2,7 @@ import CodeMirror from 'codemirror';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
 import { setupCodeCopy } from './modules/code-copy';
+import { registerServiceWorker } from './modules/pwa';
 
 // Modes
 import 'codemirror/mode/css/css.js';
@@ -25,6 +26,7 @@ import 'codemirror/theme/monokai.css';
 window.CodeMirror = CodeMirror;
 window.Choices = Choices;
 setupCodeCopy();
+registerServiceWorker();
 /**
  * CKEditor Custom Plugins & Helpers (Reusable)
  */

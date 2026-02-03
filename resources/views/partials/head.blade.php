@@ -62,8 +62,11 @@
 <meta name="description" content="{{ $metaDescription ?? __('Streamlined Livewire starter dashboard for creating and managing content efficiently.') }}" />
 <meta name="theme-color" content="{{ $adminPrimaryColor }}" />
 <meta name="color-scheme" content="dark light" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="{{ $adminTitle }}" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ $pageTitle }}</title>
+<link rel="manifest" href="/manifest.webmanifest" />
 
 @if($adminFavicon)
     <link rel="icon" href="{{ $adminFavicon }}" type="{{ $adminFaviconMime }}">

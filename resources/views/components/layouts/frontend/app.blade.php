@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="origin-when-cross-origin">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     @php
         $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'বাংলাদেশী নিউজ পোর্টাল']);
     @endphp
     <x-seo.meta :seo="$seoData" />
     <link rel="icon" href="{{ setting('site_favicon') }}" type="image/x-icon">
+    <link rel="manifest" href="/manifest.webmanifest">
     @if($primaryFont = setting('primary_font'))
         @php
             $primaryFont = trim($primaryFont);
