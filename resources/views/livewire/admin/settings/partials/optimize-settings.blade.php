@@ -5,7 +5,7 @@
 @endphp
 
 <div class="space-y-6">
-    <div class="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div class="grid gap-6">
         <div class="space-y-2">
             <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-100">
                 {{ $config['title'] ?? 'Optimize' }}
@@ -21,7 +21,7 @@
                     <input
                         type="checkbox"
                         wire:model.live="data.{{ $toggleField['key'] ?? 'optimize_enabled' }}"
-                        class="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                        class="h-5 w-5 rounded border-slate-300 focus:ring-indigo-500"
                     >
                     <span class="text-sm font-semibold text-slate-700 dark:text-slate-100">
                         {{ $toggleField['label'] ?? 'Enable optimize page speed?' }}
@@ -37,7 +37,7 @@
                             <input
                                 type="checkbox"
                                 wire:model.live="data.{{ $field['key'] }}"
-                                class="mt-1 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                class="mt-1 h-4 w-4 rounded border-slate-300 focus:ring-indigo-500"
                             >
                             <span>
                                 <span class="block text-sm font-semibold text-slate-700 dark:text-slate-100">
