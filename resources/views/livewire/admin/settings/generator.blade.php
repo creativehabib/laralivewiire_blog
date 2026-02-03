@@ -313,6 +313,10 @@
                 console.error('Media Manager function (openMediaManagerForEditor) not found!');
                 return;
             }
+            if (typeof window.CKEDITOR === 'undefined') {
+                console.error('CKEditor is not available on this page.');
+                return;
+            }
 
             // আপনার মিডিয়া ম্যানেজার ওপেন করার ফাংশন
             openMediaManagerForEditor(function (url, data) {
@@ -335,7 +339,7 @@
         /**
          * ImageManager কাস্টম প্লাগইন রেজিস্ট্রেশন
          */
-        if (!CKEDITOR.plugins.get('ImageManager')) {
+        if (typeof window.CKEDITOR !== 'undefined' && !CKEDITOR.plugins.get('ImageManager')) {
             CKEDITOR.plugins.add('ImageManager', {
                 init: function(editor) {
                     editor.addCommand('openImageManager', {
@@ -355,6 +359,9 @@
         }
 
         function initDynamicSettingsEditors() {
+            if (typeof window.CKEDITOR === 'undefined') {
+                return;
+            }
             const textareas = document.querySelectorAll('.ck-editor-instance');
             const isDarkMode = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
             const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
