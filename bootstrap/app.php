@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckIfInstalled;
+use App\Http\Middleware\OptimizeHtmlResponse;
 use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             CheckIfInstalled::class,
             TrackVisitor::class,
+            OptimizeHtmlResponse::class,
         ]);
 
         $middleware->alias([
