@@ -259,6 +259,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
     Route::prefix('admin/system')->name('system.')->group(function () {
         Route::controller(SettingController::class)->group(function () {
             Route::get('/cache-management', 'cacheManagement')->name('cacheManagement')->middleware('permission:setting.view');
+            Route::get('/system-information', 'systemInformation')->name('information')->middleware('permission:setting.view');
         });
         Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs')->middleware('permission:setting.view');
         Route::resource('/roles', RoleController::class);
