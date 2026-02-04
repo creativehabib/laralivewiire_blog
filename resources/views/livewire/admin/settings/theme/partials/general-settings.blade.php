@@ -42,12 +42,15 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Timezone') }}</label>
-            <select wire:model.defer="general.timezone" id="select_time_zone"
-                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
-                @foreach($timezoneOptions as $timezone)
-                    <option value="{{ $timezone }}" @selected(($general['timezone'] ?? '') === $timezone)>{{ $timezone }}</option>
-                @endforeach
-            </select>
+            <input id="select_time_zone_value" type="hidden" wire:model.defer="general.timezone">
+            <div wire:ignore>
+                <select id="select_time_zone"
+                        class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                    @foreach($timezoneOptions as $timezone)
+                        <option value="{{ $timezone }}" @selected(($general['timezone'] ?? '') === $timezone)>{{ $timezone }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
         <div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Date Format') }}</label>
@@ -103,7 +106,7 @@
         <script>
             const initPrimaryFontChoices = () => {
                 const select = document.getElementById('select_time_zone');
-                const hiddenInput = document.getElementById('select_time_zone');
+                const hiddenInput = document.getElementById('select_time_zone_value');
 
                 if (!select || !hiddenInput || select.dataset.choicesInitialized === 'true' || !window.Choices) {
                     return;
