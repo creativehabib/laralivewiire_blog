@@ -77,8 +77,11 @@ class SettingController extends Controller
             'PHP Version' => PHP_VERSION,
             'Memory Limit' => ini_get('memory_limit'),
             'Max Execution Time' => ini_get('max_execution_time') . 's',
+            'Max Input Time' => ini_get('max_input_time') . 's',
+            'Max Input Vars' => ini_get('max_input_vars'),
             'Upload Max Filesize' => ini_get('upload_max_filesize'),
             'Post Max Size' => ini_get('post_max_size'),
+            'Max File Uploads' => ini_get('max_file_uploads'),
         ];
 
         return view('backend.pages.settings.system-information', [
