@@ -346,6 +346,16 @@
                     </flux:sidebar.item>
 
                     <flux:sidebar.item
+                        icon="information-circle"
+                        :href="route('system.information')"
+                        :current="request()->routeIs('system.information')"
+                        tooltip="{{ __('System Information') }}"
+                        wire:navigate
+                    >
+                        {{ __('System Information') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item
                         icon="list-bullet"
                         :href="route('system.activity-logs')"
                         :current="request()->routeIs('system.activity-logs')"
