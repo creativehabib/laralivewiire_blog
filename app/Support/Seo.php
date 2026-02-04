@@ -193,6 +193,7 @@ class Seo
         return [
             'title' => setting('seo_default_title', setting('site_title', config('app.name'))),
             'description' => setting('seo_default_description') ?? setting('site_description'),
+            'keywords' => setting('site_keywords', ''),
             'image' => static::absoluteUrl(setting('seo_default_og_image')),
             'type' => 'website',
             'site_name' => setting('site_title', config('app.name')),
