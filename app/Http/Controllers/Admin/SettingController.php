@@ -21,6 +21,51 @@ class SettingController extends Controller
         return view('backend.pages.settings.cacheManagement');
     }
 
+    public function systemInformation(Request $request)
+    {
+        $connection = config('database.default');
+        $connectionConfig = config("database.connections.{$connection}", []);
+
+        $systemEnvironment = [
+            'Application Environment' => app()->environment(),
+            'App Debug' => config('app.debug') ? 'Enabled' : 'Disabled',
+            'App URL' => config('app.url'),
+            'Timezone' => config('app.timezone'),
+            'Locale' => config('app.locale'),
+        ];
+
+        $serverEnvironment = [
+            'Server Software' => $request->server('SERVER_SOFTWARE') ?? 'N/A',
+            'Server OS' => trim(php_uname('s') . ' ' . php_uname('r')),
+            'PHP SAPI' => PHP_SAPI,
+            'Host' => $request->getHost(),
+            'Server IP' => $request->server('SERVER_ADDR') ?? 'N/A',
+        ];
+
+        $databaseInformation = [
+            'Connection' => $connection,
+            'Driver' => $connectionConfig['driver'] ?? 'N/A',
+            'Host' => $connectionConfig['host'] ?? 'N/A',
+            'Port' => $connectionConfig['port'] ?? 'N/A',
+            'Database' => $connectionConfig['database'] ?? 'N/A',
+        ];
+
+        $phpConfiguration = [
+            'PHP Version' => PHP_VERSION,
+            'Memory Limit' => ini_get('memory_limit'),
+            'Max Execution Time' => ini_get('max_execution_time') . 's',
+            'Upload Max Filesize' => ini_get('upload_max_filesize'),
+            'Post Max Size' => ini_get('post_max_size'),
+        ];
+
+        return view('backend.pages.settings.system-information', [
+            'systemEnvironment' => $systemEnvironment,
+            'serverEnvironment' => $serverEnvironment,
+            'databaseInformation' => $databaseInformation,
+            'phpConfiguration' => $phpConfiguration,
+        ]);
+    }
+
     public function sitemapSettings()
     {
 
