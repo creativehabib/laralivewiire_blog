@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
@@ -43,12 +44,23 @@ class SettingController extends Controller
             'Server IP' => $request->server('SERVER_ADDR') ?? 'N/A',
         ];
 
+        $databaseVersion = 'N/A';
+        try {
+            $databaseVersion = DB::selectOne('select version() as version')->version ?? 'N/A';
+        } catch (\Throwable $exception) {
+            $databaseVersion = 'N/A';
+        }
+
+        $databaseCharset = $connectionConfig['charset'] ?? 'N/A';
+
         $databaseInformation = [
             'Connection' => $connection,
             'Driver' => $connectionConfig['driver'] ?? 'N/A',
             'Host' => $connectionConfig['host'] ?? 'N/A',
             'Port' => $connectionConfig['port'] ?? 'N/A',
             'Database' => $connectionConfig['database'] ?? 'N/A',
+            'Database Version' => $databaseVersion,
+            'Character Set' => $databaseCharset,
         ];
 
         $phpConfiguration = [
