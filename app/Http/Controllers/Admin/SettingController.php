@@ -32,6 +32,7 @@ class SettingController extends Controller
             'App URL' => config('app.url'),
             'Timezone' => config('app.timezone'),
             'Locale' => config('app.locale'),
+            'Framework Version' => app()->version(),
         ];
 
         $serverEnvironment = [
