@@ -45,13 +45,21 @@ class SettingController extends Controller
         ];
 
         $databaseVersion = 'N/A';
+        $maxConnections = 'N/A';
         try {
             $databaseVersion = DB::selectOne('select version() as version')->version ?? 'N/A';
+            $driver = $connectionConfig['driver'] ?? null;
+            if ($driver === 'mysql') {
+                $maxConnections = DB::selectOne('select @@max_connections as max_connections')->max_connections ?? 'N/A';
+            } elseif ($driver === 'pgsql') {
+                $maxConnections = DB::selectOne('show max_connections')->max_connections ?? 'N/A';
+            }
         } catch (\Throwable $exception) {
             $databaseVersion = 'N/A';
         }
 
         $databaseCharset = $connectionConfig['charset'] ?? 'N/A';
+        $databaseCollation = $connectionConfig['collation'] ?? 'N/A';
 
         $databaseInformation = [
             'Connection' => $connection,
@@ -61,6 +69,8 @@ class SettingController extends Controller
             'Database' => $connectionConfig['database'] ?? 'N/A',
             'Database Version' => $databaseVersion,
             'Character Set' => $databaseCharset,
+            'Collation' => $databaseCollation,
+            'Max Connections' => $maxConnections,
         ];
 
         $phpConfiguration = [
