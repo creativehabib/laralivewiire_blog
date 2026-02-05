@@ -39,6 +39,10 @@
                        x-ref="localUpload"
                        wire:model="uploads"
                        class="hidden">
+
+                @error('uploads.*')
+                    <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
+                @enderror
             </div>
 
             <button type="button"
@@ -311,16 +315,22 @@
 
     {{-- SEARCH + BREADCRUMB --}}
     <div class="bg-white dark:bg-slate-900 rounded border border-gray-200 dark:border-slate-700 px-3 py-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-300">
+        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-300 flex-wrap">
             <i class="fa-solid fa-image"></i>
+
             <button type="button" wire:click="setFolder(null)"
                     class="hover:underline cursor-pointer {{ $folder_id ? '' : 'font-semibold text-gray-800 dark:text-gray-100' }}">
                 All media
             </button>
-            @if($folder_id)
+
+            @foreach($breadcrumbs as $crumb)
                 <span>/</span>
-                <span>folder #{{ $folder_id }}</span>
-            @endif
+                <button type="button"
+                        wire:click="setFolder({{ $crumb->id }})"
+                        class="hover:underline cursor-pointer {{ $loop->last ? 'font-semibold text-gray-800 dark:text-gray-100' : '' }}">
+                    {{ $crumb->name }}
+                </button>
+            @endforeach
         </div>
 
         <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -358,17 +368,42 @@
             @else
                 {{-- 🔽 NORMAL LIST (FOLDERS + FILES) --}}
 
-                @if($folders->count())
+                @if($folders->count() || $currentFolder)
                     <div class="mb-3">
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                            @foreach($folders as $f)
+                            @if($currentFolder)
                                 <button type="button"
-                                        wire:click="setFolder({{ $f->id }})"
-                                        class="border border-gray-200 dark:border-slate-700 rounded bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 px-2 py-3 flex flex-col items-center justify-center text-[11px]
-                                               {{ $folder_id == $f->id ? 'ring-2 ring-blue-400' : '' }}">
-                                    <span class="text-xl mb-1">📁</span>
-                                    <span class="truncate w-full text-center">{{ $f->name }}</span>
+                                        wire:click="goToParentFolder"
+                                        class="border border-gray-200 dark:border-slate-700 rounded bg-white dark:bg-slate-900 px-2 py-2 text-[11px] hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer flex flex-col items-center justify-center">
+                                    <span class="text-xl leading-none mb-1">↩</span>
+                                    <span class="truncate w-full text-center">Back</span>
                                 </button>
+                            @endif
+
+                            @foreach($folders as $f)
+                                <div class="group border border-gray-200 dark:border-slate-700 rounded bg-gray-50 dark:bg-slate-800 px-2 py-2 text-[11px] {{ $folder_id == $f->id ? 'ring-2 ring-blue-400' : '' }}">
+                                    <button type="button"
+                                            wire:click="setFolder({{ $f->id }})"
+                                            class="w-full flex flex-col items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-700 rounded py-1 cursor-pointer">
+                                        <span class="text-xl mb-1">📁</span>
+                                        <span class="truncate w-full text-center">{{ $f->name }}</span>
+                                    </button>
+
+                                    <div class="mt-2 flex items-center justify-center gap-1 opacity-0 pointer-events-none transition-opacity duration-150 group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto">
+                                        <button type="button"
+                                                wire:click="openEditFolderModal({{ $f->id }})"
+                                                class="px-2 py-1 rounded border border-gray-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 cursor-pointer"
+                                                title="Edit folder">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </button>
+                                        <button type="button"
+                                                wire:click="openDeleteFolderModal({{ $f->id }})"
+                                                class="px-2 py-1 rounded border border-red-200 text-red-600 hover:bg-red-50 dark:border-red-700 dark:hover:bg-red-900/30 cursor-pointer"
+                                                title="Delete folder">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             @endforeach
                         </div>
                     </div>
@@ -1242,6 +1277,52 @@
     @endif
 
 
+    {{-- ========== EDIT FOLDER MODAL ========== --}}
+    @if($showEditFolderModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+             wire:click.self="closeEditFolderModal">
+            <div class="bg-white dark:bg-slate-900 rounded shadow-lg w-full max-w-sm border border-gray-200 dark:border-slate-700">
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-slate-700">
+                    <h3 class="text-sm font-semibold">Edit folder</h3>
+                    <button type="button" wire:click="closeEditFolderModal" class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-lg leading-none cursor-pointer">&times;</button>
+                </div>
+                <div class="p-4 space-y-3">
+                    <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">Folder name</label>
+                    <input type="text"
+                           wire:model.defer="editFolderName"
+                           class="w-full border border-gray-300 dark:border-slate-600 rounded px-2 py-1.5 text-sm bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100"
+                           placeholder="Enter folder name">
+                    @error('editFolderName')
+                    <div class="text-red-500 text-[11px] mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="px-4 py-3 border-t border-gray-200 dark:border-slate-700 flex justify-end gap-2">
+                    <button type="button" wire:click="closeEditFolderModal" class="px-3 py-1.5 text-xs border border-gray-200 dark:border-slate-700 rounded cursor-pointer bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700">Cancel</button>
+                    <button type="button" wire:click="saveFolderEdit" class="px-3 py-1.5 text-xs rounded bg-blue-600 text-white cursor-pointer">Save</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- ========== DELETE FOLDER MODAL ========== --}}
+    @if($showDeleteFolderModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+             wire:click.self="closeDeleteFolderModal">
+            <div class="bg-white dark:bg-slate-900 rounded shadow-lg w-full max-w-sm border border-gray-200 dark:border-slate-700">
+                <div class="px-4 py-3 border-b border-gray-200 dark:border-slate-700">
+                    <h3 class="text-sm font-semibold">Delete folder</h3>
+                </div>
+                <div class="p-4 text-xs text-gray-600 dark:text-gray-300">
+                    Are you sure you want to delete this folder? Files in this folder will be moved to root.
+                </div>
+                <div class="px-4 py-3 border-t border-gray-200 dark:border-slate-700 flex justify-end gap-2">
+                    <button type="button" wire:click="closeDeleteFolderModal" class="px-3 py-1.5 text-xs border border-gray-200 dark:border-slate-700 rounded cursor-pointer bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700">Cancel</button>
+                    <button type="button" wire:click="confirmDeleteFolder" class="px-3 py-1.5 text-xs rounded bg-red-600 text-white cursor-pointer">Delete</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
     {{-- ========== CREATE FOLDER MODAL ========== --}}
     @if($showFolderModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -1296,4 +1377,3 @@
         </div>
     </div>
 </div>
-
