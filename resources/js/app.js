@@ -111,6 +111,7 @@ window.setupCkeditorBase = function(hippoApiKey) {
 
 const deleteConfirmState = {
     modal: null,
+    panel: null,
     titleEl: null,
     messageEl: null,
     confirmButton: null,
@@ -132,6 +133,7 @@ const setDeleteConfirmModal = () => {
     }
 
     deleteConfirmState.modal = deleteConfirmModal;
+    deleteConfirmState.panel = deleteConfirmModal.querySelector('[data-delete-confirm-panel]');
     deleteConfirmState.titleEl = deleteConfirmModal.querySelector('[data-confirm-title]');
     deleteConfirmState.messageEl = deleteConfirmModal.querySelector('[data-confirm-message]');
     deleteConfirmState.confirmButton = deleteConfirmModal.querySelector('[data-confirm-accept]');
@@ -162,8 +164,17 @@ const openDeleteConfirm = ({
     deleteConfirmState.cancelAction = onCancel;
     deleteConfirmState.modal.classList.remove('hidden');
     deleteConfirmState.modal.classList.add('flex');
+    deleteConfirmState.modal.classList.remove('is-leaving');
+    deleteConfirmState.modal.classList.add('is-entering');
+    deleteConfirmState.panel?.classList.remove('is-leaving');
+    deleteConfirmState.panel?.classList.add('is-entering');
     deleteConfirmState.modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('overflow-hidden');
+    deleteConfirmState.modal.addEventListener('animationend', (event) => {
+        if (event.target !== deleteConfirmState.modal) return;
+        deleteConfirmState.modal.classList.remove('is-entering');
+        deleteConfirmState.panel?.classList.remove('is-entering');
+    }, { once: true });
     return true;
 };
 
@@ -172,17 +183,31 @@ const closeDeleteConfirm = (triggerCancel = false) => {
         return;
     }
 
-    deleteConfirmState.modal.classList.add('hidden');
-    deleteConfirmState.modal.classList.remove('flex');
-    deleteConfirmState.modal.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('overflow-hidden');
+    const finalizeClose = () => {
+        deleteConfirmState.modal.classList.add('hidden');
+        deleteConfirmState.modal.classList.remove('flex', 'is-leaving');
+        deleteConfirmState.panel?.classList.remove('is-leaving');
+        deleteConfirmState.modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
 
-    if (triggerCancel && typeof deleteConfirmState.cancelAction === 'function') {
-        deleteConfirmState.cancelAction();
-    }
+        const cancelAction = deleteConfirmState.cancelAction;
+        deleteConfirmState.confirmAction = null;
+        deleteConfirmState.cancelAction = null;
 
-    deleteConfirmState.confirmAction = null;
-    deleteConfirmState.cancelAction = null;
+        if (triggerCancel && typeof cancelAction === 'function') {
+            cancelAction();
+        }
+    };
+
+    deleteConfirmState.modal.classList.remove('is-entering');
+    deleteConfirmState.panel?.classList.remove('is-entering');
+    deleteConfirmState.modal.classList.add('is-leaving');
+    deleteConfirmState.panel?.classList.add('is-leaving');
+    deleteConfirmState.modal.addEventListener('animationend', (event) => {
+        if (event.target !== deleteConfirmState.modal) return;
+        finalizeClose();
+    }, { once: true });
+    window.setTimeout(finalizeClose, 200);
 };
 
 const bindDeleteConfirmListeners = () => {
