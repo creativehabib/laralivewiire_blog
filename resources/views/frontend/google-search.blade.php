@@ -20,10 +20,26 @@
                     {{ __('Google Search Engine ID is not configured yet. Please add it from Theme Options → SEO & Social.') }}
                 </div>
             @else
-                <div class="gcse-searchbox-only" data-resultsUrl="{{ route('google.search') }}"></div>
-                <div class="mt-6">
-                    <div class="gcse-searchresults-only"></div>
-                </div>
+                <form action="{{ route('google.search') }}" method="GET" class="mb-6">
+                    <div class="flex flex-col gap-3 md:flex-row md:items-center">
+                        <label class="sr-only" for="google-search-input">সার্চ করুন</label>
+                        <input
+                            id="google-search-input"
+                            name="q"
+                            type="search"
+                            value="{{ $query }}"
+                            placeholder="গুগলে সার্চ করুন"
+                            class="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-primary-dark focus:ring-2 focus:ring-primary-light dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                        />
+                        <button
+                            type="submit"
+                            class="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark"
+                        >
+                            সার্চ
+                        </button>
+                    </div>
+                </form>
+                <div class="gcse-searchresults-only" data-queryParameterName="q"></div>
             @endif
         </article>
 
