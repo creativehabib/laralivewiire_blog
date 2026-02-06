@@ -20,7 +20,10 @@
                     {{ __('Google Search Engine ID is not configured yet. Please add it from Theme Options → SEO & Social.') }}
                 </div>
             @else
-                <div class="gcse-search"></div>
+                <div class="gcse-searchbox-only" data-resultsUrl="{{ route('google.search') }}"></div>
+                <div class="mt-6">
+                    <div class="gcse-searchresults-only"></div>
+                </div>
             @endif
         </article>
 
