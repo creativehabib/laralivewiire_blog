@@ -137,12 +137,57 @@
     }
 }
 
+@keyframes delete-confirm-overlay-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes delete-confirm-overlay-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes delete-confirm-panel-in {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes delete-confirm-panel-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(18px) scale(0.98); }
+}
+
 /* ===========================
    লেআউট / ইউটিলিটি (3য় পার্ট: চাইলে)
    =========================== */
 
 /* Typography helpers */
 @layer components {
+    .delete-confirm-overlay.is-entering {
+        animation: delete-confirm-overlay-in 200ms ease-out both;
+    }
+
+    .delete-confirm-overlay.is-leaving {
+        animation: delete-confirm-overlay-out 160ms ease-in both;
+    }
+
+    .delete-confirm-panel.is-entering {
+        animation: delete-confirm-panel-in 200ms ease-out both;
+    }
+
+    .delete-confirm-panel.is-leaving {
+        animation: delete-confirm-panel-out 160ms ease-in both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .delete-confirm-overlay.is-entering,
+        .delete-confirm-overlay.is-leaving,
+        .delete-confirm-panel.is-entering,
+        .delete-confirm-panel.is-leaving {
+            animation: none;
+        }
+    }
+
     .typography {
         color: var(--color-secondary, #0f172a);
         line-height: 1.75;
