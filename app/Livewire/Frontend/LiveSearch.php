@@ -13,6 +13,12 @@ class LiveSearch extends Component
     public string $inputClass = '';
     public string $placeholder = 'খুঁজুন...';
     public string $inputId = 'frontend-live-search-desktop';
+    public bool $useGoogleSearch = false;
+
+    public function mount(): void
+    {
+        $this->useGoogleSearch = trim((string) setting('google_search_engine_id', '')) !== '';
+    }
 
     public function updatedQuery(): void
     {
@@ -24,12 +30,27 @@ class LiveSearch extends Component
         $this->reset('query');
     }
 
+    public function goToSearchResults()
+    {
+        if (! $this->useGoogleSearch) {
+            return null;
+        }
+
+        $term = trim($this->query);
+
+        if ($term === '') {
+            return null;
+        }
+
+        return redirect()->route('google.search', ['q' => $term]);
+    }
+
     public function render()
     {
         $term = trim($this->query);
         $results = collect();
 
-        if ($term !== '' && mb_strlen($term) >= 1) {
+        if (! $this->useGoogleSearch && $term !== '' && mb_strlen($term) >= 1) {
             $results = Post::query()
                 ->published()
                 ->where('name', 'like', "%{$term}%")
@@ -41,6 +62,7 @@ class LiveSearch extends Component
         return view('livewire.frontend.live-search', [
             'results' => $results,
             'term' => $term,
+            'useGoogleSearch' => $this->useGoogleSearch,
         ]);
     }
 }
