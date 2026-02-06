@@ -6,9 +6,9 @@
     <main class="container px-4 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 typography">
         <article class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 md:p-6 transition-all duration-200 hover:shadow-md">
             <nav class="text-xs text-gray-500 dark:text-slate-400 mb-3 flex items-center gap-1">
-                <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light">হোম</a>
+                <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light">Home</a>
                 <span>/</span>
-                <span class="text-primary-dark dark:text-primary-light">সার্চ রেজাল্ট</span>
+                <span class="text-primary-dark dark:text-primary-light">Search result</span>
             </nav>
 
             <h1 class="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
@@ -20,9 +20,8 @@
                     {{ __('Google Search Engine ID is not configured yet. Please add it from Theme Options → SEO & Social.') }}
                 </div>
             @else
-                <div class="gcse-searchbox-only" data-resultsUrl="{{ route('google.search') }}"></div>
                 <div class="mt-6">
-                    <div class="gcse-searchresults-only"></div>
+                    <div class="gcse-search"></div>
                 </div>
             @endif
         </article>
