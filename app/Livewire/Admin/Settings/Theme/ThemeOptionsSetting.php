@@ -123,6 +123,7 @@ class ThemeOptionsSetting extends Component
             'breaking_news_category_id' => setting('breaking_news_category_id'),
             'breaking_news_speed' => (int) setting('breaking_news_speed', 60),
             'search_toggle' => filter_var(setting('search_toggle', true), FILTER_VALIDATE_BOOLEAN),
+            'search_engine' => (string) setting('search_engine', 'choice'),
         ];
 
 
@@ -228,6 +229,7 @@ class ThemeOptionsSetting extends Component
         set_setting('breaking_news_category_id', $this->header['breaking_news_category_id'] ?? null, 'theme-options');
         set_setting('breaking_news_speed', (int) ($this->header['breaking_news_speed'] ?? 60), 'theme-options');
         set_setting('search_toggle', filter_var($this->header['search_toggle'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
+        set_setting('search_engine', $this->header['search_engine'] ?? 'choice', 'theme-options');
 
         $this->dispatch('media-toast', type: 'success', message: 'Header settings updated successfully!');
     }
