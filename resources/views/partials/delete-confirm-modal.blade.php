@@ -1,11 +1,10 @@
 <div
-    class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-900/50 p-4 backdrop-blur-sm opacity-0 transition-opacity duration-200 ease-out sm:items-center"
+    class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-900/50 sm:items-center p-4 backdrop-blur-sm"
     data-delete-confirm-modal
     aria-hidden="true"
 >
     <div
-        class="relative w-full max-w-md translate-y-4 overflow-hidden rounded-md bg-white opacity-0 shadow-2xl ring-1 ring-slate-200 transition-all duration-200 ease-out dark:bg-slate-900 dark:ring-slate-700 sm:translate-y-0 sm:scale-95"
-        data-delete-confirm-panel
+        class="relative w-full max-w-md overflow-hidden rounded-md bg-white shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700"
         role="dialog"
         aria-modal="true"
         aria-labelledby="delete-confirm-title"
