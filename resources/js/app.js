@@ -111,12 +111,15 @@ window.setupCkeditorBase = function(hippoApiKey) {
 
 const deleteConfirmState = {
     modal: null,
+    panel: null,
     titleEl: null,
     messageEl: null,
     confirmButton: null,
     cancelButtons: [],
     confirmAction: null,
     cancelAction: null,
+    closeTimeout: null,
+    animationDuration: 200,
     defaultConfig: {
         title: 'Confirm delete',
         message: 'Do you really want to delete this record?',
@@ -125,6 +128,10 @@ const deleteConfirmState = {
     }
 };
 
+const shouldReduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+const getDeleteConfirmAnimationDuration = () => (shouldReduceMotion() ? 0 : deleteConfirmState.animationDuration);
+
 const setDeleteConfirmModal = () => {
     const deleteConfirmModal = document.querySelector('[data-delete-confirm-modal]');
     if (!deleteConfirmModal) {
@@ -132,6 +139,7 @@ const setDeleteConfirmModal = () => {
     }
 
     deleteConfirmState.modal = deleteConfirmModal;
+    deleteConfirmState.panel = deleteConfirmModal.querySelector('[data-delete-confirm-panel]');
     deleteConfirmState.titleEl = deleteConfirmModal.querySelector('[data-confirm-title]');
     deleteConfirmState.messageEl = deleteConfirmModal.querySelector('[data-confirm-message]');
     deleteConfirmState.confirmButton = deleteConfirmModal.querySelector('[data-confirm-accept]');
@@ -158,10 +166,33 @@ const openDeleteConfirm = ({
         button.textContent = cancelText;
     });
 
+    if (deleteConfirmState.closeTimeout) {
+        window.clearTimeout(deleteConfirmState.closeTimeout);
+        deleteConfirmState.closeTimeout = null;
+    }
+
     deleteConfirmState.confirmAction = onConfirm;
     deleteConfirmState.cancelAction = onCancel;
     deleteConfirmState.modal.classList.remove('hidden');
-    deleteConfirmState.modal.classList.add('flex');
+    deleteConfirmState.modal.classList.add('flex', 'opacity-0');
+    deleteConfirmState.modal.classList.remove('opacity-100');
+    deleteConfirmState.panel?.classList.add('opacity-0', 'translate-y-4', 'sm:scale-95');
+    deleteConfirmState.panel?.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
+
+    const animationDuration = getDeleteConfirmAnimationDuration();
+    if (animationDuration === 0) {
+        deleteConfirmState.modal.classList.remove('opacity-0');
+        deleteConfirmState.modal.classList.add('opacity-100');
+        deleteConfirmState.panel?.classList.remove('opacity-0', 'translate-y-4', 'sm:scale-95');
+        deleteConfirmState.panel?.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
+    } else {
+        window.requestAnimationFrame(() => {
+            deleteConfirmState.modal.classList.remove('opacity-0');
+            deleteConfirmState.modal.classList.add('opacity-100');
+            deleteConfirmState.panel?.classList.remove('opacity-0', 'translate-y-4', 'sm:scale-95');
+            deleteConfirmState.panel?.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
+        });
+    }
     deleteConfirmState.modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('overflow-hidden');
     return true;
@@ -172,10 +203,29 @@ const closeDeleteConfirm = (triggerCancel = false) => {
         return;
     }
 
-    deleteConfirmState.modal.classList.add('hidden');
-    deleteConfirmState.modal.classList.remove('flex');
-    deleteConfirmState.modal.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('overflow-hidden');
+    const animationDuration = getDeleteConfirmAnimationDuration();
+    if (deleteConfirmState.closeTimeout) {
+        window.clearTimeout(deleteConfirmState.closeTimeout);
+    }
+
+    deleteConfirmState.modal.classList.add('opacity-0');
+    deleteConfirmState.modal.classList.remove('opacity-100');
+    deleteConfirmState.panel?.classList.add('opacity-0', 'translate-y-4', 'sm:scale-95');
+    deleteConfirmState.panel?.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
+
+    const finalizeClose = () => {
+        deleteConfirmState.modal.classList.add('hidden');
+        deleteConfirmState.modal.classList.remove('flex');
+        deleteConfirmState.modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
+        deleteConfirmState.closeTimeout = null;
+    };
+
+    if (animationDuration > 0) {
+        deleteConfirmState.closeTimeout = window.setTimeout(finalizeClose, animationDuration);
+    } else {
+        finalizeClose();
+    }
 
     if (triggerCancel && typeof deleteConfirmState.cancelAction === 'function') {
         deleteConfirmState.cancelAction();
