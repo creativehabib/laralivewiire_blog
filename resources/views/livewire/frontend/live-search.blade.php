@@ -44,66 +44,43 @@
     </div>
 
     <div x-show="open" x-transition x-cloak>
-        <p class="mt-2 text-xs text-slate-500">
-            {{ $activeEngine === 'google' ? __('Searching with Google.') : __('Searching this site.') }}
-        </p>
         @if($term !== '' && mb_strlen($term) >= 1)
-            @if($activeEngine === 'google')
-                <div class="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        {{ __('Google search') }}
-                    </p>
-                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('Continue your search on Google for') }} "{{ $term }}"
-                    </p>
-                    <a
-                        class="mt-3 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-                        href="https://www.google.com/search?q={{ urlencode($term) }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <i class="fa-brands fa-google text-sm"></i>
-                        {{ __('Search on Google') }}
-                    </a>
+            <div class="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    {{ __('Search results') }}
                 </div>
-            @else
-                <div class="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
-                    <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        {{ __('Search results') }}
-                    </div>
-                    <div wire:loading.flex wire:target="query" class="px-4 pb-2 text-xs text-slate-500">
-                        {{ __('Searching...') }}
-                    </div>
-                    @if($results->isEmpty())
-                        <div class="px-4 pb-4 text-sm text-slate-500">
-                            {{ __('No results found for') }} "{{ $term }}"
-                        </div>
-                    @else
-                        <ul class="max-h-80 overflow-y-auto">
-                            @foreach($results as $post)
-                                <li class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                    <a href="{{ post_permalink($post) }}" class="flex items-center gap-3">
-                                        <img
-                                            src="{{ $post->image_url }}"
-                                            alt="{{ $post->name }}"
-                                            class="h-14 w-20 rounded-lg object-cover"
-                                            loading="lazy"
-                                        />
-                                        <div class="flex-1">
-                                            <p class="text-sm font-semibold text-slate-800 line-clamp-2 dark:text-slate-100">
-                                                {{ $post->name }}
-                                            </p>
-                                            <p class="text-xs text-slate-500 dark:text-slate-400">
-                                                {{ $post->created_at?->diffForHumans() }}
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
+                <div wire:loading.flex wire:target="query" class="px-4 pb-2 text-xs text-slate-500">
+                    {{ __('Searching...') }}
                 </div>
-            @endif
+                @if($results->isEmpty())
+                    <div class="px-4 pb-4 text-sm text-slate-500">
+                        {{ __('No results found for') }} "{{ $term }}"
+                    </div>
+                @else
+                    <ul class="max-h-80 overflow-y-auto">
+                        @foreach($results as $post)
+                            <li class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <a href="{{ post_permalink($post) }}" class="flex items-center gap-3">
+                                    <img
+                                        src="{{ $post->image_url }}"
+                                        alt="{{ $post->name }}"
+                                        class="h-14 w-20 rounded-lg object-cover"
+                                        loading="lazy"
+                                    />
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-800 line-clamp-2 dark:text-slate-100">
+                                            {{ $post->name }}
+                                        </p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">
+                                            {{ $post->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
         @elseif($term !== '')
             <div class="absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-xl dark:border-slate-700 dark:bg-slate-900">
                 {{ __('Type at least 1 character to search.') }}

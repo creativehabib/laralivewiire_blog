@@ -13,13 +13,6 @@ class LiveSearch extends Component
     public string $inputClass = '';
     public string $placeholder = 'খুঁজুন...';
     public string $inputId = 'frontend-live-search-desktop';
-    public string $engine = 'default';
-
-    public function mount(): void
-    {
-        $engine = (string) setting('search_engine', 'default');
-        $this->engine = in_array($engine, ['default', 'google'], true) ? $engine : 'default';
-    }
 
     public function updatedQuery(): void
     {
@@ -36,7 +29,7 @@ class LiveSearch extends Component
         $term = trim($this->query);
         $results = collect();
 
-        if ($this->engine === 'default' && $term !== '' && mb_strlen($term) >= 1) {
+        if ($term !== '' && mb_strlen($term) >= 1) {
             $results = Post::query()
                 ->published()
                 ->where('name', 'like', "%{$term}%")
@@ -48,7 +41,6 @@ class LiveSearch extends Component
         return view('livewire.frontend.live-search', [
             'results' => $results,
             'term' => $term,
-            'activeEngine' => $this->engine,
         ]);
     }
 }
