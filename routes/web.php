@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Frontend\SitemapController;
+use App\Http\Controllers\Frontend\GoogleSearchController;
 
 use App\Http\Controllers\Install\InstallController;
 use App\Livewire\Admin\Categories\CategoryForm;
@@ -68,6 +69,7 @@ Route::group(['prefix' => 'install', 'as' => 'install.'], function () {
 });
 
 Route::get('/', FrontPage::class)->name('home');
+Route::get('/search', GoogleSearchController::class)->name('google.search');
 
 Route::get('dashboard', Dashboard::class)->middleware(['auth', 'verified'])->name('dashboard');
 Route::view('admin/media', 'media')->middleware(['auth', 'verified', 'permission:media.view'])->name('media');
