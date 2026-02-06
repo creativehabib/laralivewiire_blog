@@ -60,6 +60,11 @@
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ setting('adsense_unit_client_id') }}" crossorigin="anonymous"></script>
     @endif
 
+
+    @if($googleSearchEngineId = trim((string) setting('google_search_engine_id', '')))
+        <script async src="https://cse.google.com/cse.js?cx={{ $googleSearchEngineId }}"></script>
+    @endif
+
     @vite(['resources/css/app.css', 'resources/js/frontend.js'])
     @livewireStyles
     @stack('styles')

@@ -169,6 +169,7 @@ class ThemeOptionsSetting extends Component
             'youtube_url' => (string) setting('youtube_url', ''),
             'x_url' => (string) setting('x_url', ''),
             'instagram_url' => (string) setting('instagram_url', ''),
+            'google_search_engine_id' => (string) setting('google_search_engine_id', ''),
             'google_analytics_code' => (string) setting('google_analytics_code', ''),
             'facebook_pixel_code' => (string) setting('facebook_pixel_code', ''),
         ];
@@ -331,6 +332,7 @@ class ThemeOptionsSetting extends Component
         set_setting('youtube_url', $this->seo['youtube_url'] ?? '', 'theme-options');
         set_setting('x_url', $this->seo['x_url'] ?? '', 'theme-options');
         set_setting('instagram_url', $this->seo['instagram_url'] ?? '', 'theme-options');
+        set_setting('google_search_engine_id', trim((string) ($this->seo['google_search_engine_id'] ?? '')), 'theme-options');
         set_setting('google_analytics_code', $this->seo['google_analytics_code'] ?? '', 'theme-options');
         set_setting('facebook_pixel_code', $this->seo['facebook_pixel_code'] ?? '', 'theme-options');
         set_setting('social_links', $this->formatSocialLinksForStorage($this->social_links), 'theme-options');
