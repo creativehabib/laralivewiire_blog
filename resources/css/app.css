@@ -137,57 +137,12 @@
     }
 }
 
-@keyframes delete-confirm-overlay-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes delete-confirm-overlay-out {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-
-@keyframes delete-confirm-panel-in {
-    from { opacity: 0; transform: translateY(18px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes delete-confirm-panel-out {
-    from { opacity: 1; transform: translateY(0) scale(1); }
-    to { opacity: 0; transform: translateY(18px) scale(0.98); }
-}
-
 /* ===========================
    লেআউট / ইউটিলিটি (3য় পার্ট: চাইলে)
    =========================== */
 
 /* Typography helpers */
 @layer components {
-    .delete-confirm-overlay.is-entering {
-        animation: delete-confirm-overlay-in 200ms ease-out both;
-    }
-
-    .delete-confirm-overlay.is-leaving {
-        animation: delete-confirm-overlay-out 160ms ease-in both;
-    }
-
-    .delete-confirm-panel.is-entering {
-        animation: delete-confirm-panel-in 200ms ease-out both;
-    }
-
-    .delete-confirm-panel.is-leaving {
-        animation: delete-confirm-panel-out 160ms ease-in both;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .delete-confirm-overlay.is-entering,
-        .delete-confirm-overlay.is-leaving,
-        .delete-confirm-panel.is-entering,
-        .delete-confirm-panel.is-leaving {
-            animation: none;
-        }
-    }
-
     .typography {
         color: var(--color-secondary, #0f172a);
         line-height: 1.75;
@@ -303,7 +258,7 @@
         color: var(--prism-plain);
         border: 1px solid var(--prism-border);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-            "Liberation Mono", "Courier New", monospace;
+        "Liberation Mono", "Courier New", monospace;
         font-size: 0.92em;
         transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
@@ -605,7 +560,7 @@
         color: var(--color-primary, #0d6efd);
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
         transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease,
-            transform 120ms ease;
+        transform 120ms ease;
     }
 
     .dark :is(input[type="checkbox"], input[type="radio"]):not(.hidden):not(.sr-only):not(.custom-control-input) {
@@ -622,7 +577,7 @@
     :is(input[type="checkbox"], input[type="radio"]):not(.hidden):not(.sr-only):not(.custom-control-input):focus-visible {
         outline: none;
         box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary, #0d6efd) 25%, transparent),
-            0 0 0 4px rgba(13, 110, 253, 0.15);
+        0 0 0 4px rgba(13, 110, 253, 0.15);
     }
 
     :is(input[type="checkbox"], input[type="radio"]):not(.hidden):not(.sr-only):not(.custom-control-input):active {
