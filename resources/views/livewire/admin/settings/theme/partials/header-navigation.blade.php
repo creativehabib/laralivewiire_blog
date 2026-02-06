@@ -19,23 +19,6 @@
         </div>
     </div>
 
-    <div class="rounded-md border border-slate-200 dark:border-slate-700 p-4 space-y-2">
-        <div>
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Search Engine') }}</p>
-            <p class="text-xs text-slate-500">
-                {{ __('Choose the default search experience or let visitors pick.') }}
-            </p>
-        </div>
-        <select
-            wire:model="header.search_engine"
-            class="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-        >
-            <option value="choice">{{ __('Let visitors choose') }}</option>
-            <option value="default">{{ __('Default site search') }}</option>
-            <option value="google">{{ __('Google') }}</option>
-        </select>
-    </div>
-
     <div class="rounded-md border border-slate-200 dark:border-slate-700 p-4 space-y-4">
         <div class="flex items-center justify-between gap-3">
             <div>
