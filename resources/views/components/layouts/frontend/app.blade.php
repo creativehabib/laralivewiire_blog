@@ -46,6 +46,7 @@
 
     <style>
         .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
+        .marquee-wrapper:hover .animate-marquee { animation-play-state: paused; }
         @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
     </style>
 
