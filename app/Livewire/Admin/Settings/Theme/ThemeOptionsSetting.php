@@ -126,6 +126,8 @@ class ThemeOptionsSetting extends Component
             'breaking_news_enabled' => filter_var(setting('breaking_news_enabled', true), FILTER_VALIDATE_BOOLEAN),
             'breaking_news_category_id' => setting('breaking_news_category_id'),
             'breaking_news_speed' => (int) setting('breaking_news_speed', 60),
+            'breaking_news_position' => (string) setting('breaking_news_position', 'top'),
+            'show_more_breaking_news' => (int) setting('show_more_breaking_news', 10),
             'search_toggle' => filter_var(setting('search_toggle', true), FILTER_VALIDATE_BOOLEAN),
         ];
 
@@ -239,6 +241,8 @@ class ThemeOptionsSetting extends Component
         set_setting('breaking_news_enabled', filter_var($this->header['breaking_news_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
         set_setting('breaking_news_category_id', $this->header['breaking_news_category_id'] ?? null, 'theme-options');
         set_setting('breaking_news_speed', (int) ($this->header['breaking_news_speed'] ?? 60), 'theme-options');
+        set_setting('breaking_news_position', $this->header['breaking_news_position'] ?? 'top', 'theme-options');
+        set_setting('show_more_breaking_news', (int) ($this->header['show_more_breaking_news'] ?? 10), 'theme-options');
         set_setting('search_toggle', filter_var($this->header['search_toggle'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
 
         $this->dispatch('media-toast', type: 'success', message: 'Header settings updated successfully!');
