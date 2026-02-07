@@ -93,8 +93,9 @@
             <div class="overflow-hidden flex-1">
                 <div class="whitespace-nowrap animate-marquee">
                     @forelse($breakingTicker as $breaking)
-                        <a href="{{ post_permalink($breaking) }}" class="mr-8 hover:underline">
-                            {{ $breaking->name }}
+                        <a href="{{ post_permalink($breaking) }}" class="mr-8 inline-flex items-center gap-2 transition-transform duration-200 hover:translate-x-1 hover:text-primary-dark dark:hover:text-primary-light">
+                            <x-app-logo-icon class="size-3 text-primary-dark dark:text-primary-light" />
+                            <span>{{ $breaking->name }}</span>
                         </a>
                     @empty
                         <span class="mr-8">বর্তমানে কোনো সংবাদ পাওয়া যায়নি।</span>
