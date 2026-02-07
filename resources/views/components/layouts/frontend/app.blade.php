@@ -97,6 +97,10 @@
         {{ $slot }}
     </main>
 
+    @if(setting('breaking_news_position', 'top') === 'bottom')
+        <x-frontends.breaking-ticker-bar />
+    @endif
+
     @if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
     <x-frontends.footer />
 
