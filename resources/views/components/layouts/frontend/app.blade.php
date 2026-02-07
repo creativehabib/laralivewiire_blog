@@ -106,6 +106,12 @@
     @if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
     <x-frontends.footer />
 
+    @if(setting('breaking_news_position', 'top') === 'bottom')
+        <div class="fixed bottom-0 inset-x-0 z-50">
+            <x-frontends.breaking-ticker-bar />
+        </div>
+    @endif
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
     <script src="{{ asset('assets/js/script.js') }}" defer></script>
