@@ -3,10 +3,14 @@
 @php
     $siteLogoLight = setting('site_logo_light');
     $siteLogoDark = setting('site_logo_dark') ?: $siteLogoLight;
+    $isBottomTicker = setting('breaking_news_position', 'top') === 'bottom';
+    $breakingTickerContainerClass = $isBottomTicker
+        ? 'flex items-center gap-4 px-4 py-2'
+        : 'container flex items-center gap-4 px-4 py-2';
 @endphp
 
 <div class="bg-white dark:bg-secondary dark:text-white text-sm border-t dark:border-t-darkbg-soft">
-    <div class="container flex items-center gap-4 px-4 py-2">
+    <div class="{{ $breakingTickerContainerClass }}">
         <span class="bg-accent text-white px-2 py-1 text-xs font-semibold rounded">ব্রেকিং নিউজ</span>
         <div class="marquee-wrapper overflow-hidden flex-1">
             <div class="whitespace-nowrap animate-marquee">
