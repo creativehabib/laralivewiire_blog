@@ -1,4 +1,4 @@
-<footer class="bg-secondary text-white mt-8">
+<footer class="bg-secondary text-white mt-8 {{ setting('breaking_news_position', 'top') === 'bottom' ? 'mb-16' : '' }}">
     @php
         $footerMenu = get_menu_by_location('footer');
         $footerMenuItems = $footerMenu?->items ?? collect();
