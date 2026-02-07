@@ -44,8 +44,12 @@
         </style>
     @endif
 
+    @php
+        $breakingNewsSpeed = max(1, (int) setting('breaking_news_speed', 18));
+    @endphp
     <style>
-        .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
+        :root { --breaking-news-speed: {{ $breakingNewsSpeed }}s; }
+        .animate-marquee { display: inline-block; animation: marquee var(--breaking-news-speed, 18s) linear infinite; }
         .marquee-wrapper:hover .animate-marquee { animation-play-state: paused; }
         @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
     </style>
