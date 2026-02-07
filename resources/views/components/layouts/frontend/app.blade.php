@@ -83,7 +83,7 @@
     </script>
 </head>
 
-<body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out" style="font-size: var(--body-font-size, 16px);">
+<body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out {{ setting('breaking_news_position', 'top') === 'bottom' ? 'pb-12' : '' }}" style="font-size: var(--body-font-size, 16px);">
 
     @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
     @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
@@ -96,6 +96,12 @@
     <main class="min-h-screen">
         {{ $slot }}
     </main>
+
+    @if(setting('breaking_news_position', 'top') === 'bottom')
+        <div class="fixed bottom-0 inset-x-0 z-50">
+            <x-frontends.breaking-ticker-bar />
+        </div>
+    @endif
 
     @if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
     <x-frontends.footer />
