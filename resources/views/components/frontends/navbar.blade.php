@@ -94,7 +94,7 @@
     <div class="bg-white dark:bg-secondary dark:text-white text-sm border-t dark:border-t-darkbg-soft">
         <div class="container flex items-center gap-4 px-4 py-2">
             <span class="bg-accent text-white px-2 py-1 text-xs font-semibold rounded">ব্রেকিং নিউজ</span>
-            <div class="overflow-hidden flex-1">
+            <div class="marquee-wrapper overflow-hidden flex-1">
                 <div class="whitespace-nowrap animate-marquee">
                     @forelse($breakingTicker as $breaking)
                         <a href="{{ post_permalink($breaking) }}" class="group mr-8 inline-flex items-center gap-2 hover:text-primary-dark dark:hover:text-primary-light">
