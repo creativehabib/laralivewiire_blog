@@ -83,7 +83,7 @@
     </script>
 </head>
 
-<body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out {{ setting('breaking_news_position', 'top') === 'bottom' ? 'pb-16' : '' }}" style="font-size: var(--body-font-size, 16px);">
+<body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out {{ setting('breaking_news_position', 'top') === 'bottom' ? 'pb-24' : '' }}" style="font-size: var(--body-font-size, 16px);">
 
     @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
     @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
