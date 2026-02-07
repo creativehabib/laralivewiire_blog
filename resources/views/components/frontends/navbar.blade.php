@@ -87,22 +87,7 @@
             </button>
         </div>
     </div>
-    <div class="bg-white dark:bg-secondary dark:text-white text-sm border-t dark:border-t-darkbg-soft">
-        <div class="container flex items-center gap-4 px-4 py-2">
-            <span class="bg-accent text-white px-2 py-1 text-xs font-semibold rounded">ব্রেকিং নিউজ</span>
-            <div class="overflow-hidden flex-1">
-                <div class="whitespace-nowrap animate-marquee">
-                    @forelse($breakingTicker as $breaking)
-                        <a href="{{ post_permalink($breaking) }}" class="mr-8 hover:underline">
-                            {{ $breaking->name }}
-                        </a>
-                    @empty
-                        <span class="mr-8">বর্তমানে কোনো সংবাদ পাওয়া যায়নি।</span>
-                    @endforelse
-                </div>
-            </div>
-        </div>
-    </div>
+    <x-frontends.breaking-ticker :breakingTicker="$breakingTicker" />
     <nav id="mobileMenu"
          class="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 px-4 pt-2 pb-4 space-y-1 hidden">
         <div class="container px-0">
