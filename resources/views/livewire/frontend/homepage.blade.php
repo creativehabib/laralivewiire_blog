@@ -358,7 +358,12 @@
                 <ul class="space-y-2 text-sm">
                     @forelse($breakingNews as $post)
                         <li>
-                            <a href="{{ post_permalink($post) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>✔ {{ $post->name }}</a>
+                            <a href="{{ post_permalink($post) }}"
+                               class="group inline-flex items-center gap-2 transition-transform duration-200 hover:translate-x-1 hover:text-primary-dark dark:hover:text-primary-light"
+                               wire:navigate>
+                                <x-app-logo-icon class="size-3.5 text-primary-dark dark:text-primary-light" />
+                                <span>{{ $post->name }}</span>
+                            </a>
                         </li>
                     @empty
                         <li class="text-slate-500">কোনো ব্রেকিং নিউজ নেই</li>
