@@ -40,7 +40,7 @@
                 <select wire:model.defer="header.breaking_news_position"
                         class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
                     <option value="top">{{ __('Top (Header)') }}</option>
-                    <option value="bottom">{{ __('Bottom (Before Footer)') }}</option>
+                    <option value="bottom">{{ __('Bottom (Fixed)') }}</option>
                 </select>
             </div>
             <div>
