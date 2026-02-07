@@ -6,7 +6,6 @@
                backdrop-blur transition-colors duration-300">
     @php
         use App\Models\Category;
-        use App\Models\Post;
 
         $navCategories = Category::query()
             ->where('status', 'published')
@@ -14,21 +13,6 @@
             ->orderBy('created_at')
             ->take(7)
             ->get();
-
-        $breakingTicker = Post::query()
-            ->published()
-            ->where('is_breaking', true)
-            ->latest('created_at')
-            ->take(5)
-            ->get();
-
-        if ($breakingTicker->isEmpty()) {
-            $breakingTicker = Post::query()
-                ->published()
-                ->latest('created_at')
-                ->take(5)
-                ->get();
-        }
     @endphp
     @php
         $primaryMenu = get_menu_by_location('primary');
@@ -87,7 +71,9 @@
             </button>
         </div>
     </div>
-    <x-frontends.breaking-ticker :breakingTicker="$breakingTicker" />
+    @if(setting('breaking_news_position', 'top') === 'top')
+        <x-frontends.breaking-ticker-bar />
+    @endif
     <nav id="mobileMenu"
          class="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 px-4 pt-2 pb-4 space-y-1 hidden">
         <div class="container px-0">
