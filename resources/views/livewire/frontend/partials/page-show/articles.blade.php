@@ -26,7 +26,7 @@
             @if ($featuredPost)
                 <article class="group relative flex flex-col gap-4">
                     {{-- Image Container with Zoom Effect --}}
-                    <a href="{{ post_permalink($featuredPost) }}" class="block w-full overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50" wire:navigate>
+                    <a href="{{ post_permalink($featuredPost) }}" class="block w-full overflow-hidden rounded bg-slate-100 dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50" wire:navigate>
                         <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}"
                              alt="{{ $featuredPost->name }}"
                              loading="eager"
@@ -81,15 +81,15 @@
             @endif
 
             {{-- === Sidebar Posts (Right Side) === --}}
-            <div class="flex flex-col gap-5 border-t lg:border-t-0 border-slate-100 dark:border-slate-800 pt-6 lg:pt-0 pl-0 lg:pl-4">
+            <div class="divide-y divide-slate-200 dark:divide-slate-700 flex flex-col border-t lg:border-t-0 border-slate-100 dark:border-slate-800 pt-6 lg:pt-0">
                 @foreach ($sidebarPosts as $index => $post)
                     @php
                         $shouldHideThumb = $hideSmallThumbnails && $index >= 0;
                     @endphp
-                    <article class="group flex gap-4 items-start relative">
+                    <article class="group flex py-3 first:pt-0 gap-4 items-start relative">
                         {{-- Thumbnail --}}
                         @unless ($shouldHideThumb)
-                            <div class="shrink-0 relative w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50">
+                            <div class="shrink-0 relative w-24 h-16 sm:w-28 sm:h-20 rounded overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50">
                                 <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                     <img src="{{ the_thumbnail($post, 280, 200) }}"
                                          alt="{{ $post->name }}"
@@ -149,7 +149,7 @@
 
                     {{-- Thumbnail Section --}}
                     @unless ($shouldHideThumb)
-                        <div class="relative shrink-0 w-28 h-20 sm:w-32 sm:h-24 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700">
+                        <div class="relative shrink-0 w-28 h-20 sm:w-32 sm:h-24 rounded overflow-hidden bg-slate-100 dark:bg-slate-700">
                             <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                 <img src="{{ the_thumbnail($post, 320, 240) }}"
                                      alt="{{ $post->name }}"
@@ -220,13 +220,13 @@
         <div class="flex flex-col gap-6 md:gap-8">
             {{-- === Featured Hero Item === --}}
             @if ($featuredPost)
-                <article class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden md:grid md:grid-cols-12 md:gap-6 items-start transition-all">
+                <article class="group bg-white dark:bg-slate-800 rounded overflow-hidden md:grid md:grid-cols-12 md:gap-6 items-start transition-all">
 
                     {{-- Image Section --}}
                     <div class="md:col-span-5 relative h-full">
                         <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block w-full h-full">
                             {{-- Fix: Added min-h-[220px] to prevent image collapse on desktop if text is short --}}
-                            <div class="relative w-full aspect-video md:aspect-auto md:h-full min-h-[220px] overflow-hidden bg-slate-100 dark:bg-slate-700 rounded-xl">
+                            <div class="relative w-full aspect-video md:aspect-auto md:h-full min-h-[220px] overflow-hidden bg-slate-100 dark:bg-slate-700 rounded">
                                 <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}"
                                      alt="{{ $featuredPost->name }}"
                                      loading="eager"
@@ -294,7 +294,7 @@
 
                             {{-- Thumbnail --}}
                             @unless ($shouldHideThumb)
-                                <div class="relative shrink-0 w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shadow-sm border border-slate-100 dark:border-slate-700/50">
+                                <div class="relative shrink-0 w-24 h-16 sm:w-28 sm:h-20 rounded overflow-hidden bg-slate-100 dark:bg-slate-700 shadow-sm border border-slate-100 dark:border-slate-700/50">
                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                         <img src="{{ the_thumbnail($post, 280, 200) }}"
                                              alt="{{ $post->name }}"
@@ -341,7 +341,7 @@
         @endphp
         <div class="space-y-6">
             @if ($heroPost)
-                <article class="group relative overflow-hidden rounded-2xl shadow-sm">
+                <article class="group relative overflow-hidden rounded shadow-sm">
                     <a href="{{ post_permalink($heroPost) }}" wire:navigate class="block w-full h-64 md:h-72 relative">
                         {{-- Image with Zoom --}}
                         <img src="{{ the_thumbnail($heroPost, 1200, 675) }}"
@@ -380,17 +380,17 @@
                     @php
                         $shouldHideThumb = ($hideSmallThumbnails && $index >= 0);
                     @endphp
-                    <article class="group flex gap-3.5 items-start">
+                    <article class="group md:flex gap-3.5 items-start">
                         @unless ($shouldHideThumb)
-                            <div class="relative shrink-0 w-24 h-16 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700">
-                                <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
+                            <div class="relative shrink-0 rounded overflow-hidden bg-slate-100 dark:bg-slate-700">
+                                <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                     <img src="{{ the_thumbnail($post, 240, 160)}}"
                                          alt="{{ $post->name }}"
                                          loading="lazy"
                                          decoding="async"
                                          width="240"
                                          height="160"
-                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                         class="w-full md:w-24 md:h-16 object-cover transition-transform duration-500 group-hover:scale-110">
                                 </a>
                                 @if ($mediaIcon)
                                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -430,7 +430,7 @@
             @if ($featuredPost)
                 <article class="group space-y-3">
                     @unless ($hideFirstThumbnail)
-                        <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+                        <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block w-full overflow-hidden rounded bg-slate-100 dark:bg-slate-800">
                             <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}"
                                  alt="{{ $featuredPost->name }}"
                                  loading="eager"
@@ -467,19 +467,19 @@
 
             {{-- Vertical List --}}
             @if ($listPosts->isNotEmpty())
-                <div class="flex flex-col gap-5 border-t border-slate-100 dark:border-slate-800 pt-5">
+                <div class="divide-y divide-slate-200 dark:divide-slate-700 flex flex-col border-t border-slate-100 dark:border-slate-800">
                     @foreach ($listPosts as $post)
-                        <article class="group flex gap-4 items-start">
+                        <article class="group md:flex py-3 gap-4 items-start">
                             @unless ($hideSmallThumbnails)
-                                <div class="shrink-0 relative w-28 h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700">
-                                    <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
+                                <div class="shrink-0 relative md:h-16 rounded overflow-hidden bg-slate-100 dark:bg-slate-700">
+                                    <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                         <img src="{{ the_thumbnail($post, 280, 200) }}"
                                              alt="{{ $post->name }}"
                                              loading="lazy"
                                              decoding="async"
                                              width="280"
                                              height="200"
-                                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                             class="w-full h-52 md:w-28 md:h-16 object-cover transition-transform duration-500 group-hover:scale-110">
                                     </a>
                                 </div>
                             @endunless

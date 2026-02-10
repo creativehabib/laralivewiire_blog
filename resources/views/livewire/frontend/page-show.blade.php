@@ -149,9 +149,9 @@
                                         @endphp
                                         <div class="{{ $contentOnly ? 'text-sm text-slate-700 dark:text-slate-200 leading-relaxed' : 'space-y-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }} {{ $darkMode ? 'bg-slate-900 text-slate-100' : '' }} {{ $layout === 'half-width' ? 'md:col-span-1' : 'md:col-span-2' }}"
                                              style="{{ $blockStyles }}">
-                                            <div class="flex items-center justify-between gap-2" style="color: var(--block-primary, inherit);">
+                                            <div class="" style="color: var(--block-primary, inherit);">
                                                 <div>
-                                                    <p class="font-bold text-base leading-snug">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</p>
+                                                    <h4 class="font-bold leading-snug">{{ $titleLength > 0 ? \Illuminate\Support\Str::limit($blockTitle, $titleLength) : $blockTitle }}</h4>
                                                     @if (!empty($tagsValue))
                                                         <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Tags: {{ $tagsValue }}</p>
                                                     @endif
