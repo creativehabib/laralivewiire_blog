@@ -58,13 +58,6 @@ new class extends Component {
             'avatar' => ['nullable', 'string', 'max:2048'],
         ]);
 
-        if (filled($validated['avatar'] ?? null)) {
-            $validated['avatar'] = Str::of($validated['avatar'])
-                ->replace(url('/storage').'/', '')
-                ->replace('/storage/', '')
-                ->toString();
-        }
-
         $user->fill($validated);
 
         if ($user->isDirty('email')) {
