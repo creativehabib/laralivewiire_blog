@@ -4,6 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 use Livewire\Volt\Component;
 
 new class extends Component {
@@ -12,6 +13,7 @@ new class extends Component {
     public string $username = '';
     public string $website = '';
     public string $bio = '';
+    public string $avatar = '';
 
     /**
      * Mount the component.
@@ -23,6 +25,7 @@ new class extends Component {
         $this->username = Auth::user()->username;
         $this->website = Auth::user()->website ?? '';
         $this->bio = Auth::user()->bio ?? '';
+        $this->avatar = Auth::user()->avatar ?? '';
     }
 
     /**
@@ -52,7 +55,15 @@ new class extends Component {
             ],
             'website' => ['nullable', 'url', 'max:255'],
             'bio' => ['nullable', 'string', 'max:500'],
+            'avatar' => ['nullable', 'string', 'max:2048'],
         ]);
+
+        if (filled($validated['avatar'] ?? null)) {
+            $validated['avatar'] = Str::of($validated['avatar'])
+                ->replace(url('/storage').'/', '')
+                ->replace('/storage/', '')
+                ->toString();
+        }
 
         $user->fill($validated);
 
@@ -118,6 +129,13 @@ new class extends Component {
             <flux:input wire:model="website" :label="__('Website')" type="url" autocomplete="url" placeholder="https://example.com" />
 
             <flux:textarea wire:model="bio" :label="__('Bio')" rows="4" maxlength="500" />
+
+            @include('mediamanager::includes.media-input', [
+                'name' => 'avatar',
+                'id' => 'profile_avatar',
+                'label' => __('Avatar'),
+                'value' => $avatar ?? '',
+            ])
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
