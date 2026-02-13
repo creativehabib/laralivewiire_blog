@@ -9,6 +9,9 @@ use Livewire\Volt\Component;
 new class extends Component {
     public string $name = '';
     public string $email = '';
+    public string $username = '';
+    public string $website = '';
+    public string $bio = '';
 
     /**
      * Mount the component.
@@ -17,6 +20,9 @@ new class extends Component {
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->username = Auth::user()->username;
+        $this->website = Auth::user()->website ?? '';
+        $this->bio = Auth::user()->bio ?? '';
     }
 
     /**
@@ -28,6 +34,13 @@ new class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required',
+                'string',
+                'alpha_dash',
+                'max:255',
+                Rule::unique(User::class)->ignore($user->id),
+            ],
 
             'email' => [
                 'required',
@@ -35,8 +48,10 @@ new class extends Component {
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore($user->id)
+                Rule::unique(User::class)->ignore($user->id),
             ],
+            'website' => ['nullable', 'url', 'max:255'],
+            'bio' => ['nullable', 'string', 'max:500'],
         ]);
 
         $user->fill($validated);
@@ -76,6 +91,8 @@ new class extends Component {
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
+            <flux:input wire:model="username" :label="__('Username')" type="text" required autocomplete="username" />
+
             <div>
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
@@ -97,6 +114,10 @@ new class extends Component {
                     </div>
                 @endif
             </div>
+
+            <flux:input wire:model="website" :label="__('Website')" type="url" autocomplete="url" placeholder="https://example.com" />
+
+            <flux:textarea wire:model="bio" :label="__('Bio')" rows="4" maxlength="500" />
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
