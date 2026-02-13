@@ -110,9 +110,17 @@
             <div class="flex items-center h-full">
                 <div class="relative group h-full border-l border-slate-800">
                     <button type="button" class="flex items-center gap-2 px-3 sm:px-4 h-full hover:bg-white/10 transition-all">
-                        <div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-inner">
-                            {{ substr(auth()->user()->name, 0, 1) }}
-                        </div>
+                        @if (auth()->user()->avatar_url)
+                            <img
+                                src="{{ auth()->user()->avatar_url }}"
+                                alt="{{ auth()->user()->name }}"
+                                class="w-6 h-6 rounded-full object-cover border border-slate-700 shadow-inner"
+                            >
+                        @else
+                            <div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-inner">
+                                {{ substr(auth()->user()->name, 0, 1) }}
+                            </div>
+                        @endif
                         <span class="hidden sm:inline-block">{{ __('Hi, :name', ['name' => auth()->user()->name]) }}</span>
                         <i class="fa-solid fa-chevron-down text-[10px] opacity-50 group-hover:rotate-180 transition-transform"></i>
                     </button>
