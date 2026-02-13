@@ -33,6 +33,7 @@ test('profile information can be updated', function () {
     expect($user->website)->toEqual('https://example.com');
     expect($user->bio)->toEqual('This is a test bio.');
     expect($user->avatar)->toEqual('avatars/test-avatar.jpg');
+    expect($user->avatar_url)->toEndWith('/storage/avatars/test-avatar.jpg');
     expect($user->email_verified_at)->toBeNull();
 });
 
