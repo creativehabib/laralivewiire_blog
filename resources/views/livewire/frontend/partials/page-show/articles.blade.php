@@ -210,7 +210,7 @@
         @break
 
 
-        {{-- === FEATURED LIST LAYOUT (Hero + Grid) === --}}
+    {-- === FEATURED LIST LAYOUT (Hero + Grid) === --}}
     @case('featured-list')
         @php
             $featuredPost = $postItems->first();
@@ -225,7 +225,6 @@
                     {{-- Image Section --}}
                     <div class="md:col-span-5 relative h-full">
                         <a href="{{ post_permalink($featuredPost) }}" wire:navigate class="block w-full h-full">
-                            {{-- Fix: Added min-h-[220px] to prevent image collapse on desktop if text is short --}}
                             <div class="relative w-full aspect-video md:aspect-auto md:h-full min-h-[220px] overflow-hidden bg-slate-100 dark:bg-slate-700 rounded">
                                 <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}"
                                      alt="{{ $featuredPost->name }}"
@@ -417,14 +416,13 @@
             </div>
         </div>
         @break
-
-        {{-- === HALF WIDTH LAYOUT (Clean Vertical List) === --}}
+    {{-- === HALF WIDTH LAYOUT (Clean Vertical List) === --}}
     @case('half-width')
         @php
             $featuredPost = $postItems->first();
             $listPosts = $postItems->slice(1);
         @endphp
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
 
             {{-- Featured Top Post --}}
             @if ($featuredPost)
@@ -467,11 +465,13 @@
 
             {{-- Vertical List --}}
             @if ($listPosts->isNotEmpty())
-                <div class="divide-y divide-slate-200 dark:divide-slate-700 flex flex-col border-t border-slate-100 dark:border-slate-800">
-                    @foreach ($listPosts as $post)
-                        <article class="group md:flex py-3 gap-4 items-start">
+                <div class="flex flex-col md:gap-0 md:divide-y
+                md:divide-slate-200 dark:md:divide-slate-700
+                md:border-t md:border-slate-100 dark:md:border-slate-800">
+                @foreach ($listPosts as $post)
+                        <article class="group md:flex py-0 md:py-3 gap-4 items-start">
                             @unless ($hideSmallThumbnails)
-                                <div class="shrink-0 relative md:h-16 rounded overflow-hidden bg-slate-100 dark:bg-slate-700">
+                                <div class="shrink-0 relative rounded overflow-hidden bg-slate-100 dark:bg-slate-700">
                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                         <img src="{{ the_thumbnail($post, 280, 200) }}"
                                              alt="{{ $post->name }}"
@@ -479,13 +479,13 @@
                                              decoding="async"
                                              width="280"
                                              height="200"
-                                             class="w-full h-52 md:w-28 md:h-16 object-cover transition-transform duration-500 group-hover:scale-110">
+                                             class="w-full h-52 md:w-24 md:h-16 object-cover transition-transform duration-500 group-hover:scale-110">
                                     </a>
                                 </div>
                             @endunless
 
-                            <div class="flex-1 min-w-0 flex flex-col justify-center h-20"> {{-- h-20 aligns text vertically with image --}}
-                                <h3 class="text-sm sm:text-base font-semibold text-slate-700 dark:text-slate-200 leading-snug mb-1.5">
+                            <div class="flex-1 flex flex-col justify-center">
+                                <h3 class="sm:text-sm text-xl font-semibold text-slate-700 dark:text-slate-200 leading-snug mt-1.5 mb-1.5">
                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
                                         {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                                     </a>
