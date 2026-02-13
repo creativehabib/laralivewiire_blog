@@ -4,7 +4,7 @@
         <div class="lg:col-span-8 space-y-6">
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 md:p-6 flex flex-col md:flex-row gap-4 items-start transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                 @if($author->avatar)
-                    <img src="{{ asset('storage/' . $author->avatar) }}" alt="{{ $author->name }}" class="w-24 h-24 rounded-full object-cover">
+                    <img src="{{ $author->avatar }}" alt="{{ $author->name }}" class="w-24 h-24 rounded-full object-cover">
                 @else
                     <div class="w-24 h-24 rounded-full bg-primary/10 text-primary-dark dark:text-primary-light flex items-center justify-center text-3xl font-semibold">
                         {{ strtoupper(mb_substr($author->name, 0, 1)) }}
