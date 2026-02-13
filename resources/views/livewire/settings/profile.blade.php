@@ -4,11 +4,16 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 use Livewire\Volt\Component;
 
 new class extends Component {
     public string $name = '';
     public string $email = '';
+    public string $username = '';
+    public string $website = '';
+    public string $bio = '';
+    public string $avatar = '';
 
     /**
      * Mount the component.
@@ -17,6 +22,10 @@ new class extends Component {
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->username = Auth::user()->username;
+        $this->website = Auth::user()->website ?? '';
+        $this->bio = Auth::user()->bio ?? '';
+        $this->avatar = Auth::user()->avatar ?? '';
     }
 
     /**
@@ -28,6 +37,13 @@ new class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required',
+                'string',
+                'alpha_dash',
+                'max:255',
+                Rule::unique(User::class)->ignore($user->id),
+            ],
 
             'email' => [
                 'required',
@@ -35,9 +51,19 @@ new class extends Component {
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore($user->id)
+                Rule::unique(User::class)->ignore($user->id),
             ],
+            'website' => ['nullable', 'url', 'max:255'],
+            'bio' => ['nullable', 'string', 'max:500'],
+            'avatar' => ['nullable', 'string', 'max:2048'],
         ]);
+
+        if (filled($validated['avatar'] ?? null)) {
+            $validated['avatar'] = Str::of($validated['avatar'])
+                ->replace(url('/storage').'/', '')
+                ->replace('/storage/', '')
+                ->toString();
+        }
 
         $user->fill($validated);
 
@@ -76,6 +102,8 @@ new class extends Component {
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
+            <flux:input wire:model="username" :label="__('Username')" type="text" required autocomplete="username" />
+
             <div>
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
@@ -97,6 +125,17 @@ new class extends Component {
                     </div>
                 @endif
             </div>
+
+            <flux:input wire:model="website" :label="__('Website')" type="url" autocomplete="url" placeholder="https://example.com" />
+
+            <flux:textarea wire:model="bio" :label="__('Bio')" rows="4" maxlength="500" />
+
+            @include('mediamanager::includes.media-input', [
+                'name' => 'avatar',
+                'id' => 'profile_avatar',
+                'label' => __('Avatar'),
+                'value' => $avatar ?? '',
+            ])
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
