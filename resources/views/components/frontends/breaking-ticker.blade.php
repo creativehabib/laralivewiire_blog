@@ -4,6 +4,9 @@
     $siteLogoLight = setting('site_logo_light');
     $siteLogoDark = setting('site_logo_dark') ?: $siteLogoLight;
     $isBottomTicker = setting('breaking_news_position', 'top') === 'bottom';
+    $breakingNewsSpeed = max(1, (int) setting('breaking_news_speed', 18));
+    $tickerItemCount = max(1, $breakingTicker->count());
+    $tickerDuration = $breakingNewsSpeed * max(1, $tickerItemCount / 10);
     $breakingTickerContainerClass = $isBottomTicker
         ? 'flex items-center gap-4 px-4 py-2'
         : 'container flex items-center gap-4 px-4 py-2';
@@ -13,7 +16,7 @@
     <div class="{{ $breakingTickerContainerClass }}">
         <span class="bg-accent text-white px-2 py-1 text-xs font-semibold rounded">ব্রেকিং নিউজ</span>
         <div class="marquee-wrapper overflow-hidden flex-1">
-            <div class="whitespace-nowrap animate-marquee">
+            <div class="whitespace-nowrap animate-marquee" style="animation-duration: {{ $tickerDuration }}s;">
                 @forelse($breakingTicker as $breaking)
                     <a href="{{ post_permalink($breaking) }}" class="group mr-8 inline-flex items-center gap-2 hover:text-primary-dark dark:hover:text-primary-light">
                         @if($siteLogoLight)
