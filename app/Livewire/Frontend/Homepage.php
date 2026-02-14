@@ -37,15 +37,17 @@ class Homepage extends Component
     public function loadHomepage(): void
     {
         $cacheMinutes = CacheSettings::cacheLifetimeMinutes();
+        $breakingNewsLimit = max(1, (int) setting('show_more_breaking_news', 10));
+        $cacheKey = "homepage:v3:data:breaking-limit:{$breakingNewsLimit}";
 
         // ক্যাশ সেটিংস চেক করা হচ্ছে
         if (CacheSettings::cacheWidgetsEnabled() && $cacheMinutes > 0) {
-            $data = Cache::remember('homepage:v2:data', now()->addMinutes($cacheMinutes), function () {
-                return $this->generateHomepageData();
+            $data = Cache::remember($cacheKey, now()->addMinutes($cacheMinutes), function () use ($breakingNewsLimit) {
+                return $this->generateHomepageData($breakingNewsLimit);
             });
         } else {
             // ক্যাশ ডিজেবল থাকলে সরাসরি ডাটা জেনারেট করবে
-            $data = $this->generateHomepageData();
+            $data = $this->generateHomepageData($breakingNewsLimit);
         }
 
         $this->applyHomepageData($data);
@@ -53,7 +55,7 @@ class Homepage extends Component
         $this->isReady = true;
     }
 
-    protected function generateHomepageData(): array
+    protected function generateHomepageData(int $breakingNewsLimit): array
     {
         $basePostQuery = Post::query()
             ->published()
@@ -101,7 +103,7 @@ class Homepage extends Component
             'secondaryCategory' => $categoryBlocks->skip(1)->first(),
             'latestPosts'     => (clone $basePostQuery)->latest()->take(9)->get(),
             'videoPosts'      => (clone $basePostQuery)->where('format_type', 'video')->latest()->take(6)->get(),
-            'breakingNews'    => (clone $basePostQuery)->where('is_breaking', true)->latest()->take(5)->get(),
+            'breakingNews'    => (clone $basePostQuery)->where('is_breaking', true)->latest()->take($breakingNewsLimit)->get(),
             'popularPosts'    => (clone $basePostQuery)->orderByDesc('views')->take(5)->get(),
             'sidebarLatest'   => (clone $basePostQuery)->latest()->take(5)->get(),
         ];
