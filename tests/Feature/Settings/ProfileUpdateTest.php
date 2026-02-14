@@ -13,10 +13,11 @@ test('profile information can be updated', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
+    $originalUsername = $user->username;
 
     $response = Volt::test('settings.profile')
         ->set('name', 'Test User')
-        ->set('username', 'test-user')
+        ->set('username', 'changed-username')
         ->set('email', 'test@example.com')
         ->set('website', 'https://example.com')
         ->set('bio', 'This is a test bio.')
@@ -28,7 +29,7 @@ test('profile information can be updated', function () {
     $user->refresh();
 
     expect($user->name)->toEqual('Test User');
-    expect($user->username)->toEqual('test-user');
+    expect($user->username)->toEqual($originalUsername);
     expect($user->email)->toEqual('test@example.com');
     expect($user->website)->toEqual('https://example.com');
     expect($user->bio)->toEqual('This is a test bio.');
@@ -71,19 +72,20 @@ test('avatar URL is normalized to storage-relative path when updating profile', 
     expect($user->refresh()->avatar)->toEqual('avatars/absolute-avatar.jpg');
 });
 
-test('username must be unique when updating profile', function () {
-    $existingUser = User::factory()->create(['username' => 'existing-user']);
+test('username remains unchanged even when a different value is submitted', function () {
     $user = User::factory()->create(['username' => 'current-user']);
 
     $this->actingAs($user);
 
     $response = Volt::test('settings.profile')
         ->set('name', 'Test User')
-        ->set('username', $existingUser->username)
+        ->set('username', 'attempted-change')
         ->set('email', $user->email)
         ->call('updateProfileInformation');
 
-    $response->assertHasErrors(['username']);
+    $response->assertHasNoErrors();
+
+    expect($user->refresh()->username)->toEqual('current-user');
 });
 
 test('user can delete their account', function () {
