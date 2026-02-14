@@ -4,7 +4,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 use Livewire\Volt\Component;
 
 new class extends Component {
@@ -37,14 +36,6 @@ new class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => [
-                'required',
-                'string',
-                'alpha_dash',
-                'max:255',
-                Rule::unique(User::class)->ignore($user->id),
-            ],
-
             'email' => [
                 'required',
                 'string',
@@ -57,6 +48,8 @@ new class extends Component {
             'bio' => ['nullable', 'string', 'max:500'],
             'avatar' => ['nullable', 'string', 'max:2048'],
         ]);
+
+        $validated['username'] = $user->username;
 
         $user->fill($validated);
 
@@ -95,7 +88,7 @@ new class extends Component {
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
-            <flux:input wire:model="username" :label="__('Username')" type="text" required autocomplete="username" />
+            <flux:input wire:model="username" :label="__('Username')" type="text" required autocomplete="username" disabled readonly />
 
             <div>
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
