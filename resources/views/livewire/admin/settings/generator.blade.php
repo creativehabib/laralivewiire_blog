@@ -55,9 +55,20 @@
                         x-cloak
                         @endif
                     >
-                        <label class="block text-xs font-semibold uppercase text-slate-700 dark:text-slate-200 mb-1">
-                            {{ $field['label'] ?? $key }}
-                        </label>
+                        <div class="mb-1 flex items-center gap-2">
+                            <label class="block text-xs font-semibold uppercase text-slate-700 dark:text-slate-200">
+                                {{ $field['label'] ?? $key }}
+                            </label>
+
+                            @if(!empty($field['helper_link']['url']))
+                                <a href="{{ $field['helper_link']['url'] }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="text-[11px] font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                    {{ $field['helper_link']['label'] ?? 'Helper link' }}
+                                </a>
+                            @endif
+                        </div>
 
                         {{-- PERMALINK STRUCTURE --}}
                         @if($type === 'permalink_structure')
