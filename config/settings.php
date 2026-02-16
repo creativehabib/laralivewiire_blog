@@ -108,6 +108,25 @@ return [
                     ],
                 ],
                 [
+                    'key' => 'recaptcha_key_type',
+                    'label' => 'reCAPTCHA key type',
+                    'type' => 'select',
+                    'default' => 'v2_checkbox',
+                    'options' => [
+                        'v2_checkbox' => 'v2 Checkbox',
+                        'v3_score' => 'v3 Score',
+                    ],
+                    'rules' => ['required', 'in:v2_checkbox,v3_score'],
+                    'visible_when' => [
+                        'recaptcha_enabled' => true,
+                    ],
+                    'hint' => 'Select the key type that matches your Google reCAPTCHA site key to avoid invalid key type errors.',
+                    'helper_link' => [
+                        'label' => 'Key type guide',
+                        'url' => 'https://developers.google.com/recaptcha/docs/versions',
+                    ],
+                ],
+                [
                     'key' => 'recaptcha_site_key',
                     'label' => 'reCAPTCHA site key',
                     'type' => 'text',

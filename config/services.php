@@ -37,6 +37,7 @@ return [
 
     'recaptcha' => [
         'enabled' => env('RECAPTCHA_ENABLED', false),
+        'key_type' => env('RECAPTCHA_KEY_TYPE', 'v2_checkbox'),
         'site_key' => env('RECAPTCHA_SITE_KEY'),
         'secret_key' => env('RECAPTCHA_SECRET_KEY'),
     ],
