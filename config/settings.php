@@ -102,6 +102,29 @@ return [
                     'default' => false,
                     'rules' => ['boolean'],
                     'hint' => 'Enable bot protection for login and registration forms.',
+                    'helper_link' => [
+                        'label' => 'reCAPTCHA helper',
+                        'url' => 'https://support.google.com/recaptcha',
+                    ],
+                ],
+                [
+                    'key' => 'recaptcha_key_type',
+                    'label' => 'reCAPTCHA key type',
+                    'type' => 'select',
+                    'default' => 'v2_checkbox',
+                    'options' => [
+                        'v2_checkbox' => 'v2 Checkbox',
+                        'v3_score' => 'v3 Score',
+                    ],
+                    'rules' => ['required', 'in:v2_checkbox,v3_score'],
+                    'visible_when' => [
+                        'recaptcha_enabled' => true,
+                    ],
+                    'hint' => 'Select the key type that matches your Google reCAPTCHA site key to avoid invalid key type errors.',
+                    'helper_link' => [
+                        'label' => 'Key type guide',
+                        'url' => 'https://developers.google.com/recaptcha/docs/versions',
+                    ],
                 ],
                 [
                     'key' => 'recaptcha_site_key',
@@ -113,6 +136,10 @@ return [
                         'recaptcha_enabled' => true,
                     ],
                     'hint' => 'Use the site key from Google reCAPTCHA admin console.',
+                    'helper_link' => [
+                        'label' => 'Get site key',
+                        'url' => 'https://www.google.com/recaptcha/admin/create',
+                    ],
                 ],
                 [
                     'key' => 'recaptcha_secret_key',
@@ -124,6 +151,10 @@ return [
                         'recaptcha_enabled' => true,
                     ],
                     'hint' => 'Use the secret key from Google reCAPTCHA admin console.',
+                    'helper_link' => [
+                        'label' => 'View admin console',
+                        'url' => 'https://www.google.com/recaptcha/admin',
+                    ],
                 ],
                 [
                     'key' => 'storage_disk',

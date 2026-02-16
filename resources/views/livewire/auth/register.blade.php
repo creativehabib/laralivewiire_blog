@@ -5,7 +5,7 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
+        <form id="register-form" method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
             <!-- Name -->
             <flux:input
@@ -54,10 +54,16 @@
 
             @php($recaptchaEnabled = filter_var(setting('recaptcha_enabled', config('services.recaptcha.enabled')), FILTER_VALIDATE_BOOLEAN))
             @php($recaptchaSiteKey = trim((string) setting('recaptcha_site_key', config('services.recaptcha.site_key'))))
+            @php($recaptchaKeyType = (string) setting('recaptcha_key_type', config('services.recaptcha.key_type', 'v2_checkbox')))
 
             @if ($recaptchaEnabled && $recaptchaSiteKey)
                 <div class="space-y-2">
-                    <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+                    @if ($recaptchaKeyType === 'v3_score')
+                        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                    @else
+                        <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+                    @endif
+
                     @error('g-recaptcha-response')
                         <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
@@ -79,7 +85,34 @@
 
     @if ($recaptchaEnabled && $recaptchaSiteKey)
         @push('scripts')
-            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+            @if ($recaptchaKeyType === 'v3_score')
+                <script src="https://www.google.com/recaptcha/api.js?render={{ $recaptchaSiteKey }}"></script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const form = document.getElementById('register-form');
+                        if (!form || typeof grecaptcha === 'undefined') {
+                            return;
+                        }
+
+                        form.addEventListener('submit', function (event) {
+                            event.preventDefault();
+
+                            grecaptcha.ready(function () {
+                                grecaptcha.execute('{{ $recaptchaSiteKey }}', { action: 'register' }).then(function (token) {
+                                    const input = form.querySelector('#g-recaptcha-response');
+                                    if (input) {
+                                        input.value = token;
+                                    }
+
+                                    form.submit();
+                                });
+                            });
+                        });
+                    });
+                </script>
+            @else
+                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+            @endif
         @endpush
     @endif
 </x-layouts.auth>
