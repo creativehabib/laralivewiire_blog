@@ -102,6 +102,10 @@ return [
                     'default' => false,
                     'rules' => ['boolean'],
                     'hint' => 'Enable bot protection for login and registration forms.',
+                    'helper_link' => [
+                        'label' => 'reCAPTCHA helper',
+                        'url' => 'https://support.google.com/recaptcha',
+                    ],
                 ],
                 [
                     'key' => 'recaptcha_site_key',
@@ -113,6 +117,10 @@ return [
                         'recaptcha_enabled' => true,
                     ],
                     'hint' => 'Use the site key from Google reCAPTCHA admin console.',
+                    'helper_link' => [
+                        'label' => 'Get site key',
+                        'url' => 'https://www.google.com/recaptcha/admin/create',
+                    ],
                 ],
                 [
                     'key' => 'recaptcha_secret_key',
@@ -124,6 +132,10 @@ return [
                         'recaptcha_enabled' => true,
                     ],
                     'hint' => 'Use the secret key from Google reCAPTCHA admin console.',
+                    'helper_link' => [
+                        'label' => 'View admin console',
+                        'url' => 'https://www.google.com/recaptcha/admin',
+                    ],
                 ],
                 [
                     'key' => 'storage_disk',
