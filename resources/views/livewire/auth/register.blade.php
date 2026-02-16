@@ -52,6 +52,18 @@
                 viewable
             />
 
+            @php($recaptchaEnabled = filter_var(setting('recaptcha_enabled', config('services.recaptcha.enabled')), FILTER_VALIDATE_BOOLEAN))
+            @php($recaptchaSiteKey = trim((string) setting('recaptcha_site_key', config('services.recaptcha.site_key'))))
+
+            @if ($recaptchaEnabled && $recaptchaSiteKey)
+                <div class="space-y-2">
+                    <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+                    @error('g-recaptcha-response')
+                        <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
+
             <div class="flex items-center justify-end">
                 <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
                     {{ __('Create account') }}
@@ -64,4 +76,10 @@
             <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
         </div>
     </div>
+
+    @if ($recaptchaEnabled && $recaptchaSiteKey)
+        @push('scripts')
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        @endpush
+    @endif
 </x-layouts.auth>
