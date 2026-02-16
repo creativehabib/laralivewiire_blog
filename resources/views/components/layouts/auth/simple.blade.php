@@ -34,6 +34,7 @@
             {!! $adminBodyJs !!}
         @endif
         @fluxScripts
+        @stack('scripts')
 
         @if($adminFooterJs = setting('admin_footer_js'))
             {!! $adminFooterJs !!}

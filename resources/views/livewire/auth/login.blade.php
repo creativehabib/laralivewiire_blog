@@ -39,6 +39,18 @@
                 @endif
             </div>
 
+            @php($recaptchaEnabled = filter_var(setting('recaptcha_enabled', config('services.recaptcha.enabled')), FILTER_VALIDATE_BOOLEAN))
+            @php($recaptchaSiteKey = trim((string) setting('recaptcha_site_key', config('services.recaptcha.site_key'))))
+
+            @if ($recaptchaEnabled && $recaptchaSiteKey)
+                <div class="space-y-2">
+                    <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+                    @error('g-recaptcha-response')
+                        <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
+
             <!-- Remember Me -->
             <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
 
@@ -56,4 +68,10 @@
             </div>
         @endif
     </div>
+
+    @if ($recaptchaEnabled && $recaptchaSiteKey)
+        @push('scripts')
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        @endpush
+    @endif
 </x-layouts.auth>

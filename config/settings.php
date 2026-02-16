@@ -96,6 +96,36 @@ return [
                     'hint' => 'This site is currently in maintenance mode.',
                 ],
                 [
+                    'key' => 'recaptcha_enabled',
+                    'label' => 'Enable Google reCAPTCHA',
+                    'type' => 'switch',
+                    'default' => false,
+                    'rules' => ['boolean'],
+                    'hint' => 'Enable bot protection for login and registration forms.',
+                ],
+                [
+                    'key' => 'recaptcha_site_key',
+                    'label' => 'reCAPTCHA site key',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'recaptcha_enabled' => true,
+                    ],
+                    'hint' => 'Use the site key from Google reCAPTCHA admin console.',
+                ],
+                [
+                    'key' => 'recaptcha_secret_key',
+                    'label' => 'reCAPTCHA secret key',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'recaptcha_enabled' => true,
+                    ],
+                    'hint' => 'Use the secret key from Google reCAPTCHA admin console.',
+                ],
+                [
                     'key' => 'storage_disk',
                     'label' => 'Storage disk',
                     'type' => 'select',
