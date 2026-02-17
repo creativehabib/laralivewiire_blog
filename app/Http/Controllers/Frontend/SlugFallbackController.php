@@ -36,17 +36,9 @@ class SlugFallbackController
                 if (! $definition) {
                     abort(404);
                 }
-
-                $mounted = Livewire::mount($definition['component'], [
-                    $definition['parameter'] => $model,
-                ]);
-
-                $html = is_string($mounted)
-                    ? $mounted
-                    : (method_exists($mounted, 'html') ? $mounted->html() : (string) $mounted);
-
                 return response()->view('frontend.slug-fallback', [
-                    'content' => new HtmlString($html),
+                    'livewireComponent' => $definition['component'],
+                    'livewireParams' => [$definition['parameter'] => $model],
                     'title' => $this->resolveTitle($model),
                     'seo' => $this->resolveSeo($model),
                 ]);
