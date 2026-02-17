@@ -221,4 +221,5 @@ class SettingsGenerator extends Component
                 }
             });
     }
+
 }
