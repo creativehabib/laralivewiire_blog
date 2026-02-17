@@ -28,8 +28,17 @@ class SinglePost extends Component
      * Mount works for ALL permalink structures
      * (%postname%, %category%/%postname%, numeric, etc.)
      */
-    public function mount(...$params): void
+    public function mount(?Post $post = null, ...$params): void
     {
+        if ($post instanceof Post) {
+            $this->post = $post;
+            $this->postParameter = $post->slug ?: (string) $post->getKey();
+            $this->relatedPosts  = new Collection();
+            $this->trendingPosts = new Collection();
+
+            return;
+        }
+
         // Route থেকে সব parameter নাও (year/month/category/post ইত্যাদি)
         $routeParams = request()->route()?->parameters() ?? [];
 
