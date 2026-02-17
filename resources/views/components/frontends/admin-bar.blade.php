@@ -6,7 +6,42 @@
         $postModel = request()->route('post');
         $categoryModel = request()->route('category');
         $tagModel = request()->route('tag');
+        $fallbackSlug = request()->route('slug');
         $homePageModel = null;
+
+        if (! ($postModel instanceof \App\Models\Post) && is_string($postModel)) {
+            $postModel = \App\Support\SlugHelper::resolveModel($postModel, \App\Models\Post::class);
+        }
+
+        if (! ($categoryModel instanceof \App\Models\Category) && is_string($categoryModel)) {
+            $categoryModel = \App\Support\SlugHelper::resolveModel($categoryModel, \App\Models\Category::class);
+        }
+
+        if (! ($tagModel instanceof \App\Models\Admin\Tag) && is_string($tagModel)) {
+            $tagModel = \App\Support\SlugHelper::resolveModel($tagModel, \App\Models\Admin\Tag::class);
+        }
+
+        if (! ($pageModel instanceof \App\Models\Admin\Page) && is_string($pageModel)) {
+            $pageModel = \App\Support\SlugHelper::resolveModel($pageModel, \App\Models\Admin\Page::class);
+        }
+
+        if (is_string($fallbackSlug)) {
+            if (request()->routeIs('posts.show', 'slug.fallback') && ! ($postModel instanceof \App\Models\Post)) {
+                $postModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Post::class);
+            }
+
+            if (request()->routeIs('categories.show', 'slug.fallback') && ! ($categoryModel instanceof \App\Models\Category)) {
+                $categoryModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Category::class);
+            }
+
+            if (request()->routeIs('tags.show', 'slug.fallback') && ! ($tagModel instanceof \App\Models\Admin\Tag)) {
+                $tagModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Admin\Tag::class);
+            }
+
+            if (request()->routeIs('pages.show', 'slug.fallback') && ! ($pageModel instanceof \App\Models\Admin\Page)) {
+                $pageModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Admin\Page::class);
+            }
+        }
 
         if (! ($pageModel instanceof \App\Models\Admin\Page) && request()->routeIs('home')) {
             $frontPageDisplay = setting('homepage_display', 'latest_posts');
