@@ -760,8 +760,8 @@ return [
                     'type' => 'text',
                     'label' => 'Category URL base',
                     'default' => 'category',
-                    'rules' => ['required', 'string', 'max:50'],
-                    'hint' => 'Example: category (Prefix not blank)',
+                    'rules' => ['nullable', 'string', 'max:50', 'regex:/^[a-z0-9\-]*$/i'],
+                    'hint' => 'Example: category (খালি রাখলে prefix ছাড়া URL হবে)',
                 ],
 
                 [
@@ -769,16 +769,16 @@ return [
                     'type' => 'text',
                     'label' => 'Tag URL base',
                     'default' => 'tag',
-                    'rules' => ['required', 'string', 'max:50'],
-                    'hint' => 'Example: tags (Prefix not blank)',
+                    'rules' => ['nullable', 'string', 'max:50', 'regex:/^[a-z0-9\-]*$/i'],
+                    'hint' => 'Example: tags (খালি রাখলে prefix ছাড়া URL হবে)',
                 ],
                 [
                     'key'     => 'page_slug_prefix',
                     'label'   => 'Page URL base',
                     'type'    => 'text',
                     'default' => 'page',
-                    'rules'   => ['required', 'regex:/^[a-z0-9\\-]+$/'],
-                    'hint' => 'Example: page, info, docs (Prefix not blank)',
+                    'rules'   => ['nullable', 'regex:/^[a-z0-9\\-]*$/'],
+                    'hint' => 'Example: page, info, docs (খালি রাখলে prefix ছাড়া URL হবে)',
                 ],
 
                 [
