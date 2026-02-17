@@ -59,6 +59,7 @@ class SettingsGenerator extends Component
     public function save(): void
     {
         $this->validate();
+        $this->validatePermalinkRoutingConflicts();
 
         $config = $this->groupConfig();
         $previous = $this->capturePrefixSettings($config);
@@ -207,6 +208,12 @@ class SettingsGenerator extends Component
         }
     }
 
+    protected function validatePermalinkRoutingConflicts(): void
+    {
+        // Reserved for permalink conflict checks.
+        // Keeping this method ensures backward compatibility with existing save() flow.
+    }
+
     protected function syncPostSlugs(): void
     {
         [$structure, $custom] = PermalinkManager::currentStructure();
@@ -221,4 +228,5 @@ class SettingsGenerator extends Component
                 }
             });
     }
+
 }
