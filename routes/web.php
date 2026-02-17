@@ -119,7 +119,11 @@ $pageUri = $pagePrefixEnabled
     ? "/{$pagePrefix}/{page}{$pageExtension}"
     : "/{page}{$pageExtension}";
 
-$usesSlugFallback = $postNameMode && (! $tagPrefixEnabled || ! $categoryPrefixEnabled || ! $pagePrefixEnabled);
+$slugOnlyRouteCount = collect([$tagPrefixEnabled, $categoryPrefixEnabled, $pagePrefixEnabled])
+    ->filter(fn (bool $enabled) => ! $enabled)
+    ->count();
+
+$usesSlugFallback = $slugOnlyRouteCount > 1 || ($postNameMode && $slugOnlyRouteCount > 0);
 
 if ($usesSlugFallback) {
     if ($tagPrefixEnabled) {
