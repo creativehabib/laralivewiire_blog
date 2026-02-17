@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\Slug;
 use App\Support\PermalinkManager;
 use App\Support\SlugHelper;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Illuminate\Support\Str;
 
