@@ -1,5 +1,11 @@
 @auth
     @php
+        use App\Models\Admin\Page;
+        use App\Models\Admin\Tag;
+        use App\Models\Category;
+        use App\Models\Post;
+        use App\Support\SlugHelper;
+
         $adminLogo = setting('admin_logo');
         $adminTitle = setting('admin_title', config('app.name'));
         $pageModel = request()->route('page');
@@ -9,63 +15,63 @@
         $fallbackSlug = request()->route('slug');
         $homePageModel = null;
 
-        if (! ($postModel instanceof \App\Models\Post) && is_string($postModel)) {
-            $postModel = \App\Support\SlugHelper::resolveModel($postModel, \App\Models\Post::class);
+        if (! ($postModel instanceof Post) && is_string($postModel)) {
+            $postModel = SlugHelper::resolveModel($postModel, Post::class);
         }
 
-        if (! ($categoryModel instanceof \App\Models\Category) && is_string($categoryModel)) {
-            $categoryModel = \App\Support\SlugHelper::resolveModel($categoryModel, \App\Models\Category::class);
+        if (! ($categoryModel instanceof Category) && is_string($categoryModel)) {
+            $categoryModel = SlugHelper::resolveModel($categoryModel, Category::class);
         }
 
-        if (! ($tagModel instanceof \App\Models\Admin\Tag) && is_string($tagModel)) {
-            $tagModel = \App\Support\SlugHelper::resolveModel($tagModel, \App\Models\Admin\Tag::class);
+        if (! ($tagModel instanceof Tag) && is_string($tagModel)) {
+            $tagModel = SlugHelper::resolveModel($tagModel, Tag::class);
         }
 
-        if (! ($pageModel instanceof \App\Models\Admin\Page) && is_string($pageModel)) {
-            $pageModel = \App\Support\SlugHelper::resolveModel($pageModel, \App\Models\Admin\Page::class);
+        if (! ($pageModel instanceof Page) && is_string($pageModel)) {
+            $pageModel = SlugHelper::resolveModel($pageModel, Page::class);
         }
 
         if (is_string($fallbackSlug)) {
-            if (request()->routeIs('posts.show', 'slug.fallback') && ! ($postModel instanceof \App\Models\Post)) {
-                $postModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Post::class);
+            if (request()->routeIs('posts.show', 'slug.fallback') && ! ($postModel instanceof Post)) {
+                $postModel = SlugHelper::resolveModel($fallbackSlug, Post::class);
             }
 
-            if (request()->routeIs('categories.show', 'slug.fallback') && ! ($categoryModel instanceof \App\Models\Category)) {
-                $categoryModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Category::class);
+            if (request()->routeIs('categories.show', 'slug.fallback') && ! ($categoryModel instanceof Category)) {
+                $categoryModel = SlugHelper::resolveModel($fallbackSlug, Category::class);
             }
 
-            if (request()->routeIs('tags.show', 'slug.fallback') && ! ($tagModel instanceof \App\Models\Admin\Tag)) {
-                $tagModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Admin\Tag::class);
+            if (request()->routeIs('tags.show', 'slug.fallback') && ! ($tagModel instanceof Tag)) {
+                $tagModel = SlugHelper::resolveModel($fallbackSlug, Tag::class);
             }
 
-            if (request()->routeIs('pages.show', 'slug.fallback') && ! ($pageModel instanceof \App\Models\Admin\Page)) {
-                $pageModel = \App\Support\SlugHelper::resolveModel($fallbackSlug, \App\Models\Admin\Page::class);
+            if (request()->routeIs('pages.show', 'slug.fallback') && ! ($pageModel instanceof Page)) {
+                $pageModel = SlugHelper::resolveModel($fallbackSlug, Page::class);
             }
         }
 
-        if (! ($pageModel instanceof \App\Models\Admin\Page) && request()->routeIs('home')) {
+        if (! ($pageModel instanceof Page) && request()->routeIs('home')) {
             $frontPageDisplay = setting('homepage_display', 'latest_posts');
             if ($frontPageDisplay === 'static_page') {
                 $homePageId = (int) setting('homepage_page_id');
                 if ($homePageId) {
-                    $homePageModel = \App\Models\Admin\Page::query()->published()->find($homePageId);
+                    $homePageModel = Page::query()->published()->find($homePageId);
                 }
             }
         }
 
-        if ($postModel instanceof \App\Models\Post) {
+        if ($postModel instanceof Post) {
             $editItemLabel = __('Edit this post');
             $editItemUrl = route('blogs.posts.edit', ['post' => $postModel->id]);
             $editIcon = 'fa-pencil';
-        } elseif ($categoryModel instanceof \App\Models\Category) {
+        } elseif ($categoryModel instanceof Category) {
             $editItemLabel = __('Edit this category');
             $editItemUrl = route('blogs.categories.edit', ['categoryId' => $categoryModel->id]);
             $editIcon = 'fa-layer-group';
-        } elseif ($tagModel instanceof \App\Models\Admin\Tag) {
+        } elseif ($tagModel instanceof Tag) {
             $editItemLabel = __('Edit this tag');
             $editItemUrl = route('blogs.tags.edit', ['tag' => $tagModel->id]);
             $editIcon = 'fa-tags';
-        } elseif ($pageModel instanceof \App\Models\Admin\Page || $homePageModel instanceof \App\Models\Admin\Page) {
+        } elseif ($pageModel instanceof Page || $homePageModel instanceof Page) {
             $pageToEdit = $pageModel ?: $homePageModel;
             $editItemLabel = __('Edit this page');
             $editItemUrl = route('admins.pages.edit', ['pageId' => $pageToEdit->id]);
@@ -77,18 +83,21 @@
         }
     @endphp
 
-    <div class="sticky top-0 z-[9999] bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50 text-slate-300 text-[13px] font-medium antialiased shadow-2xl">
+    <div
+        class="sticky top-0 z-[9999] bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50 text-slate-300 text-[13px] font-medium antialiased shadow-2xl">
         <div class="max-w-[1920px] mx-auto flex items-center justify-between px-2 sm:px-4 h-10">
 
             {{-- বাম পাশের সেকশন --}}
             <div class="flex items-center gap-0.5 sm:gap-1 h-full">
                 {{-- ব্র্যান্ড/লোগো --}}
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-2 sm:px-3 h-full hover:bg-white/10 transition-colors group">
+                <a href="{{ route('dashboard') }}"
+                   class="flex items-center gap-2 px-2 sm:px-3 h-full hover:bg-white/10 transition-colors group">
                     @if($adminLogo)
-                        <img src="{{ $adminLogo }}" alt="{{ $adminTitle }}" class="h-5 w-auto object-contain" />
+                        <img src="{{ $adminLogo }}" alt="{{ $adminTitle }}" class="h-5 w-auto object-contain"/>
                     @else
                         <i class="fa-solid fa-bolt text-amber-400"></i>
-                        <span class="font-bold text-white tracking-tight hidden xs:inline-block">{{ $adminTitle }}</span>
+                        <span
+                            class="font-bold text-white tracking-tight hidden xs:inline-block">{{ $adminTitle }}</span>
                     @endif
                 </a>
 
@@ -96,46 +105,56 @@
 
                 {{-- Appearance ড্রপডাউন --}}
                 <div class="relative group h-full">
-                    <button type="button" class="flex items-center gap-1.5 px-2 sm:px-3 h-full hover:text-white hover:bg-white/10 transition-all">
+                    <button type="button"
+                            class="flex items-center gap-1.5 px-2 sm:px-3 h-full hover:text-white hover:bg-white/10 transition-all">
                         <i class="fa-solid fa-palette opacity-70"></i>
                         <span class="hidden md:inline-block">{{ __('Appearance') }}</span>
                         <i class="fa-solid fa-chevron-down text-[10px] mt-0.5 opacity-50 group-hover:rotate-180 transition-transform"></i>
                     </button>
-                    <div class="absolute left-0 top-full w-48 py-2 bg-slate-900 border border-slate-700 shadow-2xl rounded-b-md opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all transform origin-top scale-95 group-hover:scale-100">
-                        <a href="{{ route('appearance.menus.index') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
+                    <div
+                        class="absolute left-0 top-full w-48 py-2 bg-slate-900 border border-slate-700 shadow-2xl rounded-b-md opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all transform origin-top scale-95 group-hover:scale-100">
+                        <a href="{{ route('appearance.menus.index') }}"
+                           class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
                             <i class="fa-solid fa-bars-staggered w-4"></i> {{ __('Menus') }}
                         </a>
-                        <a href="{{ route('appearance.admin-appearance') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
+                        <a href="{{ route('appearance.admin-appearance') }}"
+                           class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
                             <i class="fa-solid fa-sliders w-4"></i> {{ __('Settings') }}
                         </a>
                         <a href="{{ route('theme.theme-options') }}" class="block px-3 py-2 hover:bg-slate-800">
-                           <i class="fa-solid fa-wand-magic-sparkles w-4"></i> {{ __('Theme Option') }}
+                            <i class="fa-solid fa-wand-magic-sparkles w-4"></i> {{ __('Theme Option') }}
                         </a>
                     </div>
                 </div>
 
                 {{-- Add New ড্রপডাউন --}}
                 <div class="relative group h-full">
-                    <button type="button" class="flex items-center gap-1.5 px-2 sm:px-3 h-full hover:text-white hover:bg-white/10 transition-all">
+                    <button type="button"
+                            class="flex items-center gap-1.5 px-2 sm:px-3 h-full hover:text-white hover:bg-white/10 transition-all">
                         <i class="fa-solid fa-plus-circle opacity-70"></i>
                         <span class="hidden md:inline-block">{{ __('New') }}</span>
                         <i class="fa-solid fa-chevron-down text-[10px] mt-0.5 opacity-50 group-hover:rotate-180 transition-transform"></i>
                     </button>
-                    <div class="absolute left-0 top-full w-40 py-2 bg-slate-900 border border-slate-700 shadow-2xl rounded-b-md opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all transform origin-top scale-95 group-hover:scale-100">
-                        <a href="{{ route('blogs.posts.create') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
+                    <div
+                        class="absolute left-0 top-full w-40 py-2 bg-slate-900 border border-slate-700 shadow-2xl rounded-b-md opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all transform origin-top scale-95 group-hover:scale-100">
+                        <a href="{{ route('blogs.posts.create') }}"
+                           class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
                             <i class="fa-solid fa-pencil w-4"></i> {{ __('Post') }}
                         </a>
-                        <a href="{{ route('admins.pages.create') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
+                        <a href="{{ route('admins.pages.create') }}"
+                           class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
                             <i class="fa-solid fa-file w-4"></i> {{ __('Page') }}
                         </a>
-                        <a href="{{ route('system.users.create') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
+                        <a href="{{ route('system.users.create') }}"
+                           class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
                             <i class="fa-solid fa-user-plus w-4"></i> {{ __('User') }}
                         </a>
                     </div>
                 </div>
 
                 {{-- এডিট বাটন --}}
-                <a href="{{ $editItemUrl }}" class="flex items-center gap-1.5 px-2 sm:px-3 h-full text-sky-400 hover:text-white hover:bg-sky-600 transition-all">
+                <a href="{{ $editItemUrl }}"
+                   class="flex items-center gap-1.5 px-2 sm:px-3 h-full text-sky-400 hover:text-white hover:bg-sky-600 transition-all">
                     <i class="fa-solid {{ $editIcon }}"></i>
                     <span class="hidden lg:inline-block">{{ $editItemLabel }}</span>
                 </a>
@@ -144,7 +163,8 @@
             {{-- ডান পাশের সেকশন (User) --}}
             <div class="flex items-center h-full">
                 <div class="relative group h-full border-l border-slate-800">
-                    <button type="button" class="flex items-center gap-2 px-3 sm:px-4 h-full hover:bg-white/10 transition-all">
+                    <button type="button"
+                            class="flex items-center gap-2 px-3 sm:px-4 h-full hover:bg-white/10 transition-all">
                         @if (auth()->user()->avatar_url)
                             <img
                                 src="{{ auth()->user()->avatar_url }}"
@@ -152,25 +172,30 @@
                                 class="w-6 h-6 rounded-full object-cover border border-slate-700 shadow-inner"
                             >
                         @else
-                            <div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-inner">
+                            <div
+                                class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-inner">
                                 {{ substr(auth()->user()->name, 0, 1) }}
                             </div>
                         @endif
-                        <span class="hidden sm:inline-block">{{ __('Hi, :name', ['name' => auth()->user()->name]) }}</span>
+                        <span
+                            class="hidden sm:inline-block">{{ __('Hi, :name', ['name' => auth()->user()->name]) }}</span>
                         <i class="fa-solid fa-chevron-down text-[10px] opacity-50 group-hover:rotate-180 transition-transform"></i>
                     </button>
-                    <div class="absolute right-0 top-full w-48 py-2 bg-slate-900 border border-slate-700 shadow-2xl rounded-b-md opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all transform origin-top scale-95 group-hover:scale-100">
+                    <div
+                        class="absolute right-0 top-full w-48 py-2 bg-slate-900 border border-slate-700 shadow-2xl rounded-b-md opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all transform origin-top scale-95 group-hover:scale-100">
                         {{-- মোবাইলে ইউজার ইনফো দেখার জন্য ছোট সেকশন --}}
                         <div class="px-4 py-2 border-b border-slate-800 mb-1 sm:hidden">
                             <p class="text-white font-bold truncate">{{ auth()->user()->name }}</p>
                         </div>
-                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-slate-800 transition">
+                        <a href="{{ route('profile.edit') }}"
+                           class="flex items-center gap-2 px-4 py-2 hover:bg-slate-800 transition">
                             <i class="fa-solid fa-user-gear w-4 text-slate-400"></i> {{ __('Edit Profile') }}
                         </a>
                         <div class="h-px bg-slate-700 my-1 mx-2"></div>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="flex items-center gap-2 w-full px-4 py-2 text-left text-red-400 hover:bg-red-500 hover:text-white transition">
+                            <button type="submit"
+                                    class="flex items-center gap-2 w-full px-4 py-2 text-left text-red-400 hover:bg-red-500 hover:text-white transition">
                                 <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> {{ __('Logout') }}
                             </button>
                         </form>
