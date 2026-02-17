@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\Slug;
 use App\Support\PermalinkManager;
 use App\Support\SlugHelper;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Illuminate\Support\Str;
 
@@ -59,6 +60,7 @@ class SettingsGenerator extends Component
     public function save(): void
     {
         $this->validate();
+        $this->validatePermalinkRoutingConflicts();
 
         $config = $this->groupConfig();
         $previous = $this->capturePrefixSettings($config);
