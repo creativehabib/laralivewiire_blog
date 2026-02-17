@@ -59,9 +59,13 @@ class SlugFallbackController
                 continue;
             }
 
-            $html = Livewire::mount($definition['component'], [
+            $mounted = Livewire::mount($definition['component'], [
                 $definition['parameter'] => $model,
-            ])->html();
+            ]);
+
+            $html = is_string($mounted)
+                ? $mounted
+                : (method_exists($mounted, 'html') ? $mounted->html() : (string) $mounted);
 
             return response($html);
         }
