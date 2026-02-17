@@ -11,8 +11,10 @@ use App\Models\Admin\Tag;
 use App\Models\Category;
 use App\Models\Post;
 use App\Support\PermalinkManager;
+use App\Support\Seo;
 use App\Support\SlugHelper;
 use Illuminate\Http\Response;
+use Illuminate\Support\HtmlString;
 use Livewire\Livewire;
 
 class SlugFallbackController
@@ -67,10 +69,31 @@ class SlugFallbackController
                 ? $mounted
                 : (method_exists($mounted, 'html') ? $mounted->html() : (string) $mounted);
 
-            return response($html);
+            return response()->view('frontend.slug-fallback', [
+                'content' => new HtmlString($html),
+                'title' => $this->resolveTitle($model),
+                'seo' => $this->resolveSeo($model),
+            ]);
         }
 
         abort(404);
+    }
+
+
+    protected function resolveTitle(object $model): string
+    {
+        return $model->name ?? 'Post';
+    }
+
+    protected function resolveSeo(object $model): array
+    {
+        return match (true) {
+            $model instanceof Page => Seo::forPage($model),
+            $model instanceof Category => Seo::forCategory($model),
+            $model instanceof Tag => Seo::forTag($model),
+            $model instanceof Post => Seo::forPost($model),
+            default => Seo::fromArray([]),
+        };
     }
 
     protected function extractSlugForExtension(string $rawSlug, string $extension): ?string
