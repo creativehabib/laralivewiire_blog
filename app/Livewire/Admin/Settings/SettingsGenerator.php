@@ -209,6 +209,12 @@ class SettingsGenerator extends Component
         }
     }
 
+    protected function validatePermalinkRoutingConflicts(): void
+    {
+        // Reserved for permalink conflict checks.
+        // Keeping this method ensures backward compatibility with existing save() flow.
+    }
+
     protected function syncPostSlugs(): void
     {
         [$structure, $custom] = PermalinkManager::currentStructure();
