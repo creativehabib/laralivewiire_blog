@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\Slug;
 use App\Support\PermalinkManager;
 use App\Support\SlugHelper;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Illuminate\Support\Str;
 
@@ -59,6 +60,7 @@ class SettingsGenerator extends Component
     public function save(): void
     {
         $this->validate();
+        $this->validatePermalinkRoutingConflicts();
 
         $config = $this->groupConfig();
         $previous = $this->capturePrefixSettings($config);
@@ -220,5 +222,62 @@ class SettingsGenerator extends Component
                     $post->syncSlug($usePostId ? (string) $post->getKey() : null);
                 }
             });
+    }
+
+    protected function validatePermalinkRoutingConflicts(): void
+    {
+        if ($this->group !== 'permalinks') {
+            return;
+        }
+
+        $prefixes = [
+            'category' => trim((string) ($this->data['category_slug_prefix'] ?? '')),
+            'tag' => trim((string) ($this->data['tag_slug_prefix'] ?? '')),
+            'page' => trim((string) ($this->data['page_slug_prefix'] ?? '')),
+        ];
+
+        $extensions = [
+            'category' => PermalinkManager::normalizeExtensionInput($this->data['category_url_extension'] ?? null) ?? '',
+            'tag' => PermalinkManager::normalizeExtensionInput($this->data['tag_url_extension'] ?? null) ?? '',
+            'page' => PermalinkManager::normalizeExtensionInput($this->data['page_url_extension'] ?? null) ?? '',
+            'post' => PermalinkManager::normalizeExtensionInput($this->data['post_url_extension'] ?? null) ?? '',
+        ];
+
+        $slugOnlyTypes = collect($prefixes)
+            ->filter(fn ($prefix) => $prefix === '')
+            ->keys()
+            ->values();
+
+        $errors = [];
+
+        foreach ($slugOnlyTypes as $type) {
+            $conflicts = $slugOnlyTypes
+                ->reject(fn ($otherType) => $otherType === $type)
+                ->filter(fn ($otherType) => ($extensions[$otherType] ?? '') === ($extensions[$type] ?? ''))
+                ->values()
+                ->all();
+
+            if ($conflicts !== []) {
+                $list = collect($conflicts)->map(fn ($value) => ucfirst($value))->implode(', ');
+                $errors["data.{$type}_slug_prefix"] = ucfirst($type) . " prefix ফাঁকা রাখতে চাইলে {$list} এর সাথে একই extension রাখা যাবে না।";
+            }
+        }
+
+        $postTemplate = PermalinkManager::normalizedTemplate(
+            $this->data['permalink_structure'] ?? null,
+            $this->data['custom_permalink_structure'] ?? null,
+        );
+
+        if ($postTemplate === '%postname%') {
+            foreach ($slugOnlyTypes as $type) {
+                if (($extensions[$type] ?? '') === ($extensions['post'] ?? '')) {
+                    $errors["data.{$type}_slug_prefix"] = ucfirst($type) . ' prefix ফাঁকা এবং Post permalink `%postname%` হলে একই extension ব্যবহার করা যাবে না।';
+                }
+            }
+        }
+
+        if ($errors !== []) {
+            throw ValidationException::withMessages($errors);
+        }
     }
 }
