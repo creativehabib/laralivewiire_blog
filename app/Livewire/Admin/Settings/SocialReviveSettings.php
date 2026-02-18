@@ -6,111 +6,85 @@ use Livewire\Component;
 
 class SocialReviveSettings extends Component
 {
-    public bool $enabled = false;
-    public bool $debug_mode = false;
-    public bool $share_old_posts = true;
+    public string $queue_connection = 'redis';
 
-    public int $minimum_post_age = 30;
-    public int $maximum_post_age = 365;
-
-    public int $share_interval_value = 4;
-    public string $share_interval_unit = 'hours';
-    public int $posts_per_run = 1;
-
-    public string $post_types = 'post';
-    public string $include_categories = '';
-    public string $exclude_categories = '';
-
-    public string $hashtags_mode = 'post_tags';
-    public string $custom_hashtags = '';
-    public string $post_template = '{title} {url}';
-
-    public bool $url_shortener_enabled = false;
-    public string $url_shortener_provider = 'none';
-    public string $url_shortener_api_key = '';
-
-    public bool $utm_enabled = false;
+    public bool $utm_enabled = true;
     public string $utm_source = 'social';
     public string $utm_medium = 'revive';
-    public string $utm_campaign = 'auto-share';
+
+    public bool $ai_enabled = true;
+    public string $ai_provider = 'openai';
+    public string $ai_model = 'gpt-4o-mini';
+    public string $ai_api_key = '';
+
+    public int $default_min_days_old = 30;
+    public int $default_interval_minutes = 60;
+    public int $default_avoid_repeat_days = 7;
+    public string $default_template = '{title} {url}';
+    public string $default_timezone = 'UTC';
+    public bool $default_ai_caption = false;
+    public bool $default_auto_hashtag = false;
 
     public function mount(): void
     {
-        $this->enabled = (bool) setting('social_revive_enabled', false);
-        $this->debug_mode = (bool) setting('social_revive_debug_mode', false);
-        $this->share_old_posts = (bool) setting('social_revive_share_old_posts', true);
+        $this->queue_connection = (string) setting('social_revive_queue_connection', config('social-revive.queue_connection', 'redis'));
 
-        $this->minimum_post_age = (int) setting('social_revive_minimum_post_age', 30);
-        $this->maximum_post_age = (int) setting('social_revive_maximum_post_age', 365);
+        $this->utm_enabled = (bool) setting('social_revive_utm_enabled', config('social-revive.utm.enabled', true));
+        $this->utm_source = (string) setting('social_revive_utm_source', config('social-revive.utm.source', 'social'));
+        $this->utm_medium = (string) setting('social_revive_utm_medium', config('social-revive.utm.medium', 'revive'));
 
-        $this->share_interval_value = (int) setting('social_revive_share_interval_value', 4);
-        $this->share_interval_unit = (string) setting('social_revive_share_interval_unit', 'hours');
-        $this->posts_per_run = (int) setting('social_revive_posts_per_run', 1);
+        $this->ai_enabled = (bool) setting('social_revive_ai_enabled', config('social-revive.ai.enabled', true));
+        $this->ai_provider = (string) setting('social_revive_ai_provider', config('social-revive.ai.provider', 'openai'));
+        $this->ai_model = (string) setting('social_revive_ai_model', config('social-revive.ai.model', 'gpt-4o-mini'));
+        $this->ai_api_key = (string) setting('social_revive_ai_api_key', config('social-revive.ai.api_key', ''));
 
-        $this->post_types = (string) setting('social_revive_post_types', 'post');
-        $this->include_categories = (string) setting('social_revive_include_categories', '');
-        $this->exclude_categories = (string) setting('social_revive_exclude_categories', '');
-
-        $this->hashtags_mode = (string) setting('social_revive_hashtags_mode', 'post_tags');
-        $this->custom_hashtags = (string) setting('social_revive_custom_hashtags', '');
-        $this->post_template = (string) setting('social_revive_post_template', '{title} {url}');
-
-        $this->url_shortener_enabled = (bool) setting('social_revive_url_shortener_enabled', false);
-        $this->url_shortener_provider = (string) setting('social_revive_url_shortener_provider', 'none');
-        $this->url_shortener_api_key = (string) setting('social_revive_url_shortener_api_key', '');
-
-        $this->utm_enabled = (bool) setting('social_revive_utm_enabled', false);
-        $this->utm_source = (string) setting('social_revive_utm_source', 'social');
-        $this->utm_medium = (string) setting('social_revive_utm_medium', 'revive');
-        $this->utm_campaign = (string) setting('social_revive_utm_campaign', 'auto-share');
+        // Default automation rule values (used by package rule create flow)
+        $this->default_min_days_old = (int) setting('social_revive_default_min_days_old', 30);
+        $this->default_interval_minutes = (int) setting('social_revive_default_interval_minutes', 60);
+        $this->default_avoid_repeat_days = (int) setting('social_revive_default_avoid_repeat_days', 7);
+        $this->default_template = (string) setting('social_revive_default_template', '{title} {url}');
+        $this->default_timezone = (string) setting('social_revive_default_timezone', 'UTC');
+        $this->default_ai_caption = (bool) setting('social_revive_default_ai_caption', false);
+        $this->default_auto_hashtag = (bool) setting('social_revive_default_auto_hashtag', false);
     }
 
     public function save(): void
     {
         $this->validate([
-            'minimum_post_age' => ['required', 'integer', 'min:0', 'max:3650'],
-            'maximum_post_age' => ['required', 'integer', 'gte:minimum_post_age', 'max:36500'],
-            'share_interval_value' => ['required', 'integer', 'min:1', 'max:1440'],
-            'share_interval_unit' => ['required', 'in:minutes,hours,days'],
-            'posts_per_run' => ['required', 'integer', 'min:1', 'max:50'],
-            'post_types' => ['required', 'string', 'max:255'],
-            'hashtags_mode' => ['required', 'in:none,post_tags,post_categories,custom'],
-            'post_template' => ['required', 'string', 'max:500'],
-            'url_shortener_provider' => ['required', 'in:none,bitly,rebrandly'],
-            'utm_source' => ['nullable', 'string', 'max:100'],
-            'utm_medium' => ['nullable', 'string', 'max:100'],
-            'utm_campaign' => ['nullable', 'string', 'max:150'],
+            'queue_connection' => ['required', 'in:sync,database,redis,sqs'],
+            'utm_source' => ['required', 'string', 'max:100'],
+            'utm_medium' => ['required', 'string', 'max:100'],
+            'ai_provider' => ['required', 'in:openai,gemini,anthropic,none'],
+            'ai_model' => ['required', 'string', 'max:120'],
+            'ai_api_key' => ['nullable', 'string', 'max:255'],
+            'default_min_days_old' => ['required', 'integer', 'min:0', 'max:3650'],
+            'default_interval_minutes' => ['required', 'integer', 'min:5', 'max:10080'],
+            'default_avoid_repeat_days' => ['required', 'integer', 'min:0', 'max:3650'],
+            'default_template' => ['required', 'string', 'max:500'],
+            'default_timezone' => ['required', 'timezone'],
         ]);
 
-        set_setting('social_revive_enabled', $this->enabled, 'social-revive');
-        set_setting('social_revive_debug_mode', $this->debug_mode, 'social-revive');
-        set_setting('social_revive_share_old_posts', $this->share_old_posts, 'social-revive');
-
-        set_setting('social_revive_minimum_post_age', $this->minimum_post_age, 'social-revive');
-        set_setting('social_revive_maximum_post_age', $this->maximum_post_age, 'social-revive');
-
-        set_setting('social_revive_share_interval_value', $this->share_interval_value, 'social-revive');
-        set_setting('social_revive_share_interval_unit', $this->share_interval_unit, 'social-revive');
-        set_setting('social_revive_posts_per_run', $this->posts_per_run, 'social-revive');
-
-        set_setting('social_revive_post_types', trim($this->post_types), 'social-revive');
-        set_setting('social_revive_include_categories', trim($this->include_categories), 'social-revive');
-        set_setting('social_revive_exclude_categories', trim($this->exclude_categories), 'social-revive');
-
-        set_setting('social_revive_hashtags_mode', $this->hashtags_mode, 'social-revive');
-        set_setting('social_revive_custom_hashtags', trim($this->custom_hashtags), 'social-revive');
-        set_setting('social_revive_post_template', trim($this->post_template), 'social-revive');
-
-        set_setting('social_revive_url_shortener_enabled', $this->url_shortener_enabled, 'social-revive');
-        set_setting('social_revive_url_shortener_provider', $this->url_shortener_provider, 'social-revive');
-        set_setting('social_revive_url_shortener_api_key', trim($this->url_shortener_api_key), 'social-revive');
-
+        // Package config override keys
+        set_setting('social_revive_queue_connection', $this->queue_connection, 'social-revive');
         set_setting('social_revive_utm_enabled', $this->utm_enabled, 'social-revive');
         set_setting('social_revive_utm_source', trim($this->utm_source), 'social-revive');
         set_setting('social_revive_utm_medium', trim($this->utm_medium), 'social-revive');
-        set_setting('social_revive_utm_campaign', trim($this->utm_campaign), 'social-revive');
 
-        $this->dispatch('media-toast', type: 'success', message: 'Social Revive settings updated successfully!');
+        set_setting('social_revive_ai_enabled', $this->ai_enabled, 'social-revive');
+        set_setting('social_revive_ai_provider', $this->ai_provider, 'social-revive');
+        set_setting('social_revive_ai_model', trim($this->ai_model), 'social-revive');
+        set_setting('social_revive_ai_api_key', trim($this->ai_api_key), 'social-revive');
+
+        // Package default automation rule values
+        set_setting('social_revive_default_min_days_old', $this->default_min_days_old, 'social-revive');
+        set_setting('social_revive_default_interval_minutes', $this->default_interval_minutes, 'social-revive');
+        set_setting('social_revive_default_avoid_repeat_days', $this->default_avoid_repeat_days, 'social-revive');
+        set_setting('social_revive_default_template', trim($this->default_template), 'social-revive');
+        set_setting('social_revive_default_timezone', trim($this->default_timezone), 'social-revive');
+        set_setting('social_revive_default_ai_caption', $this->default_ai_caption, 'social-revive');
+        set_setting('social_revive_default_auto_hashtag', $this->default_auto_hashtag, 'social-revive');
+
+        $this->dispatch('media-toast', type: 'success', message: 'Social Revive package settings updated successfully!');
     }
 
     public function render()
