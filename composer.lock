@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7cea06571b074e0e421a5c01de80664d",
+    "content-hash": "b30954a371f87672a52c0e7a7871744f",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1199,6 +1199,32 @@
                 }
             ],
             "time": "2025-08-22T14:27:06+00:00"
+        },
+        {
+            "name": "habib/social-revive",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "packages/SocialRevive",
+                "reference": "7ca761b5b5fccfb0ac74f08781d0db30651572c8"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Habib\\SocialRevive\\SocialReviveServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Habib\\SocialRevive\\": "src/"
+                }
+            },
+            "description": "Multi-user Social Revive SaaS for Laravel",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "intervention/gif",
