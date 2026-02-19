@@ -440,6 +440,10 @@ if (! function_exists('page_permalink')) {
     {
         $pageRouteKey = $page->slug ?: $page->getKey();
 
+        if (blank($pageRouteKey)) {
+            return $absolute ? url('/') : '/';
+        }
+
         return route('pages.show', ['page' => $pageRouteKey], $absolute);
     }
 }
@@ -448,6 +452,10 @@ if (! function_exists('tag_permalink')) {
     {
         $tagRouteKey = $tag->slug ?: $tag->getKey();
 
+        if (blank($tagRouteKey)) {
+            return $absolute ? url('/') : '/';
+        }
+
         return route('tags.show', ['tag' => $tagRouteKey], $absolute);
     }
 }
@@ -455,6 +463,10 @@ if (! function_exists('the_category_permalink')) {
     function the_category_permalink(Category $category, bool $absolute = true): string
     {
         $categoryRouteKey = $category->slug ?: $category->getKey();
+
+        if (blank($categoryRouteKey)) {
+            return $absolute ? url('/') : '/';
+        }
 
         return route('categories.show', ['category' => $categoryRouteKey], $absolute);
     }
