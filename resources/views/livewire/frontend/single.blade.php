@@ -15,7 +15,7 @@
             <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>হোম</a>
             <span>/</span>
             @if($post?->primaryCategory())
-                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
+                <a href="{{ the_category_permalink($post->primaryCategory()) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
                     {{ $post->primaryCategory()->name }}
                 </a>
                 <span>/</span>
@@ -34,7 +34,7 @@
             {!! the_author($post, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
             <span>•</span>
             @if($post?->primaryCategory())
-                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]" wire:navigate>
+                <a href="{{ the_category_permalink($post->primaryCategory()) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]" wire:navigate>
                     {{ $post->primaryCategory()->name }}
                 </a>
             @endif
