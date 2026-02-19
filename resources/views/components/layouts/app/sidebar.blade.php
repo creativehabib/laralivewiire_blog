@@ -246,17 +246,6 @@
                     >
                         {{ __('Robots.txt') }}
                     </flux:sidebar.item>
-
-
-                    <flux:sidebar.item
-                        icon="share"
-                        :href="route('appearance.social-revive')"
-                        :current="request()->routeIs('appearance.social-revive')"
-                        tooltip="{{ __('Social Revive') }}"
-                        wire:navigate
-                    >
-                        {{ __('Social Revive') }}
-                    </flux:sidebar.item>
                 @endcan
 
             </flux:sidebar.group>

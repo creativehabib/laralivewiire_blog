@@ -30,7 +30,6 @@ use App\Livewire\Admin\Settings\HtaccessSettings;
 use App\Livewire\Admin\Settings\RobotsTxt;
 use App\Livewire\Admin\Settings\SettingsGenerator;
 use App\Livewire\Admin\Settings\SitemapSettings;
-use App\Livewire\Admin\Settings\SocialReviveSettings;
 use App\Livewire\Admin\Settings\Theme\ThemeOptionsSetting;
 use App\Livewire\Admin\Tags\TagCreate;
 use App\Livewire\Admin\Tags\TagEdit;
@@ -258,7 +257,6 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::get('/custom-js', CustomJsSettings::class)->name('custom-js')->middleware('permission:setting.view');
         Route::get('/custom-html', CustomHtmlSettings::class)->name('custom-html')->middleware('permission:setting.view');
         Route::get('/robots', RobotsTxt::class)->name('robots')->middleware('permission:setting.view');
-        Route::get('/social-revive', SocialReviveSettings::class)->name('social-revive')->middleware('permission:setting.view');
 
     });
 
