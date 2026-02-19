@@ -14,10 +14,9 @@
         <nav class="text-xs text-gray-500 dark:text-slate-400 mb-3 flex items-center gap-1">
             <a href="{{ route('home') }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>হোম</a>
             <span>/</span>
-            @php($primaryCategory = $post?->primaryCategory())
-            @if($primaryCategory)
-                <a href="{{ the_category_permalink($primaryCategory) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
-                    {{ $primaryCategory->name }}
+            @if($post?->primaryCategory())
+                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="hover:text-primary-dark dark:hover:text-primary-light" wire:navigate>
+                    {{ $post->primaryCategory()->name }}
                 </a>
                 <span>/</span>
             @endif
@@ -34,9 +33,9 @@
             <span>•</span>
             {!! the_author($post, 'hover:text-primary-dark dark:hover:text-primary-light') !!}
             <span>•</span>
-            @if($primaryCategory)
-                <a href="{{ the_category_permalink($primaryCategory) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]" wire:navigate>
-                    {{ $primaryCategory->name }}
+            @if($post?->primaryCategory())
+                <a href="{{ route('categories.show', $post->primaryCategory()->slug) }}" class="bg-primary-light text-primary-dark px-2 py-0.5 rounded-full text-[11px]" wire:navigate>
+                    {{ $post->primaryCategory()->name }}
                 </a>
             @endif
         </div>

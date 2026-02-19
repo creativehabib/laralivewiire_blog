@@ -438,37 +438,19 @@ if (! function_exists('image_optimize_url')) {
 if (! function_exists('page_permalink')) {
     function page_permalink(Page $page, bool $absolute = true): string
     {
-        $pageRouteKey = $page->slug ?: $page->getKey();
-
-        if (blank($pageRouteKey)) {
-            return $absolute ? url('/') : '/';
-        }
-
-        return route('pages.show', ['page' => $pageRouteKey], $absolute);
+        return route('pages.show', ['page' => $page->slug], $absolute);
     }
 }
 if (! function_exists('tag_permalink')) {
     function tag_permalink(Tag $tag, bool $absolute = true): string
     {
-        $tagRouteKey = $tag->slug ?: $tag->getKey();
-
-        if (blank($tagRouteKey)) {
-            return $absolute ? url('/') : '/';
-        }
-
-        return route('tags.show', ['tag' => $tagRouteKey], $absolute);
+        return route('tags.show', ['tag' => $tag->slug], $absolute);
     }
 }
 if (! function_exists('the_category_permalink')) {
     function the_category_permalink(Category $category, bool $absolute = true): string
     {
-        $categoryRouteKey = $category->slug ?: $category->getKey();
-
-        if (blank($categoryRouteKey)) {
-            return $absolute ? url('/') : '/';
-        }
-
-        return route('categories.show', ['category' => $categoryRouteKey], $absolute);
+        return route('categories.show', ['category' => $category->slug], $absolute);
     }
 }
 if (! function_exists('preview_url')) {
