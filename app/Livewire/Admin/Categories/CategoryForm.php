@@ -119,7 +119,7 @@ class CategoryForm extends Component
             $category->author_type = $user ? get_class($user) : null;
         }
 
-        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+        $this->slug = SlugService::create($this->slug ?: $this->name, '-', $this->slugId);
 
         $this->validate($this->rules());
 
