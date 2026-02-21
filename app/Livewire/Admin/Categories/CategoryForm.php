@@ -69,7 +69,7 @@ class CategoryForm extends Component
         }
 
         $this->categoryId = $categoryId;
-        $this->syncSlugWithSeoTitle = true;
+        $this->syncSlugWithSeoTitle = ! $categoryId;
 
         if ($categoryId) {
             // edit
@@ -93,7 +93,7 @@ class CategoryForm extends Component
             $this->seo_image       = $seo['seo_image']       ?? null;
             $this->seo_index       = $seo['index']           ?? 'index';
             $this->focus_keyword   = $seo['focus_keyword']   ?? null;
-            $this->autoSeoTitle    = ! $this->seo_title;
+            $this->autoSeoTitle    = blank($this->seo_title) || $this->seo_title === $category->name;
         }
     }
     public function updatedName($value): void
@@ -119,7 +119,7 @@ class CategoryForm extends Component
             $category->author_type = $user ? get_class($user) : null;
         }
 
-        $this->slug = SlugService::create($this->slug ?: $this->name, '', $this->slugId);
+        $this->slug = SlugService::create((string) $this->slug, '', $this->slugId);
 
         $this->validate($this->rules());
 
