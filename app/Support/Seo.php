@@ -141,8 +141,15 @@ class Seo
             $merged['title'] = $baseTitle;
         }
 
-        // ডেসক্রিপশন লিমিট (SEO Best Practice)
-        $merged['description'] = Str::limit(trim((string) ($merged['description'] ?? '')), 160);
+        // ডেসক্রিপশন লিমিট (SEO Best Practice) + fallback
+        $description = trim((string) ($merged['description'] ?? ''));
+        if ($description === '') {
+            $description = trim((string) setting('site_description', ''));
+        }
+        if ($description === '') {
+            $description = trim((string) $baseTitle);
+        }
+        $merged['description'] = Str::limit($description, 160);
 
         $merged['url'] = $merged['url'] ?? url()->current();
         $merged['canonical'] = $merged['canonical'] ?? $merged['url'];
