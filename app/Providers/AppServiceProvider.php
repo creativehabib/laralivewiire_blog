@@ -30,9 +30,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // ২. প্রোডাকশন এনভায়রনমেন্টে HTTPS ফোর্স করার কোড
-        if (app()->environment('production')) {
+        if (!app()->isLocal()) {
             URL::forceScheme('https');
-
             URL::forceRootUrl(config('app.url'));
         }
 
