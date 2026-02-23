@@ -29,19 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // ২. প্রোডাকশন এনভায়রনমেন্টে HTTPS ফোর্স করার কোড
-//        if (!app()->isLocal()) {
-//            URL::forceScheme('https');
-//            URL::forceRootUrl(config('app.url'));
-//        }/
-
-        $appUrl = config('app.url');
-        // public শব্দটি মুছে ক্লিন ইউআরএল তৈরি করা
-        $cleanUrl = rtrim(preg_replace('#/public/?$#i', '', $appUrl), '/');
-
         if (!app()->isLocal()) {
-            URL::forceRootUrl($cleanUrl);
             URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
         }
 
         $timezone = setting('timezone', config('app.timezone', 'UTC'));
