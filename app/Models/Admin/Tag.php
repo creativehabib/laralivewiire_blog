@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     use HasFactory, HasMetaBoxes, HasSlug;
+
     protected $fillable = [
         'name',
         'description',
@@ -18,6 +19,13 @@ class Tag extends Model
         'author_id',
         'author_type',
     ];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (self $tag): void {
+            $tag->posts()->detach();
+        });
+    }
 
     public function posts()
     {
