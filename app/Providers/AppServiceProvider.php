@@ -32,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
         // ২. প্রোডাকশন এনভায়রনমেন্টে HTTPS ফোর্স করার কোড
         if (app()->environment('production')) {
             URL::forceScheme('https');
+
+            URL::forceRootUrl(config('app.url'));
         }
 
         $timezone = setting('timezone', config('app.timezone', 'UTC'));
