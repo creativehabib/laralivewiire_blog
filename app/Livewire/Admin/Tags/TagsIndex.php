@@ -88,7 +88,12 @@ class TagsIndex extends Component
         }
 
         $count = count($this->selected);
-        Tag::whereIn('id', $this->selected)->delete();
+
+        Tag::query()
+            ->whereIn('id', $this->selected)
+            ->get()
+            ->each(fn (Tag $tag) => $tag->delete());
+
         ActivityLogger::log(
             Auth::user(),
             'deleted ' . $count . ' tags'
