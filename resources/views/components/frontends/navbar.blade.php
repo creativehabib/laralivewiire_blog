@@ -1,5 +1,7 @@
 @php
     $adminBarOffset = auth()->check() ? 'top-9' : 'top-0';
+    $siteLogoLight = setting('site_logo_light');
+    $siteLogoDark = setting('site_logo_dark') ?: $siteLogoLight;
 @endphp
 <header class="bg-white dark:bg-slate-900/95 shadow-sm sticky {{ $adminBarOffset }} z-50
                border-b border-slate-200/70 dark:border-slate-700/70
@@ -20,7 +22,22 @@
     @endphp
     <div class="container flex items-center justify-between px-4 py-3">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">NP</div>
+            @if($siteLogoLight)
+                <img
+                    src="{{ $siteLogoLight }}"
+                    alt="{{ config('app.name') }} logo"
+                    class="h-10 w-auto max-w-[160px] object-contain dark:hidden"
+                />
+                @if($siteLogoDark)
+                    <img
+                        src="{{ $siteLogoDark }}"
+                        alt="{{ config('app.name') }} logo"
+                        class="hidden h-10 w-auto max-w-[160px] object-contain dark:block"
+                    />
+                @endif
+            @else
+                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">NP</div>
+            @endif
             <div class="hidden lg:block">
                 <div class="text-xl font-bold text-primary-dark dark:text-primary-light">বাংলা নিউজ পোর্টাল</div>
                 <div class="text-xs text-slate-500 dark:text-slate-400">বিশ্বস্ত খবর আপনার হাতের মুঠোয়</div>
