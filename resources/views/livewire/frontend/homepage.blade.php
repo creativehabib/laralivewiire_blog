@@ -64,7 +64,7 @@
                 @if($featuredPost)
                     <article class="md:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
                         <a href="{{ post_permalink($featuredPost) }}" class="flex-shrink-0" wire:navigate>
-                            <img src="{{ $featuredPost->image_url }}" alt="{{ $featuredPost->name }}" fetchpriority="high" class="w-full h-56 md:h-72 object-cover">
+                            <img src="{{ the_thumbnail($featuredPost, 1200, 675) }}" alt="{{ $featuredPost->name }}" width="1200" height="675" fetchpriority="high" class="w-full h-56 md:h-72 object-cover">
                         </a>
                         <div class="p-4 space-y-2">
                             @if($featuredPost->primaryCategory())
@@ -93,7 +93,7 @@
                         @forelse($headlinePosts as $post)
                             <article class="bg-white items-center dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex gap-3">
                                 <a href="{{ post_permalink($post) }}" class="flex-shrink-0" wire:navigate>
-                                    <img src="{{ $post->image_url }}" loading="lazy"
+                                    <img src="{{ the_thumbnail($post, 280, 240) }}" loading="lazy" width="280" height="240"
                                          class="w-28 h-24 object-cover group-hover:opacity-85 transition duration-300" alt="{{ $post->name }}">
                                 </a>
                                 <div class="p-2 pr-3">
@@ -128,7 +128,7 @@
                     @if($featuredCategoryPost)
                         <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
                             <a href="{{ post_permalink($featuredCategoryPost) }}" class="flex-shrink-0" wire:navigate>
-                                <img src="{{ $featuredCategoryPost->image_url }}" loading="lazy" class="w-full h-56 object-cover" alt="{{ $featuredCategoryPost->name }}">
+                                <img src="{{ the_thumbnail($featuredCategoryPost, 1200, 675) }}" loading="lazy" width="1200" height="675" class="w-full h-56 object-cover" alt="{{ $featuredCategoryPost->name }}">
                             </a>
                             <div class="p-4">
                                 <h3 class="text-base font-semibold mb-1">
@@ -152,7 +152,7 @@
                         @foreach($primaryCategory->posts->skip(1) as $post)
                             <article class="flex gap-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
                                 <a href="{{ post_permalink($post) }}" class="flex-shrink-0" wire:navigate>
-                                    <img src="{{ $post->image_url }}" loading="lazy" class="w-32 h-24 object-cover" alt="{{ $post->name }}">
+                                    <img src="{{ the_thumbnail($post, 320, 240) }}" loading="lazy" width="320" height="240" class="w-32 h-24 object-cover" alt="{{ $post->name }}">
                                 </a>
                                 <div class="p-2 text-sm">
                                     <h4 class="font-semibold leading-snug line-clamp-2">
@@ -180,7 +180,7 @@
                 @forelse($latestPosts->take(6) as $post)
                     <article class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden flex flex-col">
                         <a href="{{ post_permalink($post) }}" wire:navigate>
-                            <img src="{{ $post->image_url }}" loading="lazy" class="w-full h-32 object-cover" alt="{{ $post->name }}">
+                            <img src="{{ the_thumbnail($post, 800, 320) }}" loading="lazy" width="800" height="320" class="w-full h-32 object-cover" alt="{{ $post->name }}">
                         </a>
                         <div class="p-3 flex flex-col flex-1">
                             <h3 class="font-semibold text-sm mb-1 leading-snug">
@@ -236,7 +236,7 @@
                                 class="relative bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden group
                                     min-w-[85%] sm:min-w-[48%] md:min-w-[32%] snap-start">
                                 <div class="relative">
-                                    <img src="{{ $video->image_url }}" loading="lazy"
+                                    <img src="{{ the_thumbnail($video, 960, 360) }}" loading="lazy" width="960" height="360"
                                          alt="{{ $video->name }}"
                                          class="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300">
                                     <div class="absolute inset-0 flex items-center justify-center">
@@ -277,7 +277,7 @@
                         </div>
                         @if($columnFeatured)
                             <article class="relative">
-                                <img src="{{ $columnFeatured->image_url }}" loading="lazy"
+                                <img src="{{ the_thumbnail($columnFeatured, 1200, 675) }}" loading="lazy" width="1200" height="675"
                                      class="w-full h-56 md:h-56 object-cover" alt="{{ $columnFeatured->name }}">
 
                                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
@@ -297,7 +297,7 @@
                             @foreach($category->posts->skip(1) as $post)
                                 <article class="flex gap-3 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/70">
                                     <a href="{{ post_permalink($post) }}" wire:navigate>
-                                        <img src="{{ $post->image_url }}" loading="lazy" class="w-24 h-16 object-cover rounded-md" alt="{{ $post->name }}">
+                                        <img src="{{ the_thumbnail($post, 240, 160) }}" loading="lazy" width="240" height="160" class="w-24 h-16 object-cover rounded-md" alt="{{ $post->name }}">
                                     </a>
                                     <div class="flex-1">
                                         <h3 class="text-sm font-semibold leading-snug">
@@ -399,7 +399,7 @@
                         @forelse($headlinePosts->take(3) as $featured)
                             <article data-slide class="{{ $loop->first ? 'block' : 'hidden' }}">
                                 <div class="relative">
-                                    <img src="{{ $featured->image_url }}" loading="lazy"
+                                    <img src="{{ the_thumbnail($featured, 1200, 720) }}" loading="lazy" width="1200" height="720"
                                          alt="{{ $featured->name }}"
                                          class="w-full h-60 object-cover">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -470,7 +470,7 @@
                         @forelse($sidebarLatest as $post)
                             <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
                                 <a href="{{ post_permalink($post) }}" wire:navigate>
-                                    <img src="{{ $post->image_url }}" loading="lazy" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
+                                    <img src="{{ the_thumbnail($post, 240, 160) }}" loading="lazy" width="240" height="160" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
                                 </a>
                                 <div class="flex-1">
                                     <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
@@ -490,7 +490,7 @@
                         @forelse($popularPosts as $post)
                             <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
                                 <a href="{{ post_permalink($post) }}" wire:navigate>
-                                    <img src="{{ $post->image_url }}" loading="lazy" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
+                                    <img src="{{ the_thumbnail($post, 240, 160) }}" loading="lazy" width="240" height="160" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
                                 </a>
                                 <div class="flex-1">
                                     <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
