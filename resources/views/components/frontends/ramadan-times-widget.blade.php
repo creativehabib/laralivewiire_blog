@@ -106,9 +106,27 @@
         },
 
         get iftarCountdownLabel() {
-            const remaining = this.getIftarRemaining();
-            if (!remaining) return 'ইফতারের সময় হয়েছে';
-            const formatted = `${String(remaining.hours).padStart(2, '0')}:${String(remaining.minutes).padStart(2, '0')}:${String(remaining.seconds).padStart(2, '0')}`;
+            if (!this.times || !this.times.timings) return 'লোড হচ্ছে...';
+
+            const [hour, minute] = this.times.timings.Maghrib.split(':').map(Number);
+
+            // আজকের ইফতারের সময় (অ্যাডজাস্টমেন্ট সহ)
+            const iftarTime = new Date();
+            iftarTime.setHours(hour, minute - 6, 0, 0);
+
+            // 'this.now' ব্যবহার করা হয়েছে যাতে প্রতি সেকেন্ডে এটি ক্যালকুলেট হয়
+            const diffMs = iftarTime - this.now;
+
+            if (diffMs <= 0) {
+                return 'ইফতারের সময় হয়েছে';
+            }
+
+            const totalSeconds = Math.floor(diffMs / 1000);
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+
+            const formatted = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             return `${this.toBnNumber(formatted)} বাকি`;
         }
     }"
