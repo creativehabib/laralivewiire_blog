@@ -189,6 +189,12 @@
                                 @if ($sidebar === 'right')
                                     <aside class="rounded-lg lg:sticky lg:top-32 self-start space-y-6">
                                         <x-frontends.ramadan-times-widget />
+
+                                        <x-frontends.news-tabs-widget
+                                            :latest-posts="$sidebarLatest"
+                                            :popular-posts="$sidebarPopular"
+                                            class="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+                                        />
                                         <section class="bg-primary-light/70 dark:bg-slate-800 rounded-xl p-4 border border-primary/20 dark:border-slate-700
                             transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                                             <h2 class="text-base font-semibold mb-1 text-primary-dark dark:text-primary-light">
