@@ -66,7 +66,7 @@
                             <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
                         </a>
                         <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                            <span>{{ $post->created_at?->diffForHumans() }}</span>
+                            <span>{{ the_date($post, 'diff', 'updated_at') }}</span>
                             <span>•</span>
                             <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
                         </div>
@@ -88,7 +88,7 @@
                             <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
                         </a>
                         <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                            <span>{{ $post->created_at?->diffForHumans() }}</span>
+                            <span>{{ the_date($post, 'diff', 'updated_at') }}</span>
                             <span>•</span>
                             <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
                         </div>
