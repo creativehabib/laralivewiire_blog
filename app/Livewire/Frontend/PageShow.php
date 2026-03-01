@@ -18,6 +18,7 @@ class PageShow extends Component
     public bool $ready = false;
     public array $builderState = [];
     public $sidebarLatest;
+    public $sidebarPopular;
 
     public function mount(Page $page): void
     {
@@ -37,6 +38,14 @@ class PageShow extends Component
             ->latest()
             ->take(5)
             ->get();
+
+        $this->sidebarPopular = Post::query()
+            ->published()
+            ->orderByDesc('views')
+            ->latest('id')
+            ->take(5)
+            ->get();
+
         $this->ready = true;
     }
     public function render()
@@ -44,6 +53,7 @@ class PageShow extends Component
         return view('livewire.frontend.page-show', [
             'builderSections' => $this->buildBuilderSections(),
             'sidebarLatest' => $this->sidebarLatest ?? collect(),
+            'sidebarPopular' => $this->sidebarPopular ?? collect(),
         ])
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->page->name,
