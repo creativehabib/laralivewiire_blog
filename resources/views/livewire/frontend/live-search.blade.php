@@ -1,7 +1,7 @@
 <div
     x-data="{ open: false }"
     class="relative {{ $wrapperClass }}"
-    @click.outside="open = false; $wire.clear()"
+    @click.outside="open = false"
 >
     <label class="sr-only" for="{{ $inputId }}">{{ __('Search') }}</label>
     <div class="flex items-center justify-end">
