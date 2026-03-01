@@ -1,6 +1,7 @@
 <div
-    x-data="{ open: false, localQuery: @js($query) }"
+    x-data="{ open: false, localQuery: @js($query), slideBelow: @js($slideBelow) }"
     class="relative {{ $wrapperClass }}"
+    :class="slideBelow ? 'w-full' : ''"
     @click.outside="open = false"
 >
     <label class="sr-only" for="{{ $inputId }}">{{ __('Search') }}</label>
@@ -16,7 +17,18 @@
             <i class="fa-solid fa-magnifying-glass text-sm"></i>
         </button>
     </div>
-    <div class="relative" x-show="open" x-transition x-cloak>
+    <div
+        class="relative"
+        x-show="open"
+        x-cloak
+        :class="slideBelow ? 'absolute left-0 top-full z-50 mt-2 w-full' : 'mt-0'"
+        x-transition:enter="transition ease-out duration-250"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+    >
         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
             <i class="fa-solid fa-magnifying-glass"></i>
         </span>
@@ -32,7 +44,8 @@
             x-on:keydown.escape.stop="open = false"
             autocomplete="off"
             placeholder="{{ $placeholder }}"
-            class="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-10 pr-10 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus:border-primary focus:ring-primary/40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 {{ $inputClass }}"
+            class="w-full border border-slate-200 bg-white py-2.5 pl-10 pr-10 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus:border-primary focus:ring-primary/40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 {{ $inputClass }}"
+            :class="slideBelow ? 'rounded-xl' : 'rounded-full'"
         />
 
         @if($query !== '')
