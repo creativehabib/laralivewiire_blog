@@ -1,7 +1,7 @@
 <div
     x-data="{ open: false }"
     class="relative {{ $wrapperClass }}"
-    @click.outside="open = false; $wire.clear()"
+    @click.outside="open = false"
 >
     <label class="sr-only" for="{{ $inputId }}">{{ __('Search') }}</label>
     <div class="flex items-center justify-end">
@@ -25,7 +25,6 @@
             x-ref="searchInput"
             type="search"
             wire:model.live.debounce.300ms="query"
-            wire:keydown.escape="clear"
             @if($useGoogleSearch)
                 wire:keydown.enter="goToSearchResults"
             @endif
