@@ -1,5 +1,26 @@
 @php
     $today = now()->locale('bn')->translatedFormat('j F, l');
+
+    $defaultDivisions = [
+        'dhaka' => ['name' => 'ঢাকা', 'sehri' => '5:05', 'iftar' => '6:03', 'fajr' => '5:05', 'zuhr' => '12:11', 'asr' => '3:32', 'maghrib' => '6:03', 'isha' => '7:27'],
+        'chattogram' => ['name' => 'চট্টগ্রাম', 'sehri' => '4:58', 'iftar' => '5:57', 'fajr' => '4:58', 'zuhr' => '12:05', 'asr' => '3:27', 'maghrib' => '5:57', 'isha' => '7:20'],
+        'rajshahi' => ['name' => 'রাজশাহী', 'sehri' => '5:11', 'iftar' => '6:10', 'fajr' => '5:11', 'zuhr' => '12:16', 'asr' => '3:37', 'maghrib' => '6:10', 'isha' => '7:34'],
+        'khulna' => ['name' => 'খুলনা', 'sehri' => '5:08', 'iftar' => '6:07', 'fajr' => '5:08', 'zuhr' => '12:14', 'asr' => '3:35', 'maghrib' => '6:07', 'isha' => '7:31'],
+        'barishal' => ['name' => 'বরিশাল', 'sehri' => '5:04', 'iftar' => '6:02', 'fajr' => '5:04', 'zuhr' => '12:10', 'asr' => '3:31', 'maghrib' => '6:02', 'isha' => '7:26'],
+        'sylhet' => ['name' => 'সিলেট', 'sehri' => '4:55', 'iftar' => '5:54', 'fajr' => '4:55', 'zuhr' => '12:02', 'asr' => '3:24', 'maghrib' => '5:54', 'isha' => '7:17'],
+        'rangpur' => ['name' => 'রংপুর', 'sehri' => '5:06', 'iftar' => '6:06', 'fajr' => '5:06', 'zuhr' => '12:12', 'asr' => '3:34', 'maghrib' => '6:06', 'isha' => '7:30'],
+        'mymensingh' => ['name' => 'ময়মনসিংহ', 'sehri' => '5:03', 'iftar' => '6:01', 'fajr' => '5:03', 'zuhr' => '12:09', 'asr' => '3:30', 'maghrib' => '6:01', 'isha' => '7:24'],
+    ];
+
+    $schedule = [];
+    $scheduleRaw = setting('ramadan_times_schedule', '');
+
+    if (is_string($scheduleRaw) && $scheduleRaw !== '') {
+        $decoded = json_decode($scheduleRaw, true);
+        if (is_array($decoded)) {
+            $schedule = $decoded;
+        }
+    }
 @endphp
 
 <section
@@ -7,16 +28,8 @@
         selectedDivision: 'dhaka',
         now: new Date(),
         timer: null,
-        divisions: {
-            dhaka: { name: 'ঢাকা', sehri: '5:05', iftar: '6:03', fajr: '5:05', zuhr: '12:11', asr: '3:32', maghrib: '6:03', isha: '7:27' },
-            chattogram: { name: 'চট্টগ্রাম', sehri: '4:58', iftar: '5:57', fajr: '4:58', zuhr: '12:05', asr: '3:27', maghrib: '5:57', isha: '7:20' },
-            rajshahi: { name: 'রাজশাহী', sehri: '5:11', iftar: '6:10', fajr: '5:11', zuhr: '12:16', asr: '3:37', maghrib: '6:10', isha: '7:34' },
-            khulna: { name: 'খুলনা', sehri: '5:08', iftar: '6:07', fajr: '5:08', zuhr: '12:14', asr: '3:35', maghrib: '6:07', isha: '7:31' },
-            barishal: { name: 'বরিশাল', sehri: '5:04', iftar: '6:02', fajr: '5:04', zuhr: '12:10', asr: '3:31', maghrib: '6:02', isha: '7:26' },
-            sylhet: { name: 'সিলেট', sehri: '4:55', iftar: '5:54', fajr: '4:55', zuhr: '12:02', asr: '3:24', maghrib: '5:54', isha: '7:17' },
-            rangpur: { name: 'রংপুর', sehri: '5:06', iftar: '6:06', fajr: '5:06', zuhr: '12:12', asr: '3:34', maghrib: '6:06', isha: '7:30' },
-            mymensingh: { name: 'ময়মনসিংহ', sehri: '5:03', iftar: '6:01', fajr: '5:03', zuhr: '12:09', asr: '3:30', maghrib: '6:01', isha: '7:24' }
-        },
+        defaultDivisions: @js($defaultDivisions),
+        schedule: @js($schedule),
         init() {
             this.timer = setInterval(() => {
                 this.now = new Date();
@@ -88,18 +101,28 @@
                     return '';
                 }
 
-                // Bangladesh Ramadan calendars commonly differ by one day from browser Islamic calendar calculations.
-                const bangladeshAdjustment = -1;
-                const adjustedDay = ((day + bangladeshAdjustment - 1 + 30) % 30) + 1;
-
-                return String(adjustedDay);
+                return String(day);
             } catch (error) {
                 return '';
             }
         },
         get current() {
-            return this.divisions[this.selectedDivision];
-        }
+            const day = this.getRamadanDay();
+            const scheduleForDay = day ? this.schedule?.[day]?.[this.selectedDivision] : null;
+
+            if (scheduleForDay) {
+                return {
+                    ...this.defaultDivisions[this.selectedDivision],
+                    ...scheduleForDay,
+                };
+            }
+
+            return this.defaultDivisions[this.selectedDivision];
+        },
+        get isUsingConfiguredSchedule() {
+            const day = this.getRamadanDay();
+            return Boolean(day && this.schedule?.[day]?.[this.selectedDivision]);
+        },
     }"
     x-init="init()"
     class="bg-white dark:bg-slate-800 rounded-xl border border-emerald-100 dark:border-slate-700 shadow-sm p-4"
@@ -110,6 +133,7 @@
             <p class="text-lg font-semibold text-slate-900 dark:text-white" x-text="current.name"></p>
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">আজ <span x-text="toBnNumber(getRamadanDay())"></span> রমজান</p>
             <p class="text-xs text-slate-500 dark:text-slate-400">{{ $today }}</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400" x-show="!isUsingConfiguredSchedule">ডিফল্ট সময় দেখানো হচ্ছে</p>
         </div>
 
         <label class="sr-only" for="ramadan-division">বিভাগ নির্বাচন</label>
@@ -118,7 +142,7 @@
             x-model="selectedDivision"
             class="w-36 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         >
-            <template x-for="(division, key) in divisions" :key="key">
+            <template x-for="(division, key) in defaultDivisions" :key="key">
                 <option :value="key" x-text="division.name"></option>
             </template>
         </select>
