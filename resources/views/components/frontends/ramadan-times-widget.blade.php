@@ -27,14 +27,18 @@
                 });
 
                 const parts = formatter.formatToParts(new Date());
-                const month = parts.find((part) => part.type === 'month')?.value?.toLowerCase() ?? '';
-                const day = parts.find((part) => part.type === 'day')?.value ?? '';
+                const dayRaw = parts.find((part) => part.type === 'day')?.value ?? '';
+                const day = Number.parseInt(dayRaw, 10);
 
-                if (month.includes('ramadan') || month.includes('rama') || month.includes('ramazan')) {
-                    return day;
+                if (Number.isNaN(day)) {
+                    return '';
                 }
 
-                return day;
+                // Bangladesh Ramadan calendars commonly differ by one day from browser Islamic calendar calculations.
+                const bangladeshAdjustment = -1;
+                const adjustedDay = ((day + bangladeshAdjustment - 1 + 30) % 30) + 1;
+
+                return String(adjustedDay);
             } catch (error) {
                 return '';
             }
