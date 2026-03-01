@@ -5,6 +5,8 @@
 <section
     x-data="{
         selectedDivision: 'dhaka',
+        now: new Date(),
+        timer: null,
         divisions: {
             dhaka: { name: 'ঢাকা', sehri: '5:05', iftar: '6:03', fajr: '5:05', zuhr: '12:11', asr: '3:32', maghrib: '6:03', isha: '7:27' },
             chattogram: { name: 'চট্টগ্রাম', sehri: '4:58', iftar: '5:57', fajr: '4:58', zuhr: '12:05', asr: '3:27', maghrib: '5:57', isha: '7:20' },
@@ -15,8 +17,60 @@
             rangpur: { name: 'রংপুর', sehri: '5:06', iftar: '6:06', fajr: '5:06', zuhr: '12:12', asr: '3:34', maghrib: '6:06', isha: '7:30' },
             mymensingh: { name: 'ময়মনসিংহ', sehri: '5:03', iftar: '6:01', fajr: '5:03', zuhr: '12:09', asr: '3:30', maghrib: '6:01', isha: '7:24' }
         },
+        init() {
+            this.timer = setInterval(() => {
+                this.now = new Date();
+            }, 1000);
+        },
         toBnNumber(value) {
             return String(value).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[d]);
+        },
+        getDhakaNow() {
+            return new Date(this.now.toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }));
+        },
+        getIftarRemaining() {
+            const [hourString, minuteString] = this.current.iftar.split(':');
+            let hour = Number.parseInt(hourString, 10);
+            const minute = Number.parseInt(minuteString, 10);
+
+            if (Number.isNaN(hour) || Number.isNaN(minute)) {
+                return null;
+            }
+
+            if (hour < 12) {
+                hour += 12;
+            }
+
+            const nowDhaka = this.getDhakaNow();
+            const iftarTime = new Date(nowDhaka);
+            iftarTime.setHours(hour, minute, 0, 0);
+
+            const diffMs = iftarTime - nowDhaka;
+            if (diffMs <= 0) {
+                return null;
+            }
+
+            const totalSeconds = Math.floor(diffMs / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            return { hours, minutes, seconds };
+        },
+        get iftarCountdownLabel() {
+            const remaining = this.getIftarRemaining();
+
+            if (!remaining) {
+                return 'ইফতারের সময় হয়ে গেছে';
+            }
+
+            const formatted = [
+                String(remaining.hours).padStart(2, '0'),
+                String(remaining.minutes).padStart(2, '0'),
+                String(remaining.seconds).padStart(2, '0')
+            ].join(':');
+
+            return `${this.toBnNumber(formatted)} বাকি`;
         },
         getRamadanDay() {
             try {
@@ -26,7 +80,7 @@
                     timeZone: 'Asia/Dhaka'
                 });
 
-                const parts = formatter.formatToParts(new Date());
+                const parts = formatter.formatToParts(this.getDhakaNow());
                 const dayRaw = parts.find((part) => part.type === 'day')?.value ?? '';
                 const day = Number.parseInt(dayRaw, 10);
 
@@ -47,6 +101,7 @@
             return this.divisions[this.selectedDivision];
         }
     }"
+    x-init="init()"
     class="bg-white dark:bg-slate-800 rounded-xl border border-emerald-100 dark:border-slate-700 shadow-sm p-4"
 >
     <div class="flex items-start justify-between gap-3">
@@ -80,6 +135,7 @@
         <div class="rounded-lg bg-rose-50/70 dark:bg-rose-500/10 p-3 text-center">
             <p class="text-sm font-medium text-slate-700 dark:text-slate-200">🌇 ইফতার</p>
             <p class="mt-1 text-3xl font-bold text-rose-600 dark:text-rose-400" x-text="toBnNumber(current.iftar)"></p>
+            <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-300" x-text="iftarCountdownLabel"></p>
         </div>
     </div>
 
