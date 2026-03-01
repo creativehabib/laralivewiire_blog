@@ -42,7 +42,7 @@ class RamadanTimes extends Component
 
         $date = now('Asia/Dhaka')->format('d-m-Y');
         $cacheKey = "ramadan_times_v2_{$this->selectedDivision}_{$date}";
-        $lastGoodKey = "ramadan_times_v2_last_good_{$this->selectedDivision}";
+        $lastGoodKey = "ramadan_times_v2_{$this->selectedDivision}";
         $apiCity = $this->apiCityMap[$this->selectedDivision] ?? $this->selectedDivision;
 
         $cachedTimes = Cache::get($cacheKey);
@@ -114,7 +114,7 @@ class RamadanTimes extends Component
         $hour12 = $hours % 12 ?: 12;
         $period = $hours >= 12 ? 'PM' : 'AM';
 
-        return $this->toBanglaNumber(str_pad((string) $hour12, 2, '0', STR_PAD_LEFT) . ':' . $minutes) . ' ' . $period;
+        return $this->toBanglaNumber(str_pad((string) $hour12, 2, '0', STR_PAD_LEFT) . ':' . $minutes);
     }
 
     public function ramadanDay(): string
