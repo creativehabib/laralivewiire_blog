@@ -1,11 +1,34 @@
 @props([
-    'latestPosts' => collect(),
-    'popularPosts' => collect(),
+    'latestPosts' => null,
+    'popularPosts' => null,
+    'limit' => 5,
     'latestTabLabel' => 'সর্বশেষ খবর',
     'popularTabLabel' => 'জনপ্রিয় খবর',
     'latestEmptyText' => 'সর্বশেষ কোনো খবর নেই',
     'popularEmptyText' => 'জনপ্রিয় খবর পাওয়া যায়নি',
 ])
+
+@php
+    $latestPosts = collect($latestPosts);
+    $popularPosts = collect($popularPosts);
+
+    if ($latestPosts->isEmpty()) {
+        $latestPosts = \App\Models\Post::query()
+            ->published()
+            ->latest()
+            ->take((int) $limit)
+            ->get();
+    }
+
+    if ($popularPosts->isEmpty()) {
+        $popularPosts = \App\Models\Post::query()
+            ->published()
+            ->orderByDesc('views')
+            ->latest('id')
+            ->take((int) $limit)
+            ->get();
+    }
+@endphp
 
 <section
     {{ $attributes->merge(['class' => 'bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4']) }}
