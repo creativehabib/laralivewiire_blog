@@ -69,6 +69,7 @@
             <livewire:frontend.live-search
                 :wire:key="'live-search-desktop'"
                 wrapper-class="hidden lg:block w-64 xl:w-72"
+                :slide-below="true"
             />
 
             <button id="themeToggle" aria-label="Toggle Dark Mode" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
