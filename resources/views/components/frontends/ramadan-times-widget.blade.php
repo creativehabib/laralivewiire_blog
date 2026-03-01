@@ -18,6 +18,27 @@
         toBnNumber(value) {
             return String(value).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[d]);
         },
+        getRamadanDay() {
+            try {
+                const formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+                    day: 'numeric',
+                    month: 'long',
+                    timeZone: 'Asia/Dhaka'
+                });
+
+                const parts = formatter.formatToParts(new Date());
+                const month = parts.find((part) => part.type === 'month')?.value?.toLowerCase() ?? '';
+                const day = parts.find((part) => part.type === 'day')?.value ?? '';
+
+                if (month.includes('ramadan') || month.includes('rama') || month.includes('ramazan')) {
+                    return day;
+                }
+
+                return day;
+            } catch (error) {
+                return '';
+            }
+        },
         get current() {
             return this.divisions[this.selectedDivision];
         }
@@ -28,6 +49,7 @@
         <div>
             <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">আজকের সেহরি ও ইফতার</p>
             <p class="text-lg font-semibold text-slate-900 dark:text-white" x-text="current.name"></p>
+            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">আজ <span x-text="toBnNumber(getRamadanDay())"></span> রমজান</p>
             <p class="text-xs text-slate-500 dark:text-slate-400">{{ $today }}</p>
         </div>
 
