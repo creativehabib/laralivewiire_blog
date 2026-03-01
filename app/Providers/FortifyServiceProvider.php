@@ -17,6 +17,7 @@ use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -57,7 +58,13 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::verifyEmailView(fn () => view('livewire.auth.verify-email'));
         Fortify::twoFactorChallengeView(fn () => view('livewire.auth.two-factor-challenge'));
         Fortify::confirmPasswordView(fn () => view('livewire.auth.confirm-password'));
-        Fortify::registerView(fn () => view('livewire.auth.register'));
+        Fortify::registerView(function () {
+            if (! filter_var(setting('user_registration_enabled', true), FILTER_VALIDATE_BOOLEAN)) {
+                throw new NotFoundHttpException();
+            }
+
+            return view('livewire.auth.register');
+        });
         Fortify::resetPasswordView(fn () => view('livewire.auth.reset-password'));
         Fortify::requestPasswordResetLinkView(fn () => view('livewire.auth.forgot-password'));
     }

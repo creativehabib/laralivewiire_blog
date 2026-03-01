@@ -108,6 +108,14 @@ return [
                     ],
                 ],
                 [
+                    'key' => 'user_registration_enabled',
+                    'label' => 'Allow user registration',
+                    'type' => 'switch',
+                    'default' => true,
+                    'rules' => ['boolean'],
+                    'hint' => 'Turn off to prevent new users from signing up.',
+                ],
+                [
                     'key' => 'recaptcha_key_type',
                     'label' => 'reCAPTCHA key type',
                     'type' => 'select',
