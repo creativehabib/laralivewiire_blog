@@ -48,7 +48,7 @@
                 <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">NP</div>
             @endif
             <div class="hidden lg:block">
-                <div class="text-xl font-bold text-primary-dark dark:text-primary-light">বাংলা নিউজ পোর্টাল</div>
+                <div class="text-xl font-bold text-primary-dark dark:text-primary-light">বাংলা জব পোর্টাল</div>
                 <div class="text-xs text-slate-500 dark:text-slate-400">বিশ্বস্ত খবর আপনার হাতের মুঠোয়</div>
             </div>
         </a>
