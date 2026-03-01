@@ -2,16 +2,19 @@
 
 namespace App\Livewire;
 
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
 class RamadanTimes extends Component
 {
-    public $selectedDivision = 'Dhaka';
-    public $times = null;
+    public string $selectedDivision = 'Dhaka';
+    public ?array $times = null;
+    public bool $loading = true;
+    public int $hijriAdjustment = -1;
 
-    public $divisions = [
+    public array $divisions = [
         'Dhaka' => 'ঢাকা',
         'Chattogram' => 'চট্টগ্রাম',
         'Rajshahi' => 'রাজশাহী',
@@ -22,30 +25,109 @@ class RamadanTimes extends Component
         'Mymensingh' => 'ময়মনসিংহ',
     ];
 
-    public function mount()
-    {
-        $this->fetchTimes();
-    }
+    private array $apiCityMap = [
+        'Dhaka' => 'Dhaka',
+        'Chattogram' => 'Chittagong',
+        'Rajshahi' => 'Rajshahi',
+        'Khulna' => 'Khulna',
+        'Barishal' => 'Barisal',
+        'Sylhet' => 'Sylhet',
+        'Rangpur' => 'Rangpur',
+        'Mymensingh' => 'Mymensingh',
+    ];
 
-    public function updatedSelectedDivision()
+    public function loadTimes(): void
     {
-        $this->fetchTimes();
-    }
+        $this->loading = true;
 
-    public function fetchTimes()
-    {
         $date = now('Asia/Dhaka')->format('d-m-Y');
-        $cacheKey = "ramadan_times_{$this->selectedDivision}_{$date}";
+        $cacheKey = "ramadan_times_v2_{$this->selectedDivision}_{$date}";
+        $lastGoodKey = "ramadan_times_v2_last_good_{$this->selectedDivision}";
+        $apiCity = $this->apiCityMap[$this->selectedDivision] ?? $this->selectedDivision;
 
-        $this->times = Cache::remember($cacheKey, 3600, function () use ($date) {
-            $response = Http::get('https://api.aladhan.com/v1/timingsByCity/' . $date, [
-                'city' => $this->selectedDivision,
+        $cachedTimes = Cache::get($cacheKey);
+        if (is_array($cachedTimes)) {
+            $this->times = $cachedTimes;
+            $this->loading = false;
+
+            return;
+        }
+
+        try {
+            $response = Http::timeout(10)->retry(2, 300)->get('https://api.aladhan.com/v1/timingsByCity/' . $date, [
+                'city' => $apiCity,
                 'country' => 'Bangladesh',
-                'method' => 1,
+                'method' => 13,
             ]);
 
-            return $response->json('data');
-        });
+            if ($response->successful() && is_array($response->json('data'))) {
+                $this->times = $response->json('data');
+
+                Cache::put($cacheKey, $this->times, now()->addHour());
+                Cache::put($lastGoodKey, $this->times, now()->addDay());
+            } else {
+                $this->times = Cache::get($lastGoodKey);
+            }
+        } catch (ConnectionException) {
+            $this->times = Cache::get($lastGoodKey);
+        }
+
+        $this->loading = false;
+    }
+
+    public function updatedSelectedDivision(): void
+    {
+        $this->loadTimes();
+    }
+
+
+    public function toBanglaNumber(string|int $value): string
+    {
+        return strtr((string) $value, [
+            '0' => '০',
+            '1' => '১',
+            '2' => '২',
+            '3' => '৩',
+            '4' => '৪',
+            '5' => '৫',
+            '6' => '৬',
+            '7' => '৭',
+            '8' => '৮',
+            '9' => '৯',
+        ]);
+    }
+
+    public function formatTime(?string $time24): string
+    {
+        if (! $time24) {
+            return '--:--';
+        }
+
+        $time = trim(explode(' ', $time24)[0]);
+
+        if (! preg_match('/^(\d{1,2}):(\d{2})$/', $time, $matches)) {
+            return '--:--';
+        }
+
+        $hours = (int) $matches[1];
+        $minutes = $matches[2];
+        $hour12 = $hours % 12 ?: 12;
+        $period = $hours >= 12 ? 'PM' : 'AM';
+
+        return $this->toBanglaNumber(str_pad((string) $hour12, 2, '0', STR_PAD_LEFT) . ':' . $minutes) . ' ' . $period;
+    }
+
+    public function ramadanDay(): string
+    {
+        $day = (int) data_get($this->times, 'date.hijri.day', 0);
+
+        if ($day <= 0) {
+            return '--';
+        }
+
+        $adjusted = $day + $this->hijriAdjustment;
+
+        return $adjusted > 0 ? $this->toBanglaNumber($adjusted) : '--';
     }
 
     public function render()
