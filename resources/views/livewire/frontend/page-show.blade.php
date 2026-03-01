@@ -188,7 +188,7 @@
 
                                 @if ($sidebar === 'right')
                                     <aside class="rounded-lg lg:sticky lg:top-32 self-start space-y-6">
-                                        <x-frontends.ramadan-times-widget />
+                                        <livewire:ramadan-times />
 
                                         <x-frontends.news-tabs-widget
                                             class="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
