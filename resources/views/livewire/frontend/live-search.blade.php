@@ -25,7 +25,6 @@
             x-ref="searchInput"
             type="search"
             wire:model.live.debounce.300ms="query"
-            wire:keydown.escape="clear"
             @if($useGoogleSearch)
                 wire:keydown.enter="goToSearchResults"
             @endif
