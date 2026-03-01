@@ -40,8 +40,10 @@
             @endif
         </div>
 
-        <!-- Feature Image -->
-        <img src="{{ the_thumbnail($post) }}" alt="{{ $post?->name }}" class="max-h-80 w-full rounded-lg mb-4 object-cover">
+        @if (filter_var(setting('show_featured_image', true), FILTER_VALIDATE_BOOLEAN))
+            <!-- Feature Image -->
+            <img src="{{ the_thumbnail($post) }}" alt="{{ $post?->name }}" class="max-h-80 w-full rounded-lg mb-4 object-cover">
+        @endif
 
         @php
             $shareUrl = $post ? post_permalink($post) : url()->current();
