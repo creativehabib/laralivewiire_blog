@@ -8,40 +8,38 @@
         <button
             type="button"
             class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 shadow-sm transition hover:bg-slate-100 hover:text-slate-700 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-            @click="open = true; $nextTick(() => $refs.searchInput?.focus())"
-            x-show="!open"
-            x-cloak
+            @click="open = !open; $nextTick(() => open && $refs.searchInput?.focus())"
             aria-label="{{ __('Search') }}"
         >
             <i class="fa-solid fa-magnifying-glass text-sm"></i>
         </button>
     </div>
-    <div class="relative" x-show="open" x-transition x-cloak>
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </span>
-        <input
-            id="{{ $inputId }}"
-            x-ref="searchInput"
-            x-model="localQuery"
-            @input.debounce.300ms="$wire.search(localQuery)"
-            type="search"
-            @if($useGoogleSearch)
-                wire:keydown.enter="goToSearchResultsFromInput($event.target.value)"
-            @endif
-            x-on:keydown.escape.stop="open = false"
-            autocomplete="off"
-            placeholder="{{ $placeholder }}"
-            class="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-10 pr-10 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus:border-primary focus:ring-primary/40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 {{ $inputClass }}"
-        />
-
-        @if($query !== '')
-            <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+    <div class="absolute right-0 top-full z-50 mt-2 w-[280px] sm:w-[320px]" x-show="open" x-transition x-cloak>
+        <div class="relative rounded-lg border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+            <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input
+                id="{{ $inputId }}"
+                x-ref="searchInput"
+                x-model="localQuery"
+                @input.debounce.300ms="$wire.search(localQuery)"
+                type="search"
                 @if($useGoogleSearch)
+                    wire:keydown.enter="goToSearchResultsFromInput($event.target.value)"
+                @endif
+                x-on:keydown.escape.stop="open = false"
+                autocomplete="off"
+                placeholder="{{ $placeholder }}"
+                class="w-full rounded-md border border-slate-300 bg-white py-2 pl-10 pr-20 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary focus:ring-primary/40 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 {{ $inputClass }}"
+            />
+
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                @if($useGoogleSearch && $query !== '')
                     <button
                         type="button"
                         wire:click="goToSearchResults"
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                        class="inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                         aria-label="{{ __('View full search results') }}"
                     >
                         <i class="fa-solid fa-arrow-right"></i>
@@ -50,15 +48,17 @@
 
                 <button
                     type="button"
-                    wire:click="clear"
-                    x-on:click="localQuery = ''"
-                    class="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                    aria-label="{{ __('Clear search') }}"
+                    @if($query !== '')
+                        wire:click="clear"
+                    @endif
+                    x-on:click="localQuery = ''; open = false"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-slate-900 text-white hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+                    aria-label="{{ __('Close search') }}"
                 >
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-        @endif
+        </div>
     </div>
 
     @if(! $useGoogleSearch)
