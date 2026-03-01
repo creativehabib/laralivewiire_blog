@@ -44,7 +44,7 @@ class RamadanTimes extends Component
             $response = Http::timeout(10)->retry(2, 300)->get('https://api.aladhan.com/v1/timingsByCity/' . $date, [
                 'city' => $this->selectedDivision,
                 'country' => 'Bangladesh',
-                'method' => 13,
+                'method' => 1,
             ]);
 
             if ($response->successful() && is_array($response->json('data'))) {
