@@ -76,47 +76,41 @@ function initMobileMenu() {
 // ট্যাব (Latest / Popular) হ্যান্ডলিং
 // ----------------------
 function initTabs() {
-    const latestBtn = document.getElementById('tab-latest-btn');
-    const popularBtn = document.getElementById('tab-popular-btn');
-    const latestTab = document.getElementById('tab-latest');
-    const popularTab = document.getElementById('tab-popular');
+    const tabWidgets = document.querySelectorAll('[data-news-tabs]');
 
-    // Latest ট্যাব দেখানোর ফাংশন
-    function showLatest() {
-        if (!latestTab || !popularTab || !latestBtn || !popularBtn) return;
+    tabWidgets.forEach((widget) => {
+        const latestBtn = widget.querySelector('[data-news-tab-button="latest"]');
+        const popularBtn = widget.querySelector('[data-news-tab-button="popular"]');
+        const latestTab = widget.querySelector('[data-news-tab-panel="latest"]');
+        const popularTab = widget.querySelector('[data-news-tab-panel="popular"]');
 
-        latestTab.classList.remove('hidden');
-        popularTab.classList.add('hidden');
+        if (!latestBtn || !popularBtn || !latestTab || !popularTab) return;
 
-        latestBtn.classList.add('border-primary-dark', 'text-primary-dark');
-        latestBtn.classList.remove('text-slate-600', 'border-transparent');
+        function setActiveState(activeBtn, inactiveBtn) {
+            activeBtn.classList.add('border-primary-dark', 'text-primary-dark', 'dark:text-primary-light');
+            activeBtn.classList.remove('text-slate-600', 'dark:text-slate-300', 'border-transparent');
 
-        popularBtn.classList.remove('border-primary-dark', 'text-primary-dark');
-        popularBtn.classList.add('text-slate-600', 'border-transparent');
-    }
+            inactiveBtn.classList.remove('border-primary-dark', 'text-primary-dark', 'dark:text-primary-light');
+            inactiveBtn.classList.add('text-slate-600', 'dark:text-slate-300', 'border-transparent');
+        }
 
-    // Popular ট্যাব দেখানোর ফাংশন
-    function showPopular() {
-        if (!latestTab || !popularTab || !latestBtn || !popularBtn) return;
+        function showLatest() {
+            latestTab.classList.remove('hidden');
+            popularTab.classList.add('hidden');
+            setActiveState(latestBtn, popularBtn);
+        }
 
-        popularTab.classList.remove('hidden');
-        latestTab.classList.add('hidden');
+        function showPopular() {
+            popularTab.classList.remove('hidden');
+            latestTab.classList.add('hidden');
+            setActiveState(popularBtn, latestBtn);
+        }
 
-        popularBtn.classList.add('border-primary-dark', 'text-primary-dark');
-        popularBtn.classList.remove('text-slate-600', 'border-transparent');
-
-        latestBtn.classList.remove('border-primary-dark', 'text-primary-dark');
-        latestBtn.classList.add('text-slate-600', 'border-transparent');
-    }
-
-    // বাটন থাকলে ইভেন্ট লিসেনার অ্যাটাচ করি
-    if (latestBtn && popularBtn) {
         addUniqueListener(latestBtn, 'click', '__latestTabHandler', showLatest);
         addUniqueListener(popularBtn, 'click', '__popularTabHandler', showPopular);
-    }
 
-    // চাইলে এখানে default হিসাবে Latest দেখাতে পারো:
-    // showLatest();
+        showLatest();
+    });
 }
 
 
