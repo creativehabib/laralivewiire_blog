@@ -14,7 +14,6 @@ class LiveSearch extends Component
     public string $placeholder = 'খুঁজুন...';
     public string $inputId = 'frontend-live-search-desktop';
     public bool $useGoogleSearch = false;
-    public bool $slideBelow = false;
 
     public function mount(): void
     {
