@@ -73,6 +73,9 @@
                     },
 
                     countdownLabel() {
+                        // reactive dependency to force recompute every second
+                        this.tick;
+
                         const parsed = this.parseMaghrib();
                         if (!parsed) return 'লোড হচ্ছে...';
 
