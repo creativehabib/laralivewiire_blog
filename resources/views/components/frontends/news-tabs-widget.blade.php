@@ -17,7 +17,7 @@
             @click="activeTab = 'latest'"
             :class="activeTab === 'latest'
                 ? 'border-primary-dark text-primary-dark dark:text-primary-light'
-                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light'">
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light cursor-pointer'">
             {{ $latestTabLabel }}
         </button>
         <button
@@ -26,7 +26,7 @@
             @click="activeTab = 'popular'"
             :class="activeTab === 'popular'
                 ? 'border-primary-dark text-primary-dark dark:text-primary-light'
-                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light'">
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light cursor-pointer'">
             {{ $popularTabLabel }}
         </button>
     </div>
@@ -39,7 +39,9 @@
                         <img src="{{ the_thumbnail($post, 240, 160) }}" loading="lazy" width="240" height="160" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
                     </a>
                     <div class="flex-1">
-                        <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
+                        <a href="{{ post_permalink($post) }}" wire:navigate>
+                            <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
+                        </a>
                         <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
                             <span>{{ $post->created_at?->diffForHumans() }}</span>
                             <span>•</span>
@@ -59,8 +61,14 @@
                         <img src="{{ the_thumbnail($post, 240, 160) }}" loading="lazy" width="240" height="160" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
                     </a>
                     <div class="flex-1">
-                        <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
-                        <span class="text-xs text-slate-500 dark:text-slate-400">{{ number_format($post->views ?? 0) }} ভিউ</span>
+                        <a href="{{ post_permalink($post) }}" wire:navigate>
+                            <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
+                        </a>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                            <span>{{ $post->created_at?->diffForHumans() }}</span>
+                            <span>•</span>
+                            <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                        </div>
                     </div>
                 </article>
             @empty
