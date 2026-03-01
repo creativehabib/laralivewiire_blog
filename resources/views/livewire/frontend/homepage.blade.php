@@ -451,60 +451,10 @@
                 </div>
             </section>
 
-            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
-                <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-700 mb-4 text-sm font-semibold">
-                    <button
-                        id="tab-latest-btn"
-                        class="py-2 px-3 rounded-t-md border-b-2 border-primary-dark text-primary-dark dark:text-primary-light"
-                        type="button">
-                        সর্বশেষ খবর
-                    </button>
-                    <button
-                        id="tab-popular-btn"
-                        class="py-2 px-3 rounded-t-md border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light"
-                        type="button">
-                        জনপ্রিয় খবর
-                    </button>
-                </div>
-
-                <div>
-                    <div id="tab-latest" class="space-y-3">
-                        @forelse($sidebarLatest as $post)
-                            <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
-                                <a href="{{ post_permalink($post) }}" wire:navigate>
-                                    <img src="{{ the_thumbnail($post, 240, 160) }}" loading="lazy" width="240" height="160" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
-                                </a>
-                                <div class="flex-1">
-                                    <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
-                                    <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                                        <span>{{ $post->created_at?->diffForHumans() }}</span>
-                                        <span>•</span>
-                                        <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
-                                    </div>
-                                </div>
-                            </article>
-                        @empty
-                            <p class="text-sm text-slate-500">সর্বশেষ কোনো খবর নেই</p>
-                        @endforelse
-                    </div>
-
-                    <div id="tab-popular" class="space-y-3 hidden">
-                        @forelse($popularPosts as $post)
-                            <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
-                                <a href="{{ post_permalink($post) }}" wire:navigate>
-                                    <img src="{{ the_thumbnail($post, 240, 160) }}" loading="lazy" width="240" height="160" class="w-24 h-16 rounded object-cover" alt="{{ $post->name }}">
-                                </a>
-                                <div class="flex-1">
-                                    <h3 class="text-sm font-semibold leading-snug hover:text-primary-dark dark:hover:text-primary-light">{{ $post->name }}</h3>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">{{ number_format($post->views) }} ভিউ</span>
-                                </div>
-                            </article>
-                        @empty
-                            <p class="text-sm text-slate-500">জনপ্রিয় খবর পাওয়া যায়নি</p>
-                        @endforelse
-                    </div>
-                </div>
-            </section>
+            <x-frontends.news-tabs-widget
+                :latest-posts="$sidebarLatest"
+                :popular-posts="$popularPosts"
+            />
         </div>
     </aside>
 </div>
