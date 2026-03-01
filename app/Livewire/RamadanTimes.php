@@ -25,13 +25,25 @@ class RamadanTimes extends Component
         'Mymensingh' => 'ময়মনসিংহ',
     ];
 
+    private array $apiCityMap = [
+        'Dhaka' => 'Dhaka',
+        'Chattogram' => 'Chittagong',
+        'Rajshahi' => 'Rajshahi',
+        'Khulna' => 'Khulna',
+        'Barishal' => 'Barisal',
+        'Sylhet' => 'Sylhet',
+        'Rangpur' => 'Rangpur',
+        'Mymensingh' => 'Mymensingh',
+    ];
+
     public function loadTimes(): void
     {
         $this->loading = true;
 
         $date = now('Asia/Dhaka')->format('d-m-Y');
-        $cacheKey = "ramadan_times_{$this->selectedDivision}_{$date}";
-        $lastGoodKey = "ramadan_times_last_good_{$this->selectedDivision}";
+        $cacheKey = "ramadan_times_v2_{$this->selectedDivision}_{$date}";
+        $lastGoodKey = "ramadan_times_v2_last_good_{$this->selectedDivision}";
+        $apiCity = $this->apiCityMap[$this->selectedDivision] ?? $this->selectedDivision;
 
         $cachedTimes = Cache::get($cacheKey);
         if (is_array($cachedTimes)) {
@@ -43,7 +55,7 @@ class RamadanTimes extends Component
 
         try {
             $response = Http::timeout(10)->retry(2, 300)->get('https://api.aladhan.com/v1/timingsByCity/' . $date, [
-                'city' => $this->selectedDivision,
+                'city' => $apiCity,
                 'country' => 'Bangladesh',
                 'method' => 13,
             ]);
@@ -100,8 +112,9 @@ class RamadanTimes extends Component
         $hours = (int) $matches[1];
         $minutes = $matches[2];
         $hour12 = $hours % 12 ?: 12;
+        $period = $hours >= 12 ? 'PM' : 'AM';
 
-        return $this->toBanglaNumber(str_pad((string) $hour12, 2, '0', STR_PAD_LEFT) . ':' . $minutes);
+        return $this->toBanglaNumber(str_pad((string) $hour12, 2, '0', STR_PAD_LEFT) . ':' . $minutes) . ' ' . $period;
     }
 
     public function ramadanDay(): string
