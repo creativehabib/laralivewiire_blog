@@ -9,7 +9,7 @@
             </p>
 
             <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                আজ {{ $times['date']['hijri']['day'] ?? '--' }} রমজান
+                আজ {{ $this->ramadanDay() }} রমজান
             </p>
 
             <p class="text-xs text-slate-500 dark:text-slate-400">
@@ -42,14 +42,14 @@
             <div class="rounded-lg bg-emerald-50/70 dark:bg-emerald-500/10 p-3 text-center border border-emerald-100 dark:border-emerald-700/30">
                 <p class="text-sm font-medium text-slate-700 dark:text-slate-200">🌙 সেহরি শেষ</p>
                 <p class="mt-1 text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-                    {{ \Illuminate\Support\Str::of($times['timings']['Fajr'] ?? '--')->substr(0,5) }}
+                    {{ $this->formatTime($times['timings']['Fajr'] ?? null) }}
                 </p>
             </div>
 
             <div class="rounded-lg bg-rose-50/70 dark:bg-rose-500/10 p-3 text-center border border-rose-100 dark:border-rose-700/30">
                 <p class="text-sm font-medium text-slate-700 dark:text-slate-200">🌇 ইফতার</p>
                 <p class="mt-1 text-3xl font-bold text-rose-600 dark:text-rose-400">
-                    {{ \Illuminate\Support\Str::of($times['timings']['Maghrib'] ?? '--')->substr(0,5) }}
+                    {{ $this->formatTime($times['timings']['Maghrib'] ?? null) }}
                 </p>
             </div>
 
@@ -69,7 +69,7 @@
                 <div class="flex justify-between rounded-md bg-slate-50 dark:bg-slate-900/40 px-2 py-1.5 border border-slate-100 dark:border-slate-700/50">
                     <span class="text-slate-500 dark:text-slate-400">{{ $label }}:</span>
                     <span class="font-semibold text-slate-800 dark:text-slate-100">
-                        {{ \Illuminate\Support\Str::of($times['timings'][$key] ?? '--')->substr(0,5) }}
+                        {{ $this->formatTime($times['timings'][$key] ?? null) }}
                     </span>
                 </div>
 

@@ -12,6 +12,7 @@ class RamadanTimes extends Component
     public string $selectedDivision = 'Dhaka';
     public ?array $times = null;
     public bool $loading = true;
+    public int $hijriAdjustment = -1;
 
     public array $divisions = [
         'Dhaka' => 'ঢাকা',
@@ -44,7 +45,7 @@ class RamadanTimes extends Component
             $response = Http::timeout(10)->retry(2, 300)->get('https://api.aladhan.com/v1/timingsByCity/' . $date, [
                 'city' => $this->selectedDivision,
                 'country' => 'Bangladesh',
-                'method' => 1,
+                'method' => 13,
             ]);
 
             if ($response->successful() && is_array($response->json('data'))) {
@@ -65,6 +66,55 @@ class RamadanTimes extends Component
     public function updatedSelectedDivision(): void
     {
         $this->loadTimes();
+    }
+
+
+    public function toBanglaNumber(string|int $value): string
+    {
+        return strtr((string) $value, [
+            '0' => '০',
+            '1' => '১',
+            '2' => '২',
+            '3' => '৩',
+            '4' => '৪',
+            '5' => '৫',
+            '6' => '৬',
+            '7' => '৭',
+            '8' => '৮',
+            '9' => '৯',
+        ]);
+    }
+
+    public function formatTime(?string $time24): string
+    {
+        if (! $time24) {
+            return '--:--';
+        }
+
+        $time = trim(explode(' ', $time24)[0]);
+
+        if (! preg_match('/^(\d{1,2}):(\d{2})$/', $time, $matches)) {
+            return '--:--';
+        }
+
+        $hours = (int) $matches[1];
+        $minutes = $matches[2];
+        $hour12 = $hours % 12 ?: 12;
+
+        return $this->toBanglaNumber(str_pad((string) $hour12, 2, '0', STR_PAD_LEFT) . ':' . $minutes);
+    }
+
+    public function ramadanDay(): string
+    {
+        $day = (int) data_get($this->times, 'date.hijri.day', 0);
+
+        if ($day <= 0) {
+            return '--';
+        }
+
+        $adjusted = $day + $this->hijriAdjustment;
+
+        return $adjusted > 0 ? $this->toBanglaNumber($adjusted) : '--';
     }
 
     public function render()
