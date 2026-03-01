@@ -46,11 +46,65 @@
                 </p>
             </div>
 
-            <div class="rounded-lg bg-rose-50/70 dark:bg-rose-500/10 p-3 text-center border border-rose-100 dark:border-rose-700/30">
+            <div
+                x-data="{
+                    tick: 0,
+                    maghribTime: @js($times['timings']['Maghrib'] ?? null),
+
+                    toBnNumber(value) {
+                        return String(value).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[d]);
+                    },
+
+                    getNowDhaka() {
+                        return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }));
+                    },
+
+                    parseMaghrib() {
+                        if (!this.maghribTime) return null;
+
+                        const base = String(this.maghribTime).trim().split(' ')[0];
+                        const parts = base.split(':').map(Number);
+
+                        if (parts.length !== 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) {
+                            return null;
+                        }
+
+                        return { hour: parts[0], minute: parts[1] };
+                    },
+
+                    countdownLabel() {
+                        const parsed = this.parseMaghrib();
+                        if (!parsed) return 'লোড হচ্ছে...';
+
+                        const nowDhaka = this.getNowDhaka();
+                        const iftarTime = new Date(nowDhaka);
+                        iftarTime.setHours(parsed.hour, parsed.minute, 0, 0);
+
+                        const diffMs = iftarTime - nowDhaka;
+                        if (diffMs <= 0) return 'ইফতারের সময় হয়েছে 🌙';
+
+                        const totalSeconds = Math.floor(diffMs / 1000);
+                        const h = Math.floor(totalSeconds / 3600);
+                        const m = Math.floor((totalSeconds % 3600) / 60);
+                        const s = totalSeconds % 60;
+
+                        const formatted = [
+                            String(h).padStart(2, '0'),
+                            String(m).padStart(2, '0'),
+                            String(s).padStart(2, '0')
+                        ].join(':');
+
+                        return this.toBnNumber(formatted) + ' বাকি';
+                    }
+                }"
+                x-init="setInterval(() => tick++, 1000)"
+                class="rounded-lg bg-rose-50/70 dark:bg-rose-500/10 p-3 text-center border border-rose-100 dark:border-rose-700/30"
+            >
                 <p class="text-sm font-medium text-slate-700 dark:text-slate-200">🌇 ইফতার</p>
                 <p class="mt-1 text-3xl font-bold text-rose-600 dark:text-rose-400">
                     {{ $this->formatTime($times['timings']['Maghrib'] ?? null) }}
                 </p>
+                <p class="mt-1 text-[10px] font-bold text-rose-600 dark:text-rose-300 uppercase tracking-tighter" x-text="countdownLabel()"></p>
             </div>
 
         </div>
