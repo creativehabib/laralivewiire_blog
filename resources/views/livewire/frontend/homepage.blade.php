@@ -451,10 +451,7 @@
                 </div>
             </section>
 
-            <x-frontends.news-tabs-widget
-                :latest-posts="$sidebarLatest"
-                :popular-posts="$popularPosts"
-            />
+            <x-frontends.news-tabs-widget />
         </div>
     </aside>
 </div>
