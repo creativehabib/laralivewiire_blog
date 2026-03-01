@@ -12,6 +12,7 @@ it('uses south asia calculation method for bangladesh ramadan times', function (
         'api.aladhan.com/*' => Http::response([
             'data' => [
                 'timings' => [
+                    'Imsak' => '04:40',
                     'Fajr' => '04:45',
                     'Maghrib' => '18:05',
                 ],
@@ -32,4 +33,25 @@ it('uses south asia calculation method for bangladesh ramadan times', function (
             && $request['country'] === 'Bangladesh'
             && (int) $request['method'] === 1;
     });
+});
+
+it('prefers imsak as sehri end time and falls back to fajr', function () {
+    $component = new RamadanTimes();
+
+    $component->times = [
+        'timings' => [
+            'Imsak' => '04:40',
+            'Fajr' => '04:45',
+        ],
+    ];
+
+    expect($component->sehriTime())->toBe('04:40');
+
+    $component->times = [
+        'timings' => [
+            'Fajr' => '04:45',
+        ],
+    ];
+
+    expect($component->sehriTime())->toBe('04:45');
 });

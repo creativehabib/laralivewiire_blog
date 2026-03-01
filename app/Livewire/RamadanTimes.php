@@ -100,6 +100,13 @@ class RamadanTimes extends Component
         ]);
     }
 
+
+    public function sehriTime(): ?string
+    {
+        return data_get($this->times, 'timings.Imsak')
+            ?? data_get($this->times, 'timings.Fajr');
+    }
+
     public function formatTime(?string $time24): string
     {
         if (! $time24) {

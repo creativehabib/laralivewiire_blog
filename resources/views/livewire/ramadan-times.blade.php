@@ -42,7 +42,7 @@
             <div class="rounded-lg bg-emerald-50/70 dark:bg-emerald-500/10 p-3 text-center border border-emerald-100 dark:border-emerald-700/30">
                 <p class="text-sm font-medium text-slate-700 dark:text-slate-200">🌙 সেহরি শেষ</p>
                 <p class="mt-1 text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-                    {{ $this->formatTime($times['timings']['Fajr'] ?? null) }}
+                    {{ $this->formatTime($this->sehriTime()) }}
                 </p>
             </div>
 
