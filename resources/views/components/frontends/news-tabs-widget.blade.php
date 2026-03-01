@@ -7,24 +7,32 @@
     'popularEmptyText' => 'জনপ্রিয় খবর পাওয়া যায়নি',
 ])
 
-<section {{ $attributes->merge(['class' => 'bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4']) }} data-news-tabs>
+<section
+    {{ $attributes->merge(['class' => 'bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4']) }}
+    x-data="{ activeTab: 'latest' }">
     <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-700 mb-4 text-sm font-semibold">
         <button
-            class="py-2 px-3 rounded-t-md border-b-2 border-primary-dark text-primary-dark dark:text-primary-light"
+            class="py-2 px-3 rounded-t-md border-b-2"
             type="button"
-            data-news-tab-button="latest">
+            @click="activeTab = 'latest'"
+            :class="activeTab === 'latest'
+                ? 'border-primary-dark text-primary-dark dark:text-primary-light'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light'">
             {{ $latestTabLabel }}
         </button>
         <button
-            class="py-2 px-3 rounded-t-md border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light"
+            class="py-2 px-3 rounded-t-md border-b-2"
             type="button"
-            data-news-tab-button="popular">
+            @click="activeTab = 'popular'"
+            :class="activeTab === 'popular'
+                ? 'border-primary-dark text-primary-dark dark:text-primary-light'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-primary-dark dark:hover:text-primary-light'">
             {{ $popularTabLabel }}
         </button>
     </div>
 
     <div>
-        <div class="space-y-3" data-news-tab-panel="latest">
+        <div class="space-y-3" x-show="activeTab === 'latest'" x-cloak>
             @forelse($latestPosts as $post)
                 <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
                     <a href="{{ post_permalink($post) }}" wire:navigate>
@@ -44,7 +52,7 @@
             @endforelse
         </div>
 
-        <div class="space-y-3 hidden" data-news-tab-panel="popular">
+        <div class="space-y-3" x-show="activeTab === 'popular'" x-cloak>
             @forelse($popularPosts as $post)
                 <article class="flex gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/70 p-2 rounded-lg">
                     <a href="{{ post_permalink($post) }}" wire:navigate>
