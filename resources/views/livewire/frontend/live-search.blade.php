@@ -1,7 +1,7 @@
 <div
-    x-data="{ open: false }"
+    x-data="{ open: false, localQuery: @js($query) }"
     class="relative {{ $wrapperClass }}"
-    @click.outside="open = false; $wire.clear()"
+    @click.outside="open = false"
 >
     <label class="sr-only" for="{{ $inputId }}">{{ __('Search') }}</label>
     <div class="flex items-center justify-end">
@@ -23,11 +23,11 @@
         <input
             id="{{ $inputId }}"
             x-ref="searchInput"
+            x-model="localQuery"
+            @input.debounce.300ms="$wire.search(localQuery)"
             type="search"
-            wire:model.live.debounce.300ms="query"
-            wire:keydown.escape="clear"
             @if($useGoogleSearch)
-                wire:keydown.enter="goToSearchResults"
+                wire:keydown.enter="goToSearchResultsFromInput($event.target.value)"
             @endif
             x-on:keydown.escape.stop="open = false"
             autocomplete="off"
@@ -51,6 +51,7 @@
                 <button
                     type="button"
                     wire:click="clear"
+                    x-on:click="localQuery = ''"
                     class="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                     aria-label="{{ __('Clear search') }}"
                 >
@@ -67,7 +68,7 @@
                     <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
                         {{ __('Search results') }}
                     </div>
-                    <div wire:loading.flex wire:target="query" class="px-4 pb-2 text-xs text-slate-500">
+                    <div wire:loading.flex wire:target="search" class="px-4 pb-2 text-xs text-slate-500">
                         {{ __('Searching...') }}
                     </div>
                     @if($results->isEmpty())

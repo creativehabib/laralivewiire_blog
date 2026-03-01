@@ -20,14 +20,21 @@ class LiveSearch extends Component
         $this->useGoogleSearch = trim((string) setting('google_search_engine_id', '')) !== '';
     }
 
-    public function updatedQuery(): void
+    public function search(string $value): void
     {
-        $this->query = trim($this->query);
+        $this->query = trim($value);
     }
 
     public function clear(): void
     {
         $this->reset('query');
+    }
+
+    public function goToSearchResultsFromInput(string $value = '')
+    {
+        $this->query = trim($value);
+
+        return $this->goToSearchResults();
     }
 
     public function goToSearchResults()
