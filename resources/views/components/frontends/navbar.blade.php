@@ -21,7 +21,16 @@
         $primaryMenuItems = $primaryMenu?->items ?? collect();
     @endphp
     <div class="container flex items-center justify-between px-4 py-3">
-        <a href="{{ route('home') }}" class="flex items-center gap-2">
+        <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
+            <span class="sr-only">Toggle navigation</span>
+            <div class="space-y-1.5">
+                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
+                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
+                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
+            </div>
+        </button>
+
+        <a href="{{ route('home') }}" class="flex items-center gap-2 md:mr-auto md:ml-0 mx-auto md:mx-0">
             @if($siteLogoLight)
                 <img
                     src="{{ $siteLogoLight }}"
@@ -43,7 +52,7 @@
                 <div class="text-xs text-slate-500 dark:text-slate-400">বিশ্বস্ত খবর আপনার হাতের মুঠোয়</div>
             </div>
         </a>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 md:ml-6">
             <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
                 @if($primaryMenuItems->isNotEmpty())
                     <x-frontends.menu-list :items="$primaryMenuItems" variant="desktop" />
@@ -61,26 +70,6 @@
                 :wire:key="'live-search-desktop'"
                 wrapper-class="hidden lg:block w-64 xl:w-72"
             />
-            <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
-                <span class="sr-only">Toggle navigation</span>
-                <div class="space-y-1.5">
-                    <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-                    <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-                    <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-                </div>
-            </button>
-
-            <!-- লগইন/ড্যাশবোর্ড বাটন (ডেস্কটপ) -->
-            @auth
-                <a href="/dashboard" class="px-3 py-2 text-sm font-medium rounded-lg bg-primary hover:bg-primary/90 text-white transition-colors duration-150 flex items-center gap-2">
-                    <i class="fa-solid fa-gauge-high text-xs"></i> ড্যাশবোর্ড
-                </a>
-            @else
-                <a href="/login" class="px-3 py-2 text-sm font-medium rounded-lg bg-accent hover:bg-accent/90 text-white transition-colors duration-150 flex items-center gap-2">
-                    <i class="fa-solid fa-sign-in-alt text-xs"></i> লগইন
-                </a>
-            @endauth
-            <!-- /লগইন/ড্যাশবোর্ড বাটন -->
 
             <button id="themeToggle" aria-label="Toggle Dark Mode" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <i id="moonIcon" class="fa-solid fa-moon text-sm"></i>
@@ -100,17 +89,6 @@
                 input-class="w-full"
                 input-id="frontend-live-search-mobile"
             />
-            <!-- লগইন/ড্যাশবোর্ড বাটন (মোবাইল) -->
-            @auth
-                <a href="/dashboard" class="block px-2 py-2 rounded-md text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors duration-150">
-                    <i class="fa-solid fa-gauge-high text-xs mr-2"></i>ড্যাশবোর্ড
-                </a>
-            @else
-                <a href="/login" class="block px-2 py-2 rounded-md text-sm font-medium text-white bg-accent hover:bg-accent/90 transition-colors duration-150">
-                    <i class="fa-solid fa-sign-in-alt text-xs mr-2"></i>লগইন
-                </a>
-            @endauth
-            <!-- /লগইন/ড্যাশবোর্ড বাটন -->
 
             @if($primaryMenuItems->isNotEmpty())
                 <x-frontends.menu-list :items="$primaryMenuItems" variant="mobile" />
