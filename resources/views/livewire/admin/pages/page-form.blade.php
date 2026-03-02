@@ -330,6 +330,21 @@
                 </div>
             </div>
 
+            {{-- Options --}}
+            <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+                    <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Options</h3>
+                </div>
+                <div class="px-5 py-4 space-y-3 text-xs text-slate-700 dark:text-slate-200">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox"
+                               wire:model="allow_comments"
+                               class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900">
+                        <span>Allow comments</span>
+                    </label>
+                </div>
+            </div>
+
             {{-- Template --}}
             <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
                 <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">

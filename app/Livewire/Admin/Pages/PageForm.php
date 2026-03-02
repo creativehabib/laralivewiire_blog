@@ -27,6 +27,7 @@ class PageForm extends Component
     public string $description = '';
     public string $content = '';
     public string $status = 'published';
+    public bool $allow_comments = true;
     public ?string $template = null;
     public ?string $image = null;
     public array $builderState = [];
@@ -66,6 +67,7 @@ class PageForm extends Component
             $this->description = (string) ($page->description ?? '');
             $this->content     = (string) ($page->content ?? '');
             $this->status      = (string) ($page->status ?? 'published');
+            $this->allow_comments = (bool) ($page->allow_comments ?? true);
             $this->template    = $page->template ?? null;
             $this->image       = $page->image ?? null;
 
@@ -86,6 +88,8 @@ class PageForm extends Component
                 $builderMeta = $builderMeta[0] ?? $builderMeta;
                 $this->builderState = is_array($builderMeta) ? $builderMeta : [];
             }
+        } else {
+            $this->allow_comments = (bool) setting('comment_allow_new_posts', true);
         }
     }
 
@@ -113,6 +117,7 @@ class PageForm extends Component
             'description' => ['nullable', 'string', 'max:400'],
             'content'     => ['nullable', 'string'],
             'status'      => ['required', 'in:published,draft'],
+            'allow_comments' => ['boolean'],
             'template'    => ['nullable', 'string', 'max:120'],
             'image'       => ['nullable', 'string', 'max:2048'],
 
@@ -178,6 +183,7 @@ class PageForm extends Component
         $page->description = $this->description;
         $page->content     = $this->content;
         $page->status      = $this->status;
+        $page->allow_comments = $this->allow_comments ? 1 : 0;
         $page->template    = $this->template;
         $page->image       = $this->image;
 
