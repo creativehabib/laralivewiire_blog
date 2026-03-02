@@ -107,7 +107,7 @@
                 <p class="mt-1 text-3xl font-bold text-rose-600 dark:text-rose-400">
                     {{ $this->formatTime($times['timings']['Maghrib'] ?? null) }}
                 </p>
-                <p class="mt-1 text-[10px] font-bold text-rose-600 dark:text-rose-300 uppercase tracking-tighter" x-text="countdownLabel()"></p>
+                <p class="mt-1 text-[14px] font-bold text-rose-600 dark:text-rose-300 uppercase tracking-tighter" x-text="countdownLabel()"></p>
             </div>
 
         </div>
