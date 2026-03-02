@@ -9,25 +9,16 @@
 ])
 
 @php
-    $latestPosts = collect($latestPosts);
-    $popularPosts = collect($popularPosts);
+    $query = \App\Models\Post::query()->published();
 
-    if ($latestPosts->isEmpty()) {
-        $latestPosts = \App\Models\Post::query()
-            ->published()
-            ->latest()
-            ->take((int) $limit)
-            ->get();
-    }
+    $latestPosts = collect($latestPosts)->isEmpty()
+         ? (clone $query)->latest()->take((int) $limit)->get()
+         : collect($latestPosts);
 
-    if ($popularPosts->isEmpty()) {
-        $popularPosts = \App\Models\Post::query()
-            ->published()
-            ->orderByDesc('views')
-            ->latest('id')
-            ->take((int) $limit)
-            ->get();
-    }
+    $popularPosts = collect($popularPosts)->isEmpty()
+        ? (clone $query)->orderByDesc('views')->latest('id')->take((int) $limit)->get()
+        : collect($popularPosts);
+
 @endphp
 
 <section
@@ -68,7 +59,7 @@
                         <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
                             <span>{{ the_date($post, 'diff', 'updated_at') }}</span>
                             <span>•</span>
-                            <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                            <span><i class="fa-regular fa-eye"></i> {{ the_view_count($post) }} ভিউ</span>
                         </div>
                     </div>
                 </article>
@@ -90,7 +81,7 @@
                         <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
                             <span>{{ the_date($post, 'diff', 'updated_at') }}</span>
                             <span>•</span>
-                            <span><i class="fa-regular fa-eye"></i> {{ number_format($post->views ?? 0) }} ভিউ</span>
+                            <span><i class="fa-regular fa-eye"></i> {{ the_view_count($post) }} ভিউ</span>
                         </div>
                     </div>
                 </article>
