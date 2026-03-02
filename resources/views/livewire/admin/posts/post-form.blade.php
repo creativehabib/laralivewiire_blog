@@ -138,18 +138,6 @@
                             @enderror
                         </div>
 
-                        {{-- Is featured --}}
-                        <div class="text-xs text-slate-700 dark:text-slate-200">
-                            <label for="is_featured" class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox"
-                                       wire:model="is_featured"
-                                       id="is_featured"
-                                       class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500
-                                          dark:border-slate-600 dark:bg-slate-900">
-                                <span>Is featured?</span>
-                            </label>
-                        </div>
-
                         {{-- Content --}}
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
@@ -436,6 +424,16 @@
                     </h3>
                 </div>
                 <div class="px-5 py-4 space-y-3 text-xs text-slate-700 dark:text-slate-200">
+
+                    <label for="is_featured" class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox"
+                               wire:model="is_featured"
+                               id="is_featured"
+                               class="h-4 w-4 rounded border-slate-300 focus:ring-sky-500
+                                      dark:border-slate-600 dark:bg-slate-900">
+                        <span>Is featured?</span>
+                    </label>
+
                     <label class="flex items-center gap-2">
                         <input type="checkbox"
                                wire:model="allow_comments"
