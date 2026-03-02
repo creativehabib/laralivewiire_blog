@@ -238,8 +238,19 @@
                             <div class="prose prose-slate prose-lg md:prose-xl max-w-none dark:prose-invert prose-headings:tracking-tight prose-headings:font-bold prose-p:leading-relaxed prose-li:leading-relaxed">
                                 {!! $page->content !!}
                             </div>
+                            @if ($showPageComments ?? true)
+                                <section class="mt-8">
+                                    <h2 class="text-sm font-bold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700 tracking-tight">
+                                        মন্তব্য করুন
+                                    </h2>
+                                    <x-comments.section :commentable="$page" :canonical-url="page_permalink($page)" />
+                                </section>
+                            @endif
                         </div>
                         <aside class="lg:col-span-4 lg:sticky lg:top-32 self-start space-y-6">
+
+                            <livewire:ramadan-times />
+
                             <x-frontends.news-tabs-widget
                                 class="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
                             />
@@ -267,14 +278,5 @@
                 </div>
             @endif
         </article>
-
-        @if ($showPageComments ?? true)
-            <section class="mt-8">
-                <h2 class="text-sm font-bold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700 tracking-tight">
-                    মন্তব্য করুন
-                </h2>
-                <x-comments.section :commentable="$page" :canonical-url="page_permalink($page)" />
-            </section>
-        @endif
     @endif
 </div>

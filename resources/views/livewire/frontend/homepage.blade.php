@@ -353,48 +353,10 @@
     <aside class="lg:col-span-4 lg:sticky lg:top-24 self-start" wire:loading.remove>
         <div class="space-y-6">
 
-            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
-                <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">ট্রেন্ডিং</h2>
-                <ul class="space-y-2 text-sm">
-                    @forelse($breakingNews as $post)
-                        <li>
-                            <a href="{{ post_permalink($post) }}"
-                               class="group inline-flex items-center gap-2 transition-transform duration-200 hover:translate-x-1 hover:text-primary-dark dark:hover:text-primary-light"
-                               wire:navigate>
-                                <x-app-logo-icon class="size-3.5 text-primary-dark dark:text-primary-light" />
-                                <span>{{ $post->name }}</span>
-                            </a>
-                        </li>
-                    @empty
-                        <li class="text-slate-500">কোনো ব্রেকিং নিউজ নেই</li>
-                    @endforelse
-                </ul>
-            </section>
-
-            <section class="bg-primary-light/70 dark:bg-slate-800 rounded-xl p-4 border border-primary/20 dark:border-slate-700">
-                <h2 class="text-base font-semibold mb-1 text-primary-dark dark:text-primary-light">নিউজলেটার সাবস্ক্রাইব করুন</h2>
-                <p class="text-xs text-slate-700 dark:text-slate-300 mb-3">দিনের গুরুত্বপূর্ণ খবর সরাসরি পেতে ইমেইল দিন।</p>
-                <form class="space-y-2">
-                    <input type="email" placeholder="আপনার ইমেইল" class="w-full px-3 py-2 text-sm rounded-md border border-primary/40 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary" />
-                    <button type="submit" class="w-full bg-primary-dark text-white text-sm font-semibold py-2 rounded-md hover:bg-primary">সাবস্ক্রাইব</button>
-                </form>
-            </section>
-
-            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
-                <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">আমাদের সাথে থাকুন</h2>
-                <div class="grid grid-cols-2 gap-2 text-sm">
-                    <a href="#" class="bg-blue-600 text-white py-2 rounded-md text-center font-semibold">Facebook</a>
-                    <a href="#" class="bg-red-600 text-white py-2 rounded-md text-center font-semibold">YouTube</a>
-                    <a href="#" class="bg-sky-700 text-white py-2 rounded-md text-center font-semibold">Twitter</a>
-                    <a href="#" class="bg-green-800 text-white py-2 rounded-md text-center font-semibold">WhatsApp</a>
-                </div>
-            </section>
-
             <livewire:ramadan-times />
 
-            <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
-                বিজ্ঞাপনের স্থান
-            </section>
+            <x-frontends.news-tabs-widget />
+
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
                 <div class="relative">
                     <div id="sidebarFeaturedCarousel" class="relative">
@@ -451,7 +413,29 @@
                 </div>
             </section>
 
-            <x-frontends.news-tabs-widget />
+            <section class="bg-primary-light/70 dark:bg-slate-800 rounded-xl p-4 border border-primary/20 dark:border-slate-700">
+                <h2 class="text-base font-semibold mb-1 text-primary-dark dark:text-primary-light">নিউজলেটার সাবস্ক্রাইব করুন</h2>
+                <p class="text-xs text-slate-700 dark:text-slate-300 mb-3">দিনের গুরুত্বপূর্ণ খবর সরাসরি পেতে ইমেইল দিন।</p>
+                <form class="space-y-2">
+                    <input type="email" placeholder="আপনার ইমেইল" class="w-full px-3 py-2 text-sm rounded-md border border-primary/40 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary" />
+                    <button type="submit" class="w-full bg-primary-dark text-white text-sm font-semibold py-2 rounded-md hover:bg-primary">সাবস্ক্রাইব</button>
+                </form>
+            </section>
+
+            <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
+                <h2 class="text-base font-semibold border-b pb-2 mb-3 border-slate-200 dark:border-slate-700">আমাদের সাথে থাকুন</h2>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <a href="#" class="bg-blue-600 text-white py-2 rounded-md text-center font-semibold">Facebook</a>
+                    <a href="#" class="bg-red-600 text-white py-2 rounded-md text-center font-semibold">YouTube</a>
+                    <a href="#" class="bg-sky-700 text-white py-2 rounded-md text-center font-semibold">Twitter</a>
+                    <a href="#" class="bg-green-800 text-white py-2 rounded-md text-center font-semibold">WhatsApp</a>
+                </div>
+            </section>
+
+            <section class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                বিজ্ঞাপনের স্থান
+            </section>
+
         </div>
     </aside>
 </div>
