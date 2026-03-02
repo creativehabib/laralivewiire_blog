@@ -47,6 +47,7 @@
             </div>
 
             <div
+                wire:key="iftar-countdown-{{ $selectedDivision }}-{{ $times['timings']['Maghrib'] ?? 'na' }}"
                 x-data="{
                     tick: 0,
                     maghribTime: @js($times['timings']['Maghrib'] ?? null),
@@ -100,7 +101,10 @@
                         return this.toBnNumber(formatted) + ' বাকি';
                     }
                 }"
-                x-init="setInterval(() => tick++, 1000)"
+                x-init="
+                    const intervalId = setInterval(() => tick++, 1000);
+                    return () => clearInterval(intervalId);
+                "
                 class="rounded-lg bg-rose-50/70 dark:bg-rose-500/10 p-3 text-center border border-rose-100 dark:border-rose-700/30"
             >
                 <p class="text-sm font-medium text-slate-700 dark:text-slate-200">🌇 ইফতার</p>
