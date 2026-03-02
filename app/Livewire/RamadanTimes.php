@@ -13,7 +13,6 @@ class RamadanTimes extends Component
     public ?array $times = null;
     public bool $loading = true;
     public int $hijriAdjustment = -1;
-    public int $calculationMethod = 1;
 
     public array $divisions = [
         'Dhaka' => 'ঢাকা',
@@ -58,9 +57,7 @@ class RamadanTimes extends Component
             $response = Http::timeout(10)->retry(2, 300)->get('https://api.aladhan.com/v1/timingsByCity/' . $date, [
                 'city' => $apiCity,
                 'country' => 'Bangladesh',
-                // Bangladesh follows Hanafi jurisprudence and Islamic Foundation schedules
-                // are typically aligned with the South-Asia (Karachi) method.
-                'method' => $this->calculationMethod,
+                'method' => 13,
             ]);
 
             if ($response->successful() && is_array($response->json('data'))) {
@@ -98,13 +95,6 @@ class RamadanTimes extends Component
             '8' => '৮',
             '9' => '৯',
         ]);
-    }
-
-
-    public function sehriTime(): ?string
-    {
-        return data_get($this->times, 'timings.Imsak')
-            ?? data_get($this->times, 'timings.Fajr');
     }
 
     public function formatTime(?string $time24): string
