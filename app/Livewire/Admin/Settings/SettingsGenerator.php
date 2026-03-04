@@ -5,13 +5,11 @@ namespace App\Livewire\Admin\Settings;
 use App\Models\Admin\Page;
 use App\Models\Admin\Tag;
 use App\Models\Category;
-use App\Models\Post;
 use App\Models\Slug;
 use App\Support\PermalinkManager;
 use App\Support\SlugHelper;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
-use Illuminate\Support\Str;
 
 class SettingsGenerator extends Component
 {
@@ -201,33 +199,12 @@ class SettingsGenerator extends Component
                 ->update(['prefix' => SlugHelper::prefixForModel(new Page())]);
         }
 
-        if (
-            ($previous['permalink_structure'] ?? null) !== ($current['permalink_structure'] ?? null)
-            || ($previous['custom_permalink_structure'] ?? null) !== ($current['custom_permalink_structure'] ?? null)
-        ) {
-            $this->syncPostSlugs();
-        }
     }
 
     protected function validatePermalinkRoutingConflicts(): void
     {
         // Reserved for permalink conflict checks.
         // Keeping this method ensures backward compatibility with existing save() flow.
-    }
-
-    protected function syncPostSlugs(): void
-    {
-        [$structure, $custom] = PermalinkManager::currentStructure();
-        $template = PermalinkManager::normalizedTemplate($structure, $custom);
-        $usePostId = Str::contains($template, '%post_id%');
-
-        Post::query()
-            ->select('id', 'name')
-            ->chunkById(200, function ($posts) use ($usePostId): void {
-                foreach ($posts as $post) {
-                    $post->syncSlug($usePostId ? (string) $post->getKey() : null);
-                }
-            });
     }
 
 }
