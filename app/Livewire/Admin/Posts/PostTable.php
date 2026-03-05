@@ -47,6 +47,21 @@ class PostTable extends Component
         }
     }
 
+
+    private function isAdmin(): bool
+    {
+        return (bool) auth()->user()?->hasRole('admin');
+    }
+
+    private function scopeToOwnedPostsIfNeeded($query)
+    {
+        if ($this->isAdmin()) {
+            return $query;
+        }
+
+        return $query->where('author_id', auth()->id());
+    }
+
     /** পুরো পেজ থেকে select / unselect */
     public function toggleSelectAll(): void
     {
@@ -64,6 +79,7 @@ class PostTable extends Component
     {
         abort_unless(auth()->user()->can('post.delete'), 404);
         $post = Post::findOrFail($id);
+        abort_unless($this->isAdmin() || (int) $post->author_id === (int) auth()->id(), 403);
         $post->delete();
         ActivityLogger::log(
             Auth::user(),
@@ -86,7 +102,9 @@ class PostTable extends Component
         }
 
         $count = count($this->selected);
-        Post::whereIn('id', $this->selected)->delete();
+        $query = Post::whereIn('id', $this->selected);
+        $query = $this->scopeToOwnedPostsIfNeeded($query);
+        $query->delete();
         ActivityLogger::log(
             Auth::user(),
             'moved ' . $count . ' posts to trash'
@@ -106,7 +124,9 @@ class PostTable extends Component
         }
 
         $count = count($this->selected);
-        Post::onlyTrashed()->whereIn('id', $this->selected)->restore();
+        $query = Post::onlyTrashed()->whereIn('id', $this->selected);
+        $query = $this->scopeToOwnedPostsIfNeeded($query);
+        $query->restore();
         ActivityLogger::log(
             Auth::user(),
             'restored ' . $count . ' posts'
@@ -128,7 +148,9 @@ class PostTable extends Component
         }
 
         $count = count($this->selected);
-        Post::onlyTrashed()->whereIn('id', $this->selected)->forceDelete();
+        $query = Post::onlyTrashed()->whereIn('id', $this->selected);
+        $query = $this->scopeToOwnedPostsIfNeeded($query);
+        $query->forceDelete();
         ActivityLogger::log(
             Auth::user(),
             'permanently deleted ' . $count . ' posts'
@@ -144,6 +166,7 @@ class PostTable extends Component
         abort_unless(auth()->user()->can('post.view'), 403);
 
         $post = Post::findOrFail($id);
+        abort_unless($this->isAdmin() || (int) $post->author_id === (int) auth()->id(), 403);
         $post->status = $post->status === 'published' ? 'draft' : 'published';
         $post->save();
         ActivityLogger::log(
@@ -159,6 +182,7 @@ class PostTable extends Component
     {
         $post = Post::onlyTrashed()
             ->findOrFail($id);
+        abort_unless($this->isAdmin() || (int) $post->author_id === (int) auth()->id(), 403);
         $post->restore();
         ActivityLogger::log(
             Auth::user(),
@@ -172,6 +196,7 @@ class PostTable extends Component
         abort_unless(auth()->user()->can('post.delete'), 403);
         $post = Post::onlyTrashed()
             ->findOrFail($id);
+        abort_unless($this->isAdmin() || (int) $post->author_id === (int) auth()->id(), 403);
         $post->forceDelete();
         ActivityLogger::log(
             Auth::user(),
@@ -184,6 +209,8 @@ class PostTable extends Component
     {
         $query = Post::query()
             ->with(['categories', 'author']);
+
+        $query = $this->scopeToOwnedPostsIfNeeded($query);
 
         // published / draft / trash
         if ($this->status === 'trash') {
