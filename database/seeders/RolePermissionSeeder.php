@@ -16,7 +16,8 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $role = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
 
         $permissionsAll = [
             [
@@ -117,14 +118,19 @@ class RolePermissionSeeder extends Seeder
                     ['group_name' => $permissionGroup]
                 );
 
-                $role->givePermissionTo($permission);
+                $adminRole->givePermissionTo($permission);
             }
         }
 
+        $userRole->syncPermissions([
+            'post.view',
+            'post.create',
+            'post.edit',
+        ]);
+
         $user = User::find(1);
         if($user){
-            $user->assignRole($role);
+            $user->assignRole($adminRole);
         }
     }
 }
-

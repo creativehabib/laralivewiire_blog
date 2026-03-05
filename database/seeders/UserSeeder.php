@@ -17,8 +17,7 @@ class UserSeeder extends Seeder
     {
         // 🔑 Check if roles exist before creating them to avoid duplicates
         $role1 = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        $role2 = Role::firstOrCreate(['name' => 'author', 'guard_name' => 'web']);
-        $role3 = Role::firstOrCreate(['name' => 'writer', 'guard_name' => 'web']);
+        $role2 = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
 
         $password = Hash::make('password');
 
@@ -35,30 +34,30 @@ class UserSeeder extends Seeder
         );
         $superAdmin->assignRole($role1);
 
-        // Creating Editor (Assigned 'author' role)
+        // Creating User
         $admin = User::firstOrCreate(
             ['email' => 'editor@example.com'],
             [
                 'name' => 'Syed Ahsan Kamal',
                 'username' => 'kamal',
                 'password' => $password,
-                'type' => 'editor',
+                'type' => 'user',
                 'status' => 'active',
             ]
         );
         $admin->assignRole($role2);
 
-        // Creating Writer
+        // Creating Another User
         $user = User::firstOrCreate(
             ['email' => 'nagham@example.com'],
             [
                 'name' => 'Naghman Ali',
                 'username' => 'writer',
                 'password' => $password,
-                'type' => 'writer',
+                'type' => 'user',
                 'status' => 'active',
             ]
         );
-        $user->assignRole($role3);
+        $user->assignRole($role2);
     }
 }

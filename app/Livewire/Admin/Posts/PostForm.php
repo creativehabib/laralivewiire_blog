@@ -53,9 +53,15 @@ class PostForm extends Component
     public function mount(Post $post = null): void
     {
         $this->syncSlugWithSeoTitle = true;
+        $user = Auth::user();
 
         // create vs edit
         if ($post && $post->exists) {
+            abort_unless(
+                $user && ($user->hasRole('admin') || (int) $post->author_id === (int) $user->id),
+                403
+            );
+
             $this->post   = $post;
             $this->postId = $post->id;
             $this->slugId = $post->slugRecord?->id;
@@ -320,6 +326,10 @@ class PostForm extends Component
 
         if ($this->postId) {
             $post = Post::findOrFail($this->postId);
+            abort_unless(
+                $user && ($user->hasRole('admin') || (int) $post->author_id === (int) $user->id),
+                403
+            );
         } else {
             $post = new Post();
             $post->author_id   = $user?->id;
