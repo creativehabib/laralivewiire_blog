@@ -229,6 +229,12 @@ const bindDeleteConfirmListeners = () => {
         const trigger = event.target.closest('[data-confirm]');
         if (!trigger) return;
 
+        // If confirm metadata is attached to the <form>, let the submit handler below
+        // handle the confirmation flow so the correct form action is preserved.
+        if (trigger.tagName === 'FORM') {
+            return;
+        }
+
         if (trigger.dataset.confirmed === 'true') {
             delete trigger.dataset.confirmed;
             return;
