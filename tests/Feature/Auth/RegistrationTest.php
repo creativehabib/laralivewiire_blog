@@ -9,6 +9,7 @@ test('registration screen can be rendered', function () {
 test('new users can register', function () {
     $response = $this->post(route('register.store'), [
         'name' => 'John Doe',
+        'username' => 'john-doe',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
@@ -33,12 +34,27 @@ test('new users cannot register when disabled from settings', function () {
 
     $response = $this->post(route('register.store'), [
         'name' => 'John Doe',
+        'username' => 'john-doe',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
 
     $response->assertNotFound();
+
+    $this->assertGuest();
+});
+
+
+test('username is required to register', function () {
+    $response = $this->post(route('register.store'), [
+        'name' => 'John Doe',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response->assertSessionHasErrors('username');
 
     $this->assertGuest();
 });
