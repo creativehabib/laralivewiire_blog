@@ -36,7 +36,7 @@ class SitemapController extends Controller
 
             if ($includePosts) {
                 $postGroups = Post::query()->published()
-                    ->select(DB::raw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(id) as total_posts, MAX(updated_at) as lastmod'))
+                    ->select(DB::raw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(id) as total_posts'))
                     ->groupBy('year', 'month')
                     ->orderBy('year', 'desc')->orderBy('month', 'desc')
                     ->get()
@@ -104,6 +104,7 @@ class SitemapController extends Controller
                 ->whereMonth('created_at', $month)
                 ->orderByDesc('updated_at');
 
+            $totalPosts = (clone $query)->count();
             $posts = $query->skip(($page - 1) * $itemsPerPage)->take($itemsPerPage)->get();
 
             if ($posts->isEmpty()) return null;
