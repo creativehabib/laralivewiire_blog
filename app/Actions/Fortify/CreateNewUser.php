@@ -7,6 +7,7 @@ use App\Rules\RecaptchaRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Spatie\Permission\Models\Role;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -39,11 +40,20 @@ class CreateNewUser implements CreatesNewUsers
                 : ['nullable'],
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'username' => $input['username'],
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
+
+        $defaultUserRole = Role::firstOrCreate([
+            'name' => 'user',
+            'guard_name' => 'web',
+        ]);
+
+        $user->assignRole($defaultUserRole);
+
+        return $user;
     }
 }
