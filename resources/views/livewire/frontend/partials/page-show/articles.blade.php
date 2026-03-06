@@ -50,7 +50,7 @@
                             <div class="flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500 dark:text-slate-400">
                                  <span class="flex items-center gap-1">
                                     <i class="fa-regular fa-calendar opacity-70"></i>
-                                    {{ the_date($featuredPost, 'diff') }}
+                                    {{ the_date($featuredPost, 'diff', 'updated_at') }}
                                  </span>
                                 <span class="text-slate-300 dark:text-slate-600">•</span>
                                 <span class="flex items-center gap-1 text-primary-600 dark:text-primary-400">
@@ -119,7 +119,7 @@
 
                             @if ($postMeta)
                                 <div class="text-[11px] text-slate-400 font-medium flex items-center gap-2">
-                                    <span>{{ the_date($post, 'diff') }}</span>
+                                    <span>{{ the_date($post, 'diff', 'updated_at') }}</span>
                                     {{-- Optional: Add category or views here if needed --}}
                                 </div>
                             @endif
@@ -183,7 +183,7 @@
                             <div class="flex items-center gap-2 text-[11px] text-slate-400 font-medium mb-1.5">
                             <span class="flex items-center gap-1">
                                 <svg class="w-3 h-3 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                {{ the_date($post, 'diff') }}
+                                {{ the_date($post, 'diff', 'updated_at') }}
                             </span>
                             </div>
                         @endif
@@ -253,7 +253,7 @@
                             <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-medium">
                                 <span class="flex items-center gap-1.5">
                                     <i class="fa-regular fa-calendar opacity-70"></i>
-                                    {{ the_date($featuredPost, 'diff') }}
+                                    {{ the_date($featuredPost, 'diff', 'updated_at') }}
                                 </span>
                             </div>
                         @endif
@@ -322,7 +322,7 @@
                                 </h2>
                                 @if ($postMeta)
                                     <div class="text-[10px] text-slate-400 font-medium">
-                                        {{ the_date($post, 'diff') }}
+                                        {{ the_date($post, 'diff', 'updated_at') }}
                                     </div>
                                 @endif
                             </div>
@@ -360,7 +360,7 @@
                     <div class="absolute bottom-0 left-0 p-5 md:p-6 w-full space-y-2">
                         @if ($postMeta)
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white/20 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white mb-1">
-                                {{ the_date($heroPost, 'diff') }}
+                                {{ the_date($heroPost, 'diff', 'updated_at') }}
                             </span>
                         @endif
 
@@ -408,7 +408,7 @@
                                 </a>
                             </h2>
                             @if ($postMeta)
-                                <p class="text-[10px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
+                                <p class="text-[10px] text-slate-400 font-medium">{{ the_date($post, 'diff', 'updated_at') }}</p>
                             @endif
                         </div>
                     </article>
@@ -449,7 +449,7 @@
 
                         @if ($postMeta)
                             <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                                <span>{{ the_date($featuredPost, 'diff') }}</span>
+                                <span>{{ the_date($featuredPost, 'diff', 'updated_at') }}</span>
                                 @if($showExcerpt)<span class="text-slate-300 dark:text-slate-600">•</span>@endif
                             </div>
                         @endif
@@ -491,7 +491,7 @@
                                     </a>
                                 </h3>
                                 @if ($postMeta)
-                                    <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
+                                    <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff', 'updated_at') }}</p>
                                 @endif
                             </div>
                         </article>
@@ -528,7 +528,7 @@
                             {{ $titleLength > 0 ? \Illuminate\Support\Str::limit($post->name, $titleLength) : $post->name }}
                         </a>
                         @if ($postMeta)
-                            <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff') }}</p>
+                            <p class="text-[11px] text-slate-400 font-medium">{{ the_date($post, 'diff', 'updated_at') }}</p>
                         @endif
                         @if ($showExcerpt)
                             <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
