@@ -93,7 +93,7 @@
                                 <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                     <img src="{{ the_thumbnail($post, 280, 200) }}"
                                          alt="{{ $post->name }}"
-                                         loading="lazy"
+                                         fetchpriority="high"
                                          decoding="async"
                                          width="280"
                                          height="200"
@@ -153,7 +153,7 @@
                             <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                 <img src="{{ the_thumbnail($post, 320, 240) }}"
                                      alt="{{ $post->name }}"
-                                     loading="lazy"
+                                     fetchpriority="high"
                                      decoding="async"
                                      width="320"
                                      height="240"
@@ -297,7 +297,7 @@
                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                         <img src="{{ the_thumbnail($post, 280, 200) }}"
                                              alt="{{ $post->name }}"
-                                             loading="lazy"
+                                             fetchpriority="high"
                                              decoding="async"
                                              width="280"
                                              height="200"
@@ -385,7 +385,7 @@
                                 <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                     <img src="{{ the_thumbnail($post, 240, 160)}}"
                                          alt="{{ $post->name }}"
-                                         loading="lazy"
+                                         fetchpriority="high"
                                          decoding="async"
                                          width="240"
                                          height="160"
@@ -475,7 +475,7 @@
                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                         <img src="{{ the_thumbnail($post, 280, 200) }}"
                                              alt="{{ $post->name }}"
-                                             loading="lazy"
+                                             fetchpriority="high"
                                              decoding="async"
                                              width="280"
                                              height="200"
@@ -512,12 +512,12 @@
                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                 <img src="{{ the_thumbnail($post, 280, 200) }}"
                                      alt="{{ $post->name }}"
-                                     loading="lazy"
+                                     fetchpriority="high"
                                      decoding="async"
                                      width="280"
                                      height="200"
                                      class="h-20 w-28 rounded object-cover">
-                            </a>
+                            </a>া
                             @if ($mediaIcon)
                                 <span class="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[10px] text-white">▶</span>
                             @endif
