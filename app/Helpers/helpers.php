@@ -173,49 +173,99 @@ if (! function_exists('the_view_count')) {
     }
 }
 
+//if (! function_exists('the_thumbnail')) {
+//    function the_thumbnail($model = null, ?int $width = null, ?int $height = null, string $field = 'image'): string
+//    {
+//        // ১. ডিফল্ট প্লেসহোল্ডার (কনফিগ থেকে নেওয়া ভালো, না থাকলে হার্ডকোড)
+//        $placeholder = setting('default_placeholder_image') ?? 'https://placehold.co/800x450?text=No+Image';
+//
+//        // ২. যদি ইনপুট একদম ফাঁকা হয়
+//        if (blank($model)) {
+//            return $placeholder;
+//        }
+//
+//        // ৩. যদি সরাসরি মডেলের মেথড থাকে (Post বা অন্য মডেল)
+//        // 'instanceof Post' চেক করার দরকার নেই, মেথড থাকলেই কল হবে। এতে কোড রিইউজেবল হয়।
+//        if (is_object($model) && method_exists($model, 'getImageUrl')) {
+//            return $model->getImageUrl($width, $height);
+//        }
+//
+//        // ৪. যদি ইনপুট স্ট্রিং হয় (সরাসরি পাথ বা URL)
+//        if (is_string($model)) {
+//            $path = $model;
+//        } else {
+//            // ৫. অবজেক্ট বা অ্যারে থেকে ডেটা বের করা (data_get লারাভেলের পাওয়ারফুল হেল্পার)
+//            $path = data_get($model, $field);
+//        }
+//
+//        // ৬. পাথ যদি না পাওয়া যায়
+//        if (blank($path)) {
+//            return $placeholder;
+//        }
+//
+//        // ৭. URL জেনারেশন লজিক
+//        if (Str::startsWith((string) $path, ['http://', 'https://', '//'])) {
+//            $url = (string) $path;
+//        } else {
+//            // পারফরম্যান্স টিপস: Storage::exists() চেক বাদ দেওয়া হয়েছে।
+//            // কারণ প্রতিটি ইমেজ লোডে ডিস্ক চেক করলে সাইট স্লো হয়ে যায়।
+//            // সরাসরি URL জেনারেট করা অনেক ফাস্ট।
+//            $url = Storage::disk('public')->url(ltrim((string) $path, '/'));
+//        }
+//
+//        // ৮. ইমেজ অপ্টিমাইজেশন (যদি ফাংশনটি থাকে)
+//        if (function_exists('image_optimize_url')) {
+//            return image_optimize_url($url, $width, $height);
+//        }
+//
+//        return $url;
+//    }
+//}
+
 if (! function_exists('the_thumbnail')) {
     function the_thumbnail($model = null, ?int $width = null, ?int $height = null, string $field = 'image'): string
     {
-        // ১. ডিফল্ট প্লেসহোল্ডার (কনফিগ থেকে নেওয়া ভালো, না থাকলে হার্ডকোড)
         $placeholder = setting('default_placeholder_image') ?? 'https://placehold.co/800x450?text=No+Image';
 
-        // ২. যদি ইনপুট একদম ফাঁকা হয়
         if (blank($model)) {
             return $placeholder;
         }
 
-        // ৩. যদি সরাসরি মডেলের মেথড থাকে (Post বা অন্য মডেল)
-        // 'instanceof Post' চেক করার দরকার নেই, মেথড থাকলেই কল হবে। এতে কোড রিইউজেবল হয়।
+        // ১. যদি মডেলে নিজস্ব অপ্টিমাইজড ইউআরএল মেথড থাকে
         if (is_object($model) && method_exists($model, 'getImageUrl')) {
             return $model->getImageUrl($width, $height);
         }
 
-        // ৪. যদি ইনপুট স্ট্রিং হয় (সরাসরি পাথ বা URL)
-        if (is_string($model)) {
-            $path = $model;
-        } else {
-            // ৫. অবজেক্ট বা অ্যারে থেকে ডেটা বের করা (data_get লারাভেলের পাওয়ারফুল হেল্পার)
-            $path = data_get($model, $field);
-        }
+        $path = is_string($model) ? $model : data_get($model, $field);
 
-        // ৬. পাথ যদি না পাওয়া যায়
         if (blank($path)) {
             return $placeholder;
         }
 
-        // ৭. URL জেনারেশন লজিক
+        // ২. URL জেনারেশন
         if (Str::startsWith((string) $path, ['http://', 'https://', '//'])) {
             $url = (string) $path;
         } else {
-            // পারফরম্যান্স টিপস: Storage::exists() চেক বাদ দেওয়া হয়েছে।
-            // কারণ প্রতিটি ইমেজ লোডে ডিস্ক চেক করলে সাইট স্লো হয়ে যায়।
-            // সরাসরি URL জেনারেট করা অনেক ফাস্ট।
             $url = Storage::disk('public')->url(ltrim((string) $path, '/'));
         }
 
-        // ৮. ইমেজ অপ্টিমাইজেশন (যদি ফাংশনটি থাকে)
+        // ৩. ডাইনামিক ইমেজ অপ্টিমাইজেশন লজিক
+        // যদি আপনার সার্ভারে কোনো ইমেজ রিসাইজার (যেমন: Glide বা Intervention) না থাকে,
+        // তবে আমরা এখানে সরাসরি একটি হেল্পার কল করতে পারি।
         if (function_exists('image_optimize_url')) {
             return image_optimize_url($url, $width, $height);
+        }
+
+        // ৪. ম্যানুয়াল অপ্টিমাইজেশন (যদি আলাদা কোনো প্যাকেজ না থাকে)
+        // অনেক সময় 'width' এবং 'height' প্যারামিটার হিসেবে পাঠালে সিডিএন বা ইমেজ প্রসেসর সেটি ছোট করে দেয়।
+        if ($width || $height) {
+            return $url . (str_contains($url, '?') ? '&' : '?') . http_build_query(array_filter([
+                    'w' => $width,
+                    'h' => $height,
+                    'fit' => 'crop',
+                    'fm' => 'webp', // অটোমেটিক WebP ফরম্যাটের জন্য
+                    'q' => 80       // কোয়ালিটি ৮০%
+                ]));
         }
 
         return $url;
