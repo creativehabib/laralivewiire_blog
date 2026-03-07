@@ -93,6 +93,7 @@
                                 <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                     <img src="{{ the_thumbnail($post, 280, 200) }}"
                                          alt="{{ $post->name }}"
+                                         loading="lazy"
                                          fetchpriority="high"
                                          decoding="async"
                                          width="280"
@@ -153,6 +154,7 @@
                             <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                 <img src="{{ the_thumbnail($post, 320, 240) }}"
                                      alt="{{ $post->name }}"
+                                     loading="lazy"
                                      fetchpriority="high"
                                      decoding="async"
                                      width="320"
@@ -297,6 +299,7 @@
                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block w-full h-full">
                                         <img src="{{ the_thumbnail($post, 280, 200) }}"
                                              alt="{{ $post->name }}"
+                                             loading="lazy"
                                              fetchpriority="high"
                                              decoding="async"
                                              width="280"
@@ -385,6 +388,7 @@
                                 <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                     <img src="{{ the_thumbnail($post, 240, 160)}}"
                                          alt="{{ $post->name }}"
+                                         loading="lazy"
                                          fetchpriority="high"
                                          decoding="async"
                                          width="240"
@@ -475,6 +479,7 @@
                                     <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                         <img src="{{ the_thumbnail($post, 280, 200) }}"
                                              alt="{{ $post->name }}"
+                                             loading="lazy"
                                              fetchpriority="high"
                                              decoding="async"
                                              width="280"
@@ -512,6 +517,7 @@
                             <a href="{{ post_permalink($post) }}" wire:navigate class="block">
                                 <img src="{{ the_thumbnail($post, 280, 200) }}"
                                      alt="{{ $post->name }}"
+                                     loading="lazy"
                                      fetchpriority="high"
                                      decoding="async"
                                      width="280"
