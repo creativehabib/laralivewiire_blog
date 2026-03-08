@@ -65,6 +65,7 @@ class FrontPage extends Homepage
                 'seo' => Seo::forPage($this->page, [
                     'url' => $homeUrl,
                     'canonical' => $homeUrl,
+                    'type' => 'website',
                 ]),
             ]);
         }
