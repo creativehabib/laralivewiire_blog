@@ -2,7 +2,6 @@
 @php
     $meta = \App\Support\Seo::fromArray($seo);
 @endphp
-
     <title>{{ $meta['title'] }}</title>
     <meta name="description" content="{{ $meta['description'] }}">
 @if(!empty($meta['keywords']))
@@ -18,6 +17,9 @@
     <meta property="og:type" content="{{ $meta['type'] }}" />
 @if(!empty($meta['image']))
     <meta property="og:image" content="{{ $meta['image'] }}" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 @endif
 
     <meta name="twitter:card" content="{{ $meta['twitter_card'] }}" />
