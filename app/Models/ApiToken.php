@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ApiToken extends Model
 {
@@ -16,6 +17,8 @@ class ApiToken extends Model
     protected $fillable = [
         'name',
         'token_hash',
+        'abilities',
+        'last_used_ip',
         'last_used_at',
         'expires_at',
     ];
@@ -26,6 +29,7 @@ class ApiToken extends Model
     protected function casts(): array
     {
         return [
+            'abilities' => 'array',
             'last_used_at' => 'datetime',
             'expires_at' => 'datetime',
         ];
@@ -34,5 +38,10 @@ class ApiToken extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function requestLogs(): HasMany
+    {
+        return $this->hasMany(ApiTokenRequestLog::class);
     }
 }

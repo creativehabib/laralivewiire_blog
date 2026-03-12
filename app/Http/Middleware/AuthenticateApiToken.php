@@ -37,7 +37,10 @@ class AuthenticateApiToken
 
         $apiToken->forceFill([
             'last_used_at' => now(),
+            'last_used_ip' => $request->ip(),
         ])->save();
+
+        $apiToken->requestLogs()->create();
 
         $request->setUserResolver(fn () => $apiToken->user);
 
