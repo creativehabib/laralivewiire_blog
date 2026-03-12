@@ -38,6 +38,28 @@
             </div>
         </div>
 
+        <div class="mt-6 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+                <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Integration Workflow') }}</h2>
+                <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
+                    <li>{{ __('Create token with a clear app/device name (e.g. ios-production).') }}</li>
+                    <li>{{ __('Store token only in secure storage (Keychain/Keystore/Server secrets).') }}</li>
+                    <li>{{ __('Send token as Authorization: Bearer {token} in every API request.') }}</li>
+                    <li>{{ __('Rotate before expiry and revoke compromised/unused tokens immediately.') }}</li>
+                </ol>
+            </div>
+
+            <div class="rounded-xl border border-amber-200 bg-amber-50/80 p-4 dark:border-amber-700/40 dark:bg-amber-900/20">
+                <h2 class="text-sm font-semibold text-amber-900 dark:text-amber-200">{{ __('Security & Rotation Policy') }}</h2>
+                <ul class="mt-3 space-y-2 text-sm text-amber-900/85 dark:text-amber-100/90">
+                    <li>{{ __('Default expiry is 30 days. Set shorter expiry for high-risk integrations.') }}</li>
+                    <li>{{ __('Never hardcode tokens directly in mobile app source or public repositories.') }}</li>
+                    <li>{{ __('Rotate token on a schedule (recommended every 30-90 days).') }}</li>
+                    <li>{{ __('If suspected leakage occurs, revoke immediately and re-issue.') }}</li>
+                </ul>
+            </div>
+        </div>
+
         <div class="mt-6 grid gap-4 md:grid-cols-3">
             <div class="md:col-span-2">
                 <label for="token_name" class="mb-2 block text-sm font-medium">{{ __('Token Name') }}</label>
