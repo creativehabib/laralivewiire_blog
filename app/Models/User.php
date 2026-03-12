@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -86,5 +87,29 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function apiTokens(): HasMany
+    {
+        return $this->hasMany(ApiToken::class);
+    }
+
+    /**
+     * @return array{plain_text_token: string, token: ApiToken}
+     */
+    public function createApiToken(string $name = 'flutter-app', ?\DateTimeInterface $expiresAt = null): array
+    {
+        $plainTextToken = Str::random(64);
+
+        $token = $this->apiTokens()->create([
+            'name' => $name,
+            'token_hash' => hash('sha256', $plainTextToken),
+            'expires_at' => $expiresAt,
+        ]);
+
+        return [
+            'plain_text_token' => $plainTextToken,
+            'token' => $token,
+        ];
     }
 }

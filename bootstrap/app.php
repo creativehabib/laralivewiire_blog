@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AuthenticateApiToken;
 use App\Http\Middleware\CheckIfInstalled;
 use App\Http\Middleware\OptimizeHtmlResponse;
 use App\Http\Middleware\PreventBackHistory;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'preventBackHistory' => PreventBackHistory::class,
+            'auth.api' => AuthenticateApiToken::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
