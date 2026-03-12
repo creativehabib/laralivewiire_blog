@@ -17,6 +17,7 @@ class SiteMapController extends Controller
                 'tags' => route('api.v1.tags.index'),
                 'pages' => route('api.v1.pages.index'),
                 'comments' => route('api.v1.comments.index'),
+                'app_settings' => route('api.v1.app-settings'),
             ],
         ]);
     }
