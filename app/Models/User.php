@@ -95,15 +95,17 @@ class User extends Authenticatable
     }
 
     /**
+     * @param  array<int, string>  $abilities
      * @return array{plain_text_token: string, token: ApiToken}
      */
-    public function createApiToken(string $name = 'flutter-app', ?\DateTimeInterface $expiresAt = null): array
+    public function createApiToken(string $name = 'flutter-app', ?\DateTimeInterface $expiresAt = null, array $abilities = []): array
     {
         $plainTextToken = Str::random(64);
 
         $token = $this->apiTokens()->create([
             'name' => $name,
             'token_hash' => hash('sha256', $plainTextToken),
+            'abilities' => $abilities,
             'expires_at' => $expiresAt,
         ]);
 
