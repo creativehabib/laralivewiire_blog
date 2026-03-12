@@ -73,7 +73,7 @@
             <div class="grid gap-2 sm:grid-cols-2">
                 @foreach ($scopes as $scopeKey => $scopeLabel)
                     <label class="flex items-start gap-2 rounded-lg border border-slate-200 p-2 text-sm dark:border-slate-700">
-                        <input type="checkbox" wire:model="selected_scopes" value="{{ $scopeKey }}" class="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <input type="checkbox" wire:model="selected_scopes" value="{{ $scopeKey }}" class="mt-0.5 rounded border-slate-300 focus:ring-indigo-500">
                         <span>
                             <span class="font-mono text-xs">{{ $scopeKey }}</span>
                             <span class="block text-slate-500 dark:text-slate-400">{{ __($scopeLabel) }}</span>
@@ -89,7 +89,7 @@
             <button
                 wire:click="generateToken"
                 type="button"
-                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
             >
                 {{ __('Generate API Token') }}
             </button>
