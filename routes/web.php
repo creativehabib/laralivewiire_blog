@@ -25,6 +25,7 @@ use App\Livewire\Admin\Settings\CommentsSettings;
 use App\Livewire\Admin\Settings\CustomCssSettings;
 use App\Livewire\Admin\Settings\CustomHtmlSettings;
 use App\Livewire\Admin\Settings\CustomJsSettings;
+use App\Livewire\Admin\Settings\ApiTokensSettings;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\Settings\HtaccessSettings;
 use App\Livewire\Admin\Settings\RobotsTxt;
@@ -221,6 +222,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::get('/htaccess', HtaccessSettings::class)->name('htaccess')->middleware('permission:setting.view');
         Route::get('/comments', CommentsSettings::class)->name('comments')->middleware('permission:setting.view');
         Route::get('/backups', Backups::class)->name('backups')->middleware('permission:setting.view');
+        Route::get('/api-developer', ApiTokensSettings::class)->name('api-developer')->middleware('permission:setting.view');
     });
 
     Route::prefix('admin')->name('blogs.')->group(function () {

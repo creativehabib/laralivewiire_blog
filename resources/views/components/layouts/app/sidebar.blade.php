@@ -322,6 +322,16 @@
                     {{ __('Backups') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="code-bracket-square"
+                    :href="route('settings.api-developer')"
+                    :current="request()->routeIs('settings.api-developer')"
+                    tooltip="{{ __('API / Developer') }}"
+                    wire:navigate
+                >
+                    {{ __('API / Developer') }}
+                </flux:sidebar.item>
+
             </flux:sidebar.group>
         @endcan
 
