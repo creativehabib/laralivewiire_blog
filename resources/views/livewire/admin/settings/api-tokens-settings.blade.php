@@ -89,7 +89,7 @@
             <button
                 wire:click="generateToken"
                 type="button"
-                class="rounded-lg px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
+                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
             >
                 {{ __('Generate API Token') }}
             </button>
