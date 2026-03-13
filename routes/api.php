@@ -18,6 +18,8 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/', SiteMapController::class)->name('index');
 
         Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+        Route::get('/posts/category-by-posts', [PostController::class, 'categoryByPosts'])->name('posts.category-by-posts');
+        Route::get('/posts/last-modify-posts', [PostController::class, 'lastModifyPosts'])->name('posts.last-modify-posts');
         Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
 
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
