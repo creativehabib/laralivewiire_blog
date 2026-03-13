@@ -11,19 +11,6 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function categoryByPosts(Request $request)
-    {
-        $categories = Category::query()
-            ->withCount('posts')
-            ->having('posts_count', '>', 0)
-            ->orderByDesc('posts_count')
-            ->orderBy('id')
-            ->paginate(max(1, min(100, (int) $request->integer('per_page', 20))))
-            ->withQueryString();
-
-        return CategoryResource::collection($categories);
-    }
-
     public function lastModifyPosts(Request $request)
     {
         $posts = Post::query()

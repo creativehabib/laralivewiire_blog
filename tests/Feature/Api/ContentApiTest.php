@@ -67,11 +67,6 @@ it('serves API index and content endpoints', function () {
         ->assertOk()
         ->assertJsonPath('data.id', $post->id);
 
-
-    $this->getJson('/api/v1/posts/category-by-posts')
-        ->assertOk()
-        ->assertJsonPath('data.0.id', $category->id);
-
     $this->getJson('/api/v1/posts/last-modify-posts')
         ->assertOk()
         ->assertJsonPath('data.0.id', $post->id);
