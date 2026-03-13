@@ -13,6 +13,8 @@ class SiteMapController extends Controller
             'version' => 'v1',
             'endpoints' => [
                 'posts' => route('api.v1.posts.index'),
+                'category_by_posts' => route('api.v1.posts.category-by-posts'),
+                'last_modify_posts' => route('api.v1.posts.last-modify-posts'),
                 'categories' => route('api.v1.categories.index'),
                 'tags' => route('api.v1.tags.index'),
                 'pages' => route('api.v1.pages.index'),
