@@ -29,6 +29,18 @@ it('serves API index and content endpoints', function () {
         'description' => 'Post description',
         'content' => 'Post content',
         'status' => 'published',
+        'views' => 30,
+        'author_id' => $user->id,
+        'author_type' => User::class,
+        'allow_comments' => true,
+    ]);
+
+    $mostPopularPost = Post::create([
+        'name' => 'Most Popular Post',
+        'description' => 'Popular post description',
+        'content' => 'Popular post content',
+        'status' => 'published',
+        'views' => 99,
         'author_id' => $user->id,
         'author_type' => User::class,
         'allow_comments' => true,
@@ -36,6 +48,8 @@ it('serves API index and content endpoints', function () {
 
     $post->categories()->attach($category->id);
     $post->tags()->attach($tag->id);
+    $mostPopularPost->categories()->attach($category->id);
+    $mostPopularPost->tags()->attach($tag->id);
 
     $page = Page::create([
         'name' => 'About',
@@ -61,7 +75,7 @@ it('serves API index and content endpoints', function () {
 
     $this->getJson('/api/v1/posts')
         ->assertOk()
-        ->assertJsonPath('data.0.name', 'API Post');
+        ->assertJsonFragment(['name' => 'API Post']);
 
     $this->getJson('/api/v1/posts/'.$post->slug)
         ->assertOk()
@@ -69,7 +83,11 @@ it('serves API index and content endpoints', function () {
 
     $this->getJson('/api/v1/posts/last-modify-posts')
         ->assertOk()
-        ->assertJsonPath('data.0.id', $post->id);
+        ->assertJsonPath('data.0.id', $mostPopularPost->id);
+
+    $this->getJson('/api/v1/posts/most-popular')
+        ->assertOk()
+        ->assertJsonPath('data.0.id', $mostPopularPost->id);
 
     $this->getJson('/api/v1/categories/'.$category->slug)
         ->assertOk()

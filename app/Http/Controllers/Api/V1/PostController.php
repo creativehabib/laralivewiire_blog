@@ -24,6 +24,22 @@ class PostController extends Controller
         return PostResource::collection($posts);
     }
 
+
+    public function mostPopular(Request $request)
+    {
+        $posts = Post::query()
+            ->with(['author:id,name', 'categories', 'tags'])
+            ->withCount('comments')
+            ->published()
+            ->orderByDesc('views')
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
+            ->paginate(max(1, min(100, (int) $request->integer('per_page', 15))))
+            ->withQueryString();
+
+        return PostResource::collection($posts);
+    }
+
     public function index(Request $request)
     {
         $query = Post::query()
