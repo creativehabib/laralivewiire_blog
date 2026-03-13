@@ -148,6 +148,7 @@
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.posts.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.posts.last-modify-posts') }}</span></li>
+                    <li><span class="font-mono text-xs">GET {{ route('api.v1.posts.most-popular') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.categories.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.tags.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.pages.index') }}</span></li>
