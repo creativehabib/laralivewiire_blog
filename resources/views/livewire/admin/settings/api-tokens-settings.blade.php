@@ -145,11 +145,15 @@
             <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
                 <h3 class="text-sm font-semibold">{{ __('Content Endpoints') }}</h3>
                 <ul class="mt-2 space-y-1 text-sm text-slate-600 dark:text-slate-300">
+                    <li><span class="font-mono text-xs">GET {{ route('api.v1.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.posts.index') }}</span></li>
+                    <li><span class="font-mono text-xs">GET {{ route('api.v1.posts.category-by-posts') }}</span></li>
+                    <li><span class="font-mono text-xs">GET {{ route('api.v1.posts.last-modify-posts') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.categories.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.tags.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.pages.index') }}</span></li>
                     <li><span class="font-mono text-xs">GET {{ route('api.v1.comments.index') }}</span></li>
+                    <li><span class="font-mono text-xs">GET {{ route('api.v1.app-settings') }}</span></li>
                 </ul>
             </div>
         </div>

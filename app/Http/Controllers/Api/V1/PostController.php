@@ -3,12 +3,40 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\CategoryResource;
 use App\Http\Resources\V1\PostResource;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    public function categoryByPosts(Request $request)
+    {
+        $categories = Category::query()
+            ->withCount('posts')
+            ->having('posts_count', '>', 0)
+            ->orderByDesc('posts_count')
+            ->orderBy('id')
+            ->paginate(max(1, min(100, (int) $request->integer('per_page', 20))))
+            ->withQueryString();
+
+        return CategoryResource::collection($categories);
+    }
+
+    public function lastModifyPosts(Request $request)
+    {
+        $posts = Post::query()
+            ->with(['author:id,name', 'categories', 'tags'])
+            ->withCount('comments')
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
+            ->paginate(max(1, min(100, (int) $request->integer('per_page', 15))))
+            ->withQueryString();
+
+        return PostResource::collection($posts);
+    }
+
     public function index(Request $request)
     {
         $query = Post::query()
