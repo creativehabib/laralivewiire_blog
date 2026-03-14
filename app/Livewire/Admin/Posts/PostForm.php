@@ -9,6 +9,7 @@ use App\Support\ActivityLogger;
 use App\Support\SeoAnalyzer;
 use App\Support\SlugService;
 use App\Livewire\Concerns\HandlesSlug;
+use App\Traits\SendsOneSignalNotifications;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -18,6 +19,7 @@ use function Livewire\Volt\title;
 class PostForm extends Component
 {
     use HandlesSlug;
+    use SendsOneSignalNotifications;
 
     public ?Post $post = null;
     public ?int  $postId = null;
@@ -393,6 +395,10 @@ class PostForm extends Component
             ($isNew ? 'created' : 'updated') . ' post "' . $post->name . '"',
             $post
         );
+
+        if ($post->status === 'published') {
+            $this->sendPushNotification($post, $isNew ? 'created' : 'updated');
+        }
 
         // redirect এর পর toast show
         $this->dispatch('media-toast', title: 'success', message: 'Post saved successfully.');
