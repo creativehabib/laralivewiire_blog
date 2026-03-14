@@ -27,7 +27,7 @@ trait SendsOneSignalNotifications
                 'en' => 'New update',
             ],
             'contents' => [
-                'en' => 'নতুন চাকরির খবর: '.$postName,
+                'en' => $postName,
             ],
             'data' => [
                 'post_id' => (int) ($post->id ?? 0),
