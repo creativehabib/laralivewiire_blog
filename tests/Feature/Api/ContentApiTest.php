@@ -17,6 +17,13 @@ it('serves API index and content endpoints', function () {
         'author_type' => User::class,
     ]);
 
+    $draftCategory = Category::create([
+        'name' => 'Draft Category',
+        'status' => 'draft',
+        'author_id' => $user->id,
+        'author_type' => User::class,
+    ]);
+
     $tag = Tag::create([
         'name' => 'Laravel',
         'status' => 'published',
@@ -46,10 +53,22 @@ it('serves API index and content endpoints', function () {
         'allow_comments' => true,
     ]);
 
+    $draftPost = Post::create([
+        'name' => 'Draft Post',
+        'description' => 'Draft description',
+        'content' => 'Draft content',
+        'status' => 'draft',
+        'views' => 200,
+        'author_id' => $user->id,
+        'author_type' => User::class,
+        'allow_comments' => true,
+    ]);
+
     $post->categories()->attach($category->id);
     $post->tags()->attach($tag->id);
     $mostPopularPost->categories()->attach($category->id);
     $mostPopularPost->tags()->attach($tag->id);
+    $draftPost->categories()->attach($draftCategory->id);
 
     $page = Page::create([
         'name' => 'About',
@@ -75,15 +94,19 @@ it('serves API index and content endpoints', function () {
 
     $this->getJson('/api/v1/posts')
         ->assertOk()
-        ->assertJsonFragment(['name' => 'API Post']);
+        ->assertJsonFragment(['name' => 'API Post'])
+        ->assertJsonMissing(['name' => 'Draft Post']);
 
     $this->getJson('/api/v1/posts/'.$post->slug)
         ->assertOk()
         ->assertJsonPath('data.id', $post->id);
 
+    $this->getJson('/api/v1/posts/'.$draftPost->slug)
+        ->assertNotFound();
+
     $this->getJson('/api/v1/posts/last-modify-posts')
         ->assertOk()
-        ->assertJsonPath('data.0.id', $mostPopularPost->id);
+        ->assertJsonMissing(['name' => 'Draft Post']);
 
     $this->getJson('/api/v1/posts/most-popular')
         ->assertOk()
@@ -92,6 +115,9 @@ it('serves API index and content endpoints', function () {
     $this->getJson('/api/v1/categories/'.$category->slug)
         ->assertOk()
         ->assertJsonPath('data.id', $category->id);
+
+    $this->getJson('/api/v1/categories/'.$draftCategory->slug)
+        ->assertNotFound();
 
     $this->getJson('/api/v1/tags/'.$tag->slug)
         ->assertOk()
