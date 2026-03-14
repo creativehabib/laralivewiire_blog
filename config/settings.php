@@ -972,6 +972,53 @@ return [
             ],
         ],
 
+
+        'onesignal' => [
+            'title' => 'OneSignal Notifications',
+            'permission' => 'setting.view',
+            'fields' => [
+                [
+                    'key' => 'onesignal_enabled',
+                    'label' => 'Enable OneSignal notifications',
+                    'type' => 'switch',
+                    'default' => false,
+                    'rules' => ['boolean'],
+                    'hint' => 'Enable push notifications when a post is created or updated.',
+                ],
+                [
+                    'key' => 'onesignal_app_id',
+                    'label' => 'OneSignal App ID',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'onesignal_enabled' => true,
+                    ],
+                ],
+                [
+                    'key' => 'onesignal_rest_api_key',
+                    'label' => 'OneSignal REST API Key',
+                    'type' => 'text',
+                    'default' => '',
+                    'rules' => ['nullable', 'string', 'max:255'],
+                    'visible_when' => [
+                        'onesignal_enabled' => true,
+                    ],
+                ],
+                [
+                    'key' => 'onesignal_included_segment',
+                    'label' => 'Included segment',
+                    'type' => 'text',
+                    'default' => 'All',
+                    'rules' => ['nullable', 'string', 'max:50'],
+                    'visible_when' => [
+                        'onesignal_enabled' => true,
+                    ],
+                    'hint' => 'Default segment is All. You can use a custom OneSignal segment name.',
+                ],
+            ],
+        ],
+
         'cache' => [
             'title'      => 'Cache Configuration',
             'permission' => 'setting.view',
