@@ -14,6 +14,7 @@ class PostController extends Controller
         $posts = Post::query()
             ->with(['author:id,name', 'categories', 'tags'])
             ->withCount('comments')
+            ->published()
             ->orderByDesc('updated_at')
             ->orderByDesc('id')
             ->paginate(max(1, min(100, (int) $request->integer('per_page', 15))))
@@ -42,11 +43,8 @@ class PostController extends Controller
     {
         $query = Post::query()
             ->with(['author:id,name', 'categories', 'tags'])
-            ->withCount('comments');
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->string('status'));
-        }
+            ->withCount('comments')
+            ->published();
 
         if ($request->filled('search')) {
             $search = trim((string) $request->string('search'));
@@ -86,8 +84,11 @@ class PostController extends Controller
         $post = Post::query()
             ->with(['author:id,name', 'categories', 'tags'])
             ->withCount('comments')
-            ->where('id', $slug)
-            ->orWhereHas('slugRecord', fn ($q) => $q->where('key', $slug))
+            ->published()
+            ->where(function ($query) use ($slug): void {
+                $query->where('id', $slug)
+                    ->orWhereHas('slugRecord', fn ($q) => $q->where('key', $slug));
+            })
             ->firstOrFail();
 
         return PostResource::make($post);

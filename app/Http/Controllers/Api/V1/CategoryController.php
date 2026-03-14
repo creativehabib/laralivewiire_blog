@@ -13,7 +13,7 @@ class CategoryController extends Controller
     {
         $categories = Category::query()
             ->withCount(['posts', 'children'])
-            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
+            ->where('status', 'published')
             ->when($request->boolean('featured_only'), fn ($q) => $q->where('is_featured', true))
             ->orderBy('order')
             ->orderBy('id')
@@ -27,8 +27,11 @@ class CategoryController extends Controller
     {
         $category = Category::query()
             ->withCount(['posts', 'children'])
-            ->where('id', $slug)
-            ->orWhereHas('slugRecord', fn ($q) => $q->where('key', $slug))
+            ->where('status', 'published')
+            ->where(function ($query) use ($slug): void {
+                $query->where('id', $slug)
+                    ->orWhereHas('slugRecord', fn ($q) => $q->where('key', $slug));
+            })
             ->firstOrFail();
 
         return CategoryResource::make($category);
