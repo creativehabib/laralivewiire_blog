@@ -24,7 +24,7 @@ trait SendsOneSignalNotifications
             'app_id' => $appId,
             'included_segments' => [$includedSegment],
             'headings' => [
-                'en' => 'New update',
+                'en' => '',
             ],
             'contents' => [
                 'en' => $postName,
