@@ -341,7 +341,9 @@
     .ck-content table thead {
         background: color-mix(in srgb, currentColor 6%, transparent);
     }
-
+    .cke_editable img{
+        width: 100%;
+    }
     .typography video,
     .typography iframe {
         border-radius: 0.5rem;
