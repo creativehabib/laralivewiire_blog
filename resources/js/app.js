@@ -109,6 +109,51 @@ window.setupCkeditorBase = function(hippoApiKey) {
     }
 };
 
+window.getCkeditorContentsCss = function ({ isDarkMode = false } = {}) {
+    const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
+    const textColor = isDarkMode ? '#f1f5f9' : '#1e293b';
+    const linkColor = isDarkMode ? '#38bdf8' : '#0ea5e9';
+    const inlineCss = `
+        body {
+            background-color: ${bgColor};
+            color: ${textColor};
+            font-family: ui-sans-serif, system-ui, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        a {
+            color: ${linkColor};
+        }
+
+        .cke_editable,
+        .cke_editable * {
+            box-sizing: border-box;
+        }
+
+        .cke_editable img,
+        .cke_editable input,
+        .cke_editable textarea,
+        .cke_editable iframe,
+        .cke_editable table {
+            max-width: 100% !important;
+        }
+
+        .cke_editable img {
+            height: auto !important;
+        }
+
+        .cke_editable table {
+            width: 100% !important;
+        }
+    `;
+
+    return [
+        '/ckeditor/contents.css',
+        `data:text/css;charset=utf-8,${encodeURIComponent(inlineCss)}`
+    ];
+};
+
 const deleteConfirmState = {
     modal: null,
     titleEl: null,

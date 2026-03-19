@@ -385,9 +385,6 @@
             }
             const textareas = document.querySelectorAll('.ck-editor-instance');
             const isDarkMode = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
-            const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
-            const textColor = isDarkMode ? '#f1f5f9' : '#1e293b';
-
             textareas.forEach(textarea => {
                 const id = textarea.id;
                 const dataKey = textarea.getAttribute('data-key');
@@ -400,10 +397,7 @@
                     height: 250,
                     // কাস্টম প্লাগইন যুক্ত করা
                     extraPlugins: 'ImageManager,notification',
-                    contentsCss: [
-                        `body { background-color: ${bgColor}; color: ${textColor}; font-family: ui-sans-serif, system-ui, sans-serif; padding: 20px; line-height: 1.6; }`,
-                        'a { color: #38bdf8; }'
-                    ],
+                    contentsCss: window.getCkeditorContentsCss?.({ isDarkMode }) ?? ['/ckeditor/contents.css'],
                     removeButtons: 'Save,NewPage,Preview,Print,Templates,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image', // ডিফল্ট Image বাটন সরিয়ে কাস্টমটি ব্যবহার করছি
                     toolbarGroups: [
                         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },

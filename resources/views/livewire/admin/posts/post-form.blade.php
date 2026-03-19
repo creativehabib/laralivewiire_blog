@@ -480,19 +480,13 @@
 
             // মোড ডিটেক্ট করা
             const isDarkMode = document.documentElement.classList.contains('dark');
-            const bgColor = isDarkMode ? '#0f172a' : '#ffffff';
-            const textColor = isDarkMode ? '#f1f5f9' : '#1e293b';
-
             if (CKEDITOR.instances.content) {
                 CKEDITOR.instances.content.destroy(true);
             }
 
             const editor = CKEDITOR.replace('content', {
                 // ডাইনামিক CSS ইনজেক্ট করা
-                contentsCss: [
-                    `body { background-color: ${bgColor}; color: ${textColor}; font-family: sans-serif; padding: 20px; line-height: 1.6; }`,
-                    'a { color: #38bdf8; }'
-                ],
+                contentsCss: window.getCkeditorContentsCss?.({ isDarkMode }) ?? ['/ckeditor/contents.css'],
                 // আপনার বাকি সব কনফিগ এখানে থাকবে...
                 height: 400,
                 extraPlugins: 'imagemenu,ImgHippoUploader,mathjax,tableresize,wordcount,notification,ImageManager,codesnippet,embed',
@@ -549,4 +543,3 @@
         });
     </script>
 @endpush
-
