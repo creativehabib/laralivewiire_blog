@@ -341,7 +341,8 @@
     .ck-content table thead {
         background: color-mix(in srgb, currentColor 6%, transparent);
     }
-    .cke_editable img{
+    .cke_editable img, .cke_editable input, .cke_editable textarea {
+        cursor: pointer;
         width: 100%;
     }
     .typography video,
