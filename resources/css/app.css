@@ -343,7 +343,7 @@
     }
     .cke_editable img, .cke_editable input, .cke_editable textarea {
         cursor: pointer;
-        width: 100%;
+        width: 100% !important;
     }
     .typography video,
     .typography iframe {
