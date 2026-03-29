@@ -16,6 +16,26 @@
             </h1>
 
             @if($searchEngineId === '')
+                <form action="{{ route('google.search') }}" method="GET" class="mb-5">
+                    <label for="fallback-search-input" class="sr-only">{{ __('Search') }}</label>
+                    <div class="flex items-center gap-2">
+                        <input
+                            id="fallback-search-input"
+                            name="q"
+                            type="search"
+                            value="{{ $query }}"
+                            placeholder="{{ __('Type keywords...') }}"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary focus:ring-primary/40 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                        >
+                        <button
+                            type="submit"
+                            class="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-white hover:opacity-90"
+                        >
+                            {{ __('Search') }}
+                        </button>
+                    </div>
+                </form>
+
                 @if($query === '')
                     <div class="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
                         {{ __('Google Search Engine ID is not configured yet. Showing local search results.') }}
