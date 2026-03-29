@@ -41,10 +41,6 @@ class LiveSearch extends Component
 
     public function goToSearchResults()
     {
-        if (! $this->useGoogleSearch) {
-            return null;
-        }
-
         $term = trim($this->query);
 
         if ($term === '') {
