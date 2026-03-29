@@ -24,9 +24,7 @@
                 x-ref="searchInput"
                 x-model="localQuery"
                 type="search"
-                @if($useGoogleSearch)
-                    wire:keydown.enter="goToSearchResultsFromInput($event.target.value)"
-                @endif
+                wire:keydown.enter="goToSearchResultsFromInput($event.target.value)"
                 x-on:keydown.escape.stop="open = false"
                 autocomplete="off"
                 placeholder="{{ $placeholder }}"
@@ -34,7 +32,7 @@
             />
 
             <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                @if($useGoogleSearch && $query !== '')
+                @if($query !== '')
                     <button
                         type="button"
                         wire:click="goToSearchResults"

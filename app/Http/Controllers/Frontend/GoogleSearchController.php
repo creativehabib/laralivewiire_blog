@@ -12,6 +12,7 @@ class GoogleSearchController extends Controller
     public function __invoke(Request $request)
     {
         $query = trim((string) $request->query('q', ''));
+        $searchEngineId = trim((string) setting('google_search_engine_id', ''));
 
         $latestPosts = Post::query()
             ->published()
@@ -26,9 +27,21 @@ class GoogleSearchController extends Controller
             ->limit(6)
             ->get();
 
+        $fallbackResults = collect();
+
+        if ($searchEngineId === '' && $query !== '') {
+            $fallbackResults = Post::query()
+                ->published()
+                ->where('name', 'like', "%{$query}%")
+                ->latest('created_at')
+                ->limit(20)
+                ->get();
+        }
+
         return view('frontend.google-search', [
             'query' => $query,
-            'searchEngineId' => trim((string) setting('google_search_engine_id', '')),
+            'searchEngineId' => $searchEngineId,
+            'fallbackResults' => $fallbackResults,
             'latestPosts' => $latestPosts,
             'popularPosts' => $popularPosts,
             'seo' => Seo::forHomepage([
