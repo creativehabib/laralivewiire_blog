@@ -1,5 +1,5 @@
 <div
-    x-data="{ open: false, localQuery: @js($query) }"
+    x-data="{ open: $wire.entangle('isOpen'), localQuery: $wire.entangle('query').live }"
     class="relative {{ $wrapperClass }}"
     @click.outside="open = false"
 >
@@ -23,7 +23,6 @@
                 id="{{ $inputId }}"
                 x-ref="searchInput"
                 x-model="localQuery"
-                @input.debounce.300ms="$wire.search(localQuery)"
                 type="search"
                 @if($useGoogleSearch)
                     wire:keydown.enter="goToSearchResultsFromInput($event.target.value)"

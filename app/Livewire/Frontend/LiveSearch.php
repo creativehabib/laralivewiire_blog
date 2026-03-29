@@ -7,6 +7,7 @@ use Livewire\Component;
 
 class LiveSearch extends Component
 {
+    public bool $isOpen = false;
     public string $query = '';
     public int $limit = 6;
     public string $wrapperClass = '';
@@ -27,6 +28,7 @@ class LiveSearch extends Component
 
     public function clear(): void
     {
+        $this->isOpen = false;
         $this->reset('query');
     }
 
