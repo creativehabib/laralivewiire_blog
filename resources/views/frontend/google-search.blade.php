@@ -16,8 +16,32 @@
             </h1>
 
             @if($searchEngineId === '')
-                <div class="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
-                    {{ __('Google Search Engine ID is not configured yet. Please add it from Theme Options → SEO & Social.') }}
+                @if($query === '')
+                    <div class="rounded-xl border border-amber-200 bg-amber-50 text-amber-800 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
+                        {{ __('Google Search Engine ID is not configured yet. Showing local search results.') }}
+                    </div>
+                @endif
+
+                <div class="mt-6">
+                    @if($query === '')
+                        <p class="text-sm text-slate-500 dark:text-slate-300">{{ __('Type something in the search box to see results.') }}</p>
+                    @elseif($fallbackResults->isEmpty())
+                        <p class="text-sm text-slate-500 dark:text-slate-300">{{ __('No results found for') }} "{{ $query }}".</p>
+                    @else
+                        <ul class="space-y-4">
+                            @foreach($fallbackResults as $post)
+                                <li class="border border-slate-100 dark:border-slate-700/60 rounded-xl p-3">
+                                    <a href="{{ post_permalink($post) }}" class="flex gap-3 items-start">
+                                        <img src="{{ $post->image_url }}" class="w-24 h-16 object-cover rounded-md" alt="{{ $post->name }}">
+                                        <div class="flex-1">
+                                            <h3 class="font-semibold leading-snug text-slate-900 dark:text-slate-100 line-clamp-2">{{ $post->name }}</h3>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ $post->created_at?->diffForHumans() }}</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
             @else
                 <div class="mt-6">
