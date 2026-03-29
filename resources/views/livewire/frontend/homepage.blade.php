@@ -353,7 +353,7 @@
     <aside class="lg:col-span-4 lg:sticky lg:top-24 self-start" wire:loading.remove>
         <div class="space-y-6">
 
-            <livewire:ramadan-times />
+{{--            <livewire:ramadan-times />--}}
 
             <x-frontends.news-tabs-widget />
 
