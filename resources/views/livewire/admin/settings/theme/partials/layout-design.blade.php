@@ -21,13 +21,59 @@
                        placeholder="300;400;500;600;700">
             </div>
         </div>
-        <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Body Font Size') }}</label>
-            <select wire:model="body_font_size" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
-                @foreach(['14px', '15px', '16px', '17px', '18px', '20px'] as $size)
-                    <option value="{{ $size }}">{{ $size }}</option>
-                @endforeach
-            </select>
+    <div>
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Body Font Size') }}</label>
+        <select wire:model="body_font_size" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+            @foreach(['14px', '15px', '16px', '17px', '18px', '20px'] as $size)
+                <option value="{{ $size }}">{{ $size }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+    <div class="space-y-4 border-t border-slate-200 dark:border-slate-700 pt-6">
+        <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-200">{{ __('Scroll To Top Button') }}</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <label class="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+                <span class="text-sm text-slate-700 dark:text-slate-300">{{ __('Enable button') }}</span>
+                <input type="checkbox" wire:model.live="layout.scroll_to_top.enabled" class="h-4 w-4 text-indigo-600 border-slate-300 rounded">
+            </label>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Scroll Speed (ms)') }}</label>
+                <input type="number" min="100" step="50" wire:model="layout.scroll_to_top.speed"
+                       class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Button Color') }}</label>
+                <input type="color" wire:model="layout.scroll_to_top.color"
+                       class="h-10 w-full px-2 py-1 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Icon Color') }}</label>
+                <input type="color" wire:model="layout.scroll_to_top.icon_color"
+                       class="h-10 w-full px-2 py-1 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Shape') }}</label>
+                <select wire:model="layout.scroll_to_top.shape"
+                        class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                    <option value="circle">{{ __('Circle') }}</option>
+                    <option value="rectangle">{{ __('Rectangle') }}</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Side Position') }}</label>
+                <select wire:model="layout.scroll_to_top.side"
+                        class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                    <option value="right">{{ __('Right') }}</option>
+                    <option value="left">{{ __('Left') }}</option>
+                </select>
+            </div>
         </div>
     </div>
 
