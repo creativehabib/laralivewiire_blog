@@ -90,6 +90,14 @@
         </div>
 
         <div class="container px-0">
+            <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-700">
+                <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">মেনু</p>
+                <button id="mobileMenuClose"
+                        aria-label="Close navigation"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
             <livewire:frontend.live-search
                 :wire:key="'live-search-mobile'"
                 wrapper-class="w-full mb-4"
