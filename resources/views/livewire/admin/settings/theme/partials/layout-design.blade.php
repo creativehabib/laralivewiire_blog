@@ -34,10 +34,13 @@
     <div class="space-y-4 border-t border-slate-200 dark:border-slate-700 pt-6">
         <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-200">{{ __('Scroll To Top Button') }}</h3>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <label class="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+            <div class="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
                 <span class="text-sm text-slate-700 dark:text-slate-300">{{ __('Enable button') }}</span>
-                <input type="checkbox" wire:model.live="layout.scroll_to_top.enabled" class="h-4 w-4 text-indigo-600 border-slate-300 rounded">
-            </label>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" wire:model.live="layout.scroll_to_top.enabled" class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+            </div>
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Scroll Speed (ms)') }}</label>
