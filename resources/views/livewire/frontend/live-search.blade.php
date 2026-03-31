@@ -14,7 +14,7 @@
             <i class="fa-solid fa-magnifying-glass text-sm"></i>
         </button>
     </div>
-    <div class="absolute right-0 top-full z-50 mt-2 w-[280px] sm:w-[320px]" x-show="open" x-transition x-cloak>
+    <div class="absolute right-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-1.5rem))] max-w-full" x-show="open" x-transition.origin.top.right x-cloak>
         <div class="relative rounded-lg border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
             <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -61,7 +61,7 @@
     @if(! $useGoogleSearch)
         <div x-show="open" x-transition x-cloak>
             @if($term !== '' && mb_strlen($term) >= 1)
-                <div class="absolute right-0 top-[calc(100%+4.25rem)] z-50 w-[280px] sm:w-[320px] rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div class="absolute right-0 top-[calc(100%+4.25rem)] z-50 w-[min(22rem,calc(100vw-1.5rem))] max-w-full rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
                     <div class="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
                         {{ __('Search results') }}
                     </div>
@@ -98,7 +98,7 @@
                     @endif
                 </div>
             @elseif($term !== '')
-                <div class="absolute right-0 top-[calc(100%+4.25rem)] z-50 w-[280px] sm:w-[320px] rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div class="absolute right-0 top-[calc(100%+4.25rem)] z-50 w-[min(22rem,calc(100vw-1.5rem))] max-w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-xl dark:border-slate-700 dark:bg-slate-900">
                     {{ __('Type at least 1 character to search.') }}
                 </div>
             @endif
