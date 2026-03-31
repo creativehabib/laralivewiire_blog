@@ -63,12 +63,78 @@ function addUniqueListener(element, eventName, handlerKey, handler) {
 function initMobileMenu() {
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
 
     if (!mobileMenuButton || !mobileMenu) return;
 
-    // বাটনে ক্লিক করলে hidden ক্লাস টগল হবে
-    addUniqueListener(mobileMenuButton, 'click', '__mobileMenuHandler', () => {
-        mobileMenu.classList.toggle('hidden');
+    function openMobileMenu() {
+        window.clearTimeout(mobileMenu.__hideTimer);
+
+        mobileMenu.classList.remove('hidden');
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.classList.remove('hidden');
+        }
+
+        requestAnimationFrame(() => {
+            mobileMenu.classList.remove('-translate-x-full');
+        });
+        mobileMenu.setAttribute('aria-hidden', 'false');
+        mobileMenuButton.setAttribute('aria-expanded', 'true');
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            mobileMenuOverlay.setAttribute('aria-hidden', 'false');
+        }
+
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeMobileMenu() {
+        mobileMenu.classList.add('-translate-x-full');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.classList.add('opacity-0', 'pointer-events-none');
+            mobileMenuOverlay.setAttribute('aria-hidden', 'true');
+        }
+
+        document.body.classList.remove('overflow-hidden');
+
+        window.clearTimeout(mobileMenu.__hideTimer);
+        mobileMenu.__hideTimer = window.setTimeout(() => {
+            mobileMenu.classList.add('hidden');
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.classList.add('hidden');
+            }
+        }, 320);
+    }
+
+    function toggleMobileMenu() {
+        const isClosed = mobileMenu.classList.contains('-translate-x-full');
+        if (isClosed) {
+            openMobileMenu();
+            return;
+        }
+
+        closeMobileMenu();
+    }
+
+    addUniqueListener(mobileMenuButton, 'click', '__mobileMenuHandler', toggleMobileMenu);
+    addUniqueListener(mobileMenuClose, 'click', '__mobileMenuCloseHandler', closeMobileMenu);
+    addUniqueListener(mobileMenuOverlay, 'click', '__mobileMenuOverlayHandler', closeMobileMenu);
+
+    addUniqueListener(document, 'keydown', '__mobileMenuEscHandler', (event) => {
+        if (event.key === 'Escape') {
+            closeMobileMenu();
+        }
+    });
+
+    addUniqueListener(window, 'resize', '__mobileMenuResizeHandler', () => {
+        if (window.innerWidth >= 768) {
+            closeMobileMenu();
+        }
     });
 }
 
@@ -304,9 +370,26 @@ document.addEventListener('livewire:load', runInitPageInteractions);
 document.addEventListener('livewire:navigated', () => {
     // নতুন পেজে গেলে যেন মোবাইল মেনু সবসময় বন্ধ অবস্থায় থাকে
     const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+    if (mobileMenu && !mobileMenu.classList.contains('-translate-x-full')) {
+        mobileMenu.classList.add('-translate-x-full');
         mobileMenu.classList.add('hidden');
+        mobileMenu.setAttribute('aria-hidden', 'true');
     }
+
+    if (mobileMenuButton) {
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+    }
+
+    if (mobileMenuOverlay) {
+        mobileMenuOverlay.classList.add('hidden');
+        mobileMenuOverlay.classList.add('opacity-0', 'pointer-events-none');
+        mobileMenuOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    document.body.classList.remove('overflow-hidden');
 
     runInitPageInteractions();
 });
