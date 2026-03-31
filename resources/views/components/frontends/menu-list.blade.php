@@ -73,21 +73,32 @@
                     $target = data_get($item, 'target', '_self');
                     $hasChildren = $children->isNotEmpty();
                 @endphp
-                <div class="flex flex-col gap-1">
+                @if($hasChildren)
+                    <details class="group rounded-lg border border-slate-200/70 bg-white/90 open:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:open:bg-slate-800/70 transition-colors">
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 marker:content-none">
+                            <span>{{ $title }}</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 transition-transform duration-200 group-open:rotate-180"></i>
+                        </summary>
+
+                        <div class="px-3 pb-3">
+                            <a href="{{ $url }}"
+                               target="{{ $target }}"
+                               class="mb-2 inline-flex items-center text-xs font-medium text-primary-dark underline-offset-2 hover:underline dark:text-primary-light">
+                                সব দেখুন
+                            </a>
+
+                            <div class="ml-2 border-l border-slate-200 pl-3 dark:border-slate-700">
+                                <x-frontends.menu-list :items="$children" variant="mobile" />
+                            </div>
+                        </div>
+                    </details>
+                @else
                     <a href="{{ $url }}"
                        target="{{ $target }}"
-                       class="flex items-center justify-between gap-2 px-2 py-2 rounded-md text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                       class="flex items-center justify-between gap-2 rounded-md px-2 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
                         <span>{{ $title }}</span>
-                        @if($hasChildren)
-                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                        @endif
                     </a>
-                    @if($hasChildren)
-                        <div class="ml-4 border-l border-slate-200 dark:border-slate-700 pl-3">
-                            <x-frontends.menu-list :items="$children" variant="mobile" />
-                        </div>
-                    @endif
-                </div>
+                @endif
             @endforeach
         </div>
     @elseif($variant === 'footer')
