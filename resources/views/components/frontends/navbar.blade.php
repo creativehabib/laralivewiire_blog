@@ -84,11 +84,11 @@
         <x-frontends.breaking-ticker-bar />
     @endif
     <div id="mobileMenuOverlay"
-         class="md:hidden fixed inset-0 z-40 bg-slate-900/45 backdrop-blur-[1px] opacity-0 pointer-events-none transition-opacity duration-300 ease-out"
+         class="md:hidden fixed inset-0 z-40 hidden bg-slate-900/45 backdrop-blur-[1px] opacity-0 pointer-events-none transition-opacity duration-300 ease-out"
          aria-hidden="true"></div>
 
     <nav id="mobileMenu"
-         class="md:hidden fixed left-0 top-0 z-50 h-dvh w-[86%] max-w-sm overflow-y-auto bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 px-4 pt-4 pb-6 space-y-1 shadow-2xl -translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+         class="md:hidden fixed left-0 top-0 z-50 hidden h-dvh w-[86%] max-w-sm overflow-y-auto bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 px-4 pt-4 pb-6 space-y-1 shadow-2xl -translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
          aria-hidden="true">
         <div class="container px-0">
             <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-700">
