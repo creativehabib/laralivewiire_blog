@@ -131,6 +131,39 @@ class ThemeOptionsSetting extends Component
             'search_toggle' => filter_var(setting('search_toggle', true), FILTER_VALIDATE_BOOLEAN),
         ];
 
+        // Layout & Scroll To Top Settings
+        $scrollToTop = setting('scroll_to_top', []);
+        $legacyScrollToTop = [
+            'enabled' => filter_var(setting('scroll_to_top_enabled', true), FILTER_VALIDATE_BOOLEAN),
+            'color' => (string) setting('scroll_to_top_color', '#2563eb'),
+            'icon_color' => (string) setting('scroll_to_top_icon_color', '#ffffff'),
+            'shape' => (string) setting('scroll_to_top_shape', 'circle'),
+            'side' => (string) setting('scroll_to_top_side', 'right'),
+            'speed' => (int) setting('scroll_to_top_speed', 500),
+        ];
+
+        if (! is_array($scrollToTop)) {
+            $scrollToTop = [];
+        }
+
+        $scrollToTop = array_merge($legacyScrollToTop, $scrollToTop);
+
+        $this->layout = [
+            'primary_theme_color' => (string) setting('primary_theme_color', '#2563eb'),
+            'dark_mode_enabled' => filter_var(setting('dark_mode_enabled', false), FILTER_VALIDATE_BOOLEAN),
+            'scroll_to_top' => [
+                'enabled' => filter_var($scrollToTop['enabled'] ?? true, FILTER_VALIDATE_BOOLEAN),
+                'color' => (string) ($scrollToTop['color'] ?? '#2563eb'),
+                'icon_color' => (string) ($scrollToTop['icon_color'] ?? '#ffffff'),
+                'shape' => (string) ($scrollToTop['shape'] ?? 'circle'),
+                'side' => (string) ($scrollToTop['side'] ?? 'right'),
+                'speed' => (int) ($scrollToTop['speed'] ?? 500),
+            ],
+        ];
+        $this->categoryColors = is_array(setting('category_colors', []))
+            ? setting('category_colors', [])
+            : [];
+
 
         // ==========================================
         // UPDATE START: Post Settings (Dynamic & Layout)
@@ -252,6 +285,14 @@ class ThemeOptionsSetting extends Component
     {
         set_setting('primary_theme_color', $this->layout['primary_theme_color'] ?? '#2563eb', 'theme-options');
         set_setting('dark_mode_enabled', filter_var($this->layout['dark_mode_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN), 'theme-options');
+        set_setting('scroll_to_top', [
+            'enabled' => filter_var($this->layout['scroll_to_top']['enabled'] ?? true, FILTER_VALIDATE_BOOLEAN),
+            'color' => (string) ($this->layout['scroll_to_top']['color'] ?? '#2563eb'),
+            'icon_color' => (string) ($this->layout['scroll_to_top']['icon_color'] ?? '#ffffff'),
+            'shape' => (string) ($this->layout['scroll_to_top']['shape'] ?? 'circle'),
+            'side' => (string) ($this->layout['scroll_to_top']['side'] ?? 'right'),
+            'speed' => max(100, (int) ($this->layout['scroll_to_top']['speed'] ?? 500)),
+        ], 'theme-options');
         set_setting('category_colors', $this->categoryColors, 'theme-options');
         set_setting('primary_font', trim($this->primary_font), 'theme-options');
         set_setting('primary_font_weights', trim($this->primary_font_weights), 'theme-options');
