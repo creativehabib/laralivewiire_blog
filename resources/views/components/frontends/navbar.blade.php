@@ -21,14 +21,11 @@
         $primaryMenuItems = $primaryMenu?->items ?? collect();
     @endphp
     <div class="container flex items-center justify-between px-4 py-3">
-        <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
-            <span class="sr-only">Toggle navigation</span>
-            <div class="space-y-1.5">
-                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-            </div>
-        </button>
+        <flux:sidebar.toggle
+            class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 text-slate-700 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800/80"
+            icon="bars-2"
+            inset="left"
+        />
 
         <a href="{{ route('home') }}" class="flex items-center gap-2 md:mr-auto md:ml-0 mx-auto md:mx-0">
             @if($siteLogoLight)
@@ -68,7 +65,7 @@
             </nav>
             <livewire:frontend.live-search
                 :wire:key="'live-search-desktop'"
-                wrapper-class="hidden lg:block w-64 xl:w-72"
+                wrapper-class="hidden md:block w-44 lg:w-64 xl:w-72"
             />
 
             <button id="themeToggle" aria-label="Toggle Dark Mode" class="inline-flex cursor-pointer items-center justify-center w-9 h-9 rounded-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
@@ -80,13 +77,23 @@
     @if(setting('breaking_news_position', 'top') === 'top')
         <x-frontends.breaking-ticker-bar />
     @endif
-    <nav id="mobileMenu"
-         class="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 px-4 pt-2 pb-4 space-y-1 hidden">
+    <flux:sidebar stashable sticky class="md:hidden border-e border-slate-200 bg-white/95 backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
+        <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-700">
+            <a href="{{ route('home') }}" class="flex items-center gap-2" wire:navigate>
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">NP</span>
+                <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">নেভিগেশন</span>
+            </a>
+            <flux:sidebar.toggle
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
+                icon="x-mark"
+            />
+        </div>
+
         <div class="container px-0">
             <livewire:frontend.live-search
                 :wire:key="'live-search-mobile'"
-                wrapper-class="w-full mb-3"
-                input-class="w-full"
+                wrapper-class="w-full mb-4"
+                input-class="w-full rounded-xl"
                 input-id="frontend-live-search-mobile"
             />
 
@@ -101,5 +108,5 @@
                 @endforeach
             @endif
         </div>
-    </nav>
+    </flux:sidebar>
 </header>
