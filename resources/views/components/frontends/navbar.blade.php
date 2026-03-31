@@ -21,7 +21,10 @@
         $primaryMenuItems = $primaryMenu?->items ?? collect();
     @endphp
     <div class="container flex items-center justify-between px-4 py-3">
-        <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
+        <button id="mobileMenuButton"
+                aria-controls="mobileMenu"
+                aria-expanded="false"
+                class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600 transition hover:bg-slate-100 dark:hover:bg-slate-800/80 focus:outline-none focus:ring-2 focus:ring-primary-dark/40">
             <span class="sr-only">Toggle navigation</span>
             <div class="space-y-1.5">
                 <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
@@ -80,9 +83,22 @@
     @if(setting('breaking_news_position', 'top') === 'top')
         <x-frontends.breaking-ticker-bar />
     @endif
+    <div id="mobileMenuOverlay"
+         class="md:hidden fixed inset-0 z-40 bg-slate-900/45 backdrop-blur-[1px] opacity-0 pointer-events-none transition-opacity duration-300 ease-out"
+         aria-hidden="true"></div>
+
     <nav id="mobileMenu"
-         class="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 px-4 pt-2 pb-4 space-y-1 hidden">
+         class="md:hidden fixed left-0 top-0 z-50 h-dvh w-[86%] max-w-sm overflow-y-auto bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 px-4 pt-4 pb-6 space-y-1 shadow-2xl -translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+         aria-hidden="true">
         <div class="container px-0">
+            <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-700">
+                <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">মেনু</p>
+                <button id="mobileMenuClose"
+                        aria-label="Close navigation"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
             <livewire:frontend.live-search
                 :wire:key="'live-search-mobile'"
                 wrapper-class="w-full mb-3"
