@@ -21,14 +21,11 @@
         $primaryMenuItems = $primaryMenu?->items ?? collect();
     @endphp
     <div class="container flex items-center justify-between px-4 py-3">
-        <button id="mobileMenuButton" class="md:hidden inline-flex items-center justify-center w-10 h-10 border rounded-lg border-slate-300 dark:border-slate-600">
-            <span class="sr-only">Toggle navigation</span>
-            <div class="space-y-1.5">
-                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-                <span class="block w-5 h-0.5 bg-slate-800 dark:bg-slate-100"></span>
-            </div>
-        </button>
+        <flux:sidebar.toggle
+            class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 text-slate-700 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800/80"
+            icon="bars-2"
+            inset="left"
+        />
 
         <a href="{{ route('home') }}" class="flex items-center gap-2 md:mr-auto md:ml-0 mx-auto md:mx-0">
             @if($siteLogoLight)
@@ -80,8 +77,15 @@
     @if(setting('breaking_news_position', 'top') === 'top')
         <x-frontends.breaking-ticker-bar />
     @endif
-    <nav id="mobileMenu"
-         class="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 px-4 pt-2 pb-4 space-y-1 hidden">
+    <flux:sidebar stashable sticky class="md:hidden border-e border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+        <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-700">
+            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">মেনু</p>
+            <flux:sidebar.toggle
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
+                icon="x-mark"
+            />
+        </div>
+
         <div class="container px-0">
             <livewire:frontend.live-search
                 :wire:key="'live-search-mobile'"
@@ -101,5 +105,5 @@
                 @endforeach
             @endif
         </div>
-    </nav>
+    </flux:sidebar>
 </header>

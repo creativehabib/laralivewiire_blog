@@ -61,15 +61,8 @@ function addUniqueListener(element, eventName, handlerKey, handler) {
 // মোবাইল মেনু টগল
 // ----------------------
 function initMobileMenu() {
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
-    const mobileMenu = document.getElementById('mobileMenu');
-
-    if (!mobileMenuButton || !mobileMenu) return;
-
-    // বাটনে ক্লিক করলে hidden ক্লাস টগল হবে
-    addUniqueListener(mobileMenuButton, 'click', '__mobileMenuHandler', () => {
-        mobileMenu.classList.toggle('hidden');
-    });
+    // মোবাইল মেনু এখন Flux UI sidebar/toggle দিয়ে হ্যান্ডেল হচ্ছে।
+    // এখানে custom JS আর প্রয়োজন নেই।
 }
 
 // ----------------------
@@ -302,11 +295,5 @@ document.addEventListener('livewire:load', runInitPageInteractions);
 
 // Livewire দিয়ে নেভিগেশনের পর
 document.addEventListener('livewire:navigated', () => {
-    // নতুন পেজে গেলে যেন মোবাইল মেনু সবসময় বন্ধ অবস্থায় থাকে
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-        mobileMenu.classList.add('hidden');
-    }
-
     runInitPageInteractions();
 });
