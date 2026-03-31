@@ -146,6 +146,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
     <script src="{{ asset('assets/js/script.js') }}" defer></script>
+    @fluxScripts
 
     @livewireScripts
     @stack('scripts')
