@@ -196,6 +196,19 @@
                     </flux:sidebar.item>
                 @endcan
 
+
+                @can('setting.view')
+                    <flux:sidebar.item
+                        icon="swatch"
+                        :href="route('appearance.themes')"
+                        :current="request()->routeIs('appearance.themes')"
+                        tooltip="{{ __('Themes') }}"
+                        wire:navigate
+                    >
+                        {{ __('Themes') }}
+                    </flux:sidebar.item>
+                @endcan
+
                 @can('setting.view')
                     <flux:sidebar.item
                         icon="megaphone"
