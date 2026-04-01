@@ -24,6 +24,15 @@ class ThemeManager
         set_setting('active_theme', $theme, 'theme-options');
     }
 
+    public static function deactivate(string $theme): void
+    {
+        if (self::activeTheme() !== $theme) {
+            return;
+        }
+
+        set_setting('active_theme', config('themes.default', 'default'), 'theme-options');
+    }
+
     public static function exists(string $theme): bool
     {
         return File::isDirectory(self::themePath($theme));
@@ -44,20 +53,37 @@ class ThemeManager
 
         return collect(File::directories($themesRoot))
             ->map(function (string $path) {
-                $name = basename($path);
-                $meta = self::metadata($name);
+                $slug = basename($path);
+                $meta = self::metadata($slug);
 
                 return [
-                    'slug' => $name,
-                    'name' => $meta['name'] ?? Str::headline($name),
+                    'slug' => $slug,
+                    'name' => $meta['name'] ?? Str::headline($slug),
                     'version' => $meta['version'] ?? null,
                     'author' => $meta['author'] ?? null,
                     'description' => $meta['description'] ?? null,
-                    'active' => self::activeTheme() === $name,
+                    'active' => self::activeTheme() === $slug,
                 ];
             })
             ->values()
             ->all();
+    }
+
+    public static function delete(string $theme): void
+    {
+        if (! self::exists($theme)) {
+            throw new RuntimeException("Theme [{$theme}] not found.");
+        }
+
+        if ($theme === config('themes.default', 'default')) {
+            throw new RuntimeException('Default theme cannot be deleted.');
+        }
+
+        if (self::activeTheme() === $theme) {
+            throw new RuntimeException('Active theme cannot be deleted. Deactivate first.');
+        }
+
+        File::deleteDirectory(self::themePath($theme));
     }
 
     public static function metadata(string $theme): array
@@ -103,7 +129,7 @@ class ThemeManager
         $zip->close();
 
         $themeDirectory = self::detectThemeDirectory($extractBase);
-        $themeSlug = basename($themeDirectory);
+        $themeSlug = self::resolveThemeSlug($themeDirectory);
         $destination = self::themePath($themeSlug);
 
         File::ensureDirectoryExists(dirname($destination));
@@ -123,10 +149,6 @@ class ThemeManager
     {
         $directories = File::directories($extractBase);
 
-        if ($directories === []) {
-            throw new RuntimeException('Theme ZIP is empty.');
-        }
-
         foreach ($directories as $directory) {
             if (File::exists($directory.'/theme.json')) {
                 return $directory;
@@ -138,5 +160,25 @@ class ThemeManager
         }
 
         throw new RuntimeException('theme.json not found. Invalid theme package.');
+    }
+
+    protected static function resolveThemeSlug(string $themeDirectory): string
+    {
+        $manifestPath = $themeDirectory.'/theme.json';
+        $raw = [];
+
+        if (File::exists($manifestPath)) {
+            $decoded = json_decode(File::get($manifestPath), true);
+            $raw = is_array($decoded) ? $decoded : [];
+        }
+
+        $candidate = $raw['slug'] ?? basename($themeDirectory);
+        $slug = Str::slug((string) $candidate);
+
+        if ($slug === '') {
+            throw new RuntimeException('Invalid theme slug. Provide a valid "slug" in theme.json.');
+        }
+
+        return $slug;
     }
 }

@@ -9,7 +9,7 @@
 `resources/views/themes/<theme-slug>/`
 
 Required:
-- `theme.json`
+- `theme.json` (with `slug`)
 
 Optional (view override):
 - `livewire/frontend/homepage.blade.php`
@@ -33,3 +33,8 @@ ZIP এর ভিতরে `theme.json` থাকা বাধ্যতামূ
 Valid examples:
 - `my-theme/theme.json`
 - `theme.json` (zip root)
+
+
+## Admin UI
+
+Dashboard এর **Appearance -> Themes** মেনু থেকে theme upload/install, activate/deactivate এবং delete করা যাবে।
