@@ -32,6 +32,7 @@ use App\Livewire\Admin\Settings\RobotsTxt;
 use App\Livewire\Admin\Settings\SettingsGenerator;
 use App\Livewire\Admin\Settings\SitemapSettings;
 use App\Livewire\Admin\Settings\Theme\ThemeOptionsSetting;
+use App\Livewire\Admin\Settings\Theme\ThemesManager;
 use App\Livewire\Admin\Tags\TagCreate;
 use App\Livewire\Admin\Tags\TagEdit;
 use App\Livewire\Admin\Tags\TagsIndex;
@@ -259,6 +260,7 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::get('/custom-js', CustomJsSettings::class)->name('custom-js')->middleware('permission:setting.view');
         Route::get('/custom-html', CustomHtmlSettings::class)->name('custom-html')->middleware('permission:setting.view');
         Route::get('/robots', RobotsTxt::class)->name('robots')->middleware('permission:setting.view');
+        Route::get('/themes', ThemesManager::class)->name('themes')->middleware('permission:setting.view');
 
     });
 

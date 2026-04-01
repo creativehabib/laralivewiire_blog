@@ -9,7 +9,9 @@ use App\Models\Post;
 use App\Observers\MediaFileObserver;
 use App\Support\CacheSettings;
 use App\Support\SlugHelper;
+use App\Support\ThemeManager;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL; // ১. URL ফাসাদটি যোগ করা হয়েছে
 use Illuminate\Support\ServiceProvider;
@@ -93,6 +95,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->registerSlugBindings();
         $this->registerCacheResetHooks();
+        $this->registerThemeComponents();
     }
 
     protected function registerSlugBindings(): void
@@ -142,6 +145,17 @@ class AppServiceProvider extends ServiceProvider
         if( ! CacheSettings::resetOnContentChange()){
             return;
         }
+
         Cache::flush();
+    }
+
+    protected function registerThemeComponents(): void
+    {
+        $theme = ThemeManager::activeTheme();
+        $frontendsPath = resource_path('views/themes/'.$theme.'/components/frontends');
+
+        if (is_dir($frontendsPath)) {
+            Blade::anonymousComponentPath($frontendsPath, 'theme-frontends');
+        }
     }
 }
