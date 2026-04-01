@@ -64,7 +64,7 @@ class LiveSearch extends Component
                 ->get();
         }
 
-        return view('livewire.frontend.live-search', [
+        return theme_view('livewire.frontend.live-search', [
             'results' => $results,
             'term' => $term,
             'useGoogleSearch' => $this->useGoogleSearch,
