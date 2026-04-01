@@ -144,13 +144,13 @@ class SinglePost extends Component
 
     public function render()
     {
-        return view('livewire.frontend.single', [
+        return theme_view('livewire.frontend.single', [
             'post'          => $this->post,
             'relatedPosts'  => $this->relatedPosts,
             'trendingPosts' => $this->trendingPosts,
             'previousPost'  => $this->previousPost,
             'nextPost'      => $this->nextPost,
-        ])->layout('components.layouts.frontend.app', [
+        ])->layout(theme_layout('app'), [
             'title' => $this->post?->name ?? 'Post',
             'seo' => Seo::forPost($this->post),
         ]);
