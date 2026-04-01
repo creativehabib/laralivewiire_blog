@@ -13,7 +13,7 @@
         <div>
             <h3 class="font-semibold mb-2">দ্রুত লিংক</h3>
             @if($footerMenuItems->isNotEmpty())
-                <x-theme-frontends.menu-list :items="$footerMenuItems" variant="footer" />
+                <x-frontends.menu-list :items="$footerMenuItems" variant="footer" />
             @else
                 <ul class="space-y-1 text-xs text-slate-100/85">
                     <li><a href="#" class="hover:underline">আমাদের সম্পর্কে</a></li>

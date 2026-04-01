@@ -52,7 +52,7 @@
         <div class="flex items-center gap-3 md:ml-6">
             <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
                 @if($primaryMenuItems->isNotEmpty())
-                    <x-theme-frontends.menu-list :items="$primaryMenuItems" variant="desktop" />
+                    <x-frontends.menu-list :items="$primaryMenuItems" variant="desktop" />
                 @else
                     <a href="{{ route('home') }}" class="text-primary-dark dark:text-primary-light relative transition-colors duration-150">হোম</a>
                     @foreach($navCategories as $category)
@@ -75,7 +75,7 @@
         </div>
     </div>
     @if(setting('breaking_news_position', 'top') === 'top')
-        <x-theme-frontends.breaking-ticker-bar />
+        <x-frontends.breaking-ticker-bar />
     @endif
     <flux:sidebar stashable sticky class="md:hidden border-e border-slate-200 bg-white/95 backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
         <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-700">
@@ -98,7 +98,7 @@
             />
 
             @if($primaryMenuItems->isNotEmpty())
-                <x-theme-frontends.menu-list :items="$primaryMenuItems" variant="mobile" />
+                <x-frontends.menu-list :items="$primaryMenuItems" variant="mobile" />
             @else
                 <a href="{{ route('home') }}" class="block px-2 py-2 rounded-md text-sm font-medium text-primary-dark dark:text-primary-light bg-primary-light/70 dark:bg-slate-800 mt-2">হোম</a>
                 @foreach($navCategories as $category)
