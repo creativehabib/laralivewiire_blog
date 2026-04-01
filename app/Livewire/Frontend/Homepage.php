@@ -125,8 +125,8 @@ class Homepage extends Component
 
     public function render()
     {
-        return view('livewire.frontend.homepage')
-            ->layout('components.layouts.frontend.app', [
+        return theme_view('livewire.frontend.homepage')
+            ->layout(theme_layout('app'), [
                 'title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম',
                 'seo' => Seo::forHomepage(['title' => 'বাংলাদেশী নিউজ পোর্টাল - হোম']),
             ]);
