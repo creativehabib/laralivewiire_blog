@@ -190,7 +190,7 @@
                                     <aside class="rounded-lg lg:sticky lg:top-32 self-start space-y-6">
 {{--                                        <livewire:ramadan-times />--}}
 
-                                        <x-theme-frontends.news-tabs-widget
+                                        <x-frontends.news-tabs-widget
                                             class="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
                                         />
                                         <section class="bg-primary-light/70 dark:bg-slate-800 rounded-xl p-4 border border-primary/20 dark:border-slate-700
@@ -251,7 +251,7 @@
 
 {{--                            <livewire:ramadan-times />--}}
 
-                            <x-theme-frontends.news-tabs-widget
+                            <x-frontends.news-tabs-widget
                                 class="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
                             />
 

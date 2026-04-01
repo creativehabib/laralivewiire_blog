@@ -155,7 +155,7 @@ class AppServiceProvider extends ServiceProvider
         $frontendsPath = resource_path('views/themes/'.$theme.'/components/frontends');
 
         if (is_dir($frontendsPath)) {
-            Blade::anonymousComponentPath($frontendsPath, 'theme-frontends');
+            Blade::anonymousComponentPath($frontendsPath);
         }
     }
 }

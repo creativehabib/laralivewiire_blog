@@ -173,6 +173,15 @@ class ThemeManager
         throw new RuntimeException('theme.json not found. Invalid theme package.');
     }
 
+    protected static function flushViewFinderCache(): void
+    {
+        $finder = app('view.finder');
+
+        if (method_exists($finder, 'flush')) {
+            $finder->flush();
+        }
+    }
+
     protected static function resolveThemeSlug(string $themeDirectory): string
     {
         $manifestPath = $themeDirectory.'/theme.json';

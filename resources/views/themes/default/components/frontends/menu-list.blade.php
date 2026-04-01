@@ -27,7 +27,7 @@
                     @if($hasChildren)
                         <div class="absolute left-0 hidden group-hover:block z-30">
                             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow-md py-2 min-w-[180px]">
-                                <x-theme-frontends.menu-list :items="$children" variant="dropdown" />
+                                <x-frontends.menu-list :items="$children" variant="dropdown" />
                             </div>
                         </div>
                     @endif
@@ -56,7 +56,7 @@
                     @if($hasChildren)
                         <div class="absolute left-full top-0 ml-2 hidden group-hover:block z-30">
                             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow-md py-2 min-w-[180px]">
-                                <x-theme-frontends.menu-list :items="$children" variant="dropdown" />
+                                <x-frontends.menu-list :items="$children" variant="dropdown" />
                             </div>
                         </div>
                     @endif
@@ -88,7 +88,7 @@
                             </a>
 
                             <div class="ml-2 border-l border-slate-200 pl-3 dark:border-slate-700">
-                                <x-theme-frontends.menu-list :items="$children" variant="mobile" />
+                                <x-frontends.menu-list :items="$children" variant="mobile" />
                             </div>
                         </div>
                     </details>

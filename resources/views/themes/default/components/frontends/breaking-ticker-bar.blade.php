@@ -28,5 +28,5 @@
         }
     @endphp
 
-    <x-theme-frontends.breaking-ticker :breakingTicker="$breakingTicker" />
+    <x-frontends.breaking-ticker :breakingTicker="$breakingTicker" />
 @endif
