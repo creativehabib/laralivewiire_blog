@@ -1,8 +1,11 @@
 <?php
 
 use App\Services\WordPressImporter;
+use App\Support\ThemeManager;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -35,3 +38,86 @@ Artisan::command('wordpress:import
 
     $this->info('Import finished.');
 })->purpose('Import posts, categories, tags and media from a WordPress site');
+
+Artisan::command('theme:list', function () {
+    $themes = ThemeManager::all();
+
+    if ($themes === []) {
+        $this->warn('No themes found in resources/views/themes');
+        return;
+    }
+
+    $this->table(['Slug', 'Name', 'Version', 'Author', 'Active'], collect($themes)->map(fn (array $theme) => [
+        $theme['slug'],
+        $theme['name'],
+        $theme['version'] ?? '-',
+        $theme['author'] ?? '-',
+        $theme['active'] ? 'yes' : 'no',
+    ]));
+})->purpose('Show installed themes');
+
+Artisan::command('theme:activate {theme : Theme slug}', function (string $theme) {
+    ThemeManager::activate($theme);
+    $this->info("Theme [{$theme}] activated successfully.");
+})->purpose('Activate a theme');
+
+Artisan::command('theme:install {zip : Absolute/relative path to a zip file}', function (string $zip) {
+    $zipPath = base_path($zip);
+
+    if (! str_starts_with($zip, '/') && file_exists($zipPath)) {
+        $target = $zipPath;
+    } else {
+        $target = $zip;
+    }
+
+    if (! file_exists($target)) {
+        $this->error("ZIP file not found: {$zip}");
+        return 1;
+    }
+
+    $themeSlug = ThemeManager::installFromZipPath($target);
+
+    $this->info("Theme [{$themeSlug}] installed successfully.");
+    $this->line("Run <comment>php artisan theme:activate {$themeSlug}</comment> to use it.");
+
+    return 0;
+})->purpose('Install a theme from a ZIP package');
+
+Artisan::command('theme:make {slug : Theme slug}', function (string $slug) {
+    $themeSlug = Str::slug($slug);
+
+    if ($themeSlug === '') {
+        $this->error('Invalid slug.');
+        return 1;
+    }
+
+    $themePath = ThemeManager::themePath($themeSlug);
+
+    if (File::exists($themePath)) {
+        $this->error("Theme [{$themeSlug}] already exists.");
+        return 1;
+    }
+
+    $defaultPath = ThemeManager::themePath(config('themes.default', 'default'));
+
+    if (File::isDirectory($defaultPath)) {
+        File::copyDirectory($defaultPath, $themePath);
+    } else {
+        File::ensureDirectoryExists($themePath.'/livewire/frontend');
+        File::ensureDirectoryExists($themePath.'/components/frontends');
+        File::ensureDirectoryExists($themePath.'/layouts/frontend');
+    }
+
+    File::put($themePath.'/theme.json', json_encode([
+        'slug' => $themeSlug,
+        'name' => Str::headline($themeSlug),
+        'version' => '1.0.0',
+        'author' => 'Your Name',
+        'description' => 'Custom theme',
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+    $this->info("Theme scaffold created: {$themePath}");
+    $this->line("Activate with <comment>php artisan theme:activate {$themeSlug}</comment>");
+
+    return 0;
+})->purpose('Create a new theme scaffold for development');
