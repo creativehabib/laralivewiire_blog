@@ -150,7 +150,7 @@ class SinglePost extends Component
             'trendingPosts' => $this->trendingPosts,
             'previousPost'  => $this->previousPost,
             'nextPost'      => $this->nextPost,
-        ])->layout('components.layouts.frontend.app', [
+        ])->layout(theme_layout('app'), [
             'title' => $this->post?->name ?? 'Post',
             'seo' => Seo::forPost($this->post),
         ]);

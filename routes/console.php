@@ -1,8 +1,11 @@
 <?php
 
 use App\Services\WordPressImporter;
+use App\Support\ThemeManager;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -35,8 +38,6 @@ Artisan::command('wordpress:import
 
     $this->info('Import finished.');
 })->purpose('Import posts, categories, tags and media from a WordPress site');
-
-use App\Support\ThemeManager;
 
 Artisan::command('theme:list', function () {
     $themes = ThemeManager::all();
@@ -81,3 +82,42 @@ Artisan::command('theme:install {zip : Absolute/relative path to a zip file}', f
 
     return 0;
 })->purpose('Install a theme from a ZIP package');
+
+Artisan::command('theme:make {slug : Theme slug}', function (string $slug) {
+    $themeSlug = Str::slug($slug);
+
+    if ($themeSlug === '') {
+        $this->error('Invalid slug.');
+        return 1;
+    }
+
+    $themePath = ThemeManager::themePath($themeSlug);
+
+    if (File::exists($themePath)) {
+        $this->error("Theme [{$themeSlug}] already exists.");
+        return 1;
+    }
+
+    $defaultPath = ThemeManager::themePath(config('themes.default', 'default'));
+
+    if (File::isDirectory($defaultPath)) {
+        File::copyDirectory($defaultPath, $themePath);
+    } else {
+        File::ensureDirectoryExists($themePath.'/livewire/frontend');
+        File::ensureDirectoryExists($themePath.'/components/frontends');
+        File::ensureDirectoryExists($themePath.'/layouts/frontend');
+    }
+
+    File::put($themePath.'/theme.json', json_encode([
+        'slug' => $themeSlug,
+        'name' => Str::headline($themeSlug),
+        'version' => '1.0.0',
+        'author' => 'Your Name',
+        'description' => 'Custom theme',
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+    $this->info("Theme scaffold created: {$themePath}");
+    $this->line("Activate with <comment>php artisan theme:activate {$themeSlug}</comment>");
+
+    return 0;
+})->purpose('Create a new theme scaffold for development');

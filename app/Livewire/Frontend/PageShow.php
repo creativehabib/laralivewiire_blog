@@ -55,7 +55,7 @@ class PageShow extends Component
             'sidebarLatest' => $this->sidebarLatest ?? collect(),
             'sidebarPopular' => $this->sidebarPopular ?? collect(),
         ])
-            ->layout('components.layouts.frontend.app', [
+            ->layout(theme_layout('app'), [
                 'title' => $this->page->name,
                 'seo' => Seo::forPage($this->page),
             ]);

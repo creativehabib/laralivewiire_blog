@@ -23,7 +23,7 @@ class PostsIndex extends Homepage
         $seo = $this->page ? Seo::forPage($this->page) : Seo::forHomepage(['title' => $title]);
 
         return theme_view('livewire.frontend.homepage')
-            ->layout('components.layouts.frontend.app', [
+            ->layout(theme_layout('app'), [
                 'title' => $title,
                 'seo' => $seo,
             ]);

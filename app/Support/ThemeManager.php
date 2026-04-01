@@ -100,6 +100,15 @@ class ThemeManager
         return is_array($decoded) ? $decoded : [];
     }
 
+
+    public static function resolveLayout(string $layout): string
+    {
+        $activeTheme = self::activeTheme();
+        $themedLayout = "themes.{$activeTheme}.layouts.frontend.{$layout}";
+
+        return view()->exists($themedLayout) ? $themedLayout : 'components.layouts.frontend.'.$layout;
+    }
+
     public static function resolveView(string $view): string
     {
         $activeTheme = self::activeTheme();

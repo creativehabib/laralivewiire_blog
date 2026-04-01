@@ -60,7 +60,7 @@ class FrontPage extends Homepage
                 'showPageHeader' => false,
                 'showPageComments' => false,
                 'ready' => $this->ready, // ভিউ ফাইলে ready ভেরিয়েবল পাঠানো
-            ])->layout('components.layouts.frontend.app', [
+            ])->layout(theme_layout('app'), [
                 'title' => $this->page->name,
                 'seo' => Seo::forPage($this->page, [
                     'url' => $homeUrl,

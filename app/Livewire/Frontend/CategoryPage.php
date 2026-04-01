@@ -57,7 +57,7 @@ class CategoryPage extends Component
         }
 
         return theme_view('livewire.frontend.category', compact('featurePosts', 'latestPosts'))
-            ->layout('components.layouts.frontend.app', [
+            ->layout(theme_layout('app'), [
                 'title' => $this->category->name,
                 'seo' => Seo::forCategory($this->category),
             ]);

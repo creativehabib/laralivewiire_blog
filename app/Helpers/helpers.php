@@ -541,3 +541,11 @@ if (! function_exists('theme_view')) {
         return view(\App\Support\ThemeManager::resolveView($view), $data, $mergeData);
     }
 }
+
+
+if (! function_exists('theme_layout')) {
+    function theme_layout(string $layout = 'app'): string
+    {
+        return \App\Support\ThemeManager::resolveLayout($layout);
+    }
+}

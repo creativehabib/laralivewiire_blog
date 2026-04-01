@@ -65,7 +65,7 @@ class AuthorPage extends Component
 
         return theme_view('livewire.frontend.author')
             ->with('posts', $posts)
-            ->layout('components.layouts.frontend.app', [
+            ->layout(theme_layout('app'), [
                 'title' => $this->author->name,
                 'seo' => Seo::forAuthor($this->author),
             ]);
