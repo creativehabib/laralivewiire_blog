@@ -144,7 +144,7 @@ class SinglePost extends Component
 
     public function render()
     {
-        return view('livewire.frontend.single', [
+        return theme_view('livewire.frontend.single', [
             'post'          => $this->post,
             'relatedPosts'  => $this->relatedPosts,
             'trendingPosts' => $this->trendingPosts,

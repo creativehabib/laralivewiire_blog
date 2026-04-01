@@ -533,3 +533,11 @@ if(! function_exists('set_setting')) {
         SettingManager::set($key, $value, $group);
     }
 }
+
+
+if (! function_exists('theme_view')) {
+    function theme_view(string $view, array $data = [], array $mergeData = [])
+    {
+        return view(\App\Support\ThemeManager::resolveView($view), $data, $mergeData);
+    }
+}

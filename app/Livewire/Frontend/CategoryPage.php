@@ -56,7 +56,7 @@ class CategoryPage extends Component
                 ->paginate($this->perPage);
         }
 
-        return view('livewire.frontend.category', compact('featurePosts', 'latestPosts'))
+        return theme_view('livewire.frontend.category', compact('featurePosts', 'latestPosts'))
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->category->name,
                 'seo' => Seo::forCategory($this->category),

@@ -22,7 +22,7 @@ class PostsIndex extends Homepage
         $title = $this->page?->name ?? 'Latest posts';
         $seo = $this->page ? Seo::forPage($this->page) : Seo::forHomepage(['title' => $title]);
 
-        return view('livewire.frontend.homepage')
+        return theme_view('livewire.frontend.homepage')
             ->layout('components.layouts.frontend.app', [
                 'title' => $title,
                 'seo' => $seo,

@@ -50,7 +50,7 @@ class PageShow extends Component
     }
     public function render()
     {
-        return view('livewire.frontend.page-show', [
+        return theme_view('livewire.frontend.page-show', [
             'builderSections' => $this->buildBuilderSections(),
             'sidebarLatest' => $this->sidebarLatest ?? collect(),
             'sidebarPopular' => $this->sidebarPopular ?? collect(),
