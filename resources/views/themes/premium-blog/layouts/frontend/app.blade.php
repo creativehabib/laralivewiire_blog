@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin-when-cross-origin">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#1d4ed8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    @php
+        $seoData = \App\Support\Seo::fromArray($seo ?? ['title' => $title ?? 'বাংলাদেশী নিউজ পোর্টাল']);
+    @endphp
+    <x-seo.meta :seo="$seoData" />
+    <link rel="icon" href="{{ setting('site_favicon') }}" type="image/x-icon">
+    <link rel="manifest" href="/manifest.webmanifest">
+    @if($primaryFont = setting('primary_font'))
+        @php
+            $primaryFont = trim($primaryFont);
+            $primaryFontWeights = trim((string) setting('primary_font_weights', '300;400;500;600;700'));
+            $googleFontHref = null;
+
+            if ($primaryFont !== '' && ! str_contains($primaryFont, ',')) {
+                $googleFontHref = 'https://fonts.googleapis.com/css2?family=' . urlencode($primaryFont) . ':wght@' . $primaryFontWeights . '&display=swap';
+            }
+        @endphp
+
+        @if($googleFontHref)
+            <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+            <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+            <link rel="preload" as="style" href="{{ $googleFontHref }}" fetchpriority="high">
+            <link href="{{ $googleFontHref }}" rel="stylesheet" media="print" onload="this.media='all'">
+            <noscript><link href="{{ $googleFontHref }}" rel="stylesheet"></noscript>
+        @endif
+
+        <style>
+            :root { --font-sans: "{{ $primaryFont }}", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        </style>
+    @endif
+    @if($bodyFontSize = setting('body_font_size'))
+        <style>
+            :root { --body-font-size: {{ trim($bodyFontSize) }}; }
+        </style>
+    @endif
+
+    @php
+        $breakingNewsSpeed = max(1, (int) setting('breaking_news_speed', 18));
+    @endphp
+    <style>
+        :root { --breaking-news-speed: {{ $breakingNewsSpeed }}s; }
+        .animate-marquee { display: inline-block; animation: marquee var(--breaking-news-speed, 18s) linear infinite; }
+        .marquee-wrapper:hover .animate-marquee { animation-play-state: paused; }
+        @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+    </style>
+
+    @if($headerHtml = setting('custom_header_html')) {!! $headerHtml !!} @endif
+    @if($customCss = setting('custom_css')) <style>{!! $customCss !!}</style> @endif
+    @if($headerJs = setting('custom_header_js')) {!! $headerJs !!} @endif
+
+    {{-- Adsense --}}
+    @if(setting('adsense_mode') === 'auto' && !empty(setting('adsense_auto_code')))
+        {!! setting('adsense_auto_code') !!}
+    @elseif(setting('adsense_mode') === 'unit' && !empty(setting('adsense_unit_client_id')))
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ setting('adsense_unit_client_id') }}" crossorigin="anonymous"></script>
+    @endif
+
+
+    @if($googleSearchEngineId = trim((string) setting('google_search_engine_id', '')))
+        <script async src="https://cse.google.com/cse.js?cx={{ $googleSearchEngineId }}"></script>
+    @endif
+
+    @vite(['resources/css/app.css', 'resources/js/frontend.js'])
+    @livewireStyles
+    @stack('styles')
+
+    <script>
+        function applyTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applyTheme();
+        document.addEventListener('livewire:navigated', () => applyTheme());
+    </script>
+</head>
+
+<body class="font-sans antialiased bg-gradient-to-b from-sky-50 via-white to-white text-slate-900 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950 dark:text-slate-100 transition-colors duration-300 ease-out {{ setting('breaking_news_position', 'top') === 'bottom' ? 'pb-10' : '' }}" style="font-size: var(--body-font-size, 16px);">
+
+    @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
+    @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
+    @if(setting('admin_show_admin_bar'))
+    <x-frontends.admin-bar />
+    @endif
+    <x-frontends.top-bar/>
+    <x-frontends.navbar />
+
+    <div class="border-b border-blue-200/60 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 backdrop-blur">
+        <div class="container px-4 py-2 text-xs md:text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
+            <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span> Premium Blog Theme Active</span>
+            <span class="hidden md:inline">Elegant layout for premium news/blog presentation</span>
+        </div>
+    </div>
+
+    <main class="min-h-screen">
+        {{ $slot }}
+    </main>
+
+    @if(setting('breaking_news_position', 'top') === 'bottom')
+        <div class="fixed bottom-0 inset-x-0 z-50">
+            <x-frontends.breaking-ticker-bar />
+        </div>
+    @endif
+
+    @if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
+    <x-frontends.footer />
+
+    @if(setting('breaking_news_position', 'top') === 'bottom')
+        <div class="fixed bottom-0 inset-x-0 z-50">
+            <x-frontends.breaking-ticker-bar />
+        </div>
+    @endif
+
+    @php
+        $scrollTop = setting('scroll_to_top', []);
+        if (!is_array($scrollTop)) {
+            $scrollTop = [];
+        }
+
+        $scrollTopEnabled = filter_var($scrollTop['enabled'] ?? setting('scroll_to_top_enabled', true), FILTER_VALIDATE_BOOLEAN);
+        $scrollTopSide = ($scrollTop['side'] ?? setting('scroll_to_top_side', 'right')) === 'left' ? 'left' : 'right';
+        $scrollTopShape = ($scrollTop['shape'] ?? setting('scroll_to_top_shape', 'circle')) === 'rectangle' ? 'rounded-lg' : 'rounded-full';
+        $scrollTopSpeed = max(100, (int) ($scrollTop['speed'] ?? setting('scroll_to_top_speed', 500)));
+        $scrollTopColor = (string) ($scrollTop['color'] ?? setting('scroll_to_top_color', '#2563eb'));
+        $scrollTopIconColor = (string) ($scrollTop['icon_color'] ?? setting('scroll_to_top_icon_color', '#ffffff'));
+    @endphp
+
+    @if($scrollTopEnabled)
+        <button
+            id="scrollToTopBtn"
+            type="button"
+            aria-label="Scroll to top"
+            data-scroll-speed="{{ $scrollTopSpeed }}"
+            class="fixed bottom-6 {{ $scrollTopSide === 'left' ? 'left-6' : 'right-6' }} z-[70] hidden h-11 w-11 {{ $scrollTopShape }} shadow-lg transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            style="background-color: {{ $scrollTopColor }}; color: {{ $scrollTopIconColor }};"
+        >
+            <i class="fas fa-arrow-up text-sm"></i>
+        </button>
+    @endif
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+    <script src="{{ asset('assets/js/script.js') }}" defer></script>
+    @fluxScripts
+
+    @livewireScripts
+    @stack('scripts')
+
+    @if($footerJs = setting('custom_footer_js')) {!! $footerJs !!} @endif
+</body>
+</html>
