@@ -55,12 +55,12 @@ class FrontPage extends Homepage
             $homeUrl = route('home');
 
             // ৩. buildBuilderSections কল হবে, কিন্তু ভেতরে ready চেক থাকায় ভারী কুয়েরি রান হবে না
-            return view('livewire.frontend.page-show', [
+            return theme_view('livewire.frontend.page-show', [
                 'builderSections' => $this->buildBuilderSections(),
                 'showPageHeader' => false,
                 'showPageComments' => false,
                 'ready' => $this->ready, // ভিউ ফাইলে ready ভেরিয়েবল পাঠানো
-            ])->layout('components.layouts.frontend.app', [
+            ])->layout(theme_layout('app'), [
                 'title' => $this->page->name,
                 'seo' => Seo::forPage($this->page, [
                     'url' => $homeUrl,

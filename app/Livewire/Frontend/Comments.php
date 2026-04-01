@@ -125,7 +125,7 @@ class Comments extends Component
 
     public function render()
     {
-        return view('livewire.frontend.comments', [
+        return theme_view('livewire.frontend.comments', [
             'allowComments' => $this->allowComments,
             'blockedReason' => $this->blockedReason,
             'threadDepth'   => $this->commentSettings['thread_depth'] ?? 0,
