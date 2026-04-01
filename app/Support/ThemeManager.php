@@ -22,6 +22,7 @@ class ThemeManager
         }
 
         set_setting('active_theme', $theme, 'theme-options');
+        self::flushViewFinderCache();
     }
 
     public static function deactivate(string $theme): void
@@ -31,6 +32,7 @@ class ThemeManager
         }
 
         set_setting('active_theme', config('themes.default', 'default'), 'theme-options');
+        self::flushViewFinderCache();
     }
 
     public static function exists(string $theme): bool

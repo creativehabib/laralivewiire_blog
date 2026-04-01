@@ -92,10 +92,10 @@
     @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
     @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
     @if(setting('admin_show_admin_bar'))
-    <x-frontends.admin-bar />
+    <x-theme-frontends.admin-bar />
     @endif
-    <x-frontends.top-bar/>
-    <x-frontends.navbar />
+    <x-theme-frontends.top-bar/>
+    <x-theme-frontends.navbar />
 
     <main class="min-h-screen">
         {{ $slot }}
@@ -103,16 +103,16 @@
 
     @if(setting('breaking_news_position', 'top') === 'bottom')
         <div class="fixed bottom-0 inset-x-0 z-50">
-            <x-frontends.breaking-ticker-bar />
+            <x-theme-frontends.breaking-ticker-bar />
         </div>
     @endif
 
     @if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
-    <x-frontends.footer />
+    <x-theme-frontends.footer />
 
     @if(setting('breaking_news_position', 'top') === 'bottom')
         <div class="fixed bottom-0 inset-x-0 z-50">
-            <x-frontends.breaking-ticker-bar />
+            <x-theme-frontends.breaking-ticker-bar />
         </div>
     @endif
 

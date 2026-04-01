@@ -92,10 +92,10 @@
     @if($bodyJs = setting('custom_body_js')) {!! $bodyJs !!} @endif
     @if($bodyHtml = setting('custom_body_html')) {!! $bodyHtml !!} @endif
     @if(setting('admin_show_admin_bar'))
-    <x-frontends.admin-bar />
+    <x-theme-frontends.admin-bar />
     @endif
-    <x-frontends.top-bar/>
-    <x-frontends.navbar />
+    <x-theme-frontends.top-bar/>
+    <x-theme-frontends.navbar />
 
     <div class="border-b border-blue-200/60 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 backdrop-blur">
         <div class="container px-4 py-2 text-xs md:text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
@@ -110,16 +110,16 @@
 
     @if(setting('breaking_news_position', 'top') === 'bottom')
         <div class="fixed bottom-0 inset-x-0 z-50">
-            <x-frontends.breaking-ticker-bar />
+            <x-theme-frontends.breaking-ticker-bar />
         </div>
     @endif
 
     @if($footerHtml = setting('custom_footer_html')) {!! $footerHtml !!} @endif
-    <x-frontends.footer />
+    <x-theme-frontends.footer />
 
     @if(setting('breaking_news_position', 'top') === 'bottom')
         <div class="fixed bottom-0 inset-x-0 z-50">
-            <x-frontends.breaking-ticker-bar />
+            <x-theme-frontends.breaking-ticker-bar />
         </div>
     @endif
 

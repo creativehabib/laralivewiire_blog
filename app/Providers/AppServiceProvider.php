@@ -152,10 +152,10 @@ class AppServiceProvider extends ServiceProvider
     protected function registerThemeComponents(): void
     {
         $theme = ThemeManager::activeTheme();
-        $path = resource_path('views/themes/'.$theme.'/components');
+        $frontendsPath = resource_path('views/themes/'.$theme.'/components/frontends');
 
-        if (is_dir($path)) {
-            Blade::anonymousComponentPath($path);
+        if (is_dir($frontendsPath)) {
+            Blade::anonymousComponentPath($frontendsPath, 'theme-frontends');
         }
     }
 }

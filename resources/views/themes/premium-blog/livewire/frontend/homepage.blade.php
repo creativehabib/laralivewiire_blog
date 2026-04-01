@@ -362,7 +362,7 @@
 
 {{--            <livewire:ramadan-times />--}}
 
-            <x-frontends.news-tabs-widget />
+            <x-theme-frontends.news-tabs-widget />
 
             <section class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
                 <div class="relative">
