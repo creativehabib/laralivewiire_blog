@@ -16,7 +16,22 @@ Optional (view override):
 - `livewire/frontend/single.blade.php`
 - এবং `livewire.frontend.*` এর যেকোনো view
 
-> Theme view পাওয়া গেলে সেটি ব্যবহার হবে, না থাকলে আগের ডিফল্ট `resources/views/livewire/frontend/*` fallback হবে।
+## View loading behavior (important)
+
+ডিফল্ট কনফিগে (`config/themes.php`) `fallback_to_core=false`।
+তাই rendering order হচ্ছে:
+
+1. Active theme (`resources/views/themes/<active-theme>/...`)
+2. Default theme (`resources/views/themes/default/...`)
+3. Core fallback (`resources/views/livewire/frontend/...`) **বন্ধ**
+
+এর মানে: `resources/views/livewire/frontend` ফোল্ডার ফাঁকা রাখলেও theme থেকেই view load হবে (active/default theme এ file থাকলে)।
+
+যদি আপনি core fallback চালু করতে চান, তাহলে `config/themes.php` এ:
+
+```php
+'fallback_to_core' => true,
+```
 
 ## Commands
 
@@ -33,7 +48,6 @@ ZIP এর ভিতরে `theme.json` থাকা বাধ্যতামূ
 Valid examples:
 - `my-theme/theme.json`
 - `theme.json` (zip root)
-
 
 ## Admin UI
 

@@ -106,17 +106,43 @@ class ThemeManager
     public static function resolveLayout(string $layout): string
     {
         $activeTheme = self::activeTheme();
-        $themedLayout = "themes.{$activeTheme}.layouts.frontend.{$layout}";
+        $activeLayout = "themes.{$activeTheme}.layouts.frontend.{$layout}";
 
-        return view()->exists($themedLayout) ? $themedLayout : 'components.layouts.frontend.'.$layout;
+        if (view()->exists($activeLayout)) {
+            return $activeLayout;
+        }
+
+        $defaultLayout = 'themes.'.config('themes.default', 'default').'.layouts.frontend.'.$layout;
+        if (view()->exists($defaultLayout)) {
+            return $defaultLayout;
+        }
+
+        if ((bool) config('themes.fallback_to_core', false)) {
+            return 'components.layouts.frontend.'.$layout;
+        }
+
+        throw new RuntimeException("Missing theme layout [{$layout}] for active theme [{$activeTheme}].");
     }
 
     public static function resolveView(string $view): string
     {
         $activeTheme = self::activeTheme();
-        $themedView = "themes.{$activeTheme}.{$view}";
+        $activeView = "themes.{$activeTheme}.{$view}";
 
-        return view()->exists($themedView) ? $themedView : $view;
+        if (view()->exists($activeView)) {
+            return $activeView;
+        }
+
+        $defaultView = 'themes.'.config('themes.default', 'default').'.'.$view;
+        if (view()->exists($defaultView)) {
+            return $defaultView;
+        }
+
+        if ((bool) config('themes.fallback_to_core', false)) {
+            return $view;
+        }
+
+        throw new RuntimeException("Missing theme view [{$view}] for active theme [{$activeTheme}].");
     }
 
     public static function installFromZipPath(string $zipPath): string
