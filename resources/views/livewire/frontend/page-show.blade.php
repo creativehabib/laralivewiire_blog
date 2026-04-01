@@ -161,7 +161,7 @@
                                                 @endif
                                             </div>
                                             @if (count($posts))
-                                                @include('livewire.frontend.partials.page-show.articles', [
+                                                @include(theme_view_name('livewire.frontend.partials.page-show.articles'), [
                                                     'layout' => $layout,
                                                     'postItems' => $postItems,
                                                     'posts' => $posts,
