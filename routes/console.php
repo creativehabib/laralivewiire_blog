@@ -35,3 +35,49 @@ Artisan::command('wordpress:import
 
     $this->info('Import finished.');
 })->purpose('Import posts, categories, tags and media from a WordPress site');
+
+use App\Support\ThemeManager;
+
+Artisan::command('theme:list', function () {
+    $themes = ThemeManager::all();
+
+    if ($themes === []) {
+        $this->warn('No themes found in resources/views/themes');
+        return;
+    }
+
+    $this->table(['Slug', 'Name', 'Version', 'Author', 'Active'], collect($themes)->map(fn (array $theme) => [
+        $theme['slug'],
+        $theme['name'],
+        $theme['version'] ?? '-',
+        $theme['author'] ?? '-',
+        $theme['active'] ? 'yes' : 'no',
+    ]));
+})->purpose('Show installed themes');
+
+Artisan::command('theme:activate {theme : Theme slug}', function (string $theme) {
+    ThemeManager::activate($theme);
+    $this->info("Theme [{$theme}] activated successfully.");
+})->purpose('Activate a theme');
+
+Artisan::command('theme:install {zip : Absolute/relative path to a zip file}', function (string $zip) {
+    $zipPath = base_path($zip);
+
+    if (! str_starts_with($zip, '/') && file_exists($zipPath)) {
+        $target = $zipPath;
+    } else {
+        $target = $zip;
+    }
+
+    if (! file_exists($target)) {
+        $this->error("ZIP file not found: {$zip}");
+        return 1;
+    }
+
+    $themeSlug = ThemeManager::installFromZipPath($target);
+
+    $this->info("Theme [{$themeSlug}] installed successfully.");
+    $this->line("Run <comment>php artisan theme:activate {$themeSlug}</comment> to use it.");
+
+    return 0;
+})->purpose('Install a theme from a ZIP package');

@@ -108,6 +108,9 @@
                         <a href="{{ route('appearance.admin-appearance') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
                             <i class="fa-solid fa-sliders w-4"></i> {{ __('Settings') }}
                         </a>
+                        <a href="{{ route('appearance.themes') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-600 hover:text-white transition">
+                            <i class="fa-solid fa-brush w-4"></i> {{ __('Themes') }}
+                        </a>
                         <a href="{{ route('theme.theme-options') }}" class="block px-3 py-2 hover:bg-slate-800">
                            <i class="fa-solid fa-wand-magic-sparkles w-4"></i> {{ __('Theme Option') }}
                         </a>

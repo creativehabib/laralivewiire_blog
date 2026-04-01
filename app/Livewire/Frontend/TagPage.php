@@ -41,7 +41,7 @@ class TagPage extends Component
 
     public function render()
     {
-        return view('livewire.frontend.tag')
+        return theme_view('livewire.frontend.tag')
             ->layout('components.layouts.frontend.app', [
                 'title' => $this->tag?->name ?? 'ট্যাগ',
                 'seo' => Seo::forTag($this->tag),
