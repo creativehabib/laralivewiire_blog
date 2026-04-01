@@ -549,3 +549,11 @@ if (! function_exists('theme_layout')) {
         return \App\Support\ThemeManager::resolveLayout($layout);
     }
 }
+
+
+if (! function_exists('theme_view_name')) {
+    function theme_view_name(string $view): string
+    {
+        return \App\Support\ThemeManager::resolveView($view);
+    }
+}

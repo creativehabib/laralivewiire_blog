@@ -11,7 +11,7 @@
         </div>
     @else
         @if(! $parentId)
-            @include('livewire.frontend.partials.comment-form', ['formId' => 'comment-form'])
+            @include(theme_view_name('livewire.frontend.partials.comment-form'), ['formId' => 'comment-form'])
         @endif
     @endif
 
@@ -24,7 +24,7 @@
         </h3>
 
         @forelse($comments as $comment)
-            @include('livewire.frontend.partials.comment', [
+            @include(theme_view_name('livewire.frontend.partials.comment'), [
                 'comment' => $comment,
                 'threadDepth' => $threadDepth,
                 'threaded' => $threaded,
