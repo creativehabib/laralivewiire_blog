@@ -31,7 +31,6 @@ trait SendsOneSignalNotifications
             ],
             'data' => [
                 'post_id' => (int) ($post->id ?? 0),
-                'event' => $event,
             ],
         ];
 
