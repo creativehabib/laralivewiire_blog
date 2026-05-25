@@ -10,6 +10,23 @@
 <html lang="{{ str_replace('_', '-', $adminLocale) }}" dir="{{ $adminDirection }}" class="admin-appearance">
     <head>
         @include('partials.head')
+
+    <script>
+        (() => {
+            const storedTheme = localStorage.getItem('theme');
+
+            if (storedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else if (storedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.toggle(
+                    'dark',
+                    window.matchMedia('(prefers-color-scheme: dark)').matches
+                );
+            }
+        })();
+    </script>
     </head>
     <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-slate-950 dark:to-slate-900" @if($adminLoginBackground) style="background-image: url('{{ $adminLoginBackground }}'); background-size: cover; background-position: center;" @endif>
         <div class="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
