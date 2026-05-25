@@ -7,7 +7,7 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', $adminLocale) }}" dir="{{ $adminDirection }}" class="dark admin-appearance">
+<html lang="{{ str_replace('_', '-', $adminLocale) }}" dir="{{ $adminDirection }}" class="admin-appearance">
     <head>
         @include('partials.head')
     </head>
