@@ -406,7 +406,7 @@
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
+            const initDashboardCharts = () => {
                 const visitVsVisitorData = @json($visitVsVisitor);
                 const visitVsVisitorEl = document.getElementById('visitVsVisitorChart');
                 if (visitVsVisitorEl) {
@@ -588,7 +588,10 @@
                         },
                     }).render();
                 }
-            });
+            };
+
+            document.addEventListener('DOMContentLoaded', initDashboardCharts);
+            document.addEventListener('livewire:navigated', initDashboardCharts);
         </script>
     @endpush
 </x-layouts.app>
