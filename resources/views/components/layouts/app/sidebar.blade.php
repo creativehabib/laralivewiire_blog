@@ -494,19 +494,21 @@
 
                 <div class="grid grid-cols-3 gap-1">
                     <button type="button" @click="apply('light')"
-                        :class="mode === 'light' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                        class="rounded-md border px-2 py-1.5 text-xs font-medium transition">
-                        {{ __('Light') }}
+                            :class="mode === 'light' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
+                            class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
+                        <flux:icon.sun class="size-4" />
                     </button>
+
                     <button type="button" @click="apply('dark')"
-                        :class="mode === 'dark' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                        class="rounded-md border px-2 py-1.5 text-xs font-medium transition">
-                        {{ __('Dark') }}
+                            :class="mode === 'dark' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
+                            class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
+                        <flux:icon.moon class="size-4" />
                     </button>
+
                     <button type="button" @click="apply('system')"
-                        :class="mode === 'system' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                        class="rounded-md border px-2 py-1.5 text-xs font-medium transition">
-                        {{ __('System') }}
+                            :class="mode === 'system' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
+                            class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
+                        <flux:icon.computer-desktop class="size-4" />
                     </button>
                 </div>
             </div>
