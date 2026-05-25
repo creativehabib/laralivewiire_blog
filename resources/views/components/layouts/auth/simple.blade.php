@@ -13,7 +13,7 @@
 
     <script>
         (() => {
-            const storedTheme = localStorage.getItem('theme');
+            const storedTheme = localStorage.getItem('theme') || localStorage.getItem('flux.appearance');
 
             if (storedTheme === 'dark') {
                 document.documentElement.classList.add('dark');

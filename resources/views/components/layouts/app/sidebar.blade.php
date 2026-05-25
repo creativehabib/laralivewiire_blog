@@ -18,7 +18,7 @@
 
     <script>
         (() => {
-            const storedTheme = localStorage.getItem('theme');
+            const storedTheme = localStorage.getItem('theme') || localStorage.getItem('flux.appearance');
 
             if (storedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -462,18 +462,21 @@
 
             <div
                 x-data="{
-                    mode: localStorage.getItem('theme') || 'system',
+                    mode: localStorage.getItem('theme') || localStorage.getItem('flux.appearance') || 'system',
                     apply(selected) {
                         this.mode = selected;
 
                         if (selected === 'dark') {
                             localStorage.setItem('theme', 'dark');
+                            localStorage.setItem('flux.appearance', 'dark');
                             document.documentElement.classList.add('dark');
                         } else if (selected === 'light') {
                             localStorage.setItem('theme', 'light');
+                            localStorage.setItem('flux.appearance', 'light');
                             document.documentElement.classList.remove('dark');
                         } else {
                             localStorage.removeItem('theme');
+                            localStorage.setItem('flux.appearance', 'system');
                             document.documentElement.classList.toggle(
                                 'dark',
                                 window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -510,18 +513,21 @@
 
             <div
                 x-data="{
-                    mode: localStorage.getItem('theme') || 'system',
+                    mode: localStorage.getItem('theme') || localStorage.getItem('flux.appearance') || 'system',
                     apply(selected) {
                         this.mode = selected;
 
                         if (selected === 'dark') {
                             localStorage.setItem('theme', 'dark');
+                            localStorage.setItem('flux.appearance', 'dark');
                             document.documentElement.classList.add('dark');
                         } else if (selected === 'light') {
                             localStorage.setItem('theme', 'light');
+                            localStorage.setItem('flux.appearance', 'light');
                             document.documentElement.classList.remove('dark');
                         } else {
                             localStorage.removeItem('theme');
+                            localStorage.setItem('flux.appearance', 'system');
                             document.documentElement.classList.toggle(
                                 'dark',
                                 window.matchMedia('(prefers-color-scheme: dark)').matches
