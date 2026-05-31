@@ -1,9 +1,50 @@
 @php
     use Illuminate\Support\Str;
+    $dashboardWidgets = [
+        'stats' => __('Stats Overview'),
+        'visit-vs-visitor' => __('Visit Vs Visitor'),
+        'visitors-reports' => __('Visitors Reports'),
+        'traffic-breakdown' => __('Top Countries, Browser & Device'),
+        'activity-logs' => __('Activity Logs'),
+        'content-insights' => __('Content Insights'),
+        'audience-posts' => __('Audience & Posts'),
+        'latest-content' => __('Latest Content'),
+    ];
 @endphp
 
 <div class="space-y-6 py-4">
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-controls>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Dashboard Options') }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Drag dashboard sections to reorder them and choose which sections should be visible.') }}</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" class="rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" data-dashboard-options-toggle>
+                        {{ __('Screen Options') }}
+                    </button>
+                    <button type="button" class="rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-700" data-dashboard-reset>
+                        {{ __('Reset Layout') }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 hidden rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60" data-dashboard-options-panel>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Show on screen') }}</p>
+                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ($dashboardWidgets as $widgetId => $widgetLabel)
+                        <label class="flex cursor-pointer items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700">
+                            <input type="checkbox" class="size-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" data-dashboard-visibility-toggle value="{{ $widgetId }}" checked>
+                            <span>{{ $widgetLabel }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6" data-dashboard-widgets>
+
+        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-dashboard-widget="stats" draggable="true">
             @foreach ($stats as $stat)
                 <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
@@ -18,9 +59,9 @@
                     <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ $stat['subtitle'] }}</p>
                 </div>
             @endforeach
-        </div>
+        </section>
 
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="visit-vs-visitor" draggable="true">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Visit Vs Visitor') }}</p>
@@ -52,52 +93,50 @@
                     <p class="mt-1 text-3xl font-bold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['totalVisitors']) }}</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="grid gap-4 xl:grid-cols-3">
-            <div class="xl:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Current vs previous year performance') }}</p>
-                    </div>
-                    <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? __('Current Year') }}</span>
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? __('Previous Year') }}</span>
-                    </div>
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="visitors-reports" draggable="true">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Current vs previous year performance') }}</p>
                 </div>
-                <div class="mt-6">
-                    <div id="visitorsChart" class="h-72"></div>
+                <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                    <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? __('Current Year') }}</span>
+                    <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? __('Previous Year') }}</span>
                 </div>
             </div>
+            <div class="mt-6">
+                <div id="visitorsChart" class="h-72"></div>
+            </div>
+        </section>
 
-            <div class="grid gap-4">
-                @foreach ($pieCharts as $pie)
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <div class="flex items-center justify-between gap-2">
-                            <p class="text-sm font-semibold text-slate-600 dark:text-slate-200">{{ $pie['title'] }}</p>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ array_sum($pie['series']) }} {{ __('Entries') }}</span>
-                        </div>
-                        <div class="mt-4 space-y-3">
-                            <div id="{{ $pie['id'] }}" class="h-56"></div>
-                            <div class="space-y-2">
-                                @foreach ($pie['data'] as $segment)
-                                    <div class="flex items-center justify-between text-sm">
-                                        <div class="flex items-center gap-2">
-                                            <span class="size-3 rounded-full {{ $segment['color'] }}"></span>
-                                            <span class="text-slate-600 dark:text-slate-200">{{ $segment['name'] }}</span>
-                                        </div>
-                                        <span class="text-slate-500 dark:text-slate-400">{{ $segment['value'] }}</span>
+        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-dashboard-widget="traffic-breakdown" draggable="true">
+            @foreach ($pieCharts as $pie)
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-200">{{ $pie['title'] }}</p>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">{{ array_sum($pie['series']) }} {{ __('Entries') }}</span>
+                    </div>
+                    <div class="mt-4 space-y-3">
+                        <div id="{{ $pie['id'] }}" class="h-56"></div>
+                        <div class="space-y-2">
+                            @foreach ($pie['data'] as $segment)
+                                <div class="flex items-center justify-between text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <span class="size-3 rounded-full {{ $segment['color'] }}"></span>
+                                        <span class="text-slate-600 dark:text-slate-200">{{ $segment['name'] }}</span>
                                     </div>
-                                @endforeach
-                            </div>
+                                    <span class="text-slate-500 dark:text-slate-400">{{ $segment['value'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                @endforeach
-            </div>
-        </div>
+                </div>
+            @endforeach
+        </section>
 
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="activity-logs" draggable="true">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Activity Logs') }}</p>
@@ -133,9 +172,9 @@
                     </div>
                 @endforelse
             </div>
-        </div>
+        </section>
 
-        <div class="grid gap-4 xl:grid-cols-3">
+        <section class="grid gap-4 xl:grid-cols-3" data-dashboard-widget="content-insights" draggable="true">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Post Status') }}</p>
@@ -182,9 +221,9 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="grid gap-4 xl:grid-cols-3">
+        <section class="grid gap-4 xl:grid-cols-3" data-dashboard-widget="audience-posts" draggable="true">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Latest Members') }}</p>
@@ -238,9 +277,9 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="grid gap-4 lg:grid-cols-2">
+        <section class="grid gap-4 lg:grid-cols-2" data-dashboard-widget="latest-content" draggable="true">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Latest Posts') }}</p>
@@ -276,186 +315,379 @@
                     @endforeach
                 </div>
             </div>
+        </section>
         </div>
     </div>
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const visitVsVisitor = @json($visitVsVisitor);
-            const visitVsVisitorEl = document.getElementById('visitVsVisitorChart');
-            if (visitVsVisitorEl) {
-                new ApexCharts(visitVsVisitorEl, {
-                    chart: {
-                        type: 'area',
-                        height: 320,
-                        toolbar: { show: false },
-                        zoom: { enabled: false },
-                    },
-                    series: visitVsVisitor.series,
-                    colors: visitVsVisitor.series.map((series) => series.color),
-                    dataLabels: { enabled: false },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 3,
-                    },
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 0.7,
-                            opacityFrom: 0.45,
-                            opacityTo: 0.05,
-                            stops: [0, 90, 100],
-                        },
-                    },
-                    grid: {
-                        borderColor: 'rgba(148, 163, 184, 0.35)',
-                    },
-                    xaxis: {
-                        categories: visitVsVisitor.categories,
-                        labels: {
-                            style: { colors: Array(visitVsVisitor.categories.length).fill('#94a3b8') },
-                        },
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: ['#94a3b8'] },
-                        },
-                    },
-                    legend: { show: false },
-                    tooltip: { shared: true },
-                }).render();
-            }
+        (() => {
+            const dashboardChartPayload = {
+                visitVsVisitor: @json($visitVsVisitor),
+                visitorSeries: @json($visitorSeries),
+                weeks: @json($weeks),
+                pieCharts: @json($pieCharts),
+                statusChart: @json($statusChart),
+                postsLabel: @js(__('Posts')),
+                dragTitle: @js(__('Drag to reorder')),
+            };
 
-            const visitorChartEl = document.querySelector('#visitorsChart');
-            if (visitorChartEl) {
-                new ApexCharts(visitorChartEl, {
-                    chart: {
-                        type: 'area',
-                        height: 320,
-                        toolbar: { show: false },
-                        zoom: { enabled: false },
-                    },
-                    series: @json($visitorSeries),
-                    colors: ['#6366f1', '#f59e0b'],
-                    dataLabels: { enabled: false },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 3,
-                    },
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 0.7,
-                            opacityFrom: 0.45,
-                            opacityTo: 0.05,
-                            stops: [0, 90, 100],
-                        },
-                    },
-                    grid: {
-                        borderColor: 'rgba(148, 163, 184, 0.35)',
-                    },
-                    xaxis: {
-                        categories: @json($weeks),
-                        labels: {
-                            style: { colors: Array(@json(count($weeks))).fill('#94a3b8') },
-                        },
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: ['#94a3b8'] },
-                        },
-                    },
-                    legend: { show: true },
-                    tooltip: { shared: true },
-                }).render();
-            }
+            const renderDashboardChart = (element, options) => {
+                if (! element || typeof ApexCharts === 'undefined') return;
 
-            const pieCharts = @json($pieCharts);
-            pieCharts.forEach((chart) => {
-                const chartEl = document.getElementById(chart.id);
-                if (!chartEl) return;
+                if (element.__dashboardChart) {
+                    element.__dashboardChart.destroy();
+                }
 
-                new ApexCharts(chartEl, {
-                    chart: {
-                        type: 'donut',
-                        height: 220,
-                    },
-                    labels: chart.labels,
-                    series: chart.series,
-                    colors: chart.colors,
-                    legend: { show: false },
-                    dataLabels: { enabled: false },
-                    stroke: { width: 0 },
-                    plotOptions: {
-                        pie: {
-                            donut: {
-                                size: '60%',
-                                labels: {
-                                    show: true,
-                                    name: { show: true },
-                                    value: {
-                                        formatter: (value) => `${parseInt(value).toLocaleString()}`,
-                                    },
-                                    total: {
+                element.innerHTML = '';
+                element.__dashboardChart = new ApexCharts(element, options);
+                element.__dashboardChart.render();
+            };
+
+            const initDashboardCharts = () => {
+                if (typeof ApexCharts === 'undefined') {
+                    window.setTimeout(initDashboardCharts, 100);
+                    return;
+                }
+
+                const visitVsVisitor = dashboardChartPayload.visitVsVisitor;
+                const visitVsVisitorEl = document.getElementById('visitVsVisitorChart');
+                if (visitVsVisitorEl) {
+                    renderDashboardChart(visitVsVisitorEl, {
+                        chart: {
+                            type: 'area',
+                            height: 320,
+                            toolbar: { show: false },
+                            zoom: { enabled: false },
+                        },
+                        series: visitVsVisitor.series,
+                        colors: visitVsVisitor.series.map((series) => series.color),
+                        dataLabels: { enabled: false },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 3,
+                        },
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 0.7,
+                                opacityFrom: 0.45,
+                                opacityTo: 0.05,
+                                stops: [0, 90, 100],
+                            },
+                        },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.35)',
+                        },
+                        xaxis: {
+                            categories: visitVsVisitor.categories,
+                            labels: {
+                                style: { colors: Array(visitVsVisitor.categories.length).fill('#94a3b8') },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: { colors: ['#94a3b8'] },
+                            },
+                        },
+                        legend: { show: false },
+                        tooltip: { shared: true },
+                    });
+                }
+
+                const visitorChartEl = document.querySelector('#visitorsChart');
+                if (visitorChartEl) {
+                    renderDashboardChart(visitorChartEl, {
+                        chart: {
+                            type: 'area',
+                            height: 320,
+                            toolbar: { show: false },
+                            zoom: { enabled: false },
+                        },
+                        series: dashboardChartPayload.visitorSeries,
+                        colors: ['#6366f1', '#f59e0b'],
+                        dataLabels: { enabled: false },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 3,
+                        },
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 0.7,
+                                opacityFrom: 0.45,
+                                opacityTo: 0.05,
+                                stops: [0, 90, 100],
+                            },
+                        },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.35)',
+                        },
+                        xaxis: {
+                            categories: dashboardChartPayload.weeks,
+                            labels: {
+                                style: { colors: Array(dashboardChartPayload.weeks.length).fill('#94a3b8') },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: { colors: ['#94a3b8'] },
+                            },
+                        },
+                        legend: { show: true },
+                        tooltip: { shared: true },
+                    });
+                }
+
+                dashboardChartPayload.pieCharts.forEach((chart) => {
+                    const chartEl = document.getElementById(chart.id);
+                    if (! chartEl) return;
+
+                    renderDashboardChart(chartEl, {
+                        chart: {
+                            type: 'donut',
+                            height: 220,
+                        },
+                        labels: chart.labels,
+                        series: chart.series,
+                        colors: chart.colors,
+                        legend: { show: false },
+                        dataLabels: { enabled: false },
+                        stroke: { width: 0 },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '60%',
+                                    labels: {
                                         show: true,
-                                        label: 'Total',
-                                        formatter: () => chart.series.reduce((a, b) => a + b, 0),
+                                        name: { show: true },
+                                        value: {
+                                            formatter: (value) => `${parseInt(value).toLocaleString()}`,
+                                        },
+                                        total: {
+                                            show: true,
+                                            label: 'Total',
+                                            formatter: () => chart.series.reduce((a, b) => a + b, 0),
+                                        },
                                     },
                                 },
                             },
                         },
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: (value) => `${value.toLocaleString()}`,
+                        tooltip: {
+                            y: {
+                                formatter: (value) => `${value.toLocaleString()}`,
+                            },
                         },
-                    },
-                }).render();
-            });
+                    });
+                });
 
-            const statusData = @json($statusChart);
-            const statusEl = document.getElementById('post-status-chart');
-            if (statusEl) {
-                new ApexCharts(statusEl, {
-                    chart: {
-                        type: 'bar',
-                        height: 320,
-                        toolbar: { show: false },
-                    },
-                    series: [
-                        {
-                            name: '{{ __('Posts') }}',
-                            data: statusData.series,
+                const statusData = dashboardChartPayload.statusChart;
+                const statusEl = document.getElementById('post-status-chart');
+                if (statusEl) {
+                    renderDashboardChart(statusEl, {
+                        chart: {
+                            type: 'bar',
+                            height: 320,
+                            toolbar: { show: false },
                         },
-                    ],
-                    colors: statusData.colors,
-                    plotOptions: {
-                        bar: {
-                            horizontal: true,
-                            borderRadius: 8,
-                            distributed: true,
+                        series: [
+                            {
+                                name: dashboardChartPayload.postsLabel,
+                                data: statusData.series,
+                            },
+                        ],
+                        colors: statusData.colors,
+                        plotOptions: {
+                            bar: {
+                                horizontal: true,
+                                borderRadius: 8,
+                                distributed: true,
+                            },
                         },
-                    },
-                    dataLabels: { enabled: false },
-                    grid: {
-                        borderColor: 'rgba(148, 163, 184, 0.25)',
-                    },
-                    xaxis: {
-                        categories: statusData.categories,
-                        labels: {
-                            style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                        dataLabels: { enabled: false },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.25)',
                         },
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                        xaxis: {
+                            categories: statusData.categories,
+                            labels: {
+                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                            },
                         },
-                    },
-                }).render();
+                        yaxis: {
+                            labels: {
+                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                            },
+                        },
+                    });
+                }
+            };
+
+            const initDashboardLayoutOptions = () => {
+                const storageKey = 'admin-dashboard-widget-preferences';
+                const widgetContainer = document.querySelector('[data-dashboard-widgets]');
+                const widgets = Array.from(document.querySelectorAll('[data-dashboard-widget]'));
+                const toggles = Array.from(document.querySelectorAll('[data-dashboard-visibility-toggle]'));
+                const optionsToggle = document.querySelector('[data-dashboard-options-toggle]');
+                const optionsPanel = document.querySelector('[data-dashboard-options-panel]');
+                const resetButton = document.querySelector('[data-dashboard-reset]');
+
+                if (! widgetContainer || widgets.length === 0) return;
+
+                const defaultOrder = widgets.map((widget) => widget.dataset.dashboardWidget);
+
+                const readPreferences = () => {
+                    const defaults = { order: defaultOrder, hidden: [] };
+                    let saved = null;
+
+                    try {
+                        saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+                    } catch (error) {
+                        localStorage.removeItem(storageKey);
+                    }
+
+                    if (! saved || ! Array.isArray(saved.order) || ! Array.isArray(saved.hidden)) {
+                        return defaults;
+                    }
+
+                    return {
+                        order: [
+                            ...saved.order.filter((id) => defaultOrder.includes(id)),
+                            ...defaultOrder.filter((id) => ! saved.order.includes(id)),
+                        ],
+                        hidden: saved.hidden.filter((id) => defaultOrder.includes(id)),
+                    };
+                };
+
+                const savePreferences = (preferences) => {
+                    localStorage.setItem(storageKey, JSON.stringify(preferences));
+                };
+
+                const applyPreferences = (preferences = readPreferences()) => {
+                    preferences.order.forEach((id) => {
+                        const widget = widgets.find((item) => item.dataset.dashboardWidget === id);
+                        if (widget) widgetContainer.appendChild(widget);
+                    });
+
+                    widgets.forEach((widget) => {
+                        const isHidden = preferences.hidden.includes(widget.dataset.dashboardWidget);
+                        widget.classList.toggle('hidden', isHidden);
+                    });
+
+                    toggles.forEach((toggle) => {
+                        toggle.checked = ! preferences.hidden.includes(toggle.value);
+                    });
+
+                    window.dispatchEvent(new Event('resize'));
+                };
+
+                const getCurrentPreferences = () => ({
+                    order: Array.from(widgetContainer.querySelectorAll('[data-dashboard-widget]')).map((widget) => widget.dataset.dashboardWidget),
+                    hidden: toggles.filter((toggle) => ! toggle.checked).map((toggle) => toggle.value),
+                });
+
+                if (widgetContainer.dataset.dashboardLayoutReady !== 'true') {
+                    optionsToggle?.addEventListener('click', () => {
+                        optionsPanel?.classList.toggle('hidden');
+                        optionsToggle.setAttribute('aria-expanded', String(! optionsPanel?.classList.contains('hidden')));
+                    });
+
+                    toggles.forEach((toggle) => {
+                        toggle.addEventListener('change', () => {
+                            const preferences = getCurrentPreferences();
+                            applyPreferences(preferences);
+                            savePreferences(preferences);
+                        });
+                    });
+
+                    resetButton?.addEventListener('click', () => {
+                        localStorage.removeItem(storageKey);
+                        applyPreferences({ order: defaultOrder, hidden: [] });
+                    });
+
+                    let draggedWidget = null;
+
+                    widgets.forEach((widget) => {
+                        widget.classList.add('cursor-move', 'transition', 'duration-150');
+                        widget.setAttribute('title', dashboardChartPayload.dragTitle);
+
+                        widget.addEventListener('dragstart', (event) => {
+                            draggedWidget = widget;
+                            widget.classList.add('opacity-50', 'ring-2', 'ring-blue-400');
+                            event.dataTransfer.effectAllowed = 'move';
+                            event.dataTransfer.setData('text/plain', widget.dataset.dashboardWidget);
+                        });
+
+                        widget.addEventListener('dragend', () => {
+                            widget.classList.remove('opacity-50', 'ring-2', 'ring-blue-400');
+                            draggedWidget = null;
+                            const preferences = getCurrentPreferences();
+                            savePreferences(preferences);
+                        });
+                    });
+
+                    widgetContainer.addEventListener('dragover', (event) => {
+                        event.preventDefault();
+                        if (! draggedWidget) return;
+
+                        const afterElement = Array.from(widgetContainer.querySelectorAll('[data-dashboard-widget]:not(.opacity-50):not(.hidden)'))
+                            .reduce((closest, child) => {
+                                const box = child.getBoundingClientRect();
+                                const offset = event.clientY - box.top - (box.height / 2);
+
+                                if (offset < 0 && offset > closest.offset) {
+                                    return { offset, element: child };
+                                }
+
+                                return closest;
+                            }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+
+                        if (afterElement) {
+                            widgetContainer.insertBefore(draggedWidget, afterElement);
+                        } else {
+                            widgetContainer.appendChild(draggedWidget);
+                        }
+                    });
+
+                    widgetContainer.addEventListener('drop', (event) => {
+                        event.preventDefault();
+                        const preferences = getCurrentPreferences();
+                        savePreferences(preferences);
+                    });
+
+                    widgetContainer.dataset.dashboardLayoutReady = 'true';
+                }
+
+                applyPreferences();
+            };
+
+            window.initAdminDashboard = () => {
+                if (! document.querySelector('[data-dashboard-widgets]')) return;
+
+                initDashboardLayoutOptions();
+                initDashboardCharts();
+            };
+
+            const bootDashboard = () => window.initAdminDashboard?.();
+
+            if (! window.__adminDashboardLivewireListenersRegistered) {
+                window.__adminDashboardLivewireListenersRegistered = true;
+                document.addEventListener('livewire:navigated', bootDashboard);
+                document.addEventListener('livewire:initialized', bootDashboard);
             }
-        });
+
+            if (! window.__adminDashboardLivewireHookRegistered && window.Livewire?.hook) {
+                window.__adminDashboardLivewireHookRegistered = true;
+                window.Livewire.hook('message.processed', bootDashboard);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bootDashboard, { once: true });
+            } else {
+                bootDashboard();
+            }
+        })();
     </script>
 @endpush
 </div>
