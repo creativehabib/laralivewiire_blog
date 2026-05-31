@@ -13,6 +13,7 @@ use App\Models\VisitorLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Spatie\Activitylog\Models\Activity;
 
@@ -97,6 +98,7 @@ class Dashboard extends Component
         $this->activityLogs = Activity::with('causer')->latest()->take(6)->get(['id', 'description', 'properties', 'created_at', 'causer_id', 'causer_type']);
     }
 
+    #[Renderless]
     public function saveDashboardPreferences(array $preferences): void
     {
         $userId = auth()->id();
