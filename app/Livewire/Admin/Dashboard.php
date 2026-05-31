@@ -6,17 +6,41 @@ use App\Models\Admin\Comment;
 use App\Models\Admin\Page;
 use App\Models\Admin\Tag;
 use App\Models\Category;
+use App\Models\DashboardPreference;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\VisitorLog;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Spatie\Activitylog\Models\Activity;
 
 class Dashboard extends Component
 {
+    private const DASHBOARD_PREFERENCE_KEY = 'admin_dashboard';
+
+    private const DASHBOARD_WIDGET_ORDER = [
+        'stats',
+        'visit-vs-visitor',
+        'visitors-reports',
+        'top-countries',
+        'top-browser',
+        'top-device',
+        'activity-logs',
+        'post-status',
+        'popular-tags',
+        'top-categories',
+        'latest-members',
+        'most-viewed-posts',
+        'popular-categories',
+        'latest-posts',
+        'latest-pages',
+    ];
+
+    public array $dashboardPreferences = [];
+
     public array $stats = [];
 
     public array $visitorSeries = [];
@@ -54,6 +78,8 @@ class Dashboard extends Component
 
     public function mount(): void
     {
+        $this->dashboardPreferences = $this->loadDashboardPreferences();
+
         $this->prepareStats();
         $this->prepareVisitorSeries();
         $this->prepareVisitVsVisitor();
@@ -72,11 +98,82 @@ class Dashboard extends Component
         $this->activityLogs = Activity::with('causer')->latest()->take(6)->get(['id', 'description', 'properties', 'created_at', 'causer_id', 'causer_type']);
     }
 
+    #[Renderless]
+    public function saveDashboardPreferences(array $preferences): void
+    {
+        $userId = auth()->id();
+
+        if (! $userId) {
+            return;
+        }
+
+        $this->dashboardPreferences = $this->normalizeDashboardPreferences($preferences);
+
+        DashboardPreference::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'key' => self::DASHBOARD_PREFERENCE_KEY,
+            ],
+            ['preferences' => $this->dashboardPreferences]
+        );
+
+        $this->dispatch('media-toast', type: 'success', message: __('Dashboard layout updated successfully.'));
+    }
+
     public function render()
     {
         return view('livewire.admin.dashboard')->layout('components.layouts.app', [
             'title' => __('Dashboard'),
         ]);
+    }
+
+    private function loadDashboardPreferences(): array
+    {
+        $userId = auth()->id();
+
+        if (! $userId) {
+            return $this->normalizeDashboardPreferences([]);
+        }
+
+        $preferences = DashboardPreference::query()
+            ->where('user_id', $userId)
+            ->where('key', self::DASHBOARD_PREFERENCE_KEY)
+            ->first()?->preferences;
+
+        return $this->normalizeDashboardPreferences(is_array($preferences) ? $preferences : []);
+    }
+
+    private function normalizeDashboardPreferences(array $preferences): array
+    {
+        $defaultOrder = self::DASHBOARD_WIDGET_ORDER;
+        $order = $preferences['order'] ?? [];
+        $hidden = $preferences['hidden'] ?? [];
+
+        if (! is_array($order)) {
+            $order = [];
+        }
+
+        if (! is_array($hidden)) {
+            $hidden = [];
+        }
+
+        $order = array_values(array_unique(array_filter(
+            $order,
+            fn ($widgetId) => is_string($widgetId) && in_array($widgetId, $defaultOrder, true)
+        )));
+
+        $hidden = array_values(array_unique(array_filter(
+            $hidden,
+            fn ($widgetId) => is_string($widgetId) && in_array($widgetId, $defaultOrder, true)
+        )));
+
+        return [
+            'order' => array_values(array_merge(
+                $order,
+                array_values(array_diff($defaultOrder, $order))
+            )),
+            'hidden' => $hidden,
+        ];
     }
 
     private function prepareStats(): void
