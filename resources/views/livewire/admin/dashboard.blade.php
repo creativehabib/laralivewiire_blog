@@ -655,8 +655,6 @@
 
                     widgetContainer.addEventListener('drop', (event) => {
                         event.preventDefault();
-                        const preferences = getCurrentPreferences();
-                        savePreferences(preferences);
                     });
 
                     widgetContainer.dataset.dashboardLayoutReady = 'true';

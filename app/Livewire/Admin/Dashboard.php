@@ -116,6 +116,8 @@ class Dashboard extends Component
             ],
             ['preferences' => $this->dashboardPreferences]
         );
+
+        $this->dispatch('media-toast', type: 'success', message: __('Dashboard layout updated successfully.'));
     }
 
     public function render()
