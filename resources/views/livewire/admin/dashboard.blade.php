@@ -322,179 +322,207 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const visitVsVisitor = @json($visitVsVisitor);
-            const visitVsVisitorEl = document.getElementById('visitVsVisitorChart');
-            if (visitVsVisitorEl) {
-                new ApexCharts(visitVsVisitorEl, {
-                    chart: {
-                        type: 'area',
-                        height: 320,
-                        toolbar: { show: false },
-                        zoom: { enabled: false },
-                    },
-                    series: visitVsVisitor.series,
-                    colors: visitVsVisitor.series.map((series) => series.color),
-                    dataLabels: { enabled: false },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 3,
-                    },
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 0.7,
-                            opacityFrom: 0.45,
-                            opacityTo: 0.05,
-                            stops: [0, 90, 100],
-                        },
-                    },
-                    grid: {
-                        borderColor: 'rgba(148, 163, 184, 0.35)',
-                    },
-                    xaxis: {
-                        categories: visitVsVisitor.categories,
-                        labels: {
-                            style: { colors: Array(visitVsVisitor.categories.length).fill('#94a3b8') },
-                        },
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: ['#94a3b8'] },
-                        },
-                    },
-                    legend: { show: false },
-                    tooltip: { shared: true },
-                }).render();
-            }
+        (() => {
+            const dashboardChartPayload = {
+                visitVsVisitor: @json($visitVsVisitor),
+                visitorSeries: @json($visitorSeries),
+                weeks: @json($weeks),
+                pieCharts: @json($pieCharts),
+                statusChart: @json($statusChart),
+                postsLabel: @js(__('Posts')),
+                dragTitle: @js(__('Drag to reorder')),
+            };
 
-            const visitorChartEl = document.querySelector('#visitorsChart');
-            if (visitorChartEl) {
-                new ApexCharts(visitorChartEl, {
-                    chart: {
-                        type: 'area',
-                        height: 320,
-                        toolbar: { show: false },
-                        zoom: { enabled: false },
-                    },
-                    series: @json($visitorSeries),
-                    colors: ['#6366f1', '#f59e0b'],
-                    dataLabels: { enabled: false },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 3,
-                    },
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 0.7,
-                            opacityFrom: 0.45,
-                            opacityTo: 0.05,
-                            stops: [0, 90, 100],
-                        },
-                    },
-                    grid: {
-                        borderColor: 'rgba(148, 163, 184, 0.35)',
-                    },
-                    xaxis: {
-                        categories: @json($weeks),
-                        labels: {
-                            style: { colors: Array(@json(count($weeks))).fill('#94a3b8') },
-                        },
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: ['#94a3b8'] },
-                        },
-                    },
-                    legend: { show: true },
-                    tooltip: { shared: true },
-                }).render();
-            }
+            const renderDashboardChart = (element, options) => {
+                if (! element || typeof ApexCharts === 'undefined') return;
 
-            const pieCharts = @json($pieCharts);
-            pieCharts.forEach((chart) => {
-                const chartEl = document.getElementById(chart.id);
-                if (!chartEl) return;
+                if (element.__dashboardChart) {
+                    element.__dashboardChart.destroy();
+                }
 
-                new ApexCharts(chartEl, {
-                    chart: {
-                        type: 'donut',
-                        height: 220,
-                    },
-                    labels: chart.labels,
-                    series: chart.series,
-                    colors: chart.colors,
-                    legend: { show: false },
-                    dataLabels: { enabled: false },
-                    stroke: { width: 0 },
-                    plotOptions: {
-                        pie: {
-                            donut: {
-                                size: '60%',
-                                labels: {
-                                    show: true,
-                                    name: { show: true },
-                                    value: {
-                                        formatter: (value) => `${parseInt(value).toLocaleString()}`,
-                                    },
-                                    total: {
+                element.innerHTML = '';
+                element.__dashboardChart = new ApexCharts(element, options);
+                element.__dashboardChart.render();
+            };
+
+            const initDashboardCharts = () => {
+                if (typeof ApexCharts === 'undefined') {
+                    window.setTimeout(initDashboardCharts, 100);
+                    return;
+                }
+
+                const visitVsVisitor = dashboardChartPayload.visitVsVisitor;
+                const visitVsVisitorEl = document.getElementById('visitVsVisitorChart');
+                if (visitVsVisitorEl) {
+                    renderDashboardChart(visitVsVisitorEl, {
+                        chart: {
+                            type: 'area',
+                            height: 320,
+                            toolbar: { show: false },
+                            zoom: { enabled: false },
+                        },
+                        series: visitVsVisitor.series,
+                        colors: visitVsVisitor.series.map((series) => series.color),
+                        dataLabels: { enabled: false },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 3,
+                        },
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 0.7,
+                                opacityFrom: 0.45,
+                                opacityTo: 0.05,
+                                stops: [0, 90, 100],
+                            },
+                        },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.35)',
+                        },
+                        xaxis: {
+                            categories: visitVsVisitor.categories,
+                            labels: {
+                                style: { colors: Array(visitVsVisitor.categories.length).fill('#94a3b8') },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: { colors: ['#94a3b8'] },
+                            },
+                        },
+                        legend: { show: false },
+                        tooltip: { shared: true },
+                    });
+                }
+
+                const visitorChartEl = document.querySelector('#visitorsChart');
+                if (visitorChartEl) {
+                    renderDashboardChart(visitorChartEl, {
+                        chart: {
+                            type: 'area',
+                            height: 320,
+                            toolbar: { show: false },
+                            zoom: { enabled: false },
+                        },
+                        series: dashboardChartPayload.visitorSeries,
+                        colors: ['#6366f1', '#f59e0b'],
+                        dataLabels: { enabled: false },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 3,
+                        },
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 0.7,
+                                opacityFrom: 0.45,
+                                opacityTo: 0.05,
+                                stops: [0, 90, 100],
+                            },
+                        },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.35)',
+                        },
+                        xaxis: {
+                            categories: dashboardChartPayload.weeks,
+                            labels: {
+                                style: { colors: Array(dashboardChartPayload.weeks.length).fill('#94a3b8') },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: { colors: ['#94a3b8'] },
+                            },
+                        },
+                        legend: { show: true },
+                        tooltip: { shared: true },
+                    });
+                }
+
+                dashboardChartPayload.pieCharts.forEach((chart) => {
+                    const chartEl = document.getElementById(chart.id);
+                    if (! chartEl) return;
+
+                    renderDashboardChart(chartEl, {
+                        chart: {
+                            type: 'donut',
+                            height: 220,
+                        },
+                        labels: chart.labels,
+                        series: chart.series,
+                        colors: chart.colors,
+                        legend: { show: false },
+                        dataLabels: { enabled: false },
+                        stroke: { width: 0 },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '60%',
+                                    labels: {
                                         show: true,
-                                        label: 'Total',
-                                        formatter: () => chart.series.reduce((a, b) => a + b, 0),
+                                        name: { show: true },
+                                        value: {
+                                            formatter: (value) => `${parseInt(value).toLocaleString()}`,
+                                        },
+                                        total: {
+                                            show: true,
+                                            label: 'Total',
+                                            formatter: () => chart.series.reduce((a, b) => a + b, 0),
+                                        },
                                     },
                                 },
                             },
                         },
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: (value) => `${value.toLocaleString()}`,
+                        tooltip: {
+                            y: {
+                                formatter: (value) => `${value.toLocaleString()}`,
+                            },
                         },
-                    },
-                }).render();
-            });
+                    });
+                });
 
-            const statusData = @json($statusChart);
-            const statusEl = document.getElementById('post-status-chart');
-            if (statusEl) {
-                new ApexCharts(statusEl, {
-                    chart: {
-                        type: 'bar',
-                        height: 320,
-                        toolbar: { show: false },
-                    },
-                    series: [
-                        {
-                            name: '{{ __('Posts') }}',
-                            data: statusData.series,
+                const statusData = dashboardChartPayload.statusChart;
+                const statusEl = document.getElementById('post-status-chart');
+                if (statusEl) {
+                    renderDashboardChart(statusEl, {
+                        chart: {
+                            type: 'bar',
+                            height: 320,
+                            toolbar: { show: false },
                         },
-                    ],
-                    colors: statusData.colors,
-                    plotOptions: {
-                        bar: {
-                            horizontal: true,
-                            borderRadius: 8,
-                            distributed: true,
+                        series: [
+                            {
+                                name: dashboardChartPayload.postsLabel,
+                                data: statusData.series,
+                            },
+                        ],
+                        colors: statusData.colors,
+                        plotOptions: {
+                            bar: {
+                                horizontal: true,
+                                borderRadius: 8,
+                                distributed: true,
+                            },
                         },
-                    },
-                    dataLabels: { enabled: false },
-                    grid: {
-                        borderColor: 'rgba(148, 163, 184, 0.25)',
-                    },
-                    xaxis: {
-                        categories: statusData.categories,
-                        labels: {
-                            style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                        dataLabels: { enabled: false },
+                        grid: {
+                            borderColor: 'rgba(148, 163, 184, 0.25)',
                         },
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                        xaxis: {
+                            categories: statusData.categories,
+                            labels: {
+                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                            },
                         },
-                    },
-                }).render();
-            }
+                        yaxis: {
+                            labels: {
+                                style: { colors: Array(statusData.categories.length).fill('#94a3b8') },
+                            },
+                        },
+                    });
+                }
+            };
 
             const initDashboardLayoutOptions = () => {
                 const storageKey = 'admin-dashboard-widget-preferences';
@@ -559,79 +587,107 @@
                     hidden: toggles.filter((toggle) => ! toggle.checked).map((toggle) => toggle.value),
                 });
 
-                optionsToggle?.addEventListener('click', () => {
-                    optionsPanel?.classList.toggle('hidden');
-                    optionsToggle.setAttribute('aria-expanded', String(! optionsPanel?.classList.contains('hidden')));
-                });
+                if (widgetContainer.dataset.dashboardLayoutReady !== 'true') {
+                    optionsToggle?.addEventListener('click', () => {
+                        optionsPanel?.classList.toggle('hidden');
+                        optionsToggle.setAttribute('aria-expanded', String(! optionsPanel?.classList.contains('hidden')));
+                    });
 
-                toggles.forEach((toggle) => {
-                    toggle.addEventListener('change', () => {
+                    toggles.forEach((toggle) => {
+                        toggle.addEventListener('change', () => {
+                            const preferences = getCurrentPreferences();
+                            applyPreferences(preferences);
+                            savePreferences(preferences);
+                        });
+                    });
+
+                    resetButton?.addEventListener('click', () => {
+                        localStorage.removeItem(storageKey);
+                        applyPreferences({ order: defaultOrder, hidden: [] });
+                    });
+
+                    let draggedWidget = null;
+
+                    widgets.forEach((widget) => {
+                        widget.classList.add('cursor-move', 'transition', 'duration-150');
+                        widget.setAttribute('title', dashboardChartPayload.dragTitle);
+
+                        widget.addEventListener('dragstart', (event) => {
+                            draggedWidget = widget;
+                            widget.classList.add('opacity-50', 'ring-2', 'ring-blue-400');
+                            event.dataTransfer.effectAllowed = 'move';
+                            event.dataTransfer.setData('text/plain', widget.dataset.dashboardWidget);
+                        });
+
+                        widget.addEventListener('dragend', () => {
+                            widget.classList.remove('opacity-50', 'ring-2', 'ring-blue-400');
+                            draggedWidget = null;
+                            const preferences = getCurrentPreferences();
+                            savePreferences(preferences);
+                        });
+                    });
+
+                    widgetContainer.addEventListener('dragover', (event) => {
+                        event.preventDefault();
+                        if (! draggedWidget) return;
+
+                        const afterElement = Array.from(widgetContainer.querySelectorAll('[data-dashboard-widget]:not(.opacity-50):not(.hidden)'))
+                            .reduce((closest, child) => {
+                                const box = child.getBoundingClientRect();
+                                const offset = event.clientY - box.top - (box.height / 2);
+
+                                if (offset < 0 && offset > closest.offset) {
+                                    return { offset, element: child };
+                                }
+
+                                return closest;
+                            }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+
+                        if (afterElement) {
+                            widgetContainer.insertBefore(draggedWidget, afterElement);
+                        } else {
+                            widgetContainer.appendChild(draggedWidget);
+                        }
+                    });
+
+                    widgetContainer.addEventListener('drop', (event) => {
+                        event.preventDefault();
                         const preferences = getCurrentPreferences();
-                        applyPreferences(preferences);
                         savePreferences(preferences);
                     });
-                });
 
-                resetButton?.addEventListener('click', () => {
-                    localStorage.removeItem(storageKey);
-                    applyPreferences({ order: defaultOrder, hidden: [] });
-                });
-
-                let draggedWidget = null;
-
-                widgets.forEach((widget) => {
-                    widget.classList.add('cursor-move', 'transition', 'duration-150');
-                    widget.setAttribute('title', @js(__('Drag to reorder')));
-
-                    widget.addEventListener('dragstart', (event) => {
-                        draggedWidget = widget;
-                        widget.classList.add('opacity-50', 'ring-2', 'ring-blue-400');
-                        event.dataTransfer.effectAllowed = 'move';
-                        event.dataTransfer.setData('text/plain', widget.dataset.dashboardWidget);
-                    });
-
-                    widget.addEventListener('dragend', () => {
-                        widget.classList.remove('opacity-50', 'ring-2', 'ring-blue-400');
-                        draggedWidget = null;
-                        const preferences = getCurrentPreferences();
-                        savePreferences(preferences);
-                    });
-                });
-
-                widgetContainer.addEventListener('dragover', (event) => {
-                    event.preventDefault();
-                    if (! draggedWidget) return;
-
-                    const afterElement = Array.from(widgetContainer.querySelectorAll('[data-dashboard-widget]:not(.opacity-50):not(.hidden)'))
-                        .reduce((closest, child) => {
-                            const box = child.getBoundingClientRect();
-                            const offset = event.clientY - box.top - (box.height / 2);
-
-                            if (offset < 0 && offset > closest.offset) {
-                                return { offset, element: child };
-                            }
-
-                            return closest;
-                        }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
-
-                    if (afterElement) {
-                        widgetContainer.insertBefore(draggedWidget, afterElement);
-                    } else {
-                        widgetContainer.appendChild(draggedWidget);
-                    }
-                });
-
-                widgetContainer.addEventListener('drop', (event) => {
-                    event.preventDefault();
-                    const preferences = getCurrentPreferences();
-                    savePreferences(preferences);
-                });
+                    widgetContainer.dataset.dashboardLayoutReady = 'true';
+                }
 
                 applyPreferences();
             };
 
-            initDashboardLayoutOptions();
-        });
+            window.initAdminDashboard = () => {
+                if (! document.querySelector('[data-dashboard-widgets]')) return;
+
+                initDashboardLayoutOptions();
+                initDashboardCharts();
+            };
+
+            const bootDashboard = () => window.initAdminDashboard?.();
+
+            if (! window.__adminDashboardLivewireListenersRegistered) {
+                window.__adminDashboardLivewireListenersRegistered = true;
+                document.addEventListener('livewire:navigated', bootDashboard);
+                document.addEventListener('livewire:initialized', bootDashboard);
+            }
+
+            if (! window.__adminDashboardLivewireHookRegistered && window.Livewire?.hook) {
+                window.__adminDashboardLivewireHookRegistered = true;
+                window.Livewire.hook('message.processed', bootDashboard);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bootDashboard, { once: true });
+            } else {
+                bootDashboard();
+            }
+        })();
     </script>
 @endpush
 </div>
