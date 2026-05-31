@@ -4,11 +4,18 @@
         'stats' => __('Stats Overview'),
         'visit-vs-visitor' => __('Visit Vs Visitor'),
         'visitors-reports' => __('Visitors Reports'),
-        'traffic-breakdown' => __('Top Countries, Browser & Device'),
+        'top-countries' => __('Top Countries'),
+        'top-browser' => __('Top Browser'),
+        'top-device' => __('Top Device'),
         'activity-logs' => __('Activity Logs'),
-        'content-insights' => __('Content Insights'),
-        'audience-posts' => __('Audience & Posts'),
-        'latest-content' => __('Latest Content'),
+        'post-status' => __('Post Status'),
+        'popular-tags' => __('Popular Tags'),
+        'top-categories' => __('Top Categories'),
+        'latest-members' => __('Latest Members'),
+        'most-viewed-posts' => __('Most Viewed Posts'),
+        'popular-categories' => __('Popular Categories'),
+        'latest-posts' => __('Latest Posts'),
+        'latest-pages' => __('Latest Pages'),
     ];
 @endphp
 
@@ -17,7 +24,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Dashboard Options') }}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Drag dashboard sections to reorder them and choose which sections should be visible.') }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Drag dashboard widgets to reorder them and choose which widgets should be visible.') }}</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button type="button" class="rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700" data-dashboard-options-toggle>
@@ -42,78 +49,84 @@
             </div>
         </div>
 
-        <div class="space-y-6" data-dashboard-widgets>
-
-        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-dashboard-widget="stats" draggable="true">
-            @foreach ($stats as $stat)
-                <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <p class="text-sm font-medium text-slate-500 dark:text-slate-300">{{ $stat['label'] }}</p>
-                            <p class="mt-2 text-4xl font-bold text-slate-900 dark:text-white">{{ $stat['value'] }}</p>
+        <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3" data-dashboard-widgets>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 xl:col-span-3" data-dashboard-widget="stats" draggable="true">
+                <div class="mb-4 flex items-center justify-between">
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Stats Overview') }}</p>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Last 30 days') }}</span>
+                </div>
+                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    @foreach ($stats as $stat)
+                        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-500 dark:text-slate-300">{{ $stat['label'] }}</p>
+                                    <p class="mt-2 text-4xl font-bold text-slate-900 dark:text-white">{{ $stat['value'] }}</p>
+                                </div>
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $stat['badge'] }}">
+                                    {{ $stat['delta'] }}%
+                                </span>
+                            </div>
+                            <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ $stat['subtitle'] }}</p>
                         </div>
-                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $stat['badge'] }}">
-                            {{ $stat['delta'] }}%
-                        </span>
-                    </div>
-                    <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ $stat['subtitle'] }}</p>
-                </div>
-            @endforeach
-        </section>
-
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="visit-vs-visitor" draggable="true">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Visit Vs Visitor') }}</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Monthly comparison overview') }}</p>
-                </div>
-                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                    @foreach ($visitVsVisitor['series'] as $series)
-                        <span class="inline-flex items-center gap-2">
-                            <span class="size-3 rounded-full" style="background-color: {{ $series['color'] }}"></span>
-                            {{ $series['name'] }}
-                        </span>
                     @endforeach
                 </div>
-            </div>
-            <div class="mt-6">
-                <div id="visitVsVisitorChart" class="h-80"></div>
-            </div>
-            <div class="mt-6 grid gap-4 md:grid-cols-3">
-                <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
-                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Unique Visitors (:year)', ['year' => $visitVsVisitor['totals']['year']]) }}</p>
-                    <p class="mt-1 text-2xl font-semibold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['uniqueVisitors']) }}</p>
-                </div>
-                <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
-                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Visits (This Month)') }}</p>
-                    <p class="mt-1 text-3xl font-bold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['totalVisits']) }}</p>
-                </div>
-                <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
-                    <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Visitors (This Month)') }}</p>
-                    <p class="mt-1 text-3xl font-bold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['totalVisitors']) }}</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="visitors-reports" draggable="true">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Current vs previous year performance') }}</p>
+            <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 xl:col-span-3" data-dashboard-widget="visit-vs-visitor" draggable="true">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Visit Vs Visitor') }}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Monthly comparison overview') }}</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                        @foreach ($visitVsVisitor['series'] as $series)
+                            <span class="inline-flex items-center gap-2">
+                                <span class="size-3 rounded-full" style="background-color: {{ $series['color'] }}"></span>
+                                {{ $series['name'] }}
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div id="visitVsVisitorChart" class="h-80"></div>
+                </div>
+                <div class="mt-6 grid gap-4 md:grid-cols-3">
+                    <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Unique Visitors (:year)', ['year' => $visitVsVisitor['totals']['year']]) }}</p>
+                        <p class="mt-1 text-2xl font-semibold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['uniqueVisitors']) }}</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Visits (This Month)') }}</p>
+                        <p class="mt-1 text-3xl font-bold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['totalVisits']) }}</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 px-4 py-3 text-center dark:bg-slate-800/60">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Total Visitors (This Month)') }}</p>
+                        <p class="mt-1 text-3xl font-bold text-slate-800 dark:text-white">{{ number_format($visitVsVisitor['totals']['totalVisitors']) }}</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 xl:col-span-3" data-dashboard-widget="visitors-reports" draggable="true">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Current vs previous year performance') }}</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? __('Current Year') }}</span>
+                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? __('Previous Year') }}</span>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                     <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? __('Current Year') }}</span>
                     <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? __('Previous Year') }}</span>
                 </div>
-            </div>
-            <div class="mt-6">
-                <div id="visitorsChart" class="h-72"></div>
-            </div>
-        </section>
+            </section>
 
-        <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-dashboard-widget="traffic-breakdown" draggable="true">
             @foreach ($pieCharts as $pie)
-                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                @php($pieWidgetId = ['top-countries', 'top-browser', 'top-device'][$loop->index] ?? 'traffic-chart-' . $loop->index)
+                <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="{{ $pieWidgetId }}" draggable="true">
                     <div class="flex items-center justify-between gap-2">
                         <p class="text-sm font-semibold text-slate-600 dark:text-slate-200">{{ $pie['title'] }}</p>
                         <span class="text-xs text-slate-500 dark:text-slate-400">{{ array_sum($pie['series']) }} {{ __('Entries') }}</span>
@@ -132,50 +145,48 @@
                             @endforeach
                         </div>
                     </div>
-                </div>
+                </section>
             @endforeach
-        </section>
 
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="activity-logs" draggable="true">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Activity Logs') }}</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Recent platform activities') }}</p>
+            <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 xl:col-span-3" data-dashboard-widget="activity-logs" draggable="true">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Activity Logs') }}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Recent platform activities') }}</p>
+                    </div>
+                    <a href="{{ route('system.activity-logs') }}" class="text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400">
+                        {{ __('View All') }}
+                    </a>
                 </div>
-                <a href="{{ route('system.activity-logs') }}" class="text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400">
-                    {{ __('View All') }}
-                </a>
-            </div>
 
-            <div class="mt-4 divide-y divide-slate-100 text-sm text-slate-700 dark:divide-slate-800 dark:text-slate-200">
-                @forelse ($activityLogs as $log)
-                    <div class="flex items-start justify-between gap-3 py-3">
-                        <div class="flex items-start gap-3">
-                            <span class="flex size-10 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                                {{ Str::upper(Str::substr($log->causer?->name ?? __('System'), 0, 1)) }}
-                            </span>
-                            <div class="space-y-1">
-                                <p class="font-semibold">{{ $log->causer?->name ?? __('System') }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ $log->description }}</p>
+                <div class="mt-4 divide-y divide-slate-100 text-sm text-slate-700 dark:divide-slate-800 dark:text-slate-200">
+                    @forelse ($activityLogs as $log)
+                        <div class="flex items-start justify-between gap-3 py-3">
+                            <div class="flex items-start gap-3">
+                                <span class="flex size-10 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                    {{ Str::upper(Str::substr($log->causer?->name ?? __('System'), 0, 1)) }}
+                                </span>
+                                <div class="space-y-1">
+                                    <p class="font-semibold">{{ $log->causer?->name ?? __('System') }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $log->description }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right text-xs text-slate-500 dark:text-slate-400">
+                                <p>{{ $log->created_at->diffForHumans() }}</p>
+                                @if (data_get($log->properties, 'ip'))
+                                    <p class="text-[11px] text-blue-500">{{ data_get($log->properties, 'ip') }}</p>
+                                @endif
                             </div>
                         </div>
-                        <div class="text-right text-xs text-slate-500 dark:text-slate-400">
-                            <p>{{ $log->created_at->diffForHumans() }}</p>
-                            @if (data_get($log->properties, 'ip'))
-                                <p class="text-[11px] text-blue-500">{{ data_get($log->properties, 'ip') }}</p>
-                            @endif
+                    @empty
+                        <div class="py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                            {{ __('No activity logs found') }}
                         </div>
-                    </div>
-                @empty
-                    <div class="py-8 text-center text-sm text-slate-500 dark:text-slate-400">
-                        {{ __('No activity logs found') }}
-                    </div>
-                @endforelse
-            </div>
-        </section>
+                    @endforelse
+                </div>
+            </section>
 
-        <section class="grid gap-4 xl:grid-cols-3" data-dashboard-widget="content-insights" draggable="true">
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="post-status" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Post Status') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Auto-updated') }}</span>
@@ -190,9 +201,9 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </section>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="popular-tags" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Popular Tags') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Top 10') }}</span>
@@ -205,9 +216,9 @@
                         </span>
                     @endforeach
                 </div>
-            </div>
+            </section>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="top-categories" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Top Categories') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('View All') }}</span>
@@ -220,11 +231,9 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="grid gap-4 xl:grid-cols-3" data-dashboard-widget="audience-posts" draggable="true">
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="latest-members" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Latest Members') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Recent Signups') }}</span>
@@ -244,9 +253,9 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </section>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="most-viewed-posts" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Most Viewed Posts') }}</p>
                     <div class="flex gap-2">
@@ -261,9 +270,9 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </section>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="popular-categories" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Popular Categories') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Top 5') }}</span>
@@ -276,11 +285,9 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="grid gap-4 lg:grid-cols-2" data-dashboard-widget="latest-content" draggable="true">
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 xl:col-span-2" data-dashboard-widget="latest-posts" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Latest Posts') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Recent 6') }}</span>
@@ -296,9 +303,9 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </section>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" data-dashboard-widget="latest-pages" draggable="true">
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Latest Pages') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Recent 6') }}</span>
@@ -314,8 +321,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
-        </section>
+            </section>
         </div>
     </div>
 
@@ -632,16 +638,14 @@
                         if (! draggedWidget) return;
 
                         const afterElement = Array.from(widgetContainer.querySelectorAll('[data-dashboard-widget]:not(.opacity-50):not(.hidden)'))
-                            .reduce((closest, child) => {
+                            .find((child) => {
                                 const box = child.getBoundingClientRect();
-                                const offset = event.clientY - box.top - (box.height / 2);
+                                const isSameRow = event.clientY >= box.top && event.clientY <= box.bottom;
+                                const isBeforeColumnMidpoint = event.clientX < box.left + (box.width / 2);
+                                const isBeforeRowMidpoint = event.clientY < box.top + (box.height / 2);
 
-                                if (offset < 0 && offset > closest.offset) {
-                                    return { offset, element: child };
-                                }
-
-                                return closest;
-                            }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+                                return (isSameRow && isBeforeColumnMidpoint) || (! isSameRow && isBeforeRowMidpoint);
+                            });
 
                         if (afterElement) {
                             widgetContainer.insertBefore(draggedWidget, afterElement);
