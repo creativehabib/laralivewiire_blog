@@ -187,47 +187,45 @@
             </div>
         </div>
 
-        <div class="grid gap-4 xl:grid-cols-3">
-            <div class="xl:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ __(now()->translatedFormat('F Y')) }} vs {{ $previousYear }}</p>
-                    </div>
-                    <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? $currentYear }}</span>
-                        <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? $previousYear }}</span>
-                    </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">{{ __('Visitors Reports') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __(now()->translatedFormat('F Y')) }} vs {{ $previousYear }}</p>
                 </div>
-                <div class="mt-6">
-                    <div id="visitorsChart" class="h-72"></div>
+                <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                    <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-indigo-500"></span>{{ $visitorSeries[0]['name'] ?? $currentYear }}</span>
+                    <span class="inline-flex items-center gap-1"><span class="size-3 rounded-full bg-amber-400"></span>{{ $visitorSeries[1]['name'] ?? $previousYear }}</span>
                 </div>
             </div>
+            <div class="mt-6">
+                <div id="visitorsChart" class="h-72"></div>
+            </div>
+        </div>
 
-            <div class="grid gap-4">
-                @foreach ([['title' => __('Top Countries'), 'data' => $countries], ['title' => __('Top Browser'), 'data' => $browsers], ['title' => __('Top Device'), 'data' => $devices]] as $pie)
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <div class="flex items-center justify-between gap-2">
-                            <p class="text-sm font-semibold text-slate-600 dark:text-slate-200">{{ $pie['title'] }}</p>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ array_sum(array_column($pie['data'], 'value')) }} {{ __('Entries') }}</span>
-                        </div>
-                        <div class="mt-4 space-y-3">
-                            <div id="{{ Str::slug($pie['title'], '-') }}-chart" class="h-56"></div>
-                            <div class="space-y-2">
-                                @foreach ($pie['data'] as $segment)
-                                    <div class="flex items-center justify-between text-sm">
-                                        <div class="flex items-center gap-2">
-                                            <span class="size-3 rounded-full {{ $segment['color'] }}"></span>
-                                            <span class="text-slate-600 dark:text-slate-200">{{ $segment['name'] }}</span>
-                                        </div>
-                                        <span class="text-slate-500 dark:text-slate-400">{{ $segment['value'] }}</span>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            @foreach ([['title' => __('Top Countries'), 'data' => $countries], ['title' => __('Top Browser'), 'data' => $browsers], ['title' => __('Top Device'), 'data' => $devices]] as $pie)
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-200">{{ $pie['title'] }}</p>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">{{ array_sum(array_column($pie['data'], 'value')) }} {{ __('Entries') }}</span>
+                    </div>
+                    <div class="mt-4 space-y-3">
+                        <div id="{{ Str::slug($pie['title'], '-') }}-chart" class="h-56"></div>
+                        <div class="space-y-2">
+                            @foreach ($pie['data'] as $segment)
+                                <div class="flex items-center justify-between text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <span class="size-3 rounded-full {{ $segment['color'] }}"></span>
+                                        <span class="text-slate-600 dark:text-slate-200">{{ $segment['name'] }}</span>
                                     </div>
-                                @endforeach
-                            </div>
+                                    <span class="text-slate-500 dark:text-slate-400">{{ $segment['value'] }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @endforeach
         </div>
 
         <div class="grid gap-4 xl:grid-cols-3">
