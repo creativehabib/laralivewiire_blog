@@ -337,6 +337,8 @@
                 statusChart: @json($statusChart),
                 postsLabel: @js(__('Posts')),
                 dragTitle: @js(__('Drag to reorder')),
+                dashboardPreferences: @json($dashboardPreferences),
+                componentId: @js($this->getId()),
             };
 
             const renderDashboardChart = (element, options) => {
@@ -531,7 +533,6 @@
             };
 
             const initDashboardLayoutOptions = () => {
-                const storageKey = 'admin-dashboard-widget-preferences';
                 const widgetContainer = document.querySelector('[data-dashboard-widgets]');
                 const widgets = Array.from(document.querySelectorAll('[data-dashboard-widget]'));
                 const toggles = Array.from(document.querySelectorAll('[data-dashboard-visibility-toggle]'));
@@ -543,31 +544,25 @@
 
                 const defaultOrder = widgets.map((widget) => widget.dataset.dashboardWidget);
 
-                const readPreferences = () => {
-                    const defaults = { order: defaultOrder, hidden: [] };
-                    let saved = null;
-
-                    try {
-                        saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
-                    } catch (error) {
-                        localStorage.removeItem(storageKey);
-                    }
-
-                    if (! saved || ! Array.isArray(saved.order) || ! Array.isArray(saved.hidden)) {
-                        return defaults;
-                    }
+                const normalizePreferences = (preferences = {}) => {
+                    const savedOrder = Array.isArray(preferences.order) ? preferences.order : [];
+                    const savedHidden = Array.isArray(preferences.hidden) ? preferences.hidden : [];
 
                     return {
                         order: [
-                            ...saved.order.filter((id) => defaultOrder.includes(id)),
-                            ...defaultOrder.filter((id) => ! saved.order.includes(id)),
+                            ...savedOrder.filter((id) => defaultOrder.includes(id)),
+                            ...defaultOrder.filter((id) => ! savedOrder.includes(id)),
                         ],
-                        hidden: saved.hidden.filter((id) => defaultOrder.includes(id)),
+                        hidden: savedHidden.filter((id) => defaultOrder.includes(id)),
                     };
                 };
 
+                const readPreferences = () => normalizePreferences(dashboardChartPayload.dashboardPreferences);
+
                 const savePreferences = (preferences) => {
-                    localStorage.setItem(storageKey, JSON.stringify(preferences));
+                    const normalizedPreferences = normalizePreferences(preferences);
+                    dashboardChartPayload.dashboardPreferences = normalizedPreferences;
+                    window.Livewire?.find(dashboardChartPayload.componentId)?.call('saveDashboardPreferences', normalizedPreferences);
                 };
 
                 const applyPreferences = (preferences = readPreferences()) => {
@@ -608,8 +603,9 @@
                     });
 
                     resetButton?.addEventListener('click', () => {
-                        localStorage.removeItem(storageKey);
-                        applyPreferences({ order: defaultOrder, hidden: [] });
+                        const preferences = { order: defaultOrder, hidden: [] };
+                        applyPreferences(preferences);
+                        savePreferences(preferences);
                     });
 
                     let draggedWidget = null;
