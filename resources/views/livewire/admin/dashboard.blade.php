@@ -325,8 +325,11 @@
         </div>
     </div>
 
-@push('scripts')
+@assets
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+@endassets
+
+@script
     <script>
         (() => {
             const dashboardChartPayload = {
@@ -689,5 +692,5 @@
             }
         })();
     </script>
-@endpush
+@endscript
 </div>
