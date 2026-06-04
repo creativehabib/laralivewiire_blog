@@ -192,8 +192,8 @@
             </div>
         </div>
 
-        {{-- RIGHT: sidebar --}}
-        <div class="space-y-4">
+        {{-- RIGHT: sticky sidebar --}}
+        <aside class="space-y-4 lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1">
             {{-- Publish --}}
             <div
                 class="rounded-xl border border-slate-200 bg-white shadow-sm
@@ -463,7 +463,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
     </div>
 </div>
 @push('scripts')
