@@ -18,7 +18,17 @@
 
     <script>
         (() => {
-            const storedTheme = localStorage.getItem('theme') || localStorage.getItem('flux.appearance');
+            const fluxAppearance = localStorage.getItem('flux.appearance');
+            const legacyTheme = localStorage.getItem('theme');
+            const storedTheme = fluxAppearance || legacyTheme || 'system';
+
+            if (fluxAppearance === 'light' || fluxAppearance === 'dark') {
+                localStorage.setItem('theme', fluxAppearance);
+            } else if (fluxAppearance === 'system') {
+                localStorage.removeItem('theme');
+            } else if (legacyTheme === 'light' || legacyTheme === 'dark') {
+                localStorage.setItem('flux.appearance', legacyTheme);
+            }
 
             if (storedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -462,9 +472,13 @@
 
             <div
                 x-data="{
-                    mode: localStorage.getItem('theme') || localStorage.getItem('flux.appearance') || 'system',
+                    mode: localStorage.getItem('flux.appearance') || localStorage.getItem('theme') || 'system',
                     apply(selected) {
                         this.mode = selected;
+
+                        if (this.$flux) {
+                            this.$flux.appearance = selected;
+                        }
 
                         if (selected === 'dark') {
                             localStorage.setItem('theme', 'dark');
@@ -515,9 +529,13 @@
 
             <div
                 x-data="{
-                    mode: localStorage.getItem('theme') || localStorage.getItem('flux.appearance') || 'system',
+                    mode: localStorage.getItem('flux.appearance') || localStorage.getItem('theme') || 'system',
                     apply(selected) {
                         this.mode = selected;
+
+                        if (this.$flux) {
+                            this.$flux.appearance = selected;
+                        }
 
                         if (selected === 'dark') {
                             localStorage.setItem('theme', 'dark');
