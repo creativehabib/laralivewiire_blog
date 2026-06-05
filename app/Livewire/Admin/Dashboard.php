@@ -185,6 +185,13 @@ class Dashboard extends Component
         $postCurrent = Post::whereBetween('created_at', [$rangeStart, $rangeEnd])->count();
         $postPrevious = Post::whereBetween('created_at', [$previousStart, $rangeStart])->count();
 
+        $updatedPostCurrent = Post::whereBetween('updated_at', [$rangeStart, $rangeEnd])
+            ->whereColumn('updated_at', '>', 'created_at')
+            ->count();
+        $updatedPostPrevious = Post::whereBetween('updated_at', [$previousStart, $rangeStart])
+            ->whereColumn('updated_at', '>', 'created_at')
+            ->count();
+
         $pageCurrent = Page::whereBetween('created_at', [$rangeStart, $rangeEnd])->count();
         $pagePrevious = Page::whereBetween('created_at', [$previousStart, $rangeStart])->count();
 
@@ -196,6 +203,7 @@ class Dashboard extends Component
 
         $this->stats = [
             $this->stat(__('New Posts'), $postCurrent, __('Last 30 days'), $postPrevious, 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-200'),
+            $this->stat(__('Updated Posts'), $updatedPostCurrent, __('Last 30 days'), $updatedPostPrevious, 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200'),
             $this->stat(__('New Pages'), $pageCurrent, __('Last 30 days'), $pagePrevious, 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200'),
             $this->stat(__('New Users'), $userCurrent, __('Last 30 days'), $userPrevious, 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-200'),
             $this->stat(__('New Comments'), $commentCurrent, __('Last 30 days'), $commentPrevious, 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-200'),
