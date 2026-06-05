@@ -48,8 +48,8 @@
         @php
             $shareUrl = $post ? post_permalink($post) : url()->current();
             $shareTitle = $post?->name ?? config('app.name');
-            $encodedShareUrl = urlencode($shareUrl);
-            $encodedShareTitle = urlencode($shareTitle);
+            $encodedShareUrl = rawurlencode($shareUrl);
+            $encodedShareTitle = rawurlencode($shareTitle);
 
             $sharePlatforms = [
                 'facebook' => [
@@ -119,12 +119,12 @@
                 <span class="font-semibold text-gray-700 dark:text-slate-200">শেয়ার করুন:</span>
                 @foreach($activeSharePlatforms as $platform)
                     <a href="{{ $platform['href'] }}"
-                       target="_blank"
-                       rel="noopener noreferrer"
+                       @unless(str_starts_with($platform['href'], 'mailto:')) target="_blank" rel="noopener noreferrer" @endunless
+                       title="Share on {{ $platform['label'] }}"
                        aria-label="Share on {{ $platform['label'] }}"
-                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors {{ $platform['classes'] }}">
-                        <i class="{{ $platform['icon'] }}"></i>
-                        <span>{{ $platform['label'] }}</span>
+                       class="inline-flex h-9 w-9 items-center justify-center rounded-full text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-dark focus:ring-offset-2 dark:focus:ring-primary-light dark:focus:ring-offset-slate-800 {{ $platform['classes'] }}">
+                        <i class="{{ $platform['icon'] }}" aria-hidden="true"></i>
+                        <span class="sr-only">{{ $platform['label'] }}</span>
                     </a>
                 @endforeach
             </div>
