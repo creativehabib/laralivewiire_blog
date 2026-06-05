@@ -55,7 +55,7 @@
                     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Stats Overview') }}</p>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-200">{{ __('Last 30 days') }}</span>
                 </div>
-                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                     @foreach ($stats as $stat)
                         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                             <div class="flex items-start justify-between gap-3">
