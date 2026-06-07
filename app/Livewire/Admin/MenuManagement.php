@@ -62,7 +62,7 @@ class MenuManagement extends Component
         $this->loadMenus();
 
         if(count($this->menus) > 0) {
-            $this->selectMenu($this->menus[0]['id']);
+            $this->selectMenu($this->menus[1]['id']);
         }
     }
 
