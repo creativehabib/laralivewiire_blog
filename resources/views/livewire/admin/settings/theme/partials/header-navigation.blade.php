@@ -20,16 +20,17 @@
     </div>
 
     <div class="rounded-md border border-slate-200 dark:border-slate-700 p-4 space-y-4">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Breaking News Ticker') }}</p>
-                <p class="text-xs text-slate-500">{{ __('Show a scrolling ticker from a selected category.') }}</p>
-            </div>
-            <input type="checkbox" wire:model="header.breaking_news_enabled"
-                   class="h-4 w-4 rounded border-slate-300  focus:ring-indigo-500">
-        </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Breaking News Ticker Status') }}</label>
+                <select wire:model.defer="header.breaking_news_enabled"
+                        class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+                    <option value="1">{{ __('On') }}</option>
+                    <option value="0">{{ __('Off') }}</option>
+                </select>
+                <p class="mt-1 text-xs text-slate-500">{{ __('Choose whether the breaking news ticker will be shown on the website.') }}</p>
+            </div>
+
             <div>
                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Show More Breaking News') }}</label>
                 <input type="number" min="10" wire:model.defer="header.show_more_breaking_news"
