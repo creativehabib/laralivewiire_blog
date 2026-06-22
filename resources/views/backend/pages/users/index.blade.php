@@ -104,6 +104,17 @@
                                         {{-- Actions --}}
                                         <td class="px-4 py-3 align-middle text-center">
                                             <div class="inline-flex items-center gap-2">
+                                                {{-- Sessions --}}
+                                                <a
+                                                    href="{{ route('system.users.sessions', $user) }}"
+                                                    class="inline-flex items-center rounded-md border border-emerald-500 px-3 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-300
+                                                           hover:bg-emerald-50 dark:hover:bg-emerald-500/10
+                                                           focus:outline-none focus:ring-2 focus:ring-emerald-500
+                                                           focus:ring-offset-2 focus:ring-offset-slate-50 dark:focus:ring-offset-slate-900"
+                                                >
+                                                    Sessions
+                                                </a>
+
                                                 {{-- Edit --}}
                                                 <a
                                                     href="{{ route('system.users.edit', $user) }}"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserSession;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -20,6 +21,8 @@ class UserManagementController extends Controller implements HasMiddleware
             new Middleware('permission:user.edit', only: ['edit', 'update']),
             new Middleware('permission:user.create', only: ['create', 'store']),
             new Middleware('permission:user.delete', only: ['destroy']),
+            new Middleware('permission:user.view', only: ['sessions']),
+            new Middleware('permission:user.edit', only: ['destroySession', 'destroyOtherSessions']),
         ];
     }
     public function index()
@@ -80,6 +83,47 @@ class UserManagementController extends Controller implements HasMiddleware
         $user->syncRoles($request->role);
 
         return redirect()->route('system.users.index')->with('success', 'User updated successfully.');
+    }
+
+    public function sessions(Request $request, User $user)
+    {
+        $sessions = UserSession::query()
+            ->where('user_id', $user->id)
+            ->latest('last_activity')
+            ->paginate(15);
+
+        return view('backend.pages.users.sessions', [
+            'user' => $user,
+            'sessions' => $sessions,
+            'currentSessionId' => $request->session()->getId(),
+        ]);
+    }
+
+    public function destroySession(Request $request, User $user, UserSession $session)
+    {
+        abort_unless((int) $session->user_id === (int) $user->id, 404);
+
+        $session->delete();
+
+        if ($session->getKey() === $request->session()->getId()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('success', 'The current session has been logged out.');
+        }
+
+        return back()->with('success', 'Session logged out successfully.');
+    }
+
+    public function destroyOtherSessions(Request $request, User $user)
+    {
+        UserSession::query()
+            ->where('user_id', $user->id)
+            ->where('id', '!=', $request->session()->getId())
+            ->delete();
+
+        return back()->with('success', 'All other sessions have been logged out successfully.');
     }
 
     public function destroy(User $user)
