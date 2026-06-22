@@ -2,10 +2,10 @@
 
 
     <section class="mb-7 lg:mb-6">
-        <div class="container" bis_skin_checked="1">
-            <div class="grid grid-cols-1 lg:grid-cols-[auto_300px] mt-5 gap-6 lg:gap-9 pb-0 lg:pb-6" bis_skin_checked="1">
-                <div class="flex flex-col gap-6 lg:gap-9 border-right" bis_skin_checked="1">
-                    <div class="grid grid-cols-1 lg:grid-cols-[300px_auto] gap-6 lg:gap-9 pb-0 lg:pb-6" bis_skin_checked="1">
+        <div class="container">
+            <div class="grid grid-cols-1 lg:grid-cols-[auto_300px] mt-5 gap-6 lg:gap-9 pb-0 lg:pb-6">
+                <div class="flex flex-col gap-6 lg:gap-9 border-right">
+                    <div class="grid grid-cols-1 lg:grid-cols-[300px_auto] gap-6 lg:gap-9 pb-0 lg:pb-6">
                         <div class="lg:border-right lg:order-1 order-2" bis_skin_checked="1">
                             <div class="sticky top-[68px] flex flex-col gap-6 lg:gap-9" bis_skin_checked="1">
                                 <a class="group border-bottom lg:border-bottom-9 relative block h-[250px]" href="/sports/cricket/ap0dmtral4g8-%E0%A6%85%E0%A6%B8%E0%A7%8D%E0%A6%9F%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B2%E0%A6%BF%E0%A6%AF%E0%A6%BC%E0%A6%BE%E0%A6%95%E0%A7%87-%E0%A6%B9%E0%A6%BE%E0%A6%B0%E0%A6%BF%E0%A6%AF%E0%A6%BC%E0%A7%87-%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%9C%E0%A7%87-%E0%A6%8F%E0%A6%97%E0%A6%BF%E0%A6%AF%E0%A6%BC%E0%A7%87-%E0%A6%97%E0%A7%87%E0%A6%B2-%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE%E0%A6%A6%E0%A7%87%E0%A6%B6">
