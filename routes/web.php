@@ -273,6 +273,9 @@ Route::middleware(['auth', 'preventBackHistory'])->group(function () {
         Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs')->middleware('permission:setting.view');
         Route::resource('/roles', RoleController::class);
         Route::resource('/permissions', PermissionController::class);
+        Route::get('/users/{user}/sessions', [UserManagementController::class, 'sessions'])->name('users.sessions');
+        Route::delete('/users/{user}/sessions/others', [UserManagementController::class, 'destroyOtherSessions'])->name('users.sessions.others.destroy');
+        Route::delete('/users/{user}/sessions/{session}', [UserManagementController::class, 'destroySession'])->name('users.sessions.destroy');
         Route::resource('/users', UserManagementController::class);
     });
 
