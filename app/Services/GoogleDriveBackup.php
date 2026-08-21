@@ -3,15 +3,28 @@
 namespace App\Services;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
+use Throwable;
 
 class GoogleDriveBackup
 {
     public function configured(): bool
     {
-        return filled(config('backup.google_drive.client_email'))
-            && filled(config('backup.google_drive.private_key'));
+        return filled($this->clientEmail()) && filled($this->privateKey());
+    }
+
+    public function testConnection(): void
+    {
+        $response = $this->client()->get('https://www.googleapis.com/drive/v3/files', [
+            'pageSize' => 1,
+            'fields' => 'files(id)',
+        ]);
+
+        if ($response->failed()) {
+            throw new RuntimeException('Google Drive connection failed: '.$response->body());
+        }
     }
 
     public function upload(string $path, ?string $folderId = null): array
@@ -44,14 +57,14 @@ class GoogleDriveBackup
         $now = time();
         $header = $this->base64Url(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
         $claims = $this->base64Url(json_encode([
-            'iss' => config('backup.google_drive.client_email'),
+            'iss' => $this->clientEmail(),
             'scope' => 'https://www.googleapis.com/auth/drive.file',
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
             'exp' => $now + 3600,
         ]));
 
-        $privateKey = str_replace('\\n', "\n", (string) config('backup.google_drive.private_key'));
+        $privateKey = str_replace('\\n', "\n", $this->privateKey());
         if (! openssl_sign("{$header}.{$claims}", $signature, $privateKey, OPENSSL_ALGO_SHA256)) {
             throw new RuntimeException('The Google Drive private key is invalid.');
         }
@@ -71,5 +84,25 @@ class GoogleDriveBackup
     private function base64Url(string $value): string
     {
         return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
+    }
+
+    private function clientEmail(): string
+    {
+        return (string) setting('backup_drive_client_email', config('backup.google_drive.client_email'));
+    }
+
+    private function privateKey(): string
+    {
+        $stored = setting('backup_drive_private_key');
+
+        if (filled($stored)) {
+            try {
+                return Crypt::decryptString((string) $stored);
+            } catch (Throwable) {
+                throw new RuntimeException('The saved Google Drive private key could not be decrypted. Please save it again.');
+            }
+        }
+
+        return (string) config('backup.google_drive.private_key');
     }
 }

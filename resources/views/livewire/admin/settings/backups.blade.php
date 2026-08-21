@@ -4,14 +4,30 @@
     </div>
 
     <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-200">
-        <p class="font-semibold">Google Drive setup</p>
-        <p class="mt-1">Add the service account email and private key to your <code>.env</code>, then share the destination Drive folder with that service-account email. Keep Laravel's scheduler running with <code>* * * * * php artisan schedule:run</code>.</p>
+        <p class="font-semibold">Google Drive setup help</p>
+        <p class="mt-1">নিচের ধাপগুলো অনুসরণ করে এই পেজ থেকেই credentials ও backup schedule সংরক্ষণ করুন। সার্ভারে শুধু Laravel scheduler চালু রাখতে হবে: <code>* * * * * php artisan schedule:run</code>.</p>
+        <ol class="mt-3 list-inside list-decimal space-y-1">
+            <li><a class="font-semibold underline" href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener noreferrer">Google Drive API চালু করুন</a>।</li>
+            <li><a class="font-semibold underline" href="https://console.cloud.google.com/iam-admin/serviceaccounts/create" target="_blank" rel="noopener noreferrer">Service Account তৈরি করুন</a>।</li>
+            <li><a class="font-semibold underline" href="https://cloud.google.com/iam/docs/keys-create-delete#creating" target="_blank" rel="noopener noreferrer">JSON private key তৈরি/ডাউনলোড করুন</a> এবং JSON-এর <code>client_email</code> ও <code>private_key</code> নিচে দিন।</li>
+            <li>Drive-এ একটি folder তৈরি করে service-account email-কে Editor access দিন—<a class="font-semibold underline" href="https://support.google.com/drive/answer/7166529" target="_blank" rel="noopener noreferrer">folder sharing help</a>। Folder URL-এর শেষ অংশটি Folder ID।</li>
+        </ol>
         <p class="mt-2">Status: <span class="font-semibold {{ $driveConfigured ? 'text-emerald-600' : 'text-amber-600' }}">{{ $driveConfigured ? 'Google Drive configured' : 'Credentials not configured (local backup only)' }}</span></p>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
         <form wire:submit="saveSettings" class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-            <h2 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">Daily automatic backup</h2>
+            <h2 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">Google Drive ও schedule settings</h2>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Service account client email</label>
+            <input type="email" wire:model="driveClientEmail" autocomplete="off" placeholder="backup@project.iam.gserviceaccount.com" class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
+            @error('driveClientEmail') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
+            <label class="mt-4 block text-sm font-medium text-slate-700 dark:text-slate-200">Service account private key</label>
+            <textarea wire:model="drivePrivateKey" rows="5" autocomplete="off" placeholder="Saved key পরিবর্তন করতে JSON file-এর -----BEGIN PRIVATE KEY----- থেকে সম্পূর্ণ private_key paste করুন" class="mt-1 w-full rounded-md border-slate-300 font-mono text-xs dark:border-slate-600 dark:bg-slate-900"></textarea>
+            <p class="mt-1 text-xs text-slate-500">নিরাপত্তার জন্য saved key আর দেখানো হয় না এবং database-এ encrypted অবস্থায় থাকে। খালি রাখলে আগের key অপরিবর্তিত থাকবে।</p>
+            @error('drivePrivateKey') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
+            <label class="mt-4 block text-sm font-medium text-slate-700 dark:text-slate-200">Google Drive folder ID</label>
+            <input type="text" wire:model="driveFolderId" placeholder="1AbCdEf..." class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
+            @error('driveFolderId') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
             <label class="mb-4 flex items-center gap-3 text-sm text-slate-700 dark:text-slate-200">
                 <input type="checkbox" wire:model="automatic" class="rounded border-slate-300 text-blue-600">
                 Enable automatic Google Drive backup
@@ -19,9 +35,10 @@
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Backup time</label>
             <input type="time" wire:model="backupTime" class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
             @error('backupTime') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
-            <label class="mt-4 block text-sm font-medium text-slate-700 dark:text-slate-200">Google Drive folder ID</label>
-            <input type="text" wire:model="driveFolderId" placeholder="Optional when configured in .env" class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
-            <button class="mt-4 rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500">Save schedule</button>
+            <div class="mt-4 flex flex-wrap gap-2">
+                <button class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500">সব settings সংরক্ষণ করুন</button>
+                <button type="button" wire:click="testDriveConnection" class="rounded bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" {{ $driveConfigured ? '' : 'disabled' }}>Connection test</button>
+            </div>
         </form>
 
         <form wire:submit="importBackup" class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">

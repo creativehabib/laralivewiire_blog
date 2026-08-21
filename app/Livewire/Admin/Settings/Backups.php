@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Settings;
 use App\Services\DatabaseBackup;
 use App\Services\GoogleDriveBackup;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -18,6 +19,8 @@ class Backups extends Component
     public bool $automatic = false;
     public string $backupTime = '02:00';
     public ?string $driveFolderId = null;
+    public string $driveClientEmail = '';
+    public string $drivePrivateKey = '';
     public $backupUpload;
 
     public function mount(): void
@@ -25,15 +28,48 @@ class Backups extends Component
         $this->automatic = (bool) setting('backup_automatic', false);
         $this->backupTime = (string) setting('backup_time', '02:00');
         $this->driveFolderId = setting('backup_drive_folder_id', config('backup.google_drive.folder_id'));
+        $this->driveClientEmail = (string) setting('backup_drive_client_email', config('backup.google_drive.client_email'));
     }
 
     public function saveSettings(): void
     {
-        $this->validate(['backupTime' => ['required', 'date_format:H:i']]);
+        $this->validate([
+            'backupTime' => ['required', 'date_format:H:i'],
+            'driveClientEmail' => ['nullable', 'email', 'max:255'],
+            'drivePrivateKey' => ['nullable', 'string'],
+            'driveFolderId' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        if ($this->automatic && blank($this->driveFolderId)) {
+            $this->addError('driveFolderId', 'Automatic Google Drive backup-এর জন্য folder ID প্রয়োজন।');
+
+            return;
+        }
+
+        if ($this->automatic && (blank($this->driveClientEmail) || ! $this->hasPrivateKey())) {
+            $this->addError('drivePrivateKey', 'Automatic backup চালু করতে service-account email ও private key প্রয়োজন।');
+
+            return;
+        }
         set_setting('backup_automatic', $this->automatic, 'backup');
         set_setting('backup_time', $this->backupTime, 'backup');
         set_setting('backup_drive_folder_id', $this->driveFolderId, 'backup');
+        set_setting('backup_drive_client_email', trim($this->driveClientEmail), 'backup');
+        if (filled($this->drivePrivateKey)) {
+            set_setting('backup_drive_private_key', Crypt::encryptString(trim($this->drivePrivateKey)), 'backup');
+            $this->drivePrivateKey = '';
+        }
         $this->toast('success', 'Backup schedule saved successfully.');
+    }
+
+    public function testDriveConnection(GoogleDriveBackup $drive): void
+    {
+        try {
+            $drive->testConnection();
+            $this->toast('success', 'Google Drive connection is working.');
+        } catch (Throwable $exception) {
+            $this->toast('error', $exception->getMessage());
+        }
     }
 
     public function generateBackup(DatabaseBackup $backups, GoogleDriveBackup $drive): void
@@ -128,5 +164,12 @@ class Backups extends Component
     private function toast(string $type, string $message): void
     {
         $this->dispatch('media-toast', type: $type, message: $message);
+    }
+
+    private function hasPrivateKey(): bool
+    {
+        return filled($this->drivePrivateKey)
+            || filled(setting('backup_drive_private_key'))
+            || filled(config('backup.google_drive.private_key'));
     }
 }

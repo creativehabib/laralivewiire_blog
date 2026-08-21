@@ -1,10 +1,14 @@
 <?php
 
+use App\Services\DatabaseBackup;
+use App\Services\GoogleDriveBackup;
 use App\Services\WordPressImporter;
 use App\Support\ThemeManager;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Str;
 use App\Services\DatabaseBackup;
 use App\Services\GoogleDriveBackup;
