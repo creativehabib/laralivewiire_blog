@@ -1,37 +1,15 @@
 <?php
 
-use App\Services\DatabaseBackup;
-use App\Services\GoogleDriveBackup;
 use App\Services\WordPressImporter;
 use App\Support\ThemeManager;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Str;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
-
-Artisan::command('backup:run {--scheduled : Run only when the configured daily time is due}', function (DatabaseBackup $backups, GoogleDriveBackup $drive) {
-    if ($this->option('scheduled')) {
-        if (! (bool) setting('backup_automatic', false) || now()->format('H:i') !== setting('backup_time', '02:00')) return 0;
-        if (Cache::get('backup.last_scheduled_date') === now()->toDateString()) return 0;
-    }
-
-    $path = $backups->create();
-    $this->info('Local backup created: '.basename($path));
-    if ($drive->configured()) {
-        $drive->upload($path, setting('backup_drive_folder_id', config('backup.google_drive.folder_id')));
-        $this->info('Backup uploaded to Google Drive.');
-    }
-    if ($this->option('scheduled')) Cache::forever('backup.last_scheduled_date', now()->toDateString());
-    return 0;
-})->purpose('Create a database backup and upload it to Google Drive');
-
-Schedule::command('backup:run --scheduled')->everyMinute()->withoutOverlapping();
 
 Artisan::command('wordpress:import
     {source=https://ebdresults.com : WordPress site URL}
