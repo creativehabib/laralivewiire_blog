@@ -2,342 +2,242 @@
 
 namespace App\Livewire\Admin\Settings;
 
+use App\Services\DatabaseBackup;
+use App\Services\GoogleDriveBackup;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
+use JsonException;
 use Livewire\Component;
-use Symfony\Component\Process\Process;
+use Livewire\WithFileUploads;
+use RuntimeException;
+use Throwable;
 
 class Backups extends Component
 {
-    private string $backupFolder = 'backups/database';
+    use WithFileUploads;
 
-    public function generateBackup(): void
+    public bool $automatic = false;
+    public string $backupTime = '02:00';
+    public ?string $driveFolderId = null;
+    public string $driveClientEmail = '';
+    public string $drivePrivateKey = '';
+    public $credentialsUpload;
+    public $backupUpload;
+
+    public function mount(): void
     {
-        [$connection, $config] = $this->databaseConfig();
+        $this->automatic = (bool) setting('backup_automatic', false);
+        $this->backupTime = (string) setting('backup_time', '02:00');
+        $this->driveFolderId = setting('backup_drive_folder_id', config('backup.google_drive.folder_id'));
+        $this->driveClientEmail = (string) setting('backup_drive_client_email', config('backup.google_drive.client_email'));
+    }
 
-        if (! $config) {
-            $this->dispatch('media-toast', type: 'error', message: 'Database connection is not configured.');
+    public function saveSettings(): void
+    {
+        $this->validate([
+            'backupTime' => ['required', 'date_format:H:i'],
+            'driveClientEmail' => ['nullable', 'email', 'max:255'],
+            'drivePrivateKey' => ['nullable', 'string'],
+            'driveFolderId' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        if ($this->automatic && blank($this->driveFolderId)) {
+            $this->addError('driveFolderId', 'Automatic Google Drive backup-এর জন্য folder ID প্রয়োজন।');
+
             return;
         }
 
-        File::ensureDirectoryExists($this->backupDirectory());
+        if ($this->automatic && (blank($this->driveClientEmail) || ! $this->hasPrivateKey())) {
+            $this->addError('drivePrivateKey', 'Automatic backup চালু করতে service-account email ও private key প্রয়োজন।');
 
-        $filename = sprintf(
-            '%s-%s.sql',
-            Str::slug($connection),
-            now()->format('Ymd_His')
+            return;
+        }
+        set_setting('backup_automatic', $this->automatic, 'backup');
+        set_setting('backup_time', $this->backupTime, 'backup');
+        set_setting('backup_drive_folder_id', $this->driveFolderId, 'backup');
+        set_setting('backup_drive_client_email', trim($this->driveClientEmail), 'backup');
+        if (filled($this->drivePrivateKey)) {
+            set_setting('backup_drive_private_key', Crypt::encryptString(trim($this->drivePrivateKey)), 'backup');
+            $this->drivePrivateKey = '';
+        }
+        $this->toast('success', 'Backup schedule saved successfully.');
+    }
+
+    public function testDriveConnection(GoogleDriveBackup $drive): void
+    {
+        try {
+            $drive->testConnection();
+            $this->toast('success', 'Google Drive connection is working.');
+        } catch (Throwable $exception) {
+            $this->toast('error', $exception->getMessage());
+        }
+    }
+
+    public function importGoogleCredentials(): void
+    {
+        $this->validate([
+            'credentialsUpload' => ['required', 'file', 'max:512'],
+        ]);
+
+        try {
+            // getContent() is reliable for Livewire's temporary uploads. Removing
+            // an optional UTF-8 BOM also supports JSON files saved by Windows tools.
+            $json = preg_replace('/^\xEF\xBB\xBF/', '', $this->credentialsUpload->getContent());
+            $credentials = json_decode(trim($json), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            $this->addError('credentialsUpload', 'ফাইলটি valid JSON নয়: '.$exception->getMessage());
+
+            return;
+        }
+
+        if (! is_array($credentials)) {
+            $this->addError('credentialsUpload', 'JSON file-এর root অবশ্যই একটি object হতে হবে।');
+
+            return;
+        }
+
+        if (isset($credentials['installed']) || isset($credentials['web'])) {
+            $this->addError('credentialsUpload', 'এটি OAuth Client JSON, Service Account key নয়। Google Cloud → IAM & Admin → Service Accounts → Keys → Add key → Create new key → JSON থেকে সঠিক file download করুন।');
+
+            return;
+        }
+
+        if (($credentials['type'] ?? null) !== 'service_account') {
+            $this->addError('credentialsUpload', 'JSON-এর type "service_account" নয়। OAuth client secret নয়, Service Account-এর JSON key upload করুন।');
+
+            return;
+        }
+
+        if (blank($credentials['client_email'] ?? null)) {
+            $this->addError('credentialsUpload', 'JSON file-এ client_email পাওয়া যায়নি। নতুন Service Account JSON key download করুন।');
+
+            return;
+        }
+
+        if (blank($credentials['private_key'] ?? null)) {
+            $this->addError('credentialsUpload', 'JSON file-এ private_key পাওয়া যায়নি। নতুন Service Account JSON key download করুন।');
+
+            return;
+        }
+
+        if (! filter_var($credentials['client_email'], FILTER_VALIDATE_EMAIL)) {
+            $this->addError('credentialsUpload', 'JSON file-এর client_email সঠিক নয়।');
+
+            return;
+        }
+
+        if (openssl_pkey_get_private($credentials['private_key']) === false) {
+            $this->addError('credentialsUpload', 'JSON file-এর private_key সঠিক PEM key নয়। Google Cloud থেকে নতুন key তৈরি করে download করুন।');
+
+            return;
+        }
+
+        $this->driveClientEmail = trim($credentials['client_email']);
+        set_setting('backup_drive_client_email', $this->driveClientEmail, 'backup');
+        set_setting('backup_drive_private_key', Crypt::encryptString(trim($credentials['private_key'])), 'backup');
+        $this->reset('credentialsUpload', 'drivePrivateKey');
+        $this->toast('success', 'Google service-account credentials import হয়েছে। এখন folder ID দিয়ে settings save ও connection test করুন।');
+    }
+
+    public function generateBackup(DatabaseBackup $backups, GoogleDriveBackup $drive): void
+    {
+        try {
+            $path = $backups->create();
+            if ($drive->configured()) {
+                $drive->upload($path, $this->driveFolderId);
+                $this->toast('success', 'Backup created and uploaded to Google Drive.');
+                return;
+            }
+            $this->toast('success', 'Local backup created successfully.');
+        } catch (Throwable $exception) {
+            $this->toast('error', $exception->getMessage());
+        }
+    }
+
+    public function importBackup(DatabaseBackup $backups): void
+    {
+        $this->validate(['backupUpload' => ['required', 'file', 'extensions:sql,txt', 'max:512000']]);
+        File::ensureDirectoryExists($backups->directory());
+        File::copy(
+            $this->backupUpload->getRealPath(),
+            $backups->directory().DIRECTORY_SEPARATOR.basename($this->backupUpload->getClientOriginalName())
         );
-
-        $fullPath = $this->backupDirectory() . DIRECTORY_SEPARATOR . $filename;
-
-        $process = $this->buildBackupProcess($config, $fullPath);
-
-        if (! $process) {
-            return;
-        }
-
-        $process->setTimeout(300);
-        $process->run();
-
-        if (! $process->isSuccessful()) {
-            $this->dispatch(
-                'media-toast',
-                type: 'error',
-                message: 'Backup failed. ' . trim($process->getErrorOutput())
-            );
-            return;
-        }
-
-        if (($config['driver'] ?? '') === 'sqlite') {
-            File::put($fullPath, $process->getOutput());
-        }
-
-        $this->dispatch('media-toast', type: 'success', message: 'Backup created successfully.');
+        $this->reset('backupUpload');
+        $this->toast('success', 'Backup file uploaded. You can now restore it.');
     }
 
-    public function restoreBackup(string $backup): void
+    public function uploadToDrive(string $backup, DatabaseBackup $backups, GoogleDriveBackup $drive): void
     {
-        $backupPath = $this->backupPath($backup);
-
-        if (! File::exists($backupPath)) {
-            $this->dispatch('media-toast', type: 'error', message: 'Backup file not found.');
-            return;
+        try {
+            $drive->upload($this->backupPath($backup, $backups), $this->driveFolderId);
+            $this->toast('success', 'Backup uploaded to Google Drive.');
+        } catch (Throwable $exception) {
+            $this->toast('error', $exception->getMessage());
         }
-
-        [, $config] = $this->databaseConfig();
-
-        if (! $config) {
-            $this->dispatch('media-toast', type: 'error', message: 'Database connection is not configured.');
-            return;
-        }
-
-        $process = $this->buildRestoreProcess($config, $backupPath);
-
-        if (! $process) {
-            return;
-        }
-
-        $process->setTimeout(300);
-        $process->run();
-
-        if (! $process->isSuccessful()) {
-            $this->dispatch(
-                'media-toast',
-                type: 'error',
-                message: 'Restore failed. ' . trim($process->getErrorOutput())
-            );
-            return;
-        }
-
-        $this->dispatch('media-toast', type: 'success', message: 'Backup restored successfully.');
     }
 
-    public function downloadBackup(string $backup)
+    public function restoreBackup(string $backup, DatabaseBackup $backups): void
     {
-        $backupPath = $this->backupPath($backup);
-
-        if (! File::exists($backupPath)) {
-            $this->dispatch('media-toast', type: 'error', message: 'Backup file not found.');
-            return null;
+        try {
+            $backups->restore($this->backupPath($backup, $backups));
+            $this->toast('success', 'Backup restored successfully.');
+        } catch (Throwable $exception) {
+            $this->toast('error', $exception->getMessage());
         }
-
-        return response()->download($backupPath);
     }
 
-    public function deleteBackup(string $backup): void
+    public function downloadBackup(string $backup, DatabaseBackup $backups)
     {
-        $backupPath = $this->backupPath($backup);
-
-        if (! File::exists($backupPath)) {
-            $this->dispatch('media-toast', type: 'error', message: 'Backup file not found.');
-            return;
-        }
-
-        File::delete($backupPath);
-        $this->dispatch('media-toast', type: 'success', message: 'Backup deleted successfully.');
+        $path = $this->backupPath($backup, $backups);
+        return File::exists($path) ? response()->download($path) : null;
     }
 
-    public function render()
+    public function deleteBackup(string $backup, DatabaseBackup $backups): void
+    {
+        File::delete($this->backupPath($backup, $backups));
+        $this->toast('success', 'Backup deleted successfully.');
+    }
+
+    public function render(DatabaseBackup $backups, GoogleDriveBackup $drive)
     {
         return view('livewire.admin.settings.backups', [
-            'backups' => $this->listBackups(),
+            'backups' => $this->listBackups($backups),
+            'driveConfigured' => $drive->configured(),
         ]);
     }
 
-    private function backupDirectory(): string
+    private function backupPath(string $backup, DatabaseBackup $backups): string
     {
-        return storage_path('app' . DIRECTORY_SEPARATOR . $this->backupFolder);
+        $path = $backups->directory().DIRECTORY_SEPARATOR.basename($backup);
+        if (! File::exists($path)) {
+            throw new RuntimeException('Backup file not found.');
+        }
+        return $path;
     }
 
-    private function backupPath(string $backup): string
+    private function listBackups(DatabaseBackup $backups): array
     {
-        return $this->backupDirectory() . DIRECTORY_SEPARATOR . basename($backup);
+        if (! File::isDirectory($backups->directory())) return [];
+        return collect(File::files($backups->directory()))
+            ->filter(fn (\SplFileInfo $file) => $file->isFile() && str_ends_with(strtolower($file->getFilename()), '.sql'))
+            ->map(fn (\SplFileInfo $file) => [
+                'name' => $file->getFilename(),
+                'description' => 'Database dump',
+                'size' => number_format($file->getSize() / 1024 / 1024, 2).' MB',
+                'created_at' => Carbon::createFromTimestamp($file->getMTime())->format('Y-m-d H:i:s'),
+            ])->sortByDesc('created_at')->values()->all();
     }
 
-    private function listBackups(): array
+    private function toast(string $type, string $message): void
     {
-        if (! File::exists($this->backupDirectory())) {
-            return [];
-        }
-
-        $files = File::files($this->backupDirectory());
-
-        return collect($files)
-            ->filter(fn (\SplFileInfo $file) => $file->isFile() && str_ends_with($file->getFilename(), '.sql'))
-            ->map(function (\SplFileInfo $file) {
-                return [
-                    'name' => $file->getFilename(),
-                    'description' => 'Database dump',
-                    'size' => $this->readableSize($file->getSize()),
-                    'created_at' => Carbon::createFromTimestamp($file->getMTime())->format('Y-m-d H:i:s'),
-                ];
-            })
-            ->sortByDesc('created_at')
-            ->values()
-            ->all();
+        $this->dispatch('media-toast', type: $type, message: $message);
     }
 
-    private function readableSize(int $size): string
+    private function hasPrivateKey(): bool
     {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $index = 0;
-
-        while ($size >= 1024 && $index < count($units) - 1) {
-            $size /= 1024;
-            $index++;
-        }
-
-        return sprintf('%.2f %s', $size, $units[$index]);
-    }
-
-    private function databaseConfig(): array
-    {
-        $connection = config('database.default');
-        $config = config("database.connections.{$connection}");
-
-        return [$connection, $config];
-    }
-
-    private function buildBackupProcess(array $config, string $fullPath): ?Process
-    {
-        $driver = $config['driver'] ?? '';
-
-        if ($driver === 'mysql') {
-            if (! $this->ensureBinaryAvailable('mysqldump', 'MySQL dump')) {
-                return null;
-            }
-
-            $process = new Process([
-                'mysqldump',
-                '--user=' . ($config['username'] ?? ''),
-                '--host=' . ($config['host'] ?? '127.0.0.1'),
-                '--port=' . ($config['port'] ?? 3306),
-                '--databases',
-                $config['database'] ?? '',
-                '--result-file=' . $fullPath,
-            ]);
-
-            if (! empty($config['password'])) {
-                $process->setEnv(['MYSQL_PWD' => $config['password']]);
-            }
-
-            return $process;
-        }
-
-        if ($driver === 'pgsql') {
-            if (! $this->ensureBinaryAvailable('pg_dump', 'PostgreSQL dump')) {
-                return null;
-            }
-
-            $process = new Process([
-                'pg_dump',
-                '--file',
-                $fullPath,
-                '--dbname',
-                $config['database'] ?? '',
-                '--host',
-                $config['host'] ?? '127.0.0.1',
-                '--port',
-                (string) ($config['port'] ?? 5432),
-                '--username',
-                $config['username'] ?? '',
-            ]);
-
-            if (! empty($config['password'])) {
-                $process->setEnv(['PGPASSWORD' => $config['password']]);
-            }
-
-            return $process;
-        }
-
-        if ($driver === 'sqlite') {
-            if (! $this->ensureBinaryAvailable('sqlite3', 'SQLite dump')) {
-                return null;
-            }
-
-            $database = $config['database'] ?? '';
-
-            if ($database === ':memory:' || empty($database)) {
-                $this->dispatch('media-toast', type: 'error', message: 'SQLite in-memory databases cannot be backed up.');
-                return null;
-            }
-
-            return new Process(['sqlite3', $database, '.dump']);
-        }
-
-        $this->dispatch('media-toast', type: 'error', message: 'Unsupported database driver for backup.');
-
-        return null;
-    }
-
-    private function buildRestoreProcess(array $config, string $backupPath): ?Process
-    {
-        $driver = $config['driver'] ?? '';
-
-        if ($driver === 'mysql') {
-            if (! $this->ensureBinaryAvailable('mysql', 'MySQL restore')) {
-                return null;
-            }
-
-            $process = new Process([
-                'mysql',
-                '--user=' . ($config['username'] ?? ''),
-                '--host=' . ($config['host'] ?? '127.0.0.1'),
-                '--port=' . ($config['port'] ?? 3306),
-                $config['database'] ?? '',
-            ]);
-
-            if (! empty($config['password'])) {
-                $process->setEnv(['MYSQL_PWD' => $config['password']]);
-            }
-
-            $process->setInput(File::get($backupPath));
-            return $process;
-        }
-
-        if ($driver === 'pgsql') {
-            if (! $this->ensureBinaryAvailable('psql', 'PostgreSQL restore')) {
-                return null;
-            }
-
-            $process = new Process([
-                'psql',
-                '--dbname',
-                $config['database'] ?? '',
-                '--host',
-                $config['host'] ?? '127.0.0.1',
-                '--port',
-                (string) ($config['port'] ?? 5432),
-                '--username',
-                $config['username'] ?? '',
-            ]);
-
-            if (! empty($config['password'])) {
-                $process->setEnv(['PGPASSWORD' => $config['password']]);
-            }
-
-            $process->setInput(File::get($backupPath));
-            return $process;
-        }
-
-        if ($driver === 'sqlite') {
-            if (! $this->ensureBinaryAvailable('sqlite3', 'SQLite restore')) {
-                return null;
-            }
-
-            $database = $config['database'] ?? '';
-
-            if ($database === ':memory:' || empty($database)) {
-                $this->dispatch('media-toast', type: 'error', message: 'SQLite in-memory databases cannot be restored.');
-                return null;
-            }
-
-            $process = new Process(['sqlite3', $database]);
-            $process->setInput(File::get($backupPath));
-            return $process;
-        }
-
-        $this->dispatch('media-toast', type: 'error', message: 'Unsupported database driver for restore.');
-
-        return null;
-    }
-
-    private function ensureBinaryAvailable(string $binary, string $label): bool
-    {
-        $process = new Process(['which', $binary]);
-        $process->run();
-
-        if ($process->isSuccessful()) {
-            return true;
-        }
-
-        $this->dispatch(
-            'media-toast',
-            type: 'error',
-            message: "{$label} command is not available on this server."
-        );
-
-        return false;
+        return filled($this->drivePrivateKey)
+            || filled(setting('backup_drive_private_key'))
+            || filled(config('backup.google_drive.private_key'));
     }
 }
