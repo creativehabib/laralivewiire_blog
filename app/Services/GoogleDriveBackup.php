@@ -15,12 +15,17 @@ class GoogleDriveBackup
         return filled($this->clientEmail()) && filled($this->privateKey());
     }
 
-    public function testConnection(): void
+    public function testConnection(?string $folderId = null): void
     {
-        $response = $this->client()->get('https://www.googleapis.com/drive/v3/files', [
-            'pageSize' => 1,
-            'fields' => 'files(id)',
-        ]);
+        $folderId = $this->folderId($folderId);
+
+        if ($folderId) {
+            $this->assertFolderAccessible($folderId);
+
+            return;
+        }
+
+        $response = $this->client()->get('https://www.googleapis.com/drive/v3/about', ['fields' => 'user']);
 
         if ($response->failed()) {
             throw new RuntimeException('Google Drive connection failed: '.$response->body());
@@ -34,16 +39,17 @@ class GoogleDriveBackup
         }
 
         $metadata = ['name' => basename($path)];
-        $folderId = $folderId ?: config('backup.google_drive.folder_id');
+        $folderId = $this->folderId($folderId);
 
         if ($folderId) {
+            $this->assertFolderAccessible($folderId);
             $metadata['parents'] = [$folderId];
         }
 
         $response = $this->client()
             ->attach('metadata', json_encode($metadata), null, ['Content-Type' => 'application/json; charset=UTF-8'])
             ->attach('file', fopen($path, 'r'), basename($path), ['Content-Type' => 'application/sql'])
-            ->post('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink');
+            ->post('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink');
 
         if ($response->failed()) {
             throw new RuntimeException('Google Drive upload failed: '.$response->body());
@@ -60,7 +66,10 @@ class GoogleDriveBackup
         $header = $this->base64Url(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
         $claims = $this->base64Url(json_encode([
             'iss' => $this->clientEmail(),
-            'scope' => 'https://www.googleapis.com/auth/drive.file',
+            // Full Drive scope is required for a service account to address a
+            // folder shared by its ID. drive.file can make shared folders look
+            // like they do not exist and results in a misleading 404 response.
+            'scope' => 'https://www.googleapis.com/auth/drive',
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
             'exp' => $now + 3500,
@@ -122,5 +131,44 @@ class GoogleDriveBackup
         }
 
         return 'Google Drive authentication failed: '.$description;
+    }
+
+    private function assertFolderAccessible(string $folderId): void
+    {
+        $response = $this->client()->get("https://www.googleapis.com/drive/v3/files/{$folderId}", [
+            'fields' => 'id,name,mimeType,capabilities(canAddChildren)',
+            'supportsAllDrives' => 'true',
+        ]);
+
+        if ($response->status() === 404) {
+            throw new RuntimeException("Google Drive folder পাওয়া যায়নি বা Service Account-এর access নেই। Folder ID [{$folderId}] সঠিক কি না দেখুন এবং folder-টি {$this->clientEmail()}-কে Editor হিসেবে share করুন।");
+        }
+
+        if ($response->failed()) {
+            throw new RuntimeException('Google Drive folder যাচাই করা যায়নি: '.($response->json('error.message') ?: $response->body()));
+        }
+
+        if ($response->json('mimeType') !== 'application/vnd.google-apps.folder') {
+            throw new RuntimeException('দেওয়া Google Drive ID-টি কোনো folder-এর নয়।');
+        }
+
+        if ($response->json('capabilities.canAddChildren') === false) {
+            throw new RuntimeException("Service Account-এর এই folder-এ file upload permission নেই। {$this->clientEmail()}-কে Editor access দিন।");
+        }
+    }
+
+    private function folderId(?string $folderId): ?string
+    {
+        $value = trim((string) ($folderId ?: config('backup.google_drive.folder_id')));
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('~/folders/([^/?#]+)~', $value, $matches)) {
+            return $matches[1];
+        }
+
+        return trim($value, "/ \t\n\r\0\x0B");
     }
 }

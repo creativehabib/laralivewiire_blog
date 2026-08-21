@@ -16,6 +16,9 @@
             <strong><code>invalid_grant: account not found</code> দেখালে:</strong>
             সাধারণত ভুল/পরিবর্তিত <code>client_email</code>, deleted service account, অথবা অন্য key-এর email ও private key একসঙ্গে ব্যবহার করলে এই error হয়। Google Cloud থেকে একই service account-এর একটি নতুন JSON key download করে নিচের “Import JSON credentials” ব্যবহার করুন—JSON-এর কোনো value হাতে পরিবর্তন করবেন না।
         </div>
+        <div class="mt-3 rounded border border-rose-300 bg-rose-50 p-3 text-rose-900 dark:border-rose-700 dark:bg-rose-950/40 dark:text-rose-100">
+            <strong><code>404 File not found</code> দেখালে:</strong> Drive folder খুলে <strong>Share</strong> চাপুন এবং নিচে saved Service Account client email-টিকে <strong>Editor</strong> করুন। এরপর Folder ID অথবা সম্পূর্ণ folder URL দিয়ে settings save করে “Connection test” চালান।
+        </div>
         <p class="mt-2">Status: <span class="font-semibold {{ $driveConfigured ? 'text-emerald-600' : 'text-amber-600' }}">{{ $driveConfigured ? 'Google Drive configured' : 'Credentials not configured (local backup only)' }}</span></p>
     </div>
 
@@ -41,7 +44,8 @@
             <p class="mt-1 text-xs text-slate-500">নিরাপত্তার জন্য saved key আর দেখানো হয় না এবং database-এ encrypted অবস্থায় থাকে। খালি রাখলে আগের key অপরিবর্তিত থাকবে।</p>
             @error('drivePrivateKey') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
             <label class="mt-4 block text-sm font-medium text-slate-700 dark:text-slate-200">Google Drive folder ID</label>
-            <input type="text" wire:model="driveFolderId" placeholder="1AbCdEf..." class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
+            <input type="text" wire:model="driveFolderId" placeholder="Folder ID অথবা https://drive.google.com/drive/folders/..." class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
+            <p class="mt-1 text-xs text-slate-500">Folder ID ও সম্পূর্ণ Google Drive folder URL—দুটিই গ্রহণ করা হবে। Service Account-কে অবশ্যই Editor access দিতে হবে।</p>
             @error('driveFolderId') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
             <label class="mb-4 flex items-center gap-3 text-sm text-slate-700 dark:text-slate-200">
                 <input type="checkbox" wire:model="automatic" class="rounded border-slate-300 text-blue-600">
