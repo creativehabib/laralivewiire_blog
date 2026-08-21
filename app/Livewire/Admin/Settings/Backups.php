@@ -43,25 +43,25 @@ class Backups extends Component
         ]);
 
         if ($this->automatic && blank($this->driveFolderId)) {
-            $this->addError('driveFolderId', 'Automatic Google Drive backup-এর জন্য folder ID প্রয়োজন।');
-
+            $this->addError('driveFolderId', 'Automatic Google Drive backup-এর জন্য folder ID প্রয়োজন।');
             return;
         }
-    }
 
         if ($this->automatic && (blank($this->driveClientEmail) || ! $this->hasPrivateKey())) {
-            $this->addError('drivePrivateKey', 'Automatic backup চালু করতে service-account email ও private key প্রয়োজন।');
-
+            $this->addError('drivePrivateKey', 'Automatic backup চালু করতে service-account email ও private key প্রয়োজন।');
             return;
         }
+
         set_setting('backup_automatic', $this->automatic, 'backup');
         set_setting('backup_time', $this->backupTime, 'backup');
         set_setting('backup_drive_folder_id', $this->driveFolderId, 'backup');
         set_setting('backup_drive_client_email', trim($this->driveClientEmail), 'backup');
+
         if (filled($this->drivePrivateKey)) {
             set_setting('backup_drive_private_key', Crypt::encryptString(trim($this->drivePrivateKey)), 'backup');
             $this->drivePrivateKey = '';
         }
+
         $this->toast('success', 'Backup schedule saved successfully.');
     }
 
@@ -85,7 +85,6 @@ class Backups extends Component
             $credentials = $parser->parse($this->credentialsUpload->getContent());
         } catch (RuntimeException $exception) {
             $this->addError('credentialsUpload', $exception->getMessage());
-
             return;
         }
 
@@ -93,7 +92,7 @@ class Backups extends Component
         set_setting('backup_drive_client_email', $this->driveClientEmail, 'backup');
         set_setting('backup_drive_private_key', Crypt::encryptString(trim($credentials['private_key'])), 'backup');
         $this->reset('credentialsUpload', 'drivePrivateKey');
-        $this->toast('success', 'Google service-account credentials import হয়েছে। এখন folder ID দিয়ে settings save ও connection test করুন।');
+        $this->toast('success', 'Google service-account credentials import হয়েছে। এখন folder ID দিয়ে settings save ও connection test করুন।');
     }
 
     public function generateBackup(DatabaseBackup $backups, GoogleDriveBackup $drive): void
