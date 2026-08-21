@@ -47,6 +47,7 @@ class Backups extends Component
 
             return;
         }
+    }
 
         if ($this->automatic && (blank($this->driveClientEmail) || ! $this->hasPrivateKey())) {
             $this->addError('drivePrivateKey', 'Automatic backup চালু করতে service-account email ও private key প্রয়োজন।');
