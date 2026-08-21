@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Str;
-use App\Services\DatabaseBackup;
-use App\Services\GoogleDriveBackup;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
