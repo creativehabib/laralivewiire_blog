@@ -31,7 +31,7 @@
                     <p class="mt-2 text-xs text-emerald-600">Selected: {{ $credentialsUpload->getClientOriginalName() }}</p>
                 @endif
                 @error('credentialsUpload') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
-                <button type="button" wire:click="importGoogleCredentials" wire:loading.attr="disabled" wire:target="credentialsUpload,importGoogleCredentials" @disabled(! $credentialsUpload) class="mt-3 rounded bg-blue-100 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50">Import JSON credentials</button>
+                <button type="button" wire:click="importGoogleCredentials" wire:loading.attr="disabled" wire:target="credentialsUpload,importGoogleCredentials" class="mt-3 rounded bg-blue-100 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50">Import JSON credentials</button>
             </div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Service account client email</label>
             <input type="email" wire:model="driveClientEmail" autocomplete="off" placeholder="backup@project.iam.gserviceaccount.com" class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">

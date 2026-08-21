@@ -219,7 +219,10 @@ class Backups extends Component
 
     private function listBackups(DatabaseBackup $backups): array
     {
-        if (! File::isDirectory($backups->directory())) return [];
+        if (! File::isDirectory($backups->directory())) {
+            return [];
+        }
+
         return collect(File::files($backups->directory()))
             ->filter(fn (\SplFileInfo $file) => $file->isFile() && str_ends_with(strtolower($file->getFilename()), '.sql'))
             ->map(fn (\SplFileInfo $file) => [
