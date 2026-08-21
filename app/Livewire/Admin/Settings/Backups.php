@@ -21,6 +21,7 @@ class Backups extends Component
     public ?string $driveFolderId = null;
     public string $driveClientEmail = '';
     public string $drivePrivateKey = '';
+    public $credentialsUpload;
     public $backupUpload;
 
     public function mount(): void
@@ -70,6 +71,30 @@ class Backups extends Component
         } catch (Throwable $exception) {
             $this->toast('error', $exception->getMessage());
         }
+    }
+
+    public function importGoogleCredentials(): void
+    {
+        $this->validate([
+            'credentialsUpload' => ['required', 'file', 'extensions:json', 'max:100'],
+        ]);
+
+        $credentials = json_decode(File::get($this->credentialsUpload->getRealPath()), true);
+
+        if (! is_array($credentials)
+            || ($credentials['type'] ?? null) !== 'service_account'
+            || blank($credentials['client_email'] ?? null)
+            || blank($credentials['private_key'] ?? null)) {
+            $this->addError('credentialsUpload', 'সঠিক Google service-account JSON key নির্বাচন করুন।');
+
+            return;
+        }
+
+        $this->driveClientEmail = trim($credentials['client_email']);
+        set_setting('backup_drive_client_email', $this->driveClientEmail, 'backup');
+        set_setting('backup_drive_private_key', Crypt::encryptString(trim($credentials['private_key'])), 'backup');
+        $this->reset('credentialsUpload', 'drivePrivateKey');
+        $this->toast('success', 'Google service-account credentials import হয়েছে। এখন folder ID দিয়ে settings save ও connection test করুন।');
     }
 
     public function generateBackup(DatabaseBackup $backups, GoogleDriveBackup $drive): void

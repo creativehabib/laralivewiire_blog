@@ -54,14 +54,16 @@ class GoogleDriveBackup
 
     private function client(): PendingRequest
     {
-        $now = time();
+        // A small leeway prevents otherwise-valid assertions failing when the
+        // application server and Google's clock differ by a few seconds.
+        $now = time() - 30;
         $header = $this->base64Url(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
         $claims = $this->base64Url(json_encode([
             'iss' => $this->clientEmail(),
             'scope' => 'https://www.googleapis.com/auth/drive.file',
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
-            'exp' => $now + 3600,
+            'exp' => $now + 3500,
         ]));
 
         $privateKey = str_replace('\\n', "\n", $this->privateKey());
@@ -75,7 +77,7 @@ class GoogleDriveBackup
         ]);
 
         if ($tokenResponse->failed() || ! $tokenResponse->json('access_token')) {
-            throw new RuntimeException('Google Drive authentication failed: '.$tokenResponse->body());
+            throw new RuntimeException($this->authenticationError($tokenResponse->json()));
         }
 
         return Http::withToken($tokenResponse->json('access_token'))->timeout(300);
@@ -88,7 +90,7 @@ class GoogleDriveBackup
 
     private function clientEmail(): string
     {
-        return (string) setting('backup_drive_client_email', config('backup.google_drive.client_email'));
+        return trim((string) setting('backup_drive_client_email', config('backup.google_drive.client_email')));
     }
 
     private function privateKey(): string
@@ -104,5 +106,21 @@ class GoogleDriveBackup
         }
 
         return (string) config('backup.google_drive.private_key');
+    }
+
+    private function authenticationError(?array $error): string
+    {
+        $code = $error['error'] ?? null;
+        $description = (string) ($error['error_description'] ?? 'Unknown authentication error.');
+
+        if ($code === 'invalid_grant' && str_contains(strtolower($description), 'account not found')) {
+            return 'Google service account পাওয়া যায়নি। Google Cloud থেকে নতুন service-account JSON key download করে এই settings page-এ import করুন। JSON-এর client_email হাতে পরিবর্তন করবেন না এবং service account-টি deleted/disabled কি না পরীক্ষা করুন।';
+        }
+
+        if ($code === 'invalid_grant') {
+            return 'Google credentials গ্রহণ করেনি। নতুন JSON key import করুন এবং server date/time সঠিক আছে কি না পরীক্ষা করুন। Google বলেছে: '.$description;
+        }
+
+        return 'Google Drive authentication failed: '.$description;
     }
 }

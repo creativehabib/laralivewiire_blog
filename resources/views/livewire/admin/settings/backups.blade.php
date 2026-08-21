@@ -12,12 +12,23 @@
             <li><a class="font-semibold underline" href="https://cloud.google.com/iam/docs/keys-create-delete#creating" target="_blank" rel="noopener noreferrer">JSON private key তৈরি/ডাউনলোড করুন</a> এবং JSON-এর <code>client_email</code> ও <code>private_key</code> নিচে দিন।</li>
             <li>Drive-এ একটি folder তৈরি করে service-account email-কে Editor access দিন—<a class="font-semibold underline" href="https://support.google.com/drive/answer/7166529" target="_blank" rel="noopener noreferrer">folder sharing help</a>। Folder URL-এর শেষ অংশটি Folder ID।</li>
         </ol>
+        <div class="mt-3 rounded border border-amber-300 bg-amber-50 p-3 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
+            <strong><code>invalid_grant: account not found</code> দেখালে:</strong>
+            সাধারণত ভুল/পরিবর্তিত <code>client_email</code>, deleted service account, অথবা অন্য key-এর email ও private key একসঙ্গে ব্যবহার করলে এই error হয়। Google Cloud থেকে একই service account-এর একটি নতুন JSON key download করে নিচের “Import JSON credentials” ব্যবহার করুন—JSON-এর কোনো value হাতে পরিবর্তন করবেন না।
+        </div>
         <p class="mt-2">Status: <span class="font-semibold {{ $driveConfigured ? 'text-emerald-600' : 'text-amber-600' }}">{{ $driveConfigured ? 'Google Drive configured' : 'Credentials not configured (local backup only)' }}</span></p>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
         <form wire:submit="saveSettings" class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
             <h2 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">Google Drive ও schedule settings</h2>
+            <div class="mb-5 rounded-md border border-dashed border-blue-300 p-4 dark:border-blue-700">
+                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Import JSON credentials (Recommended)</label>
+                <p class="mb-2 mt-1 text-xs text-slate-500">Google Cloud থেকে download করা service-account JSON file সরাসরি দিন। এতে email/key copy করার ভুল হবে না।</p>
+                <input type="file" wire:model="credentialsUpload" accept=".json,application/json" class="block w-full text-sm text-slate-500 file:mr-3 file:rounded file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-blue-700">
+                @error('credentialsUpload') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
+                <button type="button" wire:click="importGoogleCredentials" wire:loading.attr="disabled" wire:target="credentialsUpload,importGoogleCredentials" class="mt-3 rounded bg-blue-100 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-200">Import JSON credentials</button>
+            </div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Service account client email</label>
             <input type="email" wire:model="driveClientEmail" autocomplete="off" placeholder="backup@project.iam.gserviceaccount.com" class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
             @error('driveClientEmail') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
