@@ -4,10 +4,10 @@ namespace App\Livewire\Admin\Settings;
 
 use App\Services\DatabaseBackup;
 use App\Services\GoogleDriveBackup;
+use App\Services\GoogleServiceAccountCredentials;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
-use JsonException;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use RuntimeException;
@@ -47,6 +47,7 @@ class Backups extends Component
 
             return;
         }
+    }
 
         if ($this->automatic && (blank($this->driveClientEmail) || ! $this->hasPrivateKey())) {
             $this->addError('drivePrivateKey', 'Automatic backup চালু করতে service-account email ও private key প্রয়োজন।');
@@ -74,62 +75,16 @@ class Backups extends Component
         }
     }
 
-    public function importGoogleCredentials(): void
+    public function importGoogleCredentials(GoogleServiceAccountCredentials $parser): void
     {
         $this->validate([
             'credentialsUpload' => ['required', 'file', 'max:512'],
         ]);
 
         try {
-            // getContent() is reliable for Livewire's temporary uploads. Removing
-            // an optional UTF-8 BOM also supports JSON files saved by Windows tools.
-            $json = preg_replace('/^\xEF\xBB\xBF/', '', $this->credentialsUpload->getContent());
-            $credentials = json_decode(trim($json), true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $exception) {
-            $this->addError('credentialsUpload', 'ফাইলটি valid JSON নয়: '.$exception->getMessage());
-
-            return;
-        }
-
-        if (! is_array($credentials)) {
-            $this->addError('credentialsUpload', 'JSON file-এর root অবশ্যই একটি object হতে হবে।');
-
-            return;
-        }
-    }
-
-        if (isset($credentials['installed']) || isset($credentials['web'])) {
-            $this->addError('credentialsUpload', 'এটি OAuth Client JSON, Service Account key নয়। Google Cloud → IAM & Admin → Service Accounts → Keys → Add key → Create new key → JSON থেকে সঠিক file download করুন।');
-
-            return;
-        }
-
-        if (($credentials['type'] ?? null) !== 'service_account') {
-            $this->addError('credentialsUpload', 'JSON-এর type "service_account" নয়। OAuth client secret নয়, Service Account-এর JSON key upload করুন।');
-
-            return;
-        }
-
-        if (blank($credentials['client_email'] ?? null)) {
-            $this->addError('credentialsUpload', 'JSON file-এ client_email পাওয়া যায়নি। নতুন Service Account JSON key download করুন।');
-
-            return;
-        }
-
-        if (blank($credentials['private_key'] ?? null)) {
-            $this->addError('credentialsUpload', 'JSON file-এ private_key পাওয়া যায়নি। নতুন Service Account JSON key download করুন।');
-
-            return;
-        }
-
-        if (! filter_var($credentials['client_email'], FILTER_VALIDATE_EMAIL)) {
-            $this->addError('credentialsUpload', 'JSON file-এর client_email সঠিক নয়।');
-
-            return;
-        }
-
-        if (openssl_pkey_get_private($credentials['private_key']) === false) {
-            $this->addError('credentialsUpload', 'JSON file-এর private_key সঠিক PEM key নয়। Google Cloud থেকে নতুন key তৈরি করে download করুন।');
+            $credentials = $parser->parse($this->credentialsUpload->getContent());
+        } catch (RuntimeException $exception) {
+            $this->addError('credentialsUpload', $exception->getMessage());
 
             return;
         }
