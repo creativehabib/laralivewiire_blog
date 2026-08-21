@@ -96,6 +96,7 @@ class Backups extends Component
 
             return;
         }
+    }
 
         if (isset($credentials['installed']) || isset($credentials['web'])) {
             $this->addError('credentialsUpload', 'এটি OAuth Client JSON, Service Account key নয়। Google Cloud → IAM & Admin → Service Accounts → Keys → Add key → Create new key → JSON থেকে সঠিক file download করুন।');
