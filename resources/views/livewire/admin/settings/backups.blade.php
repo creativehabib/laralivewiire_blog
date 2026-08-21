@@ -24,10 +24,14 @@
             <h2 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">Google Drive ও schedule settings</h2>
             <div class="mb-5 rounded-md border border-dashed border-blue-300 p-4 dark:border-blue-700">
                 <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Import JSON credentials (Recommended)</label>
-                <p class="mb-2 mt-1 text-xs text-slate-500">Google Cloud থেকে download করা service-account JSON file সরাসরি দিন। এতে email/key copy করার ভুল হবে না।</p>
+                <p class="mb-2 mt-1 text-xs text-slate-500">শুধু <strong>IAM &amp; Admin → Service Accounts → আপনার account → Keys → Add key → Create new key → JSON</strong> থেকে download করা file দিন। “OAuth client ID” থেকে download করা JSON এখানে কাজ করবে না।</p>
                 <input type="file" wire:model="credentialsUpload" accept=".json,application/json" class="block w-full text-sm text-slate-500 file:mr-3 file:rounded file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-blue-700">
+                <p wire:loading wire:target="credentialsUpload" class="mt-2 text-xs font-medium text-blue-600">JSON file upload হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন…</p>
+                @if($credentialsUpload)
+                    <p class="mt-2 text-xs text-emerald-600">Selected: {{ $credentialsUpload->getClientOriginalName() }}</p>
+                @endif
                 @error('credentialsUpload') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
-                <button type="button" wire:click="importGoogleCredentials" wire:loading.attr="disabled" wire:target="credentialsUpload,importGoogleCredentials" class="mt-3 rounded bg-blue-100 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-200">Import JSON credentials</button>
+                <button type="button" wire:click="importGoogleCredentials" wire:loading.attr="disabled" wire:target="credentialsUpload,importGoogleCredentials" @disabled(! $credentialsUpload) class="mt-3 rounded bg-blue-100 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50">Import JSON credentials</button>
             </div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Service account client email</label>
             <input type="email" wire:model="driveClientEmail" autocomplete="off" placeholder="backup@project.iam.gserviceaccount.com" class="mt-1 w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900">
