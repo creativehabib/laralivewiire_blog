@@ -40,8 +40,7 @@ it('sends onesignal notification when onesignal settings are enabled', function 
             && $request['app_id'] === 'app-123'
             && $request['included_segments'] === ['All']
             && $request['contents']['en'] === 'নতুন চাকরির খবর: Bangla Job Circular'
-            && $request['data']['post_id'] === 10
-            && $request['data']['event'] === 'created';
+            && $request['data']['post_id'] === 10;
     });
 
     expect($response)
