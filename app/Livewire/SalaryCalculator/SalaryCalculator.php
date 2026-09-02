@@ -2,6 +2,7 @@
 
 namespace App\Livewire\SalaryCalculator;
 
+use App\Support\Seo;
 use Livewire\Component;
 
 class SalaryCalculator extends Component
@@ -147,10 +148,23 @@ class SalaryCalculator extends Component
     {
         $english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         $bengali = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
         return str_replace($english, $bengali, $number);
     }
+
     public function render()
     {
-        return view('livewire.salary-calculator.salary-calculator')->layout('layouts.frontend',['title'=> 'Salary Calculator']);
+        return theme_view('livewire.salary-calculator.salary-calculator')
+            ->layout(theme_layout('app'), [
+                'title' => 'সরকারি বেতন ক্যালকুলেটর ২০২৬',
+                'seo' => Seo::fromArray([
+                    'title' => 'সরকারি বেতন ক্যালকুলেটর ২০২৬',
+                    'description' => 'বাংলাদেশের সরকারি চাকরিজীবীদের জন্য ২০১৫ পে স্কেলের গ্রেড, ধাপ ও কর্মস্থল অনুযায়ী ২০২৬ সালের সম্ভাব্য মূল বেতন, ভাতা ও মোট বেতন হিসাব করুন।',
+                    'keywords' => 'বেতন ক্যালকুলেটর, সরকারি বেতন স্কেল ২০২৬, পে স্কেল ২০১৫, মূল বেতন, বেতন হিসাব',
+                    'url' => route('tools.salary-calculator'),
+                    'canonical' => route('tools.salary-calculator'),
+                    'type' => 'website',
+                ]),
+            ]);
     }
 }
