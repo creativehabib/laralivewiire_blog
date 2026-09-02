@@ -2,7 +2,6 @@
 
 namespace App\Livewire\SalaryCalculator;
 
-use App\Models\Admin\Page;
 use App\Support\Seo;
 use Livewire\Component;
 
@@ -12,7 +11,6 @@ class SalaryCalculator extends Component
     public $step = '';
     public $location = 1;
     public $result = null;
-    public ?Page $page = null;
 
     // ২০১৫ সালের গেজেট অনুযায়ী গ্রেডভিত্তিক সম্পূর্ণ নিখুঁত ধাপসমূহ (১ থেকে ২০ গ্রেড)
     protected $payScale2015Steps = [
