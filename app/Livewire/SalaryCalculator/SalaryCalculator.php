@@ -2,6 +2,8 @@
 
 namespace App\Livewire\SalaryCalculator;
 
+use App\Models\Admin\Page;
+use App\Support\Seo;
 use Livewire\Component;
 
 class SalaryCalculator extends Component
@@ -10,6 +12,7 @@ class SalaryCalculator extends Component
     public $step = '';
     public $location = 1;
     public $result = null;
+    public ?Page $page = null;
 
     // ২০১৫ সালের গেজেট অনুযায়ী গ্রেডভিত্তিক সম্পূর্ণ নিখুঁত ধাপসমূহ (১ থেকে ২০ গ্রেড)
     protected $payScale2015Steps = [
@@ -151,6 +154,13 @@ class SalaryCalculator extends Component
     }
     public function render()
     {
-        return view('livewire.salary-calculator.salary-calculator')->layout('layouts.frontend',['title'=> 'Salary Calculator']);
+        $title = $this->page?->name ?? 'Salary Calculator';
+        $seo = $this->page ? Seo::forPage($this->page) : Seo::forHomepage(['title' => $title]);
+
+        return theme_view('livewire.salary-calculator.salary-calculator')
+            ->layout(theme_layout('app'), [
+                'title' => $title,
+                'seo' => $seo,
+            ]);
     }
 }
