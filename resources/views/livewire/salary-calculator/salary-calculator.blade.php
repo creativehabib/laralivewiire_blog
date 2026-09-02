@@ -1,9 +1,9 @@
-<div class="max-w-2xl mx-auto my-10 bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 p-8 transition-colors duration-300">
+<div class="max-w-3xl mx-auto my-10 bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 p-8 transition-colors duration-300">
 
     <!-- Top Heading -->
     <div class="text-center mb-8">
         <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-400 leading-snug">
-            ২০২৬ সালে আপনার গ্রেডে বেতন কত <br> বাড়বে?
+            ২০২৬ সালে ৯ম পে স্কেল অনুযায়ী আপনার গ্রেডে বেতন কত বাড়বে? তা জেনে নি
         </h2>
         <p class="text-xs pt-1">গ্রেড অনুযায়ী পার্সেন্টেজ নির্ধারণ (১-৯ গ্রেডে ৪০%, ১০-২০ গ্রেডে ৫০%)</p>
     </div>
