@@ -46,6 +46,7 @@ use App\Livewire\Frontend\PostsIndex;
 use App\Livewire\Frontend\SinglePost;
 use App\Livewire\Frontend\TagPage;
 
+use App\Livewire\SalaryCalculator\SalaryCalculator;
 use App\Models\Admin\Page;
 use App\Support\PermalinkManager;
 use Illuminate\Support\Facades\Route;
@@ -71,6 +72,7 @@ Route::group(['prefix' => 'install', 'as' => 'install.'], function () {
 });
 
 Route::get('/', FrontPage::class)->name('home');
+Route::get('/tools/salary-calculator', SalaryCalculator::class)->name('tools.salary-calculator');
 Route::get('/search', GoogleSearchController::class)->name('google.search');
 
 Route::get('dashboard', Dashboard::class)->middleware(['auth', 'verified'])->name('dashboard');
