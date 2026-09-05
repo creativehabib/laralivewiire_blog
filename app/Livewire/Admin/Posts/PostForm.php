@@ -26,6 +26,7 @@ class PostForm extends Component
     public ?string $focus_keyword = null;
     public int $nameMax = 250;
     public int $descMax = 400;
+    private const LATEST_SHAREABLE_POSTS_LIMIT = 10;
     // posts table fields
     public string $categorySearch = '';
     public string $sharePostSearch = '';
@@ -454,6 +455,8 @@ class PostForm extends Component
 
     public function render()
     {
+        $sharePostSearch = trim($this->sharePostSearch);
+
         $rootCategories = Category::with('childrenRecursive')
             ->whereNull('parent_id')
             ->when($this->categorySearch, function ($q) {
@@ -472,14 +475,13 @@ class PostForm extends Component
         return view('livewire.admin.posts.post-form', [
             'rootCategories' => $rootCategories,
             'baseUrl'        => config('app.url'),
-            'shareablePosts' => $this->sharePostSearch === ''
-                ? collect()
-                : Post::query()
-                    ->published()
-                    ->when($this->postId, fn ($query) => $query->whereKeyNot($this->postId))
-                    ->where('name', 'like', '%'.trim($this->sharePostSearch).'%')
-                    ->latest()
-                    ->get(),
+            'shareablePosts' => Post::query()
+                ->published()
+                ->when($this->postId, fn ($query) => $query->whereKeyNot($this->postId))
+                ->when($sharePostSearch !== '', fn ($query) => $query->where('name', 'like', '%'.$sharePostSearch.'%'))
+                ->latest()
+                ->when($sharePostSearch === '', fn ($query) => $query->limit(self::LATEST_SHAREABLE_POSTS_LIMIT))
+                ->get(),
         ])->layout('components.layouts.app', [
             'title' => $this->postId ? 'Edit post' : 'Create a new post',
         ]);

@@ -194,8 +194,10 @@
                                     <p wire:loading wire:target="sharePostSearch" class="p-3 text-sm text-slate-500 dark:text-slate-400">Searching posts...</p>
 
                                     @if ($sharePostSearch === '')
-                                        <p class="p-3 text-sm text-slate-500 dark:text-slate-400">Search by post title to find the post you want to share.</p>
-                                    @elseif ($shareablePosts->isEmpty())
+                                        <p class="px-1 text-xs font-medium text-slate-500 dark:text-slate-400">Latest published posts</p>
+                                    @endif
+
+                                    @if ($shareablePosts->isEmpty())
                                         <p class="p-3 text-sm text-slate-500 dark:text-slate-400">No published posts found.</p>
                                     @else
                                         @foreach ($shareablePosts as $shareablePost)
