@@ -452,6 +452,18 @@ class PostForm extends Component
         return view('livewire.admin.posts.post-form', [
             'rootCategories' => $rootCategories,
             'baseUrl'        => config('app.url'),
+            'shareablePosts' => Post::query()
+                ->published()
+                ->when($this->postId, fn ($query) => $query->whereKeyNot($this->postId))
+                ->latest()
+                ->limit(100)
+                ->get()
+                ->map(fn (Post $post) => [
+                    'id' => $post->id,
+                    'name' => $post->name,
+                    'url' => post_permalink($post),
+                ])
+                ->values(),
         ])->layout('components.layouts.app', [
             'title' => $this->postId ? 'Edit post' : 'Create a new post',
         ]);

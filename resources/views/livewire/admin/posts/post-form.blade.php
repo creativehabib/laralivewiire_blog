@@ -155,6 +155,12 @@
                                     <i class="fa-regular fa-images"></i>
                                     Add media
                                 </button>
+                                <button type="button"
+                                        onclick="openPostSharePicker()"
+                                        class="inline-flex items-center gap-1 cursor-pointer rounded border border-slate-300 dark:border-slate-600 px-2 py-1 text-xs text-slate-600 dark:text-gray-100">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                    Share a post
+                                </button>
                             </div>
                             {{-- এখানে তুমি চাইলে TinyMCE/CKEditor init করতে পারো --}}
                             <div wire:ignore>
@@ -172,6 +178,20 @@
                             @error('content')
                                 <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                             @enderror
+                        </div>
+
+                        <div id="post-share-picker" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-labelledby="post-share-picker-title">
+                            <div class="w-full max-w-xl rounded-xl bg-white p-5 shadow-xl dark:bg-slate-800">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div>
+                                        <h2 id="post-share-picker-title" class="text-base font-semibold text-slate-900 dark:text-white">Share an existing post</h2>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Select a post to insert its title and link at the cursor position.</p>
+                                    </div>
+                                    <button type="button" onclick="closePostSharePicker()" class="text-slate-500 hover:text-slate-900 dark:hover:text-white" aria-label="Close post picker">&times;</button>
+                                </div>
+                                <input id="post-share-search" type="search" oninput="filterShareablePosts()" placeholder="Search posts..." class="mt-4 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+                                <div id="post-share-results" class="mt-3 max-h-72 space-y-2 overflow-y-auto"></div>
+                            </div>
                         </div>
 
                         {{-- SEO box --}}
@@ -468,6 +488,69 @@
 </div>
 @push('scripts')
     <script>
+        const shareablePosts = @json($shareablePosts);
+
+        function escapePostShareHtml(value) {
+            const element = document.createElement('div');
+            element.textContent = value;
+
+            return element.innerHTML;
+        }
+
+        function renderShareablePosts() {
+            const searchInput = document.getElementById('post-share-search');
+            const results = document.getElementById('post-share-results');
+            if (!searchInput || !results) return;
+
+            const search = searchInput.value.trim().toLocaleLowerCase();
+            const posts = shareablePosts.filter((post) => post.name.toLocaleLowerCase().includes(search));
+
+            results.innerHTML = posts.length
+                ? posts.map((post) => `
+                    <button type="button" class="block w-full rounded-lg border border-slate-200 p-3 text-left text-sm font-medium text-slate-800 transition hover:border-sky-400 hover:bg-sky-50 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-700" data-post-id="${post.id}">
+                        ${escapePostShareHtml(post.name)}
+                    </button>
+                `).join('')
+                : '<p class="p-3 text-sm text-slate-500 dark:text-slate-400">No published posts found.</p>';
+
+            results.querySelectorAll('[data-post-id]').forEach((button) => {
+                button.addEventListener('click', () => insertSharedPost(Number(button.dataset.postId)));
+            });
+        }
+
+        function openPostSharePicker() {
+            const picker = document.getElementById('post-share-picker');
+            if (!picker) return;
+
+            picker.classList.remove('hidden');
+            picker.classList.add('flex');
+            renderShareablePosts();
+            document.getElementById('post-share-search')?.focus();
+        }
+
+        function closePostSharePicker() {
+            const picker = document.getElementById('post-share-picker');
+            if (!picker) return;
+
+            picker.classList.add('hidden');
+            picker.classList.remove('flex');
+        }
+
+        function filterShareablePosts() {
+            renderShareablePosts();
+        }
+
+        function insertSharedPost(postId) {
+            const post = shareablePosts.find((item) => item.id === postId);
+            const editor = CKEDITOR.instances.content;
+            if (!post || !editor) return;
+
+            editor.focus();
+            editor.insertHtml(`<p><a href="${escapePostShareHtml(post.url)}">${escapePostShareHtml(post.name)}</a></p>`);
+            @this.set('content', editor.getData());
+            closePostSharePicker();
+        }
+
         /**
          * CKEditor init ফাংশন
          */
