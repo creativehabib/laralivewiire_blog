@@ -155,6 +155,12 @@
                                     <i class="fa-regular fa-images"></i>
                                     Add media
                                 </button>
+                                <button type="button"
+                                        onclick="openPostSharePicker()"
+                                        class="inline-flex items-center gap-1 cursor-pointer rounded border border-slate-300 dark:border-slate-600 px-2 py-1 text-xs text-slate-600 dark:text-gray-100">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                    Share a post
+                                </button>
                             </div>
                             {{-- এখানে তুমি চাইলে TinyMCE/CKEditor init করতে পারো --}}
                             <div wire:ignore>
@@ -172,6 +178,36 @@
                             @error('content')
                                 <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                             @enderror
+                        </div>
+
+                        <div id="post-share-picker" wire:ignore.self class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-labelledby="post-share-picker-title">
+                            <div class="w-full max-w-xl rounded-xl bg-white p-5 shadow-xl dark:bg-slate-800">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div>
+                                        <h2 id="post-share-picker-title" class="text-base font-semibold text-slate-900 dark:text-white">Share an existing post</h2>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Select a post to insert its title and link at the cursor position.</p>
+                                    </div>
+                                    <button type="button" onclick="closePostSharePicker()" class="text-slate-500 hover:text-slate-900 dark:hover:text-white" aria-label="Close post picker">&times;</button>
+                                </div>
+                                <input id="post-share-search" type="search" wire:model.live.debounce.300ms="sharePostSearch" placeholder="Search posts..." class="mt-4 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+                                <div class="mt-3 max-h-72 space-y-2 overflow-y-auto">
+                                    <p wire:loading wire:target="sharePostSearch" class="p-3 text-sm text-slate-500 dark:text-slate-400">Searching posts...</p>
+
+                                    @if ($sharePostSearch === '')
+                                        <p class="p-3 text-sm text-slate-500 dark:text-slate-400">Search by post title to find the post you want to share.</p>
+                                    @elseif ($shareablePosts->isEmpty())
+                                        <p class="p-3 text-sm text-slate-500 dark:text-slate-400">No published posts found.</p>
+                                    @else
+                                        @foreach ($shareablePosts as $shareablePost)
+                                            <button type="button"
+                                                    wire:click="selectPostToShare({{ $shareablePost->id }})"
+                                                    class="block w-full rounded-lg border border-slate-200 p-3 text-left text-sm font-medium text-slate-800 transition hover:border-sky-400 hover:bg-sky-50 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-700">
+                                                {{ $shareablePost->name }}
+                                            </button>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
                         </div>
 
                         {{-- SEO box --}}
@@ -468,6 +504,42 @@
 </div>
 @push('scripts')
     <script>
+        function escapePostShareHtml(value) {
+            const element = document.createElement('div');
+            element.textContent = value;
+
+            return element.innerHTML;
+        }
+
+        function openPostSharePicker() {
+            const picker = document.getElementById('post-share-picker');
+            if (!picker) return;
+
+            picker.classList.remove('hidden');
+            picker.classList.add('flex');
+            document.getElementById('post-share-search')?.focus();
+        }
+
+        function closePostSharePicker() {
+            const picker = document.getElementById('post-share-picker');
+            if (!picker) return;
+
+            picker.classList.add('hidden');
+            picker.classList.remove('flex');
+        }
+
+        function insertSharedPost(post) {
+            const editor = CKEDITOR.instances.content;
+            if (!post || !editor) return;
+
+            editor.focus();
+            editor.insertHtml(`<p><a href="${escapePostShareHtml(post.url)}">${escapePostShareHtml(post.name)}</a></p>`);
+            @this.set('content', editor.getData());
+            closePostSharePicker();
+        }
+
+        window.addEventListener('post-share-selected', (event) => insertSharedPost(event.detail));
+
         /**
          * CKEditor init ফাংশন
          */
