@@ -28,6 +28,7 @@ class PostForm extends Component
     public int $descMax = 400;
     // posts table fields
     public string $categorySearch = '';
+    public string $sharePostSearch = '';
     public string  $name = '';
     public ?string $description = null;
     public ?string $content = null;
@@ -185,6 +186,25 @@ class PostForm extends Component
         if ($this->autoSeoTitle) {
             $this->seo_title = $value;
         }
+    }
+
+    public function updatedSharePostSearch(string $value): void
+    {
+        $this->sharePostSearch = trim($value);
+    }
+
+    public function selectPostToShare(int $postId): void
+    {
+        $post = Post::query()
+            ->published()
+            ->when($this->postId, fn ($query) => $query->whereKeyNot($this->postId))
+            ->find($postId);
+
+        if (! $post) {
+            return;
+        }
+
+        $this->dispatch('post-share-selected', name: $post->name, url: post_permalink($post));
     }
     public function toggleCategory($categoryId): void
     {
@@ -452,18 +472,14 @@ class PostForm extends Component
         return view('livewire.admin.posts.post-form', [
             'rootCategories' => $rootCategories,
             'baseUrl'        => config('app.url'),
-            'shareablePosts' => Post::query()
-                ->published()
-                ->when($this->postId, fn ($query) => $query->whereKeyNot($this->postId))
-                ->latest()
-                ->limit(100)
-                ->get()
-                ->map(fn (Post $post) => [
-                    'id' => $post->id,
-                    'name' => $post->name,
-                    'url' => post_permalink($post),
-                ])
-                ->values(),
+            'shareablePosts' => $this->sharePostSearch === ''
+                ? collect()
+                : Post::query()
+                    ->published()
+                    ->when($this->postId, fn ($query) => $query->whereKeyNot($this->postId))
+                    ->where('name', 'like', '%'.trim($this->sharePostSearch).'%')
+                    ->latest()
+                    ->get(),
         ])->layout('components.layouts.app', [
             'title' => $this->postId ? 'Edit post' : 'Create a new post',
         ]);

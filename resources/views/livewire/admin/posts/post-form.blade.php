@@ -180,7 +180,7 @@
                             @enderror
                         </div>
 
-                        <div id="post-share-picker" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-labelledby="post-share-picker-title">
+                        <div id="post-share-picker" wire:ignore.self class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-4" role="dialog" aria-modal="true" aria-labelledby="post-share-picker-title">
                             <div class="w-full max-w-xl rounded-xl bg-white p-5 shadow-xl dark:bg-slate-800">
                                 <div class="flex items-start justify-between gap-4">
                                     <div>
@@ -189,8 +189,24 @@
                                     </div>
                                     <button type="button" onclick="closePostSharePicker()" class="text-slate-500 hover:text-slate-900 dark:hover:text-white" aria-label="Close post picker">&times;</button>
                                 </div>
-                                <input id="post-share-search" type="search" oninput="filterShareablePosts()" placeholder="Search posts..." class="mt-4 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
-                                <div id="post-share-results" class="mt-3 max-h-72 space-y-2 overflow-y-auto"></div>
+                                <input id="post-share-search" type="search" wire:model.live.debounce.300ms="sharePostSearch" placeholder="Search posts..." class="mt-4 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+                                <div class="mt-3 max-h-72 space-y-2 overflow-y-auto">
+                                    <p wire:loading wire:target="sharePostSearch" class="p-3 text-sm text-slate-500 dark:text-slate-400">Searching posts...</p>
+
+                                    @if ($sharePostSearch === '')
+                                        <p class="p-3 text-sm text-slate-500 dark:text-slate-400">Search by post title to find the post you want to share.</p>
+                                    @elseif ($shareablePosts->isEmpty())
+                                        <p class="p-3 text-sm text-slate-500 dark:text-slate-400">No published posts found.</p>
+                                    @else
+                                        @foreach ($shareablePosts as $shareablePost)
+                                            <button type="button"
+                                                    wire:click="selectPostToShare({{ $shareablePost->id }})"
+                                                    class="block w-full rounded-lg border border-slate-200 p-3 text-left text-sm font-medium text-slate-800 transition hover:border-sky-400 hover:bg-sky-50 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-700">
+                                                {{ $shareablePost->name }}
+                                            </button>
+                                        @endforeach
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -488,34 +504,11 @@
 </div>
 @push('scripts')
     <script>
-        const shareablePosts = @json($shareablePosts);
-
         function escapePostShareHtml(value) {
             const element = document.createElement('div');
             element.textContent = value;
 
             return element.innerHTML;
-        }
-
-        function renderShareablePosts() {
-            const searchInput = document.getElementById('post-share-search');
-            const results = document.getElementById('post-share-results');
-            if (!searchInput || !results) return;
-
-            const search = searchInput.value.trim().toLocaleLowerCase();
-            const posts = shareablePosts.filter((post) => post.name.toLocaleLowerCase().includes(search));
-
-            results.innerHTML = posts.length
-                ? posts.map((post) => `
-                    <button type="button" class="block w-full rounded-lg border border-slate-200 p-3 text-left text-sm font-medium text-slate-800 transition hover:border-sky-400 hover:bg-sky-50 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-700" data-post-id="${post.id}">
-                        ${escapePostShareHtml(post.name)}
-                    </button>
-                `).join('')
-                : '<p class="p-3 text-sm text-slate-500 dark:text-slate-400">No published posts found.</p>';
-
-            results.querySelectorAll('[data-post-id]').forEach((button) => {
-                button.addEventListener('click', () => insertSharedPost(Number(button.dataset.postId)));
-            });
         }
 
         function openPostSharePicker() {
@@ -524,7 +517,6 @@
 
             picker.classList.remove('hidden');
             picker.classList.add('flex');
-            renderShareablePosts();
             document.getElementById('post-share-search')?.focus();
         }
 
@@ -536,12 +528,7 @@
             picker.classList.remove('flex');
         }
 
-        function filterShareablePosts() {
-            renderShareablePosts();
-        }
-
-        function insertSharedPost(postId) {
-            const post = shareablePosts.find((item) => item.id === postId);
+        function insertSharedPost(post) {
             const editor = CKEDITOR.instances.content;
             if (!post || !editor) return;
 
@@ -550,6 +537,8 @@
             @this.set('content', editor.getData());
             closePostSharePicker();
         }
+
+        window.addEventListener('post-share-selected', (event) => insertSharedPost(event.detail));
 
         /**
          * CKEditor init ফাংশন
