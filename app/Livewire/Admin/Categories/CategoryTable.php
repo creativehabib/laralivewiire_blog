@@ -146,6 +146,8 @@ class CategoryTable extends Component
 
         return view('livewire.admin.categories.category-table', [
             'categories' => $categories,
+        ])->layout('components.layouts.app', [
+            'title' => 'Categories',
         ]);
     }
 }
