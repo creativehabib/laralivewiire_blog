@@ -332,7 +332,7 @@
                         records
                     @endif
                 </div>
-                <div>া
+                <div>
                     {{ $categories->links() }}
                 </div>
             </div>
