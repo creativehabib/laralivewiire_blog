@@ -16,7 +16,7 @@ class PostTable extends Component
     public $search = '';
     public $status = '';
     public $category = '';
-    public $perPage = 5;
+    public $perPage = 10;
 
     public $selected = [];
     public $selectAll = false;
