@@ -11,34 +11,22 @@
     };
 @endphp
 
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $adminLocale) }}" dir="{{ $adminDirection }}" class="admin-appearance">
 <head>
     @include('partials.head')
 
     <script>
+        // Prevent FOUC before Alpine loads
         (() => {
             const fluxAppearance = localStorage.getItem('flux.appearance');
             const legacyTheme = localStorage.getItem('theme');
             const storedTheme = fluxAppearance || legacyTheme || 'system';
 
-            if (fluxAppearance === 'light' || fluxAppearance === 'dark') {
-                localStorage.setItem('theme', fluxAppearance);
-            } else if (fluxAppearance === 'system') {
-                localStorage.removeItem('theme');
-            } else if (legacyTheme === 'light' || legacyTheme === 'dark') {
-                localStorage.setItem('flux.appearance', legacyTheme);
-            }
-
-            if (storedTheme === 'dark') {
+            if (storedTheme === 'dark' || (storedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
-            } else if (storedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
             } else {
-                document.documentElement.classList.toggle(
-                    'dark',
-                    window.matchMedia('(prefers-color-scheme: dark)').matches
-                );
+                document.documentElement.classList.remove('dark');
             }
         })();
     </script>
@@ -78,119 +66,142 @@
     </style>
     @stack('styles')
 </head>
-<body class="min-h-screen bg-white dark:bg-slate-800">
+<body
+    x-data="{
+        settingsOpen: false,
+        helpOpen: false,
+        mode: localStorage.getItem('flux.appearance') || localStorage.getItem('theme') || 'system',
+        applyAppearance(selected) {
+            this.mode = selected;
 
-<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-slate-900 focus:shadow-lg dark:focus:bg-slate-800 dark:focus:text-white">
+            if (this.$flux) {
+                this.$flux.appearance = selected;
+            }
+
+            if (selected === 'dark') {
+                localStorage.setItem('theme', 'dark');
+                localStorage.setItem('flux.appearance', 'dark');
+                document.documentElement.classList.add('dark');
+            } else if (selected === 'light') {
+                localStorage.setItem('theme', 'light');
+                localStorage.setItem('flux.appearance', 'light');
+                document.documentElement.classList.remove('dark');
+            } else {
+                localStorage.removeItem('theme');
+                localStorage.setItem('flux.appearance', 'system');
+                document.documentElement.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+            }
+
+            window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: selected } }));
+        }
+    }"
+    x-on:keydown.escape.window="settingsOpen = false; helpOpen = false"
+    class="min-h-screen bg-white dark:bg-zinc-800"
+>
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-zinc-900 focus:shadow-lg dark:focus:bg-zinc-800 dark:focus:text-white">
     {{ __('Skip to main content') }}
 </a>
 
-<div class="min-h-screen flex">
-    {{-- ============= SIDEBAR ============= --}}
-    <flux:sidebar sticky collapsible breakpoint="0" class="bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700">
+{{-- ============= SIDEBAR (Must be before Header for correct layout) ============= --}}
+<flux:sidebar sticky collapsible class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <flux:sidebar.header>
+        <flux:sidebar.brand
+            href="{{ route('dashboard') }}"
+            logo="{{ $adminLogo ?: 'https://fluxui.dev/img/demo/logo.png' }}"
+            logo:dark="{{ $adminLogo ?: 'https://fluxui.dev/img/demo/dark-mode-logo.png' }}"
+            name="{{ $adminTitle }}"
+        />
+        <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
+    </flux:sidebar.header>
 
-        {{-- HEADER --}}
-        <flux:sidebar.header>
-            <flux:sidebar.brand
-                href="{{ route('dashboard') }}"
-                logo="{{ $adminLogo ?: 'https://fluxui.dev/img/demo/logo.png' }}"
-                logo:dark="{{ $adminLogo ?: 'https://fluxui.dev/img/demo/dark-mode-logo.png' }}"
-                name="{{ $adminTitle }}"
-            />
-            <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
-        </flux:sidebar.header>
+    <flux:sidebar.nav>
+        {{-- Dashboard --}}
+        <flux:sidebar.item
+            icon="home"
+            :href="route('dashboard')"
+            :current="request()->routeIs('dashboard')"
+            tooltip="{{ __('Dashboard') }}"
+            wire:navigate
+        >
+            {{ __('Dashboard') }}
+        </flux:sidebar.item>
 
-        {{-- NAVIGATION --}}
-        <flux:sidebar.nav>
-
-            {{-- Dashboard --}}
+        {{-- Pages --}}
+        @can('page.view')
             <flux:sidebar.item
-                icon="home"
-                :href="route('dashboard')"
-                :current="request()->routeIs('dashboard')"
-                tooltip="{{ __('Dashboard') }}"
+                icon="document-text"
+                :href="route('admins.pages.index')"
+                :current="request()->routeIs('admins.pages.*')"
+                tooltip="{{ __('Pages') }}"
                 wire:navigate
             >
-                {{ __('Dashboard') }}
+                {{ __('Pages') }}
             </flux:sidebar.item>
+        @endcan
 
-            {{-- Pages --}}
-            @can('page.view')
-                <flux:sidebar.item
-                    icon="document-text"
-                    :href="route('admins.pages.index')"
-                    :current="request()->routeIs('admins.pages.*')"
-                    tooltip="{{ __('Pages') }}"
-                    wire:navigate
-                >
-                    {{ __('Pages') }}
-                </flux:sidebar.item>
-            @endcan
+        {{-- Blog Group --}}
+        @canany(['post.view', 'category.view', 'tags.view'])
+            <flux:sidebar.group
+                heading="{{ __('Blog') }}"
+                icon="newspaper"
+                expandable
+                class="grid"
+                :expanded="request()->routeIs('blogs.*')"
+            >
+                @can('post.view')
+                    <flux:sidebar.item
+                        icon="pencil-square"
+                        :href="route('blogs.posts.index')"
+                        :current="request()->routeIs('blogs.posts*')"
+                        tooltip="{{ __('Posts') }}"
+                        wire:navigate
+                    >
+                        {{ __('Posts') }}
+                    </flux:sidebar.item>
+                @endcan
 
-            {{-- Blog Group --}}
-            @canany(['post.view', 'category.view', 'tags.view'])
-                <flux:sidebar.group
-                    heading="{{ __('Blog') }}"
-                    icon="newspaper"
-                    expandable
-                    class="grid"
-                    :expanded="request()->routeIs('blogs.*')"
-                >
-                    @can('post.view')
-                        <flux:sidebar.item
-                            icon="pencil-square"
-                            :href="route('blogs.posts.index')"
-                            :current="request()->routeIs('blogs.posts*')"
-                            tooltip="{{ __('Posts') }}"
-                            wire:navigate
-                        >
-                            {{ __('Posts') }}
-                        </flux:sidebar.item>
-                    @endcan
+                @can('category.view')
+                    <flux:sidebar.item
+                        icon="folder"
+                        :href="route('blogs.categories.index')"
+                        :current="request()->routeIs('blogs.categories.*')"
+                        tooltip="{{ __('Categories') }}"
+                        wire:navigate
+                    >
+                        {{ __('Categories') }}
+                    </flux:sidebar.item>
+                @endcan
 
-                    @can('category.view')
-                        <flux:sidebar.item
-                            icon="folder"
-                            :href="route('blogs.categories.index')"
-                            :current="request()->routeIs('blogs.categories.*')"
-                            tooltip="{{ __('Categories') }}"
-                            wire:navigate
-                        >
-                            {{ __('Categories') }}
-                        </flux:sidebar.item>
-                    @endcan
+                @can('tags.view')
+                    <flux:sidebar.item
+                        icon="hashtag"
+                        :href="route('blogs.tags.index')"
+                        :current="request()->routeIs('blogs.tags.*')"
+                        tooltip="{{ __('Tags') }}"
+                        wire:navigate
+                    >
+                        {{ __('Tags') }}
+                    </flux:sidebar.item>
+                @endcan
+            </flux:sidebar.group>
+        @endcanany
 
-                    @can('tags.view')
-                        <flux:sidebar.item
-                            icon="hashtag"
-                            :href="route('blogs.tags.index')"
-                            :current="request()->routeIs('blogs.tags.*')"
-                            tooltip="{{ __('Tags') }}"
-                            wire:navigate
-                        >
-                            {{ __('Tags') }}
-                        </flux:sidebar.item>
-                    @endcan
+        <livewire:admin.comment-notifications />
 
-                </flux:sidebar.group>
-            @endcanany
+        {{-- Media --}}
+        @can('media.view')
+            <flux:sidebar.item
+                icon="photo"
+                :href="route('media')"
+                :current="request()->routeIs('media')"
+                tooltip="{{ __('Media') }}"
+                wire:navigate
+            >
+                {{ __('Media') }}
+            </flux:sidebar.item>
+        @endcan
 
-            <livewire:admin.comment-notifications />
-
-            {{-- Media --}}
-            @can('media.view')
-                <flux:sidebar.item
-                    icon="photo"
-                    :href="route('media')"
-                    :current="request()->routeIs('media')"
-                    tooltip="{{ __('Media') }}"
-                    wire:navigate
-                >
-                    {{ __('Media') }}
-                </flux:sidebar.item>
-            @endcan
-
-
-        {{--Appearance--}}
+        {{-- Appearance --}}
         @canany(['menu.view', 'setting.view'])
             <flux:sidebar.group
                 heading="{{ __('Appearance') }}"
@@ -223,7 +234,6 @@
                     </flux:sidebar.item>
                 @endcan
 
-
                 @can('setting.view')
                     <flux:sidebar.item
                         icon="swatch"
@@ -234,9 +244,7 @@
                     >
                         {{ __('Themes') }}
                     </flux:sidebar.item>
-                @endcan
 
-                @can('setting.view')
                     <flux:sidebar.item
                         icon="megaphone"
                         :href="route('appearance.ads-settings')"
@@ -287,10 +295,10 @@
                         {{ __('Robots.txt') }}
                     </flux:sidebar.item>
                 @endcan
-
             </flux:sidebar.group>
         @endcanany
-        {{--Theme Option--}}
+
+        {{-- Theme Option --}}
         @can('setting.view')
             <flux:sidebar.item
                 icon="adjustments-horizontal"
@@ -302,6 +310,7 @@
                 {{ __('Theme Options') }}
             </flux:sidebar.item>
         @endcan
+
         {{-- Settings Group --}}
         @can('setting.view')
             <flux:sidebar.group
@@ -341,7 +350,6 @@
                     {{ __('Htaccess') }}
                 </flux:sidebar.item>
 
-                {{-- UPDATED ICONS BELOW --}}
                 <flux:sidebar.item
                     icon="chat-bubble-left-right"
                     :href="route('settings.comments')"
@@ -371,11 +379,10 @@
                 >
                     {{ __('API / Developer') }}
                 </flux:sidebar.item>
-
             </flux:sidebar.group>
         @endcan
 
-        {{--System Settings--}}
+        {{-- System Settings --}}
         @canany(['setting.view', 'role.view', 'permission.view', 'user.view'])
             <flux:sidebar.group
                 heading="{{ __('System Settings') }}"
@@ -453,201 +460,206 @@
                 @endcan
             </flux:sidebar.group>
         @endcanany
+    </flux:sidebar.nav>
 
-        </flux:sidebar.nav>
+    <flux:spacer />
 
-        <flux:spacer />
+    {{-- Appearance Toggle --}}
+    <flux:sidebar.nav>
+        {{-- Expanded Sidebar Theme Switcher --}}
+        <div class="mt-2  in-data-flux-sidebar-collapsed-desktop:hidden">
 
-        {{-- SECONDARY LINKS --}}
-        <flux:sidebar.nav>
-            <flux:sidebar.item
-                icon="globe-alt"
-                :href="route('home')"
-                :current="request()->routeIs('home')"
-                target="_blank"
-                tooltip="{{ __('Visit Website') }}"
-            >
-                {{ __('Visit Website') }}
-            </flux:sidebar.item>
-
-            <div
-                x-data="{
-                    mode: localStorage.getItem('flux.appearance') || localStorage.getItem('theme') || 'system',
-                    apply(selected) {
-                        this.mode = selected;
-
-                        if (this.$flux) {
-                            this.$flux.appearance = selected;
-                        }
-
-                        if (selected === 'dark') {
-                            localStorage.setItem('theme', 'dark');
-                            localStorage.setItem('flux.appearance', 'dark');
-                            document.documentElement.classList.add('dark');
-                        } else if (selected === 'light') {
-                            localStorage.setItem('theme', 'light');
-                            localStorage.setItem('flux.appearance', 'light');
-                            document.documentElement.classList.remove('dark');
-                        } else {
-                            localStorage.removeItem('theme');
-                            localStorage.setItem('flux.appearance', 'system');
-                            document.documentElement.classList.toggle(
-                                'dark',
-                                window.matchMedia('(prefers-color-scheme: dark)').matches
-                            );
-                        }
-
-                        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: selected } }));
-                    }
-                }"
-                class="mt-2 rounded-lg border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900 in-data-flux-sidebar-collapsed-desktop:hidden"
-            >
-                <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                    {{ __('Appearance') }}
-                </p>
-
-                <div class="grid grid-cols-3 gap-1">
-                    <button type="button" @click="apply('light')"
-                            :class="mode === 'light' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                            class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
-                        <flux:icon.sun class="size-4" />
-                    </button>
-
-                    <button type="button" @click="apply('dark')"
-                            :class="mode === 'dark' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                            class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
-                        <flux:icon.moon class="size-4" />
-                    </button>
-
-                    <button type="button" @click="apply('system')"
-                            :class="mode === 'system' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                            class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
-                        <flux:icon.computer-desktop class="size-4" />
-                    </button>
-                </div>
-            </div>
-
-            <div
-                x-data="{
-                    mode: localStorage.getItem('flux.appearance') || localStorage.getItem('theme') || 'system',
-                    apply(selected) {
-                        this.mode = selected;
-
-                        if (this.$flux) {
-                            this.$flux.appearance = selected;
-                        }
-
-                        if (selected === 'dark') {
-                            localStorage.setItem('theme', 'dark');
-                            localStorage.setItem('flux.appearance', 'dark');
-                            document.documentElement.classList.add('dark');
-                        } else if (selected === 'light') {
-                            localStorage.setItem('theme', 'light');
-                            localStorage.setItem('flux.appearance', 'light');
-                            document.documentElement.classList.remove('dark');
-                        } else {
-                            localStorage.removeItem('theme');
-                            localStorage.setItem('flux.appearance', 'system');
-                            document.documentElement.classList.toggle(
-                                'dark',
-                                window.matchMedia('(prefers-color-scheme: dark)').matches
-                            );
-                        }
-
-                        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: selected } }));
-                    }
-                }"
-                class="mt-2 hidden flex-col gap-1 in-data-flux-sidebar-collapsed-desktop:flex"
-            >
-                <button type="button" @click="apply('light')" title="{{ __('Light') }}"
-                    :class="mode === 'light' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border transition">
+            <div class="grid grid-cols-3 gap-1">
+                <button type="button" @click="applyAppearance('light')"
+                        :class="mode === 'light' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-zinc-700 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-600'"
+                        class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
                     <flux:icon.sun class="size-4" />
                 </button>
 
-                <button type="button" @click="apply('dark')" title="{{ __('Dark') }}"
-                    :class="mode === 'dark' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border transition">
+                <button type="button" @click="applyAppearance('dark')"
+                        :class="mode === 'dark' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-zinc-700 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-600'"
+                        class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
                     <flux:icon.moon class="size-4" />
                 </button>
 
-                <button type="button" @click="apply('system')" title="{{ __('System') }}"
-                    :class="mode === 'system' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600'"
-                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border transition">
+                <button type="button" @click="applyAppearance('system')"
+                        :class="mode === 'system' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-zinc-700 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-600'"
+                        class="flex items-center justify-center rounded-md border px-2 py-1.5 text-xs font-medium transition">
                     <flux:icon.computer-desktop class="size-4" />
                 </button>
             </div>
-        </flux:sidebar.nav>
+        </div>
 
-        {{-- USER MENU --}}
-        <div class="mt-4">
-            <flux:dropdown position="bottom" align="start">
-                <flux:profile
-                    :name="auth()->user()->name"
-                    :initials="auth()->user()->initials()"
-                    :avatar="auth()->user()->avatar_url"
-                    icon:trailing="chevrons-up-down"
-                    data-test="sidebar-menu-button"
-                />
+        {{-- Collapsed Sidebar Theme Switcher --}}
+        <div class="mt-2 hidden flex-col gap-1 in-data-flux-sidebar-collapsed-desktop:flex">
+            <button type="button" @click="applyAppearance('light')" title="{{ __('Light') }}"
+                    :class="mode === 'light' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-zinc-700 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-600'"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border transition">
+                <flux:icon.sun class="size-4" />
+            </button>
 
-                <flux:menu class="w-[220px]">
-                    <flux:menu.radio.group>
-                        <div class="p-0 text-sm font-normal">
-                            <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+            <button type="button" @click="applyAppearance('dark')" title="{{ __('Dark') }}"
+                    :class="mode === 'dark' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-zinc-700 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-600'"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border transition">
+                <flux:icon.moon class="size-4" />
+            </button>
+
+            <button type="button" @click="applyAppearance('system')" title="{{ __('System') }}"
+                    :class="mode === 'system' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-zinc-700 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-600'"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border transition">
+                <flux:icon.computer-desktop class="size-4" />
+            </button>
+        </div>
+    </flux:sidebar.nav>
+    {{-- USER MENU --}}
+    <div class="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+        <flux:dropdown position="top" align="start" class="w-full">
+            <flux:profile
+                :name="auth()->user()->name"
+                :initials="auth()->user()->initials()"
+                :avatar="auth()->user()->avatar_url"
+                icon:trailing="chevrons-up-down"
+                class="w-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+                data-test="sidebar-menu-button"
+            />
+
+            <flux:menu class="w-[220px]">
+                <flux:menu.radio.group>
+                    <div class="p-0 text-sm font-normal">
+                        <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
                                     @if (auth()->user()->avatar_url)
                                         <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="h-full w-full rounded-lg object-cover">
                                     @else
-                                        <span
-                                            class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
-                                        >
+                                        <span class="flex h-full w-full items-center justify-center rounded-lg bg-zinc-200 text-black dark:bg-zinc-700 dark:text-white">
                                             {{ auth()->user()->initials() }}
                                         </span>
                                     @endif
                                 </span>
-                                <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
-                                </div>
+                            <div class="grid flex-1 text-start text-sm leading-tight min-w-0">
+                                <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                             </div>
                         </div>
-                    </flux:menu.radio.group>
+                    </div>
+                </flux:menu.radio.group>
 
-                    <flux:menu.separator />
+                <flux:menu.separator />
 
-                    <flux:menu.radio.group>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
-                            {{ __('Settings') }}
-                        </flux:menu.item>
-                    </flux:menu.radio.group>
+                <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
+                    {{ __('Settings') }}
+                </flux:menu.item>
 
-                    <flux:menu.separator />
+                <flux:menu.separator />
 
-                    <form method="POST" action="{{ route('logout') }}" class="w-full">
-                        @csrf
-                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
-                            {{ __('Log Out') }}
-                        </flux:menu.item>
-                    </form>
-                </flux:menu>
-            </flux:dropdown>
-        </div>
-    </flux:sidebar>
-    {{-- ============= /SIDEBAR ============= --}}
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
+                    @csrf
+                    <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30" data-test="logout-button">
+                        {{ __('Log Out') }}
+                    </flux:menu.item>
+                </form>
+            </flux:menu>
+        </flux:dropdown>
+    </div>
+</flux:sidebar>
 
-    {{-- ============= MAIN CONTENT ============= --}}
-    <main id="main-content" tabindex="-1" class="flex-1 min-h-screen bg-white dark:bg-slate-800 focus:outline-none">
-        <div class="p-4 sm:p-6 lg:p-8 mx-auto w-full {{ $adminContainerClass }}">
-            {{ $slot }}
-        </div>
-    </main>
-</div>
+{{-- ============= HEADER ============= --}}
+<flux:header sticky collapsible="mobile" class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
+    <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+    {{-- Inbox & Favorites Navbar --}}
+    <flux:navbar class="-mb-px max-lg:hidden">
+        <flux:navbar.item icon="inbox" badge="12" href="#">{{ __('Inbox') }}</flux:navbar.item>
+        <flux:separator vertical variant="subtle" class="my-2"/>
+        <flux:dropdown class="max-lg:hidden">
+            <flux:navbar.item icon:trailing="chevron-down">{{__('Favorites')}}</flux:navbar.item>
+            <flux:navmenu>
+                <flux:navmenu.item href="#">{{__('Marketing site')}}</flux:navmenu.item>
+                <flux:navmenu.item href="#">{{__('Android app')}}</flux:navmenu.item>
+                <flux:navmenu.item href="#">{{ __('Brand guidelines') }}</flux:navmenu.item>
+            </flux:navmenu>
+        </flux:dropdown>
+    </flux:navbar>
+
+    <flux:spacer />
+
+    {{-- Right Side Icons --}}
+    <flux:navbar class="me-4">
+        <flux:navbar.item icon="magnifying-glass" href="#" label="{{ __('Search') }}" />
+
+        @if(class_exists('App\Livewire\Layout\NotificationMenu'))
+            <livewire:layout.notification-menu wire:key="header-notification-menu" />
+        @endif
+
+        @if(class_exists('App\Livewire\Layout\LanguageSwitcher'))
+            <livewire:layout.language-switcher wire:key="header-language-switcher" />
+        @endif
+
+        <flux:navbar.item icon="globe-alt" :href="route('home')" target="_blank" label="{{ __('Visit Website') }}" />
+        <flux:button type="button" variant="ghost" icon="cog-6-tooth" class="max-lg:hidden" x-on:click="settingsOpen = true" aria-label="{{ __('Open settings') }}" />
+    </flux:navbar>
+
+    {{-- Profile Dropdown --}}
+    <flux:dropdown align="end">
+        <flux:profile
+            :initials="auth()->user()->initials()"
+            :avatar="auth()->user()->avatar_url"
+        />
+
+        <flux:menu class="min-w-72">
+            <div class="px-3 py-3">
+                <div class="flex items-start gap-3">
+                    <div class="min-w-0 flex-1">
+                        <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
+                        <flux:text size="sm" class="truncate">{{ auth()->user()->email }}</flux:text>
+                    </div>
+                </div>
+            </div>
+
+            <flux:menu.separator />
+
+            <flux:menu.item :href="route('profile.edit')" icon="user" wire:navigate>
+                {{ __('Profile Settings') }}
+            </flux:menu.item>
+
+            <flux:menu.submenu heading="{{ __('Appearance') }}" icon="paint-brush">
+                <flux:menu.radio.group x-model="mode">
+                    <flux:menu.radio value="light" x-on:click="applyAppearance('light')">{{ __('Light') }}</flux:menu.radio>
+                    <flux:menu.radio value="dark" x-on:click="applyAppearance('dark')">{{ __('Dark') }}</flux:menu.radio>
+                    <flux:menu.radio value="system" x-on:click="applyAppearance('system')">{{ __('System') }}</flux:menu.radio>
+                </flux:menu.radio.group>
+            </flux:menu.submenu>
+
+            <flux:menu.separator />
+
+            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                @csrf
+                <button
+                    type="submit"
+                    class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                    data-test="logout-button"
+                >
+                    <flux:icon.arrow-right-start-on-rectangle class="size-4" />
+                    <span>{{ __('Log out') }}</span>
+                </button>
+            </form>
+        </flux:menu>
+    </flux:dropdown>
+</flux:header>
+
+{{-- ============= MAIN CONTENT ============= --}}
+<flux:main id="main-content" tabindex="-1" class="!p-0">
+    <div class="w-full {{ $adminContainerClass }}">
+        {{ $slot }}
+    </div>
+</flux:main>
 
 @if($adminBodyJs = setting('admin_body_js'))
     {!! $adminBodyJs !!}
 @endif
 
 @include('mediamanager::includes.media-modal')
+
 @fluxScripts
 @mediaScripts
 
@@ -744,6 +756,7 @@
 @if($adminFooterJs = setting('admin_footer_js'))
     {!! $adminFooterJs !!}
 @endif
+
 @include('partials.delete-confirm-modal')
 </body>
 </html>
