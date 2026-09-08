@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
+use function Livewire\Volt\layout;
+
+layout('components.layouts.app');
 
 new class extends Component {
     public string $name = '';
