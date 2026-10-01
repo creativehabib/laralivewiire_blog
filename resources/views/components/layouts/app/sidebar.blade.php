@@ -14,7 +14,7 @@
     <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $adminLocale) }}" dir="{{ $adminDirection }}" class="admin-appearance">
 <head>
-    @include('partials.head')
+    @include('partials.admin-head')
 
     <script>
         // Prevent FOUC before Alpine loads
