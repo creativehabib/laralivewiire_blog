@@ -31,7 +31,7 @@
         })();
     </script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.css"/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/nestable2/jquery.nestable.min.css') }}"/>
     <style>
         .dd { max-width: 100%; }
         .dd3-handle {
@@ -665,7 +665,7 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="{{ asset('ckeditor/ckeditor.js') }}" type="text/javascript"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.js" referrerpolicy="no-referrer"></script>
+<script src="{{ asset('assets/vendor/nestable2/jquery.nestable.min.js') }}"></script>
 
 <script>
     // Nestable Logic

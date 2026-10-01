@@ -32,7 +32,7 @@
     {{-- Nestable plugin CSS --}}
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.css"
+        href="{{ asset('assets/vendor/nestable2/jquery.nestable.min.css') }}"
         referrerpolicy="no-referrer"
     />
 
@@ -89,7 +89,7 @@
 
 @push('scripts')
     <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/nestable2/1.6.0/jquery.nestable.min.js"
+        src="{{ asset('assets/vendor/nestable2/jquery.nestable.min.js') }}"
         referrerpolicy="no-referrer"
     ></script>
     <script>
