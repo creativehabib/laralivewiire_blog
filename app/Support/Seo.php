@@ -23,6 +23,7 @@ class Seo
             'description' => setting('site_description'),
             'url' => route('home'),
             'type' => 'website',
+            'schema_type' => 'WebSite',
         ];
 
         return static::normalize(array_merge($meta, $overrides));
@@ -41,6 +42,7 @@ class Seo
             'index' => $seoMeta['index'] ?? 'index',
             'url' => post_permalink($post),
             'type' => 'article',
+            'schema_type' => 'NewsArticle',
             'author' => $post->author->name ?? null,
             'published_time' => optional($post->created_at)->toIso8601String(),
             'modified_time' => optional($post->updated_at)->toIso8601String(),
@@ -61,6 +63,7 @@ class Seo
             'image' => $seoMeta['seo_image'] ?? $category->image ?? null,
             'url' => route('categories.show', ['category' => $category->slug]),
             'type' => 'website',
+            'schema_type' => 'CollectionPage',
         ];
 
         return static::normalize(array_merge($meta, $overrides));
@@ -81,6 +84,7 @@ class Seo
             'index' => $seoMeta['index'] ?? 'index',
             'url' => route('tags.show', ['tag' => $tag->slug]),
             'type' => 'website',
+            'schema_type' => 'CollectionPage',
         ];
 
         return static::normalize(array_merge($meta, $overrides));
@@ -101,6 +105,7 @@ class Seo
             'index' => $seoMeta['index'] ?? 'index',
             'url' => page_permalink($page),
             'type' => 'article',
+            'schema_type' => 'WebPage',
         ];
 
         return static::normalize(array_merge($meta, $overrides));
@@ -117,6 +122,7 @@ class Seo
             'description' => __('Latest posts published by :name', ['name' => $author->name]),
             'url' => route('authors.show', $author),
             'type' => 'profile',
+            'schema_type' => 'ProfilePage',
         ];
 
         return static::normalize(array_merge($meta, $overrides));
@@ -170,17 +176,39 @@ class Seo
 
     protected static function generateSchema(array $meta): array
     {
+        $siteName = setting('site_title', config('app.name'));
+        $siteLogo = static::absoluteUrl(setting('site_favicon')); 
+        
+        $publisher = [
+            '@type' => 'Organization',
+            'name' => $siteName,
+            'url' => url('/'),
+        ];
+        
+        if ($siteLogo) {
+            $publisher['logo'] = [
+                '@type' => 'ImageObject',
+                'url' => $siteLogo,
+            ];
+        }
+
+        $type = $meta['schema_type'] ?? ($meta['type'] === 'article' ? 'NewsArticle' : 'WebPage');
+
         $schema = [
             '@context' => 'https://schema.org',
-            '@type' => $meta['type'] === 'article' ? 'BlogPosting' : 'WebPage',
+            '@type' => $type,
             'headline' => $meta['title'],
             'description' => $meta['description'],
             'url' => $meta['url'],
             'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $meta['url']],
+            'publisher' => $publisher,
         ];
 
         if (!empty($meta['image'])) {
-            $schema['image'] = ['@type' => 'ImageObject', 'url' => $meta['image']];
+            $schema['image'] = [
+                '@type' => 'ImageObject',
+                'url' => $meta['image']
+            ];
         }
 
         if (!empty($meta['published_time'])) {
@@ -189,10 +217,51 @@ class Seo
         }
 
         if (!empty($meta['author'])) {
-            $schema['author'] = ['@type' => 'Person', 'name' => $meta['author']];
+            $schema['author'] = [
+                '@type' => 'Person',
+                'name' => $meta['author']
+            ];
+        }
+        
+        $breadcrumbs = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Home',
+                    'item' => url('/')
+                ]
+            ]
+        ];
+        
+        if ($meta['url'] !== url('/')) {
+            $breadcrumbs['itemListElement'][] = [
+                '@type' => 'ListItem',
+                'position' => 2,
+                'name' => $meta['title'],
+                'item' => $meta['url']
+            ];
         }
 
-        return $schema;
+        $graphs = [$schema, $breadcrumbs];
+
+        if ($type === 'WebSite' || $meta['url'] === url('/')) {
+            $graphs[] = [
+                '@context' => 'https://schema.org',
+                '@type' => 'WebSite',
+                'name' => $siteName,
+                'url' => url('/'),
+                'potentialAction' => [
+                    '@type' => 'SearchAction',
+                    'target' => url('/search') . '?q={search_term_string}',
+                    'query-input' => 'required name=search_term_string',
+                ],
+            ];
+        }
+
+        return $graphs;
     }
 
     protected static function defaults(): array
